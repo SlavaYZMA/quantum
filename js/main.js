@@ -1,7 +1,7 @@
 import { translations, getTextForStep } from './textSteps.js';
 import { setupParticles, drawParticles, setImage, getCanvas } from './particles.js';
 import { generateSoundFromCursor } from './audio.js';
-import { initWebSocket, updateCursors, debouncedUpdateCursor } from './observer.js';
+import { debouncedUpdateCursor } from './observer.js';
 
 let currentStep = 0;
 let language = 'ru';
@@ -27,7 +27,6 @@ function setup() {
     timeOnPage = (performance.now() - startTime) / 1000;
     weirdnessFactor = Math.min(timeOnPage / 300, 1);
   }, 1000);
-  initWebSocket();
 }
 
 function draw() {
@@ -435,7 +434,6 @@ window.onload = () => {
     const typewriter = document.querySelector(`#typewriter${currentStep}`);
     if (typewriter) applyRandomGlitch(`typewriter${currentStep}`);
   });
-  setInterval(updateCursors, 100);
   window.onerror = function(message, source, lineno, colno, error) {
     console.error(`Ошибка: ${message} в ${source}:${lineno}:${colno}`);
     document.body.innerHTML = `<div style="color: white; text-align: center; padding-top: 50px;">
