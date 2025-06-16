@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Portraits</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+</head>
+<body>
+  <div id="noiseOverlay"></div>
+  <div class="flash" id="flashEffect"></div>
+  <div id="loader">Загрузка...</div>
+  <div class="container">
+    <button class="back-button" id="backButton" style="display: none;" aria-label="Вернуться на предыдущий шаг" onclick="debouncedGoBack()">Назад / Back</button>
+    <button class="continue-button" id="continueButton" style="display: none;" disabled aria-label="Перейти к следующему шагу" onclick="debouncedNextStep()">Продолжить / Continue</button>
+
+    <div class="step" id="step0">
+      <div class="text-container">
+        <div class="typewriter" id="typewriter0"></div>
+      </div>
+      <div class="button-container" id="step0Buttons"></div>
+    </div>
+
+    <div class="step" id="step1">
+      <div class="text-container">
+        <div class="typewriter" id="typewriter1"></div>
+      </div>
+      <div class="button-container"></div>
+    </div>
+
+    <div class="step" id="step2">
+      <div class="text-container">
+        <div class="typewriter" id="typewriter2"></div>
+      </div>
+      <div class="button-container" id="step2Buttons"></div>
+    </div>
+
+    <div class="step" id="step3">
+      <div class="text-container">
+        <div class="typewriter" id="typewriter3"></div>
+      </div>
+      <div class="button-container"></div>
+    </div>
+
+    <div class="step" id="step4">
+      <div class="text-container">
+        <div class="typewriter" id="typewriter4"></div>
+      </div>
+      <img id="previewImage4" class="preview-image" alt="Uploaded portrait preview">
+      <div class="canvas-container" id="canvasContainer4"></div>
+      <div class="button-container"></div>
+    </div>
+
+    <div class="step" id="step5">
+      <div class="text-container">
+        <div class="typewriter" id="typewriter5"></div>
+      </div>
+      <img id="previewImage5" class="preview-image" alt="Uploaded portrait preview">
+      <button class="save-button" id="saveButton" style="display: none;" aria-label="Сохранить изображение" onclick="saveCurrentState()">Сохранить изображение / Save Image</button>
+      <div class="canvas-container" id="canvasContainer5"></div>
+      <div class="button-container"></div>
+    </div>
+
+    <div class="step" id="step6">
+      <div class="text-container">
+        <div class="typewriter" id="typewriter6"></div>
+      </div>
+      <div class="button-container"></div>
+    </div>
+
+    <div class="step" id="step7">
+      <div class="text-container">
+        <div class="typewriter" id="typewriter7"></div>
+      </div>
+      <div class="button-container"></div>
+    </div>
+
+    <div id="portraitGallery"></div>
+    <div id="authorsPage">
+      <button class="button" aria-label="Закрыть страницу авторов" onclick="closeAuthors()">Закрыть / Close</button>
+      <div class="text-container">
+        <div class="typewriter">Слава Саша</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/textSteps.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/observer.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

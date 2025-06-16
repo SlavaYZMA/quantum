@@ -1,0 +1,12 @@
+# Временные файлы
+*.log
+*.tmp
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Папки
+node_modules/
+dist/
+build/
