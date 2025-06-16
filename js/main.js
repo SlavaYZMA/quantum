@@ -144,6 +144,17 @@ function goBack() {
     `;
     img = null;
     document.getElementById('portraitGallery').style.display = 'none';
+    // Добавляем слушатель после создания элемента
+    const imageInput = document.getElementById('imageInput');
+    if (imageInput) {
+      imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          uploadedImageUrl = URL.createObjectURL(file);
+          loadImageFromUrl(uploadedImageUrl);
+        }
+      });
+    }
   } else if (currentStep === 4 || currentStep === 5) {
     showCanvas(`canvasContainer${currentStep}`);
     showPreviewImage(currentStep);
@@ -407,13 +418,6 @@ function updateContinueButtonState() {
 window.onload = () => {
   document.getElementById('step0').classList.add('active');
   typeText('typewriter0', getTextForStep(0, language));
-  document.getElementById('imageInput').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      uploadedImageUrl = URL.createObjectURL(file);
-      loadImageFromUrl(uploadedImageUrl);
-    }
-  });
   document.addEventListener('mousemove', (e) => {
     cursorX = e.clientX;
     cursorY = e.clientY + window.scrollY;
