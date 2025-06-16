@@ -1,10 +1,161 @@
 body {
+  margin: 0;
+  padding: 0;
   background-color: #000;
   color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  overflow-x: hidden;
 }
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
 .step {
   display: none;
+  text-align: center;
 }
+
 .step.active {
   display: block;
+}
+
+.text-container {
+  margin-bottom: 20px;
+}
+
+.typewriter {
+  font-size: 1.2em;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.typewriter .glitch-char {
+  display: inline-block;
+  transition: transform 0.3s, color 0.3s;
+}
+
+.typewriter .random-glitch-char {
+  animation: glitch 0.5s infinite;
+}
+
+.typewriter .noise {
+  color: #0f0;
+  text-shadow: 0 0 5px #0f0;
+}
+
+.typewriter .rotate {
+  transform-origin: center;
+  animation: rotateGlitch 1s infinite;
+}
+
+.typewriter .stabilized {
+  transform: none;
+  color: #fff;
+  text-shadow: none;
+}
+
+.button-container {
+  margin-top: 20px;
+}
+
+.button, .back-button, .continue-button, .save-button {
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: #333;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.button:hover, .back-button:hover, .continue-button:hover, .save-button:hover {
+  background-color: #555;
+}
+
+#noiseOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/png;base64,iMCE...') repeat;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#flashEffect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  opacity: 0;
+  z-index: 20;
+}
+
+#flashEffect.active {
+  animation: flash 0.5s ease-out;
+}
+
+#loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
+}
+
+.preview-image {
+  max-width: 100%;
+  margin: 20px 0;
+}
+
+.canvas-container {
+  margin: 20px 0;
+}
+
+#portraitGallery {
+  display: none;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.portrait {
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  background-size: cover;
+  cursor: pointer;
+}
+
+#authorsPage {
+  display: none;
+  text-align: center;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes rotateGlitch {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes flash {
+  0% { opacity: 0.8; }
+  100% { opacity: 0; }
 }
