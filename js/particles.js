@@ -1,282 +1,376 @@
 let particles = [];
 let quantumStates = [];
-let compressionProgress = 0;
-let compressionTargets = [];
-let isCompressionComplete = false;
-let gridSize; // Глобальная переменная
+let canvas;
+let img = null;
+let frame = 0;
+let isPaused = false;
+let blockBreakupT = 0;
+let noiseScale = 0.03;
+let neonColors = [
+  [0, 255, 255],
+  [255, 0, 255],
+  [255, 105, 180],
+  [0, 255, 0],
+  [255, 255, 0],
+  [128, 0, 128]
+];
+let mouseInfluenceRadius = 150;
+let chaosFactor = 0;
+let boundaryPoints = [];
+let chaosTimer = 0;
+let isCanvasReady = false;
 
-function initializeCompressionParticles(img) {
-  console.log("Инициализация сжатия с изображением:", img);
-  particles = [];
-  quantumStates = [];
-  compressionTargets = [];
-  let initialSize = 256;
-  let targetSize = 16;
-  gridSize = initialSize / targetSize; // Инициализация gridSize
+export function setImage(image) {
+  img = image;
+  if (img && img.width && img.height) {
+    console.log('Image set with dimensions:', img.width, img.height);
+    initializeParticles(); // Инициализируем частицы сразу после установки изображения
+  } else {
+    console.error('Invalid image provided to setImage');
+    img = null;
+  }
+}
 
+export function getCanvas() {
+  return canvas;
+}
+
+export function setupParticles() {
+  canvas = createCanvas(windowWidth * 0.7, windowHeight * 0.6);
+  canvas.parent('canvasContainer4');
+  pixelDensity(1);
+  frameRate(25);
+  noLoop();
+  canvas.elt.style.display = 'none';
+
+  canvas.elt.addEventListener('click', function() {
+    if (currentStep === 5) {
+      isPaused = !isPaused;
+      if (isPaused) {
+        noLoop();
+        document.getElementById('saveButton').style.display = 'block';
+      } else {
+        loop();
+        document.getElementById('saveButton').style.display = 'none';
+      }
+    }
+  });
+
+  canvas.elt.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    mouseX = touch.clientX - canvas.elt.offsetLeft;
+    mouseY = touch.clientY - canvas.elt.offsetTop;
+  }, { passive: false });
+
+  window.addEventListener('resize', () => {
+    resizeCanvas(windowWidth * 0.7, windowHeight * 0.6);
+    updateBoundary();
+  });
+
+  updateBoundary();
+  isCanvasReady = true;
+}
+
+export function drawParticles() {
   if (!img || !img.width || !img.height) {
-    console.error("Изображение не загружено корректно:", img);
+    console.warn('Image not available for rendering:', img);
     return;
   }
 
-  img.loadPixels(); // Убеждаемся, что пиксели загружены
-  console.log("Размер изображения после загрузки пикселей:", img.width, img.height);
+  frame += 1;
+  chaosTimer += 0.016;
+  chaosFactor = map(sin(frame * 0.01), -1, 1, 0.3, 1) * weirdnessFactor;
 
-  // Создание списка всех целевых блоков 16x16
-  for (let y = 0; y < targetSize; y++) {
-    for (let x = 0; x < targetSize; x++) {
-      compressionTargets.push({ x: x * gridSize, y: y * gridSize, active: false, startTime: null });
-    }
+  if (chaosTimer > 5) {
+    chaosTimer = 0;
+    updateBoundary();
+    mouseInfluenceRadius = random(100, 200);
+    noiseScale = random(0.02, 0.05);
   }
-  shuffleArray(compressionTargets); // Случайный порядок активации блоков
 
-  // Инициализация частиц для начального изображения
-  for (let y = 0; y < initialSize; y += 1) {
-    for (let x = 0; x < initialSize; x += 1) {
-      let col = img.get(x, y);
-      let brightnessVal = brightness(col);
-      if (brightnessVal > 10) {
-        particles.push({
-          x: x,
-          y: y,
-          origX: x,
-          origY: y,
-          targetX: null,
-          targetY: null,
-          size: 1,
-          targetSize: 1,
-          offsetX: 0,
-          offsetY: 0,
-          phase: random(TWO_PI),
-          color: col,
-          alpha: 255,
-          compressionTarget: null
-        });
+  background(0);
+
+  if (frame === 10 && particles.length === 0) {
+    initializeParticles();
+  }
+
+  if (quantumStates.length === 0) return;
+
+  if (frame <= 250) {
+    blockBreakupT = frame < 100 ? 0 : map(frame, 100, 250, 0, 1);
+    blockBreakupT = easeOutQuad(blockBreakupT);
+  }
+
+  let backgroundParticles = particles.filter(p => p.layer === 'background');
+  for (let i = 0; i < backgroundParticles.length; i++) {
+    let particle = backgroundParticles[i];
+    let state = quantumStates[particles.indexOf(particle)];
+    let noiseVal = cachedNoise(particle.baseX * noiseScale, particle.baseY * noiseScale, frame * 0.02);
+    particle.offsetX = sin(particle.phase) * 20 * noiseVal;
+    particle.offsetY = cos(particle.phase) * 20 * noiseVal;
+    particle.phase += 0.02;
+    renderParticle(particle, state);
+  }
+
+  let mainParticles = particles.filter(p => p.layer === 'main');
+  if (random() < 0.5) {
+    for (let i = 0; i < mainParticles.length; i++) {
+      let particle = mainParticles[i];
+      let state = quantumStates[particles.indexOf(particle)];
+      if (state.entangledWith !== null) {
+        let entangledParticle = particles[state.entangledWith];
+        let alpha = 30 * (0.5 + 0.5 * sin(frame * 0.05));
+        stroke(neonColors[floor(random(neonColors.length))][0], neonColors[floor(random(neonColors.length))][1], neonColors[floor(random(neonColors.length))][2], alpha);
+        strokeWeight(0.3);
+        line(particle.x + particle.offsetX, particle.y + particle.offsetY, entangledParticle.x + entangledParticle.offsetX, entangledParticle.y + entangledParticle.offsetY);
       }
     }
   }
-  console.log("Создано частиц:", particles.length);
 
-  // Назначение каждой частице целевого блока для сжатия
-  let targetIndex = 0;
-  for (let particle of particles) {
-    if (targetIndex < compressionTargets.length) {
-      particle.compressionTarget = compressionTargets[targetIndex];
-      targetIndex++;
-    }
+  for (let i = 0; i < particles.length; i++) {
+    let particle = particles[i];
+    let state = quantumStates[i];
+    if (particle.layer === 'background') continue;
+
+    updateParticle(particle, state);
+    renderParticle(particle, state);
   }
 }
 
-function updateCompression(frame) {
-  if (!isCompressionComplete && compressionProgress < 1) {
-    compressionProgress = min((frame - 25) / 150, 1); // Сжатие занимает 150 кадров
-    console.log("Прогресс сжатия:", compressionProgress);
-
-    // Активация блоков по частям
-    let activeTargets = floor(compressionProgress * compressionTargets.length);
-    for (let i = 0; i < compressionTargets.length; i++) {
-      if (i < activeTargets && !compressionTargets[i].active) {
-        compressionTargets[i].active = true;
-        compressionTargets[i].startTime = frame;
-      }
-    }
-
-    // Обновление позиций частиц
-    for (let particle of particles) {
-      if (particle.compressionTarget && particle.compressionTarget.active) {
-        let t = (frame - particle.compressionTarget.startTime) / 50;
-        if (t < 1) {
-          let easeT = t * t * (3 - 2 * t);
-          particle.targetX = lerp(particle.origX, particle.compressionTarget.x + gridSize / 2, easeT);
-          particle.targetY = lerp(particle.origY, particle.compressionTarget.y + gridSize / 2, easeT);
-          particle.size = lerp(1, gridSize / 4, easeT);
-        } else {
-          particle.x = particle.targetX;
-          particle.y = particle.targetY;
-          particle.size = gridSize / 4;
-        }
-      }
-    }
-
-    if (compressionProgress >= 1) {
-      isCompressionComplete = true;
-      console.log("Сжатие завершено, переход к квантовому состоянию");
-      initializeQuantumParticles();
-    }
+function initializeParticles() {
+  if (!img || !img.width || !img.height) {
+    console.error('Cannot initialize particles: image is not loaded');
+    return;
   }
-}
-
-function initializeQuantumParticles() {
-  let targetSize = 16;
-  gridSize = 256 / targetSize; // Переопределение для квантовых частиц
 
   particles = [];
   quantumStates = [];
-  for (let y = 0; y < targetSize; y++) {
-    for (let x = 0; x < targetSize; x++) {
-      let centerX = x * gridSize + gridSize / 2;
-      let centerY = y * gridSize + gridSize / 2;
-      let avgColor = [0, 0, 0];
-      let count = 0;
+  let blockSize = 16;
+  let maxParticles = windowWidth < 768 ? 1500 : 3000;
+  let particleCount = 0;
 
-      for (let py = y * gridSize; py < (y + 1) * gridSize; py++) {
-        for (let px = x * gridSize; px < (x + 1) * gridSize; px++) {
-          let col = img.get(px, py);
-          avgColor[0] += red(col);
-          avgColor[1] += green(col);
-          avgColor[2] += blue(col);
-          count++;
-        }
-      }
-      avgColor[0] /= count;
-      avgColor[1] /= count;
-      avgColor[2] /= count;
-
-      particles.push({
-        x: centerX,
-        y: centerY,
-        origX: centerX,
-        origY: centerY,
-        targetX: centerX,
-        targetY: centerY,
-        size: gridSize / 4,
-        targetSize: gridSize / 4,
-        offsetX: 0,
-        offsetY: 0,
-        phase: random(TWO_PI),
-        color: color(avgColor[0], avgColor[1], avgColor[2]),
-        alpha: 255,
-        shapeType: floor(random(5)),
-        targetShapeType: floor(random(5)),
-        shapeMorphT: 0,
-        motionMode: floor(random(3)),
-        explosionT: 0
-      });
-
-      quantumStates.push({
-        superpositionStates: [
-          { r: random(255), g: random(255), b: random(255) },
-          { r: random(255), g: random(255), b: random(255) }
-        ],
-        collapsed: false,
-        phase: random(TWO_PI),
-        amplitude: random(20, 40),
-        colorNoise: random(1000) // Убеждаемся, что это определено
-      });
-    }
-  }
-  console.log("Создано квантовых частиц:", particles.length);
-}
-
-function updateQuantumParticles(frame, chaosFactor) {
-  if (isCompressionComplete) {
-    let explosionProgress = min((frame - 175) / 150, 1);
-    console.log("Прогресс взрыва:", explosionProgress);
-
-    for (let i = 0; i < particles.length; i++) {
-      let particle = particles[i];
-      let state = quantumStates[i];
-      if (!state || state.colorNoise === undefined) {
-        console.error("Состояние не определено для частицы", i, state);
-        continue; // Пропускаем, если состояние некорректно
-      }
-
-      if (explosionProgress < 0.5) {
-        let t = explosionProgress * 2;
-        particle.size = lerp(particle.targetSize, particle.targetSize * random(1, 3), t);
-        particle.shapeMorphT = t;
-        if (random() < 0.1) particle.targetShapeType = floor(random(5));
-      }
-
-      if (explosionProgress >= 0.5) {
-        let t = (explosionProgress - 0.5) * 2;
-        let angle = random(TWO_PI);
-        let dist = t * 200 * chaosFactor;
-        particle.targetX = particle.origX + cos(angle) * dist;
-        particle.targetY = particle.origY + sin(angle) * dist;
-        particle.size = lerp(particle.size, 1, t);
-        particle.alpha = lerp(255, 0, t);
-
-        if (random() < 0.02 && particle.size > 2) {
-          let subParticle = {
-            x: particle.x,
-            y: particle.y,
-            targetX: particle.x + random(-50, 50),
-            targetY: particle.y + random(-50, 50),
-            size: particle.size / 2,
+  img.loadPixels();
+  console.log('Image dimensions after loadPixels:', img.width, img.height);
+  for (let y = 0; y < img.height; y += blockSize) {
+    for (let x = 0; x < img.width; x += blockSize) {
+      let pixelX = constrain(x, 0, img.width - 1);
+      let pixelY = constrain(y, 0, img.height - 1);
+      let col = img.get(pixelX, pixelY);
+      let brightnessVal = brightness(col);
+      if (brightnessVal > 10 && particleCount < maxParticles) {
+        let canvasX = x + (width - img.width) / 2;
+        let canvasY = y + (height - img.height) / 2;
+        let distFromCenter = dist(canvasX, canvasY, width / 2, height / 2);
+        let angle = atan2(canvasY - height / 2, canvasX - width / 2);
+        let explodeDist = distFromCenter * (0.5 + 0.5 * noise(x * 0.01, y * 0.01));
+        let targetX = canvasX + cos(angle) * explodeDist * 0.5;
+        let targetY = canvasY + sin(angle) * explodeDist * 0.5;
+        let layer = random() < 0.2 ? 'background' : 'main';
+        let chaosSeed = random(1000);
+        let numSubParticles = random(4, 8);
+        for (let i = 0; i < numSubParticles; i++) {
+          let offsetX = (random() - 0.5) * blockSize;
+          let offsetY = (random() - 0.5) * blockSize;
+          particles.push({
+            x: canvasX + offsetX,
+            y: canvasY + offsetY,
+            baseX: canvasX,
+            baseY: canvasY,
+            targetX: targetX + offsetX,
+            targetY: targetY + offsetY,
+            origX: canvasX + offsetX,
+            origY: canvasY + offsetY,
+            offsetX: 0,
+            offsetY: 0,
+            size: blockSize / numSubParticles,
+            targetSize: blockSize / numSubParticles,
+            phase: random(TWO_PI),
+            entangledWith: null,
+            gridX: x,
+            gridY: y,
+            shapeType: 0,
+            targetShapeType: 0,
+            shapeMorphT: 0,
+            wavePhase: random(TWO_PI),
+            waveInfluence: 0,
+            baseColor: [red(col), green(col), blue(col)],
+            tunneled: false,
+            tunnelTargetX: 0,
+            tunnelTargetY: 0,
+            tunnelReturnSpeed: 0.05,
+            layer: layer,
+            zDepth: random(0.7, 1.3),
+            chaosSeed: chaosSeed,
+            glitchTimer: random(50, 200),
+            glitchActive: false,
+            rotation: 0,
+            motionMode: floor(random(3)),
+            colorNoise: random(1000),
             alpha: 255,
-            life: 100
-          };
-          particles.push(subParticle);
+            targetAlpha: 255,
+            transitionT: 0,
+            blockSize: blockSize
+          });
+          particleCount++;
+          if (particleCount >= maxParticles) break;
         }
       }
+      if (particleCount >= maxParticles) break;
+    }
+  }
 
-      particle.x = lerp(particle.x, particle.targetX, 0.05);
-      particle.y = lerp(particle.y, particle.targetY, 0.05);
-
-      let colorNoiseVal = noise(state.colorNoise + frame * 0.05);
-      if (!state.collapsed && random() < 0.1) {
-        let newState = random(state.superpositionStates);
-        state.r = newState.r;
-        state.g = newState.g;
-        state.b = newState.b;
+  console.log('Created particles:', particles.length);
+  for (let i = 0; i < particles.length; i++) {
+    let particle = particles[i];
+    let pixelX = constrain(Math.floor(particle.gridX), 0, img.width - 1);
+    let pixelY = constrain(Math.floor(particle.gridY), 0, img.height - 1);
+    let col = img.get(pixelX, pixelY);
+    let entangledIndex = null;
+    if (random() < 0.15 && particle.layer === 'main') {
+      let potentialPartners = particles.filter((p, idx) => idx !== i && !p.entangledWith && p.layer === 'main');
+      if (potentialPartners.length > 0) {
+        let partner = random(potentialPartners);
+        entangledIndex = particles.indexOf(partner);
+        partner.entangledWith = i;
       }
-      particle.color = lerpColor(particle.color, color(random(state.r, state.g, state.b)), 0.1);
     }
-
-    particles = particles.filter(p => p.life === undefined || --p.life > 0);
+    quantumStates[i] = {
+      r: red(col),
+      g: green(col),
+      b: blue(col),
+      a: 255,
+      baseR: red(col),
+      baseG: green(col),
+      baseB: blue(col),
+      superpositionStates: [
+        { r: random(255), g: random(255), b: random(255) },
+        { r: random(255), g: random(255), b: random(255) }
+      ],
+      collapsed: false,
+      entangledWith: entangledIndex,
+      phase: random(TWO_PI),
+      amplitude: random(20, 40),
+      brightColor: null,
+      colorNoise: random(1000)
+    };
   }
 }
 
-function drawParticles() {
-  noStroke();
-  if (particles.length === 0) {
-    console.warn("Нет частиц для отрисовки");
-    return;
-  }
-  for (let particle of particles) {
-    fill(particle.color, particle.alpha);
-    push();
-    translate(particle.x, particle.y);
-    let size = particle.size * (1 + 0.2 * sin(frameCount * 0.05));
-    if (particle.shapeMorphT < 1 && particle.targetShapeType !== particle.shapeType) {
-      drawMixedShape(particle.shapeType, particle.targetShapeType, size, particle.shapeMorphT);
+function updateParticle(particle, state) {
+  let d = dist(mouseX, mouseY, particle.x + particle.offsetX, particle.y + particle.offsetY);
+  let influence = d < mouseInfluenceRadius ? map(d, 0, mouseInfluenceRadius, 1, 0) : 0;
+
+  let noiseX = cachedNoise(particle.chaosSeed + frame * 0.03, 0, 0) * 2 - 1;
+  let noiseY = cachedNoise(0, particle.chaosSeed + frame * 0.03, 0) * 2 - 1;
+  let baseOffsetX = noiseX * 30 * chaosFactor;
+  let baseOffsetY = noiseY * 30 * chaosFactor;
+
+  if (frame <= 250) {
+    let breakupT = blockBreakupT;
+    particle.x = lerp(particle.origX, particle.targetX, breakupT);
+    particle.y = lerp(particle.origY, particle.targetY, breakupT);
+    particle.size = lerp(particle.blockSize, particle.targetSize, breakupT);
+    particle.alpha = lerp(255, particle.targetAlpha, breakupT);
+    state.a = particle.alpha;
+    particle.offsetX = noiseX * 10 * (1 - breakupT);
+    particle.offsetY = noiseY * 10 * (1 - breakupT);
+    particle.transitionT = breakupT;
+  } else {
+    let motionOffsetX = 0;
+    let motionOffsetY = 0;
+    if (particle.motionMode === 0) {
+      motionOffsetX = noiseX * 20;
+      motionOffsetY = noiseY * 20;
+    } else if (particle.motionMode === 1) {
+      let radius = 10 + chaosFactor * 20;
+      motionOffsetX = cos(frame * 0.05 + particle.phase) * radius;
+      motionOffsetY = sin(frame * 0.05 + particle.phase) * radius;
     } else {
-      drawShape(particle.targetShapeType, size);
+      let angle = atan2(particle.y - height / 2, particle.x - width / 2);
+      let distToCenter = dist(particle.x, particle.y, width / 2, height / 2);
+      motionOffsetX = -sin(angle) * distToCenter * 0.05 * chaosFactor;
+      motionOffsetY = cos(angle) * distToCenter * 0.05 * chaosFactor;
     }
-    pop();
+
+    particle.offsetX = baseOffsetX + motionOffsetX;
+    particle.offsetY = baseOffsetY + motionOffsetY;
+
+    if (influence > 0 && !isPaused) {
+      let repelAngle = atan2(particle.y + particle.offsetY - mouseY, particle.x + particle.offsetX - mouseX);
+      particle.offsetX += cos(repelAngle) * 20 * influence;
+      particle.offsetY += sin(repelAngle) * 20 * influence;
+    }
+
+    if (!isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) {
+      let nearestPoint = boundaryPoints.reduce((closest, p) => {
+        let distToP = dist(particle.x + particle.offsetX, particle.y + particle.offsetY, p.x, p.y);
+        return distToP < closest.dist ? { x: p.x, y: p.y, dist: distToP } : closest;
+      }, { x: 0, y: 0, dist: Infinity });
+      particle.offsetX = nearestPoint.x - particle.x;
+      particle.offsetY = nearestPoint.y - particle.y;
+    }
+  }
+
+  particle.glitchTimer--;
+  if (particle.glitchTimer <= 0 && !isPaused) {
+    particle.glitchActive = true;
+    particle.glitchTimer = random(50, 200);
+    if (random() < 0.3) particle.size *= random(2, 5);
+    if (random() < 0.2) {
+      particle.x = random(width);
+      particle.y = random(height);
+    }
+    if (random() < 0.4) particle.rotation += random(-PI, PI);
+    setTimeout(() => {
+      particle.glitchActive = false;
+    }, 100);
   }
 }
 
-function drawShape(shapeType, size) {
-  switch (shapeType) {
-    case 0: rect(-size / 2, -size / 2, size, size); break;
-    case 1: ellipse(0, 0, size, size); break;
-    case 2: triangle(0, -size / 2, size / 2, size / 2, -size / 2, size / 2); break;
-    case 3:
-      beginShape();
-      for (let a = 0; a < TWO_PI; a += PI / 5) vertex(cos(a) * size / 2, sin(a) * size / 2);
-      endShape(CLOSE);
-      break;
-    case 4:
-      beginShape();
-      let sides = floor(random(5, 8));
-      for (let a = 0; a < TWO_PI; a += TWO_PI / sides) vertex(cos(a) * size / 2, sin(a) * size / 2);
-      endShape(CLOSE);
-      break;
+function renderParticle(particle, state) {
+  let x = particle.x + particle.offsetX;
+  let y = particle.y + particle.offsetY;
+  let size = particle.size;
+  let alpha = particle.alpha;
+  fill(state.r, state.g, state.b, alpha);
+  noStroke();
+  if (particle.transitionT < 0.5) {
+    rect(x - size / 2, y - size / 2, size, size);
+  } else {
+    ellipse(x, y, size, size);
   }
 }
 
-function drawMixedShape(shapeType, targetShapeType, size, t) {
-  let mixedSize = lerp(size, size * 0.8, t);
-  if (shapeType === 0 && targetShapeType === 1) ellipse(0, 0, mixedSize, mixedSize);
-  else if (shapeType === 0 && targetShapeType === 2) triangle(0, -mixedSize / 2, mixedSize / 2, mixedSize / 2, -mixedSize / 2, mixedSize / 2);
-  else drawShape(targetShapeType, mixedSize);
+function updateBoundary() {
+  boundaryPoints = [];
+  let numPoints = 20;
+  for (let i = 0; i < numPoints; i++) {
+    let angle = TWO_PI * i / numPoints;
+    let radius = (width / 2) * (0.7 + 0.3 * noise(i * 0.1, frame * 0.01));
+    boundaryPoints.push({
+      x: width / 2 + cos(angle) * radius,
+      y: height / 2 + sin(angle) * radius
+    });
+  }
 }
 
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+function isPointInBoundary(x, y) {
+  let inside = false;
+  for (let i = 0, j = boundaryPoints.length - 1; i < boundaryPoints.length; j = i++) {
+    let xi = boundaryPoints[i].x, yi = boundaryPoints[i].y;
+    let xj = boundaryPoints[j].x, yj = boundaryPoints[j].y;
+    let intersect = ((yi > y) !== (yj > y)) &&
+      (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
   }
+  return inside;
+}
+
+function cachedNoise(x, y, z) {
+  return noise(x, y, z);
+}
+
+function easeOutQuad(t) {
+  return 1 - (1 - t) * (1 - t);
 }
