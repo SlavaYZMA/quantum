@@ -110,6 +110,8 @@ function showPreviewImage(step) {
   if (previewImage && uploadedImageUrl) {
     previewImage.src = uploadedImageUrl;
     previewImage.style.display = 'block';
+  } else {
+    console.warn("PreviewImage или uploadedImageUrl не определены для шага", step);
   }
 }
 
@@ -546,6 +548,7 @@ function loadImageFromUrl(url) {
   document.getElementById('loader').style.display = 'block';
   loadImage(url, (loadedImg) => {
     img = loadedImg;
+    console.log("Изображение загружено:", img.width, img.height);
     document.getElementById('portraitGallery').style.display = 'none';
     const typewriter2 = document.getElementById('typewriter2');
     typewriter2.innerHTML = '';
@@ -638,6 +641,7 @@ function setup() {
   frameRate(25);
   noLoop();
   canvas.elt.style.display = 'none';
+  console.log("Канва создана с размерами:", width, height);
 
   canvas.elt.addEventListener('click', function() {
     if (currentStep === 5) {
@@ -663,6 +667,7 @@ function setup() {
   window.addEventListener('resize', () => {
     resizeCanvas(windowWidth * 0.7, windowHeight * 0.6);
     updateBoundary();
+    console.log("Канва изменена на размеры:", width, height);
   });
 
   updateBoundary();
@@ -699,7 +704,10 @@ function cachedNoise(x, y, z) {
 }
 
 function draw() {
-  if (!img || !img.width) return;
+  if (!img || !img.width) {
+    console.error("Изображение не доступно для отрисовки:", img);
+    return;
+  }
 
   frame += 1;
   chaosTimer += 0.016;
@@ -713,6 +721,7 @@ function draw() {
   }
 
   background(0);
+  console.log("Рендеринг кадра:", frame, "Число частиц:", particles.length);
 
   if (showInitialImage && frame <= 25) {
     let imgAlpha = 255;
@@ -720,11 +729,9 @@ function draw() {
     image(img, (width - 256) / 2, (height - 256) / 2, 256, 256);
     noTint();
   } else if (frame > 25 && frame <= 175) {
-    // Обновление сжатия
     updateCompression(frame);
     drawParticles();
   } else if (frame > 175) {
-    // Отрисовка квантовых частиц
     updateQuantumParticles(frame, chaosFactor);
     drawParticles();
   }

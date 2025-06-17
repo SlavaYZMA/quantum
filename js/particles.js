@@ -3,9 +3,10 @@ let quantumStates = [];
 let compressionProgress = 0;
 let compressionTargets = [];
 let isCompressionComplete = false;
-let gridSize; // Добавлена как глобальная переменная
+let gridSize; // Глобальная переменная
 
 function initializeCompressionParticles(img) {
+  console.log("Инициализация сжатия с изображением:", img);
   particles = [];
   quantumStates = [];
   compressionTargets = [];
@@ -13,9 +14,14 @@ function initializeCompressionParticles(img) {
   let targetSize = 16;
   gridSize = initialSize / targetSize; // Инициализация gridSize
 
-  // Инициализация начального изображения 256x256
+  if (!img || !img.width || !img.height) {
+    console.error("Изображение не загружено корректно:", img);
+    return;
+  }
+
   img.resize(initialSize, initialSize);
   img.loadPixels();
+  console.log("Размер изображения после ресайза:", img.width, img.height);
 
   // Создание списка всех целевых блоков 16x16
   for (let y = 0; y < targetSize; y++) {
@@ -50,6 +56,7 @@ function initializeCompressionParticles(img) {
       }
     }
   }
+  console.log("Создано частиц:", particles.length);
 
   // Назначение каждой частице целевого блока для сжатия
   let targetIndex = 0;
@@ -63,7 +70,8 @@ function initializeCompressionParticles(img) {
 
 function updateCompression(frame) {
   if (!isCompressionComplete && compressionProgress < 1) {
-    compressionProgress = min((frame - 25) / 150, 1); // Сжатие занимает 150 кадров (6 секунд при 25 FPS)
+    compressionProgress = min((frame - 25) / 150, 1); // Сжатие занимает 150 кадров
+    console.log("Прогресс сжатия:", compressionProgress);
 
     // Активация блоков по частям
     let activeTargets = floor(compressionProgress * compressionTargets.length);
@@ -77,12 +85,12 @@ function updateCompression(frame) {
     // Обновление позиций частиц
     for (let particle of particles) {
       if (particle.compressionTarget && particle.compressionTarget.active) {
-        let t = (frame - particle.compressionTarget.startTime) / 50; // 2 секунды на сжатие каждого блока
+        let t = (frame - particle.compressionTarget.startTime) / 50;
         if (t < 1) {
-          let easeT = t * t * (3 - 2 * t); // Плавная интерполяция
+          let easeT = t * t * (3 - 2 * t);
           particle.targetX = lerp(particle.origX, particle.compressionTarget.x + gridSize / 2, easeT);
           particle.targetY = lerp(particle.origY, particle.compressionTarget.y + gridSize / 2, easeT);
-          particle.size = lerp(1, gridSize / 4, easeT); // Размер частиц уменьшается
+          particle.size = lerp(1, gridSize / 4, easeT);
         } else {
           particle.x = particle.targetX;
           particle.y = particle.targetY;
@@ -93,16 +101,16 @@ function updateCompression(frame) {
 
     if (compressionProgress >= 1) {
       isCompressionComplete = true;
-      initializeQuantumParticles(); // Переход к квантовому состоянию
+      console.log("Сжатие завершено, переход к квантовому состоянию");
+      initializeQuantumParticles();
     }
   }
 }
 
 function initializeQuantumParticles() {
   let targetSize = 16;
-  let gridSize = 256 / targetSize; // Переопределение для квантовых частиц
+  gridSize = 256 / targetSize; // Переопределение для квантовых частиц
 
-  // Пересоздание частиц для 16x16
   particles = [];
   quantumStates = [];
   for (let y = 0; y < targetSize; y++) {
@@ -112,7 +120,6 @@ function initializeQuantumParticles() {
       let avgColor = [0, 0, 0];
       let count = 0;
 
-      // Средний цвет для каждого блока 16x16
       for (let py = y * gridSize; py < (y + 1) * gridSize; py++) {
         for (let px = x * gridSize; px < (x + 1) * gridSize; px++) {
           let col = img.get(px, py);
@@ -159,17 +166,18 @@ function initializeQuantumParticles() {
       });
     }
   }
+  console.log("Создано квантовых частиц:", particles.length);
 }
 
 function updateQuantumParticles(frame, chaosFactor) {
   if (isCompressionComplete) {
-    let explosionProgress = min((frame - 175) / 150, 1); // Взрыв начинается после сжатия (150 + 25 кадров)
+    let explosionProgress = min((frame - 175) / 150, 1);
+    console.log("Прогресс взрыва:", explosionProgress);
 
     for (let i = 0; i < particles.length; i++) {
       let particle = particles[i];
       let state = quantumStates[i];
 
-      // Оживление: изменение формы и размера
       if (explosionProgress < 0.5) {
         let t = explosionProgress * 2;
         particle.size = lerp(particle.targetSize, particle.targetSize * random(1, 3), t);
@@ -177,7 +185,6 @@ function updateQuantumParticles(frame, chaosFactor) {
         if (random() < 0.1) particle.targetShapeType = floor(random(5));
       }
 
-      // Разлет и растворение
       if (explosionProgress >= 0.5) {
         let t = (explosionProgress - 0.5) * 2;
         let angle = random(TWO_PI);
@@ -187,7 +194,6 @@ function updateQuantumParticles(frame, chaosFactor) {
         particle.size = lerp(particle.size, 1, t);
         particle.alpha = lerp(255, 0, t);
 
-        // Генерация мелких частиц
         if (random() < 0.02 && particle.size > 2) {
           let subParticle = {
             x: particle.x,
@@ -202,11 +208,9 @@ function updateQuantumParticles(frame, chaosFactor) {
         }
       }
 
-      // Обновление позиции
       particle.x = lerp(particle.x, particle.targetX, 0.05);
       particle.y = lerp(particle.y, particle.targetY, 0.05);
 
-      // Цветовая суперпозиция
       let colorNoiseVal = noise(state.colorNoise + frame * 0.05);
       if (!state.collapsed && random() < 0.1) {
         let newState = random(state.superpositionStates);
@@ -217,13 +221,16 @@ function updateQuantumParticles(frame, chaosFactor) {
       particle.color = lerpColor(particle.color, color(random(state.r, state.g, state.b)), 0.1);
     }
 
-    // Удаление мелких частиц с истекшим сроком жизни
     particles = particles.filter(p => p.life === undefined || --p.life > 0);
   }
 }
 
 function drawParticles() {
   noStroke();
+  if (particles.length === 0) {
+    console.warn("Нет частиц для отрисовки");
+    return;
+  }
   for (let particle of particles) {
     fill(particle.color, particle.alpha);
     push();
