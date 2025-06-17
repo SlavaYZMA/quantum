@@ -1,93 +1,108 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quantum Portrait</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Quantum Portraits</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <div id="noiseOverlay"></div>
+  <div class="flash" id="flashEffect"></div>
   <div id="loader">Загрузка...</div>
   <div class="container">
-    <button id="backButton" class="back-button">Назад / Back</button>
-    <button id="continueButton" class="continue-button">Продолжить / Continue</button>
+    <button class="back-button" id="backButton" style="display: none;" aria-label="Вернуться на предыдущий шаг" onclick="debouncedGoBack()">Назад / Back</button>
+    <button class="continue-button" id="continueButton" style="display: none;" disabled aria-label="Перейти к следующему шагу" onclick="debouncedNextStep()">Продолжить / Continue</button>
 
-    <div id="step0" class="step active">
+    <div class="step" id="step0">
       <div class="text-container">
-        <div id="typewriter0" class="typewriter"></div>
+        <div class="typewriter" id="typewriter0"></div>
       </div>
-      <div id="step0Buttons" class="button-container"></div>
-    </div>
-
-    <div id="step1" class="step">
-      <div class="text-container">
-        <div id="typewriter1" class="typewriter"></div>
+      <div class="button-container" id="step0Buttons">
+        <button class="button" aria-label="Выбрать русский язык" onclick="selectLanguage('ru')">RU</button>
+        <button class="button" aria-label="Выбрать английский язык" onclick="selectLanguage('en')">ENG</button>
       </div>
     </div>
 
-    <div id="step2" class="step">
+    <div class="step" id="step1">
       <div class="text-container">
-        <div id="typewriter2" class="typewriter"></div>
+        <div class="typewriter" id="typewriter1"></div>
       </div>
-      <div id="step2Buttons" class="button-container"></div>
-      <div id="portraitGallery"></div>
+      <div class="button-container"></div>
     </div>
 
-    <div id="step3" class="step">
+    <div class="step" id="step2">
       <div class="text-container">
-        <div id="typewriter3" class="typewriter"></div>
+        <div class="typewriter" id="typewriter2"></div>
+      </div>
+      <div class="button-container" id="step2Buttons">
+        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+        <button class="button" aria-label="Загрузить фото" onclick="document.getElementById('imageInput').click()">Загрузить фото / Upload Photo</button>
+        <button class="button" aria-label="Выбрать из архива" onclick="openGallery()">Выбрать готовое / Select from Archive</button>
       </div>
     </div>
 
-    <div id="step4" class="step">
+    <div class="step" id="step3">
       <div class="text-container">
-        <div id="typewriter4" class="typewriter"></div>
+        <div class="typewriter" id="typewriter3"></div>
       </div>
-      <div id="canvasContainer4"></div>
-      <img id="previewImage4" class="preview-image" alt="Превью изображения">
+      <div class="button-container"></div>
     </div>
 
-    <div id="step5" class="step">
+    <div class="step" id="step4">
       <div class="text-container">
-        <div id="typewriter5" class="typewriter"></div>
+        <div class="typewriter" id="typewriter4"></div>
       </div>
-      <div id="canvasContainer5"></div>
-      <img id="previewImage5" class="preview-image" alt="Превью изображения">
-      <button id="saveButton" class="save-button" style="display: none;">Сохранить изображение / Save Image</button>
+      <img id="previewImage4" class="preview-image" alt="Uploaded portrait preview">
+      <div class="canvas-container" id="canvasContainer4"></div>
+      <div class="button-container"></div>
     </div>
 
-    <div id="step6" class="step">
+    <div class="step" id="step5">
       <div class="text-container">
-        <div id="typewriter6" class="typewriter"></div>
+        <div class="typewriter" id="typewriter5"></div>
+      </div>
+      <img id="previewImage5" class="preview-image" alt="Uploaded portrait preview">
+      <button class="save-button" id="saveButton" style="display: none;" aria-label="Сохранить изображение" onclick="saveCurrentState()">Сохранить изображение / Save Image</button>
+      <div class="canvas-container" id="canvasContainer5"></div>
+      <div class="button-container"></div>
+    </div>
+
+    <div class="step" id="step6">
+      <div class="text-container">
+        <div class="typewriter" id="typewriter6"></div>
       </div>
       <div class="button-container">
-        <button class="button" onclick="shareObservation()">Поделиться / Share</button>
-        <button class="button" onclick="goToArchive()">Архив / Archive</button>
+        <button class="button" aria-label="Поделиться наблюдением" onclick="shareObservation()">ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ / SHARE OBSERVATION</button>
       </div>
     </div>
 
-    <div id="step7" class="step">
+    <div class="step" id="step7">
       <div class="text-container">
-        <div id="typewriter7" class="typewriter"></div>
+        <div class="typewriter" id="typewriter7"></div>
       </div>
       <div class="button-container">
-        <button class="button" onclick="openAuthors()">Авторы / Authors</button>
-        <button class="button" onclick="restart()">Начать заново / Restart</button>
+        <button class="button" aria-label="Начать заново" onclick="restart()">↻ НАЧАТЬ СНАЧАЛА / RESTART</button>
+        <button class="button" aria-label="Перейти в архив" onclick="goToArchive()">⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ / GO TO ARCHIVE</button>
+        <button class="button" aria-label="О разработчиках" onclick="openAuthors()">ОБ АВТОРАХ / ABOUT US</button>
+        <button class="button" aria-label="Упростить анимацию" onclick="simplifyAnimation()">УПРОСТИТЬ АНИМАЦИЮ / SIMPLIFY ANIMATION</button>
       </div>
     </div>
 
+    <div id="portraitGallery"></div>
     <div id="authorsPage">
-      <button class="button" onclick="closeAuthors()">Закрыть / Close</button>
+      <button class="button" aria-label="Закрыть страницу авторов" onclick="closeAuthors()">Закрыть / Close</button>
       <div class="text-container">
-        Слава Саша
+        <div class="typewriter">Слава Саша</div>
       </div>
     </div>
-
-    <div id="noiseOverlay"></div>
-    <div id="flashEffect" class="flash"></div>
   </div>
-
-  <script type="module" src="main.js"></script>
+  <script src="js/globals.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/textSteps.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/observer.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
