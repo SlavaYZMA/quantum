@@ -3,6 +3,7 @@ let quantumStates = [];
 let compressionProgress = 0;
 let compressionTargets = [];
 let isCompressionComplete = false;
+let gridSize; // Добавлена как глобальная переменная
 
 function initializeCompressionParticles(img) {
   particles = [];
@@ -10,7 +11,7 @@ function initializeCompressionParticles(img) {
   compressionTargets = [];
   let initialSize = 256;
   let targetSize = 16;
-  let gridSize = initialSize / targetSize;
+  gridSize = initialSize / targetSize; // Инициализация gridSize
 
   // Инициализация начального изображения 256x256
   img.resize(initialSize, initialSize);
@@ -99,7 +100,7 @@ function updateCompression(frame) {
 
 function initializeQuantumParticles() {
   let targetSize = 16;
-  let gridSize = 256 / targetSize;
+  let gridSize = 256 / targetSize; // Переопределение для квантовых частиц
 
   // Пересоздание частиц для 16x16
   particles = [];
