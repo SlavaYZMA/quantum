@@ -406,6 +406,18 @@ function updateContinueButtonState() {
   document.getElementById('continueButton').disabled = currentStep === 2 && !img;
 }
 
+// Экспорт функций в глобальную область видимости для использования в HTML
+window.selectLanguage = selectLanguage;
+window.nextStep = debouncedNextStep;
+window.goBack = debouncedGoBack;
+window.openGallery = openGallery;
+window.openAuthors = openAuthors;
+window.closeAuthors = closeAuthors;
+window.shareObservation = shareObservation;
+window.goToArchive = goToArchive;
+window.restart = restart;
+window.saveCurrentState = saveCurrentState;
+
 window.onload = () => {
   document.getElementById('step0').classList.add('active');
   typeText('typewriter0', getTextForStep(0, language));
