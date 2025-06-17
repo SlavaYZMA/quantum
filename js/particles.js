@@ -19,9 +19,8 @@ function initializeCompressionParticles(img) {
     return;
   }
 
-  img.resize(initialSize, initialSize);
-  img.loadPixels();
-  console.log("Размер изображения после ресайза:", img.width, img.height);
+  img.loadPixels(); // Убеждаемся, что пиксели загружены
+  console.log("Размер изображения после загрузки пикселей:", img.width, img.height);
 
   // Создание списка всех целевых блоков 16x16
   for (let y = 0; y < targetSize; y++) {
@@ -162,7 +161,7 @@ function initializeQuantumParticles() {
         collapsed: false,
         phase: random(TWO_PI),
         amplitude: random(20, 40),
-        colorNoise: random(1000)
+        colorNoise: random(1000) // Убеждаемся, что это определено
       });
     }
   }
@@ -177,6 +176,10 @@ function updateQuantumParticles(frame, chaosFactor) {
     for (let i = 0; i < particles.length; i++) {
       let particle = particles[i];
       let state = quantumStates[i];
+      if (!state || state.colorNoise === undefined) {
+        console.error("Состояние не определено для частицы", i, state);
+        continue; // Пропускаем, если состояние некорректно
+      }
 
       if (explosionProgress < 0.5) {
         let t = explosionProgress * 2;

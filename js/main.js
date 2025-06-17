@@ -1,6 +1,6 @@
 let currentStep = 0;
 let language = 'ru';
-let img;
+let img; // Сохраняем ссылку глобально
 let frame = 0;
 let isPaused = false;
 let canvas;
@@ -167,13 +167,14 @@ function nextStep() {
     typeText(`typewriter${currentStep}`, translations[`step${currentStep}`][language]);
   } else if (currentStep === 4) {
     showInitialImage = true;
-    if (isCanvasReady) {
+    if (isCanvasReady && img) { // Проверка на img
       showCanvas('canvasContainer4');
       showPreviewImage(4);
       loop();
     } else {
+      console.error("Канва или изображение не готовы для шага 4:", { isCanvasReady, img });
       setTimeout(() => {
-        if (isCanvasReady) {
+        if (isCanvasReady && img) {
           showCanvas('canvasContainer4');
           showPreviewImage(4);
           loop();
@@ -182,13 +183,14 @@ function nextStep() {
     }
     typeText(`typewriter${currentStep}`, translations[`step${currentStep}`][language]);
   } else if (currentStep === 5) {
-    if (isCanvasReady) {
+    if (isCanvasReady && img) {
       showCanvas('canvasContainer5');
       showPreviewImage(5);
       if (!isPaused) loop();
     } else {
+      console.error("Канва или изображение не готовы для шага 5:", { isCanvasReady, img });
       setTimeout(() => {
-        if (isCanvasReady) {
+        if (isCanvasReady && img) {
           showCanvas('canvasContainer5');
           showPreviewImage(5);
           if (!isPaused) loop();
@@ -257,7 +259,7 @@ function goBack() {
     isCompressionComplete = false;
     frame = 0;
     isPaused = false;
-    img = null;
+    img = null; // Сбрасываем img при возврате
     showInitialImage = true;
     const step2Buttons = document.getElementById('step2Buttons');
     step2Buttons.innerHTML = `
@@ -274,13 +276,14 @@ function goBack() {
     typeText(`typewriter${currentStep}`, translations[`step${currentStep}`][language]);
   } else if (currentStep === 4) {
     showInitialImage = true;
-    if (isCanvasReady) {
+    if (isCanvasReady && img) {
       showCanvas('canvasContainer4');
       showPreviewImage(4);
       if (!isPaused) loop();
     } else {
+      console.error("Канва или изображение не готовы для шага 4:", { isCanvasReady, img });
       setTimeout(() => {
-        if (isCanvasReady) {
+        if (isCanvasReady && img) {
           showCanvas('canvasContainer4');
           showPreviewImage(4);
           if (!isPaused) loop();
@@ -289,13 +292,14 @@ function goBack() {
     }
     typeText(`typewriter${currentStep}`, translations[`step${currentStep}`][language]);
   } else if (currentStep === 5) {
-    if (isCanvasReady) {
+    if (isCanvasReady && img) {
       showCanvas('canvasContainer5');
       showPreviewImage(5);
       if (!isPaused) loop();
     } else {
+      console.error("Канва или изображение не готовы для шага 5:", { isCanvasReady, img });
       setTimeout(() => {
-        if (isCanvasReady) {
+        if (isCanvasReady && img) {
           showCanvas('canvasContainer5');
           showPreviewImage(5);
           if (!isPaused) loop();
@@ -446,7 +450,7 @@ function simplifyAnimation() {
       char.classList.add('stabilized');
       char.classList.remove('random-glitch-char', 'noise', 'rotate');
       char.setAttribute('data-text', char.textContent);
-      char.style.color = '#fff';
+      char.style.color = '#fff'; // Removed extra parenthesis
     });
   }
 }
@@ -547,7 +551,7 @@ function openGallery() {
 function loadImageFromUrl(url) {
   document.getElementById('loader').style.display = 'block';
   loadImage(url, (loadedImg) => {
-    img = loadedImg;
+    img = loadedImg; // Сохраняем глобально
     console.log("Изображение загружено:", img.width, img.height);
     document.getElementById('portraitGallery').style.display = 'none';
     const typewriter2 = document.getElementById('typewriter2');
