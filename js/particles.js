@@ -100,7 +100,7 @@ function renderPartialMosaic(img, blockSize, currentFrame) {
       blockList.push({
         x,
         y,
-        startFrame: random(60, 90), // Сдвинуто для портрета
+        startFrame: random(60, 90),
         endFrame: random(101, 150),
         superpositionT: 0,
         wavePhase: random(TWO_PI)
@@ -174,9 +174,9 @@ function renderPartialMosaic(img, blockSize, currentFrame) {
 function draw() {
   if (!window.img || !window.img.width) return;
 
-  window.frame += 1;
+  window.frame++;
   window.chaosTimer += 0.016;
-  window.chaosFactor = map(sin(window.frame * 0.01), -1, 1, 0.3, 1) * window.weirdnessFactor;
+  window.chaosFactor = map(sin(window.frame * 0.01), -1, 1, 0.3, 1) * (window.weirdnessFactor || 0.5);
 
   if (window.chaosTimer > 5) {
     window.chaosTimer = 0;
@@ -189,17 +189,17 @@ function draw() {
   background(0);
 
   // Затухание следов в буфере
-  window.trailBuffer.fill(0, 0, 0, 20); // Ускоренное затухание
+  window.trailBuffer.fill(0, 0, 0, 20);
   window.trailBuffer.rect(0, 0, width, height);
 
   let blockList = [];
   if (window.frame <= 150) {
     if (window.frame <= 50) {
       // Статичный портрет
-      image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2, window.img.width, window.img.height);
+      image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2);
     } else {
       // Портрет + мозаика
-      image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2, window.img.width, window.img.height);
+      image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2);
       blockList = renderPartialMosaic(window.img, 16, window.frame);
     }
     if (window.frame === 101) {
@@ -211,8 +211,7 @@ function draw() {
 
   // Рендеринг фона
   let backgroundParticles = window.particles.filter(p => p.layer === 'background');
-  for (let i = 0; i < backgroundParticles.length; i++) {
-    let particle = backgroundParticles[i];
+  for (let particle of backgroundParticles) {
     let state = window.quantumStates[window.particles.indexOf(particle)];
     let noiseVal = cachedNoise(particle.baseX * window.noiseScale, particle.baseY * window.noiseScale, window.frame * 0.01);
     particle.offsetX = sin(particle.phase) * 15 * noiseVal;
@@ -223,8 +222,7 @@ function draw() {
 
   // Рендеринг основных частиц
   let mainParticles = window.particles.filter(p => p.layer === 'main');
-  for (let i = 0; i < mainParticles.length; i++) {
-    let particle = mainParticles[i];
+  for (let particle of mainParticles) {
     let state = window.quantumStates[window.particles.indexOf(particle)];
     updateParticle(particle, state);
     renderParticle(particle, state);
@@ -408,9 +406,9 @@ function updateParticle(particle, state) {
 
   // Следы в буфере
   if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1 && random() < 0.3) {
-    window.trailBuffer.fill(state.r, state.g, state.b, 10); // Уменьшенная прозрачность
+    window.trailBuffer.fill(state.r, state.g, state.b, 10);
     window.trailBuffer.noStroke();
-    window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 4, particle.size / 4); // Уменьшенный размер
+    window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 4, particle.size / 4);
   }
 
   particle.phase += 0.02;
@@ -435,13 +433,13 @@ function renderParticle(particle, state) {
   if (particle.superpositionT < 1) {
     // Рендеринг как блок
     fill(state.r, state.g, state.b, state.a * (1 - particle.superpositionT));
-    rect(0, 0, 16, 16);
+    rect(-size / 2, -size / 2, size, size);
     // Суперпозиция (раздвоение)
     if (random() < 0.3) {
       fill(state.r, state.g, state.b, state.a * 0.5 * (1 - particle.superpositionT));
       let superX = random(-20, 20);
       let superY = random(-20, 20);
-      rect(superX, superY, 16, 16);
+      rect(superX - size / 2, superY - size / 2, size, size);
     }
   } else {
     // Отрисовка квантовых форм
@@ -457,7 +455,7 @@ function renderParticle(particle, state) {
     } else if (particle.shapeType === 2) {
       beginShape();
       for (let a = 0; a < TWO_PI; a += TWO_PI / particle.sides) {
-        let r = size * (0.8 + 0.2 * cos(a * 3 + window.frame * 0.02 + waveDistort)));
+        let r = size * (0.8 + 0.2 * cos(a * 3 + window.frame * 0.02 + waveDistort));
         vertex(r * cos(a), r * sin(a));
       }
       endShape(CLOSE);
@@ -480,24 +478,21 @@ function renderParticle(particle, state) {
         translate(offsetX, offsetY);
         if (particle.shapeType === 0) {
           ellipse(0, 0, size * (1 + waveDistort), size * (1 - waveDistort));
-        }
-        else if (particle.shapeType === 1) {
+        } else if (particle.shapeType === 1) {
           beginShape();
           for (let a = 0; a < TWO_PI; a += TWO_PI / 3) {
             let r = size * (1 + waveDistort * cos(a));
             vertex(r * cos(a), r * sin(a));
           }
           endShape(CLOSE);
-        }
-        else if (particle.shapeType === 2) {
+        } else if (particle.shapeType === 2) {
           beginShape();
           for (let a = 0; a < TWO_PI; a += TWO_PI / particle.sides) {
             let r = size * (0.8 + 0.2 * cos(a * 3 + window.frame * 0.02 + waveDistort));
             vertex(r * cos(a), r * sin(a));
           }
           endShape(CLOSE);
-        }
-        else if (particle.shapeType === 3) {
+        } else if (particle.shapeType === 3) {
           beginShape();
           for (let a = 0; a < TWO_PI; a += TWO_PI / 20) {
             let r = size * (0.7 + 0.3 * cachedNoise(a * 2 + particle.chaosSeed, window.frame * 0.01, 0) + waveDistort);
@@ -509,5 +504,6 @@ function renderParticle(particle, state) {
       }
     }
   }
+
   pop();
 }
