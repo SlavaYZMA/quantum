@@ -100,8 +100,8 @@ function renderPartialMosaic(img, blockSize, currentFrame) {
       blockList.push({
         x,
         y,
-        startFrame: random(50, 90),
-        endFrame: random(100, 150), // Асинхронное исчезновение
+        startFrame: random(60, 90), // Сдвинуто для портрета
+        endFrame: random(101, 150),
         superpositionT: 0,
         wavePhase: random(TWO_PI)
       });
@@ -109,7 +109,7 @@ function renderPartialMosaic(img, blockSize, currentFrame) {
   }
   blockList.sort((a, b) => a.startFrame - b.startFrame);
   let totalBlocks = blockList.length;
-  let activeBlocks = map(currentFrame, 50, 100, 0.1 * totalBlocks, totalBlocks);
+  let activeBlocks = map(currentFrame, 51, 100, 0.1 * totalBlocks, totalBlocks);
   activeBlocks = constrain(floor(activeBlocks), 0, totalBlocks);
 
   for (let i = 0; i < blockList.length; i++) {
@@ -168,7 +168,7 @@ function renderPartialMosaic(img, blockSize, currentFrame) {
       }
     }
   }
-  return blockList; // Для синхронизации частиц
+  return blockList;
 }
 
 function draw() {
@@ -189,13 +189,20 @@ function draw() {
   background(0);
 
   // Затухание следов в буфере
-  window.trailBuffer.fill(0, 0, 0, 10);
+  window.trailBuffer.fill(0, 0, 0, 20); // Ускоренное затухание
   window.trailBuffer.rect(0, 0, width, height);
 
   let blockList = [];
   if (window.frame <= 150) {
-    blockList = renderPartialMosaic(window.img, 16, window.frame);
-    if (window.frame === 100) {
+    if (window.frame <= 50) {
+      // Статичный портрет
+      image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2, window.img.width, window.img.height);
+    } else {
+      // Портрет + мозаика
+      image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2, window.img.width, window.img.height);
+      blockList = renderPartialMosaic(window.img, 16, window.frame);
+    }
+    if (window.frame === 101) {
       initializeParticles(blockList);
     }
   }
@@ -272,7 +279,7 @@ function initializeParticles(blockList) {
         layer: layer,
         chaosSeed: random(1000),
         alpha: 255,
-        startFrame: block.endFrame, // Синхронизация с исчезновением блока
+        startFrame: block.endFrame,
         shapeType: shapeType,
         sides: shapeType === 2 ? floor(random(5, 13)) : 0,
         tunneled: false,
@@ -400,10 +407,10 @@ function updateParticle(particle, state) {
   }
 
   // Следы в буфере
-  if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1) {
-    window.trailBuffer.fill(state.r, state.g, state.b, 20);
+  if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1 && random() < 0.3) {
+    window.trailBuffer.fill(state.r, state.g, state.b, 10); // Уменьшенная прозрачность
     window.trailBuffer.noStroke();
-    window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 2, particle.size / 2);
+    window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 4, particle.size / 4); // Уменьшенный размер
   }
 
   particle.phase += 0.02;
@@ -450,7 +457,7 @@ function renderParticle(particle, state) {
     } else if (particle.shapeType === 2) {
       beginShape();
       for (let a = 0; a < TWO_PI; a += TWO_PI / particle.sides) {
-        let r = size * (0.8 + 0.2 * cos(a * 3 + window.frame * 0.02 + waveDistort));
+        let r = size * (0.8 + 0.2 * cos(a * 3 + window.frame * 0.02 + waveDistort)));
         vertex(r * cos(a), r * sin(a));
       }
       endShape(CLOSE);
@@ -473,21 +480,24 @@ function renderParticle(particle, state) {
         translate(offsetX, offsetY);
         if (particle.shapeType === 0) {
           ellipse(0, 0, size * (1 + waveDistort), size * (1 - waveDistort));
-        } else if (particle.shapeType === 1) {
+        }
+        else if (particle.shapeType === 1) {
           beginShape();
           for (let a = 0; a < TWO_PI; a += TWO_PI / 3) {
             let r = size * (1 + waveDistort * cos(a));
             vertex(r * cos(a), r * sin(a));
           }
           endShape(CLOSE);
-        } else if (particle.shapeType === 2) {
+        }
+        else if (particle.shapeType === 2) {
           beginShape();
           for (let a = 0; a < TWO_PI; a += TWO_PI / particle.sides) {
             let r = size * (0.8 + 0.2 * cos(a * 3 + window.frame * 0.02 + waveDistort));
             vertex(r * cos(a), r * sin(a));
           }
           endShape(CLOSE);
-        } else if (particle.shapeType === 3) {
+        }
+        else if (particle.shapeType === 3) {
           beginShape();
           for (let a = 0; a < TWO_PI; a += TWO_PI / 20) {
             let r = size * (0.7 + 0.3 * cachedNoise(a * 2 + particle.chaosSeed, window.frame * 0.01, 0) + waveDistort);
@@ -499,6 +509,5 @@ function renderParticle(particle, state) {
       }
     }
   }
-
   pop();
 }
