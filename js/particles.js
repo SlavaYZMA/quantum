@@ -128,16 +128,15 @@ function renderTransformingPortrait(img, currentFrame) {
         }
       }
       if (count > 0) {
-        r = r / count; // Полные цвета без изменений
+        r = r / count; // Точные цвета
         g = g / count;
         b = b / count;
       }
 
       // Эффекты трансформации
-      let alpha = 255; // Фиксированная непрозрачность
       let offsetX = 0, offsetY = 0;
       if (currentFrame >= 1) {
-        // Дрожание (неопределённость)
+        // Дрожание
         offsetX += cachedNoise(x * 0.1 + currentFrame * 0.03, y * 0.1, 0) * 2 - 1;
         offsetY += cachedNoise(y * 0.1 + currentFrame * 0.03, x * 0.1, 0) * 2 - 1;
       }
@@ -147,31 +146,18 @@ function renderTransformingPortrait(img, currentFrame) {
         offsetX += waveOffset * cos(block.wavePhase);
         offsetY += waveOffset * sin(block.wavePhase);
       }
-      if (currentFrame >= block.endFrame - 50) {
-        block.superpositionT = map(currentFrame, block.endFrame - 50, block.endFrame, 0, 1);
-        block.superpositionT = constrain(block.superpositionT, 0, 1);
-        // Полупрозрачность только для перехода к частицам
-        alpha *= (1 - 0.5 * block.superpositionT);
-      }
       let canvasX = x + (width - img.width) / 2 + offsetX;
       let canvasY = y + (height - img.height) / 2 + offsetY;
 
       // Основной блок/пиксель
-      fill(r, g, b, alpha);
-      stroke(r, g, b, 50); // Лёгкий контур
+      fill(r, g, b, 255); // Полная непрозрачность
+      stroke(r, g, b, 50);
       strokeWeight(0.5);
       rect(canvasX, canvasY, size, size);
 
       // Двойная экспозиция (суперпозиция)
-      if (currentFrame >= block.startFrame && random() < 0.3 && currentFrame <= 100) {
-        fill(r, g, b, 255); // Полная непрозрачность для мозаики
-        stroke(r, g, b, 30);
-        strokeWeight(0.5);
-        let superX = canvasX + random(-20, 20);
-        let superY = canvasY + random(-20, 20);
-        rect(superX, superY, size, size);
-      } else if (currentFrame > 100 && currentFrame >= block.startFrame && random() < 0.3) {
-        fill(r, g, b, alpha * 0.7);
+      if (currentFrame >= block.startFrame && random() < 0.3) {
+        fill(r, g, b, 255); // Полная непрозрачность
         stroke(r, g, b, 30);
         strokeWeight(0.5);
         let superX = canvasX + random(-20, 20);
@@ -200,9 +186,8 @@ function draw() {
   // Очистка канвы
   background(0);
 
-  // Затухание следов в буфере
-  window.trailBuffer.fill(0, 0, 0, 20);
-  window.trailBuffer.rect(0, 0, width, height);
+  // Очистка буфера следов
+  window.trailBuffer.clear();
 
   let blockList = [];
   if (window.frame <= 150) {
@@ -310,10 +295,10 @@ function initializeParticles(blockList) {
     let isMonochrome = random() < 0.2;
     let gray = (red(col) + green(col) + blue(col)) / 3 * random(0.7, 1);
     window.quantumStates[i] = {
-      r: min((isMonochrome ? gray : red(col)) * 1.1, 255),
-      g: min((isMonochrome ? gray : green(col)) * 1.1, 255),
-      b: min((isMonochrome ? gray : blue(col)) * 1.1, 255),
-      a: 200,
+      r: isMonochrome ? gray : red(col), // Точные цвета
+      g: isMonochrome ? gray : green(col),
+      b: isMonochrome ? gray : blue(col),
+      a: 255,
       baseR: red(col),
       baseG: green(col),
       baseB: blue(col),
@@ -338,7 +323,6 @@ function updateParticle(particle, state) {
     // Неопределённость Гейзенберга
     particle.offsetX += noiseX * particle.uncertainty * 5;
     particle.offsetY += noiseY * particle.uncertainty * 5;
-    state.a = map(cachedNoise(particle.chaosSeed + window.frame * 0.05, 0, 0), 0, 1, 200, 255);
     particle.size = particle.targetSize * (1 + 0.2 * sin(window.frame * 0.04 + particle.phase));
 
     // Интерференция
@@ -351,12 +335,10 @@ function updateParticle(particle, state) {
       particle.tunneled = true;
       particle.tunnelTargetX = particle.x + random(-200, 200);
       particle.tunnelTargetY = particle.y + random(-200, 200);
-      state.a = 100;
       setTimeout(() => {
         particle.tunneled = false;
         particle.x = particle.tunnelTargetX;
         particle.y = particle.tunnelTargetY;
-        state.a = 200;
       }, 500);
     }
 
@@ -376,7 +358,6 @@ function updateParticle(particle, state) {
     particle.radialDistance = lerp(particle.radialDistance, particle.targetRadialDistance, easedT);
     particle.offsetX = cos(angle) * particle.radialDistance;
     particle.offsetY = sin(angle) * particle.radialDistance;
-    state.a = lerp(0, 200, easedT);
   }
 
   // Влияние мыши (измерение)
@@ -389,7 +370,7 @@ function updateParticle(particle, state) {
     particle.uncertainty = 0;
     // Волновой фронт в буфере
     window.trailBuffer.noFill();
-    window.trailBuffer.stroke(state.r, state.g, state.b, 150);
+    window.trailBuffer.stroke(state.r, state.g, state.b, 255); // Полная яркость
     window.trailBuffer.strokeWeight(1);
     window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 50, 50);
   }
@@ -411,7 +392,7 @@ function updateParticle(particle, state) {
 
   // Следы в буфере
   if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1 && random() < 0.3) {
-    window.trailBuffer.fill(state.r, state.g, state.b, 15);
+    window.trailBuffer.fill(state.r, state.g, state.b, 255); // Полная яркость
     window.trailBuffer.noStroke();
     window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 4, particle.size / 4);
   }
@@ -422,13 +403,12 @@ function updateParticle(particle, state) {
 function renderParticle(particle, state) {
   push();
   translate(particle.x + particle.offsetX, particle.y + particle.offsetY);
-  stroke(state.r * 1.1, state.g * 1.1, state.b * 1.1, 100); // Контур частиц
+  stroke(state.r, state.g, state.b, 255); // Полная яркость
   strokeWeight(0.5);
-  fill(state.r, state.g, state.b, state.a);
+  fill(state.r, state.g, state.b, 255); // Полная непрозрачность
 
-  // Усиленное свечение
-  drawingContext.shadowBlur = 15;
-  drawingContext.shadowColor = `rgba(${state.r}, ${state.g}, ${state.b}, 0.5)`;
+  // Отключение теней
+  drawingContext.shadowBlur = 0;
 
   let size = particle.size;
 
@@ -438,14 +418,14 @@ function renderParticle(particle, state) {
   // Отрисовка в фазе перехода
   if (particle.superpositionT < 1) {
     // Рендеринг как блок
-    fill(state.r * 1.1, state.g * 1.1, state.b * 1.1, state.a * (1 - 0.5 * particle.superpositionT));
-    stroke(state.r * 1.1, state.g * 1.1, state.b * 1.1, 50);
+    fill(state.r, state.g, state.b, 255); // Полная непрозрачность
+    stroke(state.r, state.g, state.b, 50);
     strokeWeight(0.5);
     rect(-size / 2, -size / 2, size, size);
     // Двойная экспозиция (суперпозиция)
     if (random() < 0.3) {
-      fill(state.r * 1.1, state.g * 1.1, state.b * 1.1, state.a * 0.7 * (1 - 0.5 * particle.superpositionT));
-      stroke(state.r * 1.1, state.g * 1.1, state.b * 1.1, 30);
+      fill(state.r, state.g, state.b, 255); // Полная непрозрачность
+      stroke(state.r, state.g, state.b, 30);
       strokeWeight(0.5);
       let superX = random(-20, 20);
       let superY = random(-20, 20);
@@ -480,8 +460,8 @@ function renderParticle(particle, state) {
 
     // Суперпозиция
     if (particle.superposition && !state.collapsed) {
-      fill(state.r * 1.1, state.g * 1.1, state.b * 1.1, state.a * 0.7);
-      stroke(state.r * 1.1, state.g * 1.1, state.b * 1.1, 100);
+      fill(state.r, state.g, state.b, 255); // Полная непрозрачность
+      stroke(state.r, state.g, state.b, 255);
       strokeWeight(0.5);
       for (let i = 0; i < 2; i++) {
         let offsetX = random(-20, 20);
