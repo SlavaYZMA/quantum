@@ -20,6 +20,11 @@ window.chaosFactor = 0;
 window.boundaryPoints = [];
 window.chaosTimer = 0;
 
+// Функция для плавной интерполяции
+function easeOutQuad(t) {
+  return t * (2 - t);
+}
+
 function setup() {
   window.canvas = createCanvas(windowWidth * 0.7, windowHeight * 0.6);
   window.canvas.parent('canvasContainer4');
@@ -148,7 +153,8 @@ function draw() {
 function initializeParticles() {
   window.particles = [];
   window.quantumStates = [];
-  let gridSize = 4;
+  const blockSize = 16; // Размер блока мозаики 16x16
+  let gridSize = 4; // Размер шага для частиц внутри блока
   let maxParticles = windowWidth < 768 ? 1500 : 3000;
   let particleCount = 0;
 
@@ -160,8 +166,13 @@ function initializeParticles() {
       let col = window.img.get(pixelX, pixelY);
       let brightnessVal = brightness(col);
       if (brightnessVal > 10 && particleCount < maxParticles) {
-        let size = gridSize;
-        let shapeType = 0;
+        // Вычисление центра блока 16x16
+        let block_i = Math.floor(x / blockSize);
+        let block_j = Math.floor(y / blockSize);
+        let blockCenterX_img = (block_i * blockSize) + (blockSize / 2);
+        let blockCenterY_img = (block_j * blockSize) + (blockSize / 2);
+        let blockCenterX_canvas = blockCenterX_img + (width - window.img.width) / 2;
+        let blockCenterY_canvas = blockCenterY_img + (height - window.img.height) / 2;
         let canvasX = x + (width - window.img.width) / 2;
         let canvasY = y + (height - window.img.height) / 2;
         let distFromCenter = dist(canvasX, canvasY, width / 2, height / 2);
@@ -172,24 +183,24 @@ function initializeParticles() {
         let layer = random() < 0.2 ? 'background' : 'main';
         let chaosSeed = random(1000);
         window.particles.push({
-          x: canvasX,
-          y: canvasY,
+          x: blockCenterX_canvas, // Начальная позиция в центре блока
+          y: blockCenterY_canvas,
           baseX: canvasX,
           baseY: canvasY,
           targetX: targetX,
           targetY: targetY,
-          origX: canvasX,
-          origY: canvasY,
+          origX: blockCenterX_canvas, // Исходная позиция для анимации
+          origY: blockCenterY_canvas,
           offsetX: 0,
           offsetY: 0,
-          size: size,
-          targetSize: gridSize,
+          size: blockSize, // Начальный размер 16
+          targetSize: gridSize, // Целевой размер 4
           phase: random(TWO_PI),
           entangledWith: null,
           gridX: x,
           gridY: y,
-          shapeType: shapeType,
-          targetShapeType: shapeType,
+          shapeType: 0,
+          targetShapeType: 0,
           shapeMorphT: 0,
           wavePhase: random(TWO_PI),
           waveInfluence: 0,
@@ -395,79 +406,60 @@ function renderParticle(particle, state) {
   let targetShapeType = particle.targetShapeType;
 
   if (morphT < 1 && shapeType !== targetShapeType) {
-    drawMixedShape(shapeType, targetShapeType, size, morphT);
+    let t = easeOutQuad(morphT);
+    if (shapeType === 0 && targetShapeType === 1) {
+      rect(0, 0, size * (1 - t), size * (1 - t));
+      ellipse(0, 0, size * t, size * t);
+    } else if (shapeType === 0 && targetShapeType === 2) {
+      rect(0, 0, size * (1 - t), size * (1 - t));
+      beginShape();
+      for (let a = 0; a < TWO_PI; a += PI / 3) {
+        let r = size * t * (0.5 + 0.5 * cos(a * 3));
+        vertex(r * cos(a), r * sin(a));
+      }
+      endShape(CLOSE);
+    } else if (shapeType === 1 && targetShapeType === 0) {
+      ellipse(0, 0, size * (1 - t), size * (1 - t));
+      rect(0, 0, size * t, size * t);
+    } else if (shapeType === 1 && targetShapeType === 2) {
+      ellipse(0, 0, size * (1 - t), size * (1 - t));
+      beginShape();
+      for (let a = 0; a < TWO_PI; a += PI / 3) {
+        let r = size * t * (0.5 + 0.5 * cos(a * 3));
+        vertex(r * cos(a), r * sin(a));
+      }
+      endShape(CLOSE);
+    } else if (shapeType === 2 && targetShapeType === 0) {
+      beginShape();
+      for (let a = 0; a < TWO_PI; a += PI / 3) {
+        let r = size * (1 - t) * (0.5 + 0.5 * cos(a * 3));
+        vertex(r * cos(a), r * sin(a));
+      }
+      endShape(CLOSE);
+      rect(0, 0, size * t, size * t);
+    } else if (shapeType === 2 && targetShapeType === 1) {
+      beginShape();
+      for (let a = 0; a < TWO_PI; a += PI / 3) {
+        let r = size * (1 - t) * (0.5 + 0.5 * cos(a * 3));
+        vertex(r * cos(a), r * sin(a));
+      }
+      endShape(CLOSE);
+      ellipse(0, 0, size * t, size * t);
+    }
   } else {
-    drawShape(targetShapeType, size);
-  }
-
-  drawingContext.shadowBlur = 0;
-  pop();
-
-  if (particle.shapeMorphT >= 1) {
-    particle.shapeType = targetShapeType;
-  }
-}
-
-function drawShape(shapeType, size) {
-  switch (shapeType) {
-    case 0:
-      rect(-size / 2, -size / 2, size, size);
-      break;
-    case 1:
+    if (shapeType === 0) {
+      rect(0, 0, size, size);
+    } else if (shapeType === 1) {
       ellipse(0, 0, size, size);
-      break;
-    case 2:
-      triangle(0, -size / 2, size / 2, size / 2, -size / 2, size / 2);
-      break;
-    case 3:
+    } else if (shapeType === 2) {
       beginShape();
-      for (let a = 0; a < TWO_PI; a += PI / 5) {
-        vertex(cos(a) * size / 2, sin(a) * size / 2);
-        vertex(cos(a + PI / 5) * size / 4, sin(a + PI / 5) * size / 4);
+      for (let a = 0; a < TWO_PI; a += PI / 3) {
+        let r = size * (0.5 + 0.5 * cos(a * 3));
+        vertex(r * cos(a), r * sin(a));
       }
       endShape(CLOSE);
-      break;
-    case 4:
-      beginShape();
-      let sides = floor(random(5, 8));
-      for (let a = 0; a < TWO_PI; a += TWO_PI / sides) {
-        let r = size / 2 * (0.8 + 0.2 * noise(a * 0.5));
-        vertex(cos(a) * r, sin(a) * r);
-      }
-      endShape(CLOSE);
-      break;
-  }
-}
-
-function drawMixedShape(shapeType, targetShapeType, size, t) {
-  let mixedSize = lerp(size, size * 0.8, t);
-  if (shapeType === 0 && targetShapeType === 1) {
-    let r = lerp(mixedSize / 2, mixedSize / 2, t);
-    ellipse(0, 0, r * 2, r * 2);
-  } else if (shapeType === 0 && targetShapeType === 2) {
-    let s = mixedSize;
-    triangle(0, -s / 2 * (1 - t), s / 2 * (1 - t), s / 2, -s / 2 * (1 - t), s / 2);
-  } else if (shapeType === 0 && targetShapeType === 3) {
-    beginShape();
-    let points = lerp(4, 10, t);
-    for (let a = 0; a < TWO_PI; a += TWO_PI / points) {
-      let r = mixedSize / 2 * (0.8 + 0.2 * sin(a * 5 * t));
-      vertex(cos(a) * r, sin(a) * r);
     }
-    endShape(CLOSE);
-  } else if (shapeType === 0 && targetShapeType === 4) {
-    beginShape();
-    let sides = floor(lerp(4, random(5, 8), t));
-    for (let a = 0; a < TWO_PI; a += TWO_PI / sides) {
-      let r = mixedSize / 2 * (0.8 + 0.2 * noise(a * 0.5));
-      vertex(cos(a) * r, sin(a) * r);
-    }
-    endShape(CLOSE);
-  } else {
-    drawShape(targetShapeType, mixedSize);
   }
-}
 
-function easeOutQuad(t) {
-  return 1 - (1 - t) * (1 - t);
+  pop();
 }
