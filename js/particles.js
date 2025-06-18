@@ -143,7 +143,7 @@ function renderTransformingPortrait(img, currentFrame) {
       }
       if (currentFrame >= block.startFrame) {
         // Мерцание
-        alpha = map(cachedNoise(x * 0.1 + currentFrame * 0.05, y * 0.1, 0), 0, 1, 200, 255); // Увеличено с 150
+        alpha = map(cachedNoise(x * 0.1 + currentFrame * 0.05, y * 0.1, 0), 0, 1, 200, 255);
         // Волновые смещения
         let waveOffset = sin(currentFrame * 0.03 + block.wavePhase) * 10;
         offsetX += waveOffset * cos(block.wavePhase);
@@ -153,7 +153,7 @@ function renderTransformingPortrait(img, currentFrame) {
         block.superpositionT = map(currentFrame, block.endFrame - 50, block.endFrame, 0, 1);
         block.superpositionT = constrain(block.superpositionT, 0, 1);
         // Полупрозрачность
-        alpha *= (1 - 0.5 * block.superpositionT); // Уменьшено снижение альфы
+        alpha *= (1 - 0.5 * block.superpositionT);
       }
       let canvasX = x + (width - img.width) / 2 + offsetX;
       let canvasY = y + (height - img.height) / 2 + offsetY;
@@ -166,7 +166,7 @@ function renderTransformingPortrait(img, currentFrame) {
 
       // Двойная экспозиция (суперпозиция)
       if (currentFrame >= block.startFrame && random() < 0.3) {
-        fill(r, g, b, alpha * 0.7); // Увеличено с 0.5
+        fill(r, g, b, alpha * 0.7);
         stroke(r, g, b, 30);
         strokeWeight(0.5);
         let superX = canvasX + random(-20, 20);
@@ -305,10 +305,10 @@ function initializeParticles(blockList) {
     let isMonochrome = random() < 0.2;
     let gray = (red(col) + green(col) + blue(col)) / 3 * random(0.7, 1);
     window.quantumStates[i] = {
-      r: min((isMonochrome ? gray : red(col)) * 1.1, 255), // Увеличение насыщенности
+      r: min((isMonochrome ? gray : red(col)) * 1.1, 255),
       g: min((isMonochrome ? gray : green(col)) * 1.1, 255),
       b: min((isMonochrome ? gray : blue(col)) * 1.1, 255),
-      a: 200, // Увеличено с 150
+      a: 200,
       baseR: red(col),
       baseG: green(col),
       baseB: blue(col),
@@ -333,7 +333,7 @@ function updateParticle(particle, state) {
     // Неопределённость Гейзенберга
     particle.offsetX += noiseX * particle.uncertainty * 5;
     particle.offsetY += noiseY * particle.uncertainty * 5;
-    state.a = map(cachedNoise(particle.chaosSeed + window.frame * 0.05, 0, 0), 0, 1, 200, 255); // Увеличено с 150
+    state.a = map(cachedNoise(particle.chaosSeed + window.frame * 0.05, 0, 0), 0, 1, 200, 255);
     particle.size = particle.targetSize * (1 + 0.2 * sin(window.frame * 0.04 + particle.phase));
 
     // Интерференция
@@ -346,12 +346,12 @@ function updateParticle(particle, state) {
       particle.tunneled = true;
       particle.tunnelTargetX = particle.x + random(-200, 200);
       particle.tunnelTargetY = particle.y + random(-200, 200);
-      state.a = 100; // Увеличено с 50
+      state.a = 100;
       setTimeout(() => {
         particle.tunneled = false;
         particle.x = particle.tunnelTargetX;
         particle.y = particle.tunnelTargetY;
-        state.a = 200; // Увеличено с 150
+        state.a = 200;
       }, 500);
     }
 
@@ -371,7 +371,7 @@ function updateParticle(particle, state) {
     particle.radialDistance = lerp(particle.radialDistance, particle.targetRadialDistance, easedT);
     particle.offsetX = cos(angle) * particle.radialDistance;
     particle.offsetY = sin(angle) * particle.radialDistance;
-    state.a = lerp(0, 200, easedT); // Увеличено с 150
+    state.a = lerp(0, 200, easedT);
   }
 
   // Влияние мыши (измерение)
@@ -384,7 +384,7 @@ function updateParticle(particle, state) {
     particle.uncertainty = 0;
     // Волновой фронт в буфере
     window.trailBuffer.noFill();
-    window.trailBuffer.stroke(state.r, state.g, state.b, 150); // Увеличено с 100
+    window.trailBuffer.stroke(state.r, state.g, state.b, 150);
     window.trailBuffer.strokeWeight(1);
     window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 50, 50);
   }
@@ -406,7 +406,7 @@ function updateParticle(particle, state) {
 
   // Следы в буфере
   if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1 && random() < 0.3) {
-    window.trailBuffer.fill(state.r, state.g, state.b, 15); // Увеличено с 10
+    window.trailBuffer.fill(state.r, state.g, state.b, 15);
     window.trailBuffer.noStroke();
     window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 4, particle.size / 4);
   }
@@ -416,59 +416,58 @@ function updateParticle(particle, state) {
 
 function renderParticle(particle, state) {
   push();
-  translate(particle.x + particle.offsetX, particle.size / 2);
-  stroke(state.r * 1.1, state.g * 1.1, state.b * 255, 100); // Контур частиц
+  translate(particle.x + particle.offsetX, particle.y + particle.offsetY);
+  stroke(state.r * 1.1, state.g * 1.1, state.b * 1.1, 100); // Контур частиц
   strokeWeight(0.5);
-  fill(state.r, state.g, particle.b, state.a);
+  fill(state.r, state.g, state.b, state.a);
 
   // Усиленное свечение
-  drawingContext.shadowBlur = 15; // Увеличено с 10
-  drawingContext.shadowColor = `rgba(${state.r}, ${state.g}, ${state.b}, 0.5)`; // Увеличено с 0.3
+  drawingContext.shadowBlur = 15;
+  drawingContext.shadowColor = `rgba(${state.r}, ${state.g}, ${state.b}, 0.5)`;
 
   let size = particle.size;
 
   // Волновое искажение
-  let waveDistort = 0.2 * sin(window.frame * 0.05 + particle.phase);
+  let waveDistort = 0.2 * sin(window.frame * 0.05 + particle.wavePhase);
 
   // Отрисовка в фазе перехода
   if (particle.superpositionT < 1) {
     // Рендеринг как блок
-    fill(state.r * 1.1, state.g * 255, state.b * (1 - 0.5 * particle.superpositionT)); // Уменьшено снижение прозрачности
-    stroke(state.r * 1.1, state.g * 255, state.b * 50);
+    fill(state.r * 1.1, state.g * 1.1, state.b * 1.1, state.a * (1 - 0.5 * particle.superpositionT));
+    stroke(state.r * 1.1, state.g * 1.1, state.b * 1.1, 50);
     strokeWeight(0.5);
     rect(-size / 2, -size / 2, size, size);
     // Двойная экспозиция (суперпозиция)
     if (random() < 0.3) {
-      fill(state.r * 1.1, state.g * 1.1, state.b * 255, state.a * 0.7 * (1 - 0.5 * particle.superpositionT)); // Увеличено с 0.5
-      stroke(state.r * 1.1, state.g * 255, state.b * 30, 0.7);
+      fill(state.r * 1.1, state.g * 1.1, state.b * 1.1, state.a * 0.7 * (1 - 0.5 * particle.superpositionT));
+      stroke(state.r * 1.1, state.g * 1.1, state.b * 1.1, 30);
       strokeWeight(0.5);
       let superX = random(-20, 20);
-      let superY = random(-20, -20);
-      rect(superX - size / 2, superY - size / 2, size, superY);
-  }
+      let superY = random(-20, 20);
+      rect(superX - size / 2, superY - size / 2, size, size);
+    }
   } else {
     // Отрисовка квантовых форм
     if (particle.shapeType === 0) {
-      ellipse(0, 0, size * (1 + waveDistort), size, * particle.size * (1 - waveDistort));
+      ellipse(0, 0, size * (1 + waveDistort), size * (1 - waveDistort));
     } else if (particle.shapeType === 1) {
       beginShape();
-      for (let a = = 0; a < TWO_PI; a += TWO_PI / 3) {
-        let waveOffset = waveDistort * cos(a);
-        let r = size * (1 + waveOffseta));
-        vertex(r * cos(a), r, * sin(a));
+      for (let a = 0; a < TWO_PI; a += TWO_PI / 3) {
+        let r = size * (1 + waveDistort * cos(a));
+        vertex(r * cos(a), r * sin(a));
       }
       endShape(CLOSE);
     } else if (particle.shapeType === 2) {
       beginShape();
-      for (let a = 0; a += TWO_PI; a < TWO_PI / particle.sides)a++) {
-        let r = = size * (0.8 + 0.2 * cos(a * cos3 * a + window.frame * 0.02 + waveDistort));
+      for (let a = 0; a < TWO_PI; a += TWO_PI / particle.sides) {
+        let r = size * (0.8 + 0.2 * cos(a * 3 + window.frame * 0.02 + waveDistort));
         vertex(r * cos(a), r * sin(a));
       }
       endShape(CLOSE);
     } else {
       beginShape();
-      for (let a = a0; 0a < TWO_PI; a += TWO / 20) {
-        let r = = size * (r * 0.7 + 0.3 * cachedNoise(a * 2 + particle.chaosSeed, window.frame * window0.frame * 0.01, 0) + waveDistort));
+      for (let a = 0; a < TWO_PI; a += TWO_PI / 20) {
+        let r = size * (0.7 + 0.3 * cachedNoise(a * 2 + particle.chaosSeed, window.frame * 0.01, 0) + waveDistort);
         vertex(r * cos(a), r * sin(a));
       }
       endShape(CLOSE);
@@ -476,44 +475,42 @@ function renderParticle(particle, state) {
 
     // Суперпозиция
     if (particle.superposition && !state.collapsed) {
-      fill(state.r * 1,255, state.g * 1.1, state.b * 255, state.a * 0.7); // Увеличено с 0.5
-      stroke(state.r * 1,255, state.g * 1,255, state.b * 255, 100);
+      fill(state.r * 1.1, state.g * 1.1, state.b * 1.1, state.a * 0.7);
+      stroke(state.r * 1.1, state.g * 1.1, state.b * 1.1, 100);
       strokeWeight(0.5);
-      for (let i = = 0; i < = 2; i++) {
-        let offsetX = = random(-20,20);
-        let particleoffsetY = random(-20, -20);
+      for (let i = 0; i < 2; i++) {
+        let offsetX = random(-20, 20);
+        let offsetY = random(-20, 20);
         push();
-        translate(offsetX, offsetYoffsetY);
-        if (particle.shapeType === == 0) {
-          ellipse(0, offsetX0, offsetYsize, size * (1 + waveDistortoffsetY, size * (1 - waveDistort));
-        } else if (particle.shapeType == == 1) {
+        translate(offsetX, offsetY);
+        if (particle.shapeType === 0) {
+          ellipse(0, 0, size * (1 + waveDistort), size * (1 - waveDistort));
+        } else if (particle.shapeType === 1) {
           beginShape();
-          for (let a = = 0; a < = TWO_PI; a += TWO_PI / 3); a++) {
-            let r = = size * (offsetY1 + waveDistort * cos(a));
+          for (let a = 0; a < TWO_PI; a += TWO_PI / 3) {
+            let r = size * (1 + waveDistort * cos(a));
             vertex(r * cos(a), r * sin(a));
-            }
+          }
           endShape(CLOSE);
-          endShape();
-        } else if (particle.shapeType === == 2) {
+        } else if (particle.shapeType === 2) {
           beginShape();
-            for (let a = = 0; a < = TWO_PI; a += TWO_PI / particle20); a++) {
-              let r = = size * (0.8 * (0.2 * cos(a * cos3 * a + window.frame * 0 +02 + waveDistort));
+          for (let a = 0; a < TWO_PI; a += TWO_PI / particle.sides) {
+            let r = size * (0.8 + 0.2 * cos(a * 3 + window.frame * 0.02 + waveDistort));
             vertex(r * cos(a), r * sin(a));
-            }
-            endShape(CLOSE);
+          }
           endShape(CLOSE);
         } else {
           beginShape();
-            for (let a = = 0; a < = TWO_PI; a += TWO_PI / 20); a++) {
-              let r = = size * (r * 0.7 + 0.3 * cachedNoise(a, * particle.chaosSeed2, window.frame * +0 window.01frame, 0)) + waveDistort;
-              vertex(r * cos(a), r * sin(a));
-            }
-            endShape(CLOSE);
+          for (let a = 0; a < TWO_PI; a += TWO_PI / 20) {
+            let r = size * (0.7 + 0.3 * cachedNoise(a * 2 + particle.chaosSeed, window.frame * 0.01, 0) + waveDistort);
+            vertex(r * cos(a), r * sin(a));
           }
-          pop();
+          endShape(CLOSE);
         }
+        pop();
       }
     }
-    pop();
+  }
+
+  pop();
 }
-</script>
