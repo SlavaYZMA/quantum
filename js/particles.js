@@ -128,13 +128,13 @@ function renderTransformingPortrait(img, currentFrame) {
         }
       }
       if (count > 0) {
-        r = min(r / count * 1.1, 255); // Увеличение насыщенности
-        g = min(g / count * 1.1, 255);
-        b = min(b / count * 1.1, 255);
+        r = r / count; // Полные цвета без изменений
+        g = g / count;
+        b = b / count;
       }
 
       // Эффекты трансформации
-      let alpha = 255;
+      let alpha = 255; // Фиксированная непрозрачность
       let offsetX = 0, offsetY = 0;
       if (currentFrame >= 1) {
         // Дрожание (неопределённость)
@@ -142,8 +142,6 @@ function renderTransformingPortrait(img, currentFrame) {
         offsetY += cachedNoise(y * 0.1 + currentFrame * 0.03, x * 0.1, 0) * 2 - 1;
       }
       if (currentFrame >= block.startFrame) {
-        // Мерцание
-        alpha = map(cachedNoise(x * 0.1 + currentFrame * 0.05, y * 0.1, 0), 0, 1, 200, 255);
         // Волновые смещения
         let waveOffset = sin(currentFrame * 0.03 + block.wavePhase) * 10;
         offsetX += waveOffset * cos(block.wavePhase);
@@ -152,7 +150,7 @@ function renderTransformingPortrait(img, currentFrame) {
       if (currentFrame >= block.endFrame - 50) {
         block.superpositionT = map(currentFrame, block.endFrame - 50, block.endFrame, 0, 1);
         block.superpositionT = constrain(block.superpositionT, 0, 1);
-        // Полупрозрачность
+        // Полупрозрачность только для перехода к частицам
         alpha *= (1 - 0.5 * block.superpositionT);
       }
       let canvasX = x + (width - img.width) / 2 + offsetX;
@@ -165,7 +163,14 @@ function renderTransformingPortrait(img, currentFrame) {
       rect(canvasX, canvasY, size, size);
 
       // Двойная экспозиция (суперпозиция)
-      if (currentFrame >= block.startFrame && random() < 0.3) {
+      if (currentFrame >= block.startFrame && random() < 0.3 && currentFrame <= 100) {
+        fill(r, g, b, 255); // Полная непрозрачность для мозаики
+        stroke(r, g, b, 30);
+        strokeWeight(0.5);
+        let superX = canvasX + random(-20, 20);
+        let superY = canvasY + random(-20, 20);
+        rect(superX, superY, size, size);
+      } else if (currentFrame > 100 && currentFrame >= block.startFrame && random() < 0.3) {
         fill(r, g, b, alpha * 0.7);
         stroke(r, g, b, 30);
         strokeWeight(0.5);
