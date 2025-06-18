@@ -92,11 +92,28 @@ function cachedNoise(x, y, z) {
   return noise(x, y, z);
 }
 
-// Новая функция для рендеринга мозаики
-function renderMosaic(img, blockSize, alpha) {
+// Функция для рендеринга мозаики по частям
+function renderPartialMosaic(img, blockSize, currentFrame) {
   img.loadPixels();
+  let blockList = [];
+  // Собираем все блоки
   for (let y = 0; y < img.height; y += blockSize) {
     for (let x = 0; x < img.width; x += blockSize) {
+      blockList.push({ x, y, startFrame: random(50, 90) }); // Случайное время начала
+    }
+  }
+  // Сортируем для постепенного появления
+  blockList.sort((a, b) => a.startFrame - b.startFrame);
+  // Ограничиваем количество блоков в зависимости от кадра
+  let totalBlocks = blockList.length;
+  let activeBlocks = map(currentFrame, 50, 100, 0.1 * totalBlocks, totalBlocks);
+  activeBlocks = constrain(floor(activeBlocks), 0, totalBlocks);
+
+  for (let i = 0; i < activeBlocks; i++) {
+    let block = blockList[i];
+    if (currentFrame >= block.startFrame) {
+      let x = block.x;
+      let y = block.y;
       // Усреднённый цвет блока
       let r = 0, g = 0, b = 0, count = 0;
       for (let dy = 0; dy < blockSize && y + dy < img.height; dy++) {
@@ -113,6 +130,8 @@ function renderMosaic(img, blockSize, alpha) {
         g /= count;
         b /= count;
       }
+      let alpha = map(currentFrame, block.startFrame, block.startFrame + 10, 0, 255);
+      alpha = constrain(alpha, 0, 255);
       fill(r, g, b, alpha);
       noStroke();
       rect(x + (width - img.width) / 2, y + (height - img.height) / 2, blockSize, blockSize);
@@ -139,7 +158,6 @@ function draw() {
   // Анимация портрета и мозаики
   if (window.frame <= 100) {
     let portraitAlpha = 0;
-    let mosaicAlpha = 0;
     if (window.frame <= 50) {
       // Показ портрета (1–50 кадры)
       portraitAlpha = map(window.frame, 1, 50, 0, 255);
@@ -148,10 +166,9 @@ function draw() {
     } else {
       // Переход к мозаике (50–100 кадры)
       portraitAlpha = map(window.frame, 50, 100, 255, 0);
-      mosaicAlpha = map(window.frame, 50, 100, 0, 255);
       image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2, window.img.width, window.img.height);
       tint(255, portraitAlpha); // Плавное исчезновение портрета
-      renderMosaic(window.img, 16, mosaicAlpha); // Плавное появление мозаики
+      renderPartialMosaic(window.img, 16, window.frame); // Частичная мозаика
     }
     noTint();
   } else if (window.frame === 101) {
@@ -228,6 +245,7 @@ function initializeParticles() {
         let targetY = canvasY + sin(angle) * explodeDist * 0.5;
         let layer = random() < 0.2 ? 'background' : 'main';
         let chaosSeed = random(1000);
+        let startFrame = random(100, 200); // Случайная задержка для частицы
         window.particles.push({
           x: blockCenterX_canvas, // Начальная позиция в центре блока
           y: blockCenterY_canvas,
@@ -265,7 +283,8 @@ function initializeParticles() {
           colorNoise: random(1000),
           alpha: 255,
           targetAlpha: 255,
-          transitionT: 0
+          transitionT: 0,
+          startFrame: startFrame // Задержка для рассыпания
         });
         particleCount++;
       }
@@ -317,8 +336,9 @@ function updateParticle(particle, state) {
   let baseOffsetX = noiseX * 30 * window.chaosFactor;
   let baseOffsetY = noiseY * 30 * window.chaosFactor;
 
-  if (window.frame <= 250) {
-    let breakupT = window.frame < 100 ? 0 : map(window.frame, 100, 250, 0, 1);
+  if (window.frame <= 250 && window.frame >= particle.startFrame) {
+    let breakupT = map(window.frame, particle.startFrame, particle.startFrame + 150, 0, 1);
+    breakupT = constrain(breakupT, 0, 1);
     let easedT = easeOutQuad(breakupT);
     particle.x = lerp(particle.origX, particle.targetX, easedT);
     particle.y = lerp(particle.origY, particle.targetY, easedT);
@@ -328,7 +348,7 @@ function updateParticle(particle, state) {
     particle.offsetX = noiseX * 10 * (1 - easedT);
     particle.offsetY = noiseY * 10 * (1 - easedT);
     particle.transitionT = easedT;
-  } else {
+  } else if (window.frame > 250) {
     let motionOffsetX = 0;
     let motionOffsetY = 0;
     if (particle.motionMode === 0) {
