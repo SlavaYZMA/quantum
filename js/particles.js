@@ -91,35 +91,35 @@ function cachedNoise(x, y, z) {
   return noise(x, y, z);
 }
 
-// Функция для рендеринга мозаики с квантовым переходом
-function renderPartialMosaic(img, blockSize, currentFrame) {
+// Функция для рендеринга трансформации портрета
+function renderTransformingPortrait(img, currentFrame) {
   img.loadPixels();
   let blockList = [];
+  let maxBlockSize = 16;
+  let blockSize = map(currentFrame, 1, 100, 1, maxBlockSize);
+  blockSize = constrain(blockSize, 1, maxBlockSize);
+
   for (let y = 0; y < img.height; y += blockSize) {
     for (let x = 0; x < img.width; x += blockSize) {
       blockList.push({
         x,
         y,
-        startFrame: random(60, 90),
+        startFrame: random(51, 90),
         endFrame: random(101, 150),
         superpositionT: 0,
         wavePhase: random(TWO_PI)
       });
     }
   }
-  blockList.sort((a, b) => a.startFrame - b.startFrame);
-  let totalBlocks = blockList.length;
-  let activeBlocks = map(currentFrame, 51, 100, 0.1 * totalBlocks, totalBlocks);
-  activeBlocks = constrain(floor(activeBlocks), 0, totalBlocks);
 
-  for (let i = 0; i < blockList.length; i++) {
-    let block = blockList[i];
-    if (currentFrame >= block.startFrame && currentFrame <= block.endFrame) {
+  for (let block of blockList) {
+    if (currentFrame <= block.endFrame) {
       let x = block.x;
       let y = block.y;
       let r = 0, g = 0, b = 0, count = 0;
-      for (let dy = 0; dy < blockSize && y + dy < img.height; dy++) {
-        for (let dx = 0; dx < blockSize && x + dx < img.width; dx++) {
+      let size = min(blockSize, img.width - x, img.height - y);
+      for (let dy = 0; dy < size && y + dy < img.height; dy++) {
+        for (let dx = 0; dx < size && x + dx < img.width; dx++) {
           let col = img.get(x + dx, y + dy);
           r += red(col);
           g += green(col);
@@ -133,38 +133,42 @@ function renderPartialMosaic(img, blockSize, currentFrame) {
         b /= count;
       }
 
-      // Квантовые эффекты для блоков
+      // Эффекты трансформации
       let alpha = 255;
       let offsetX = 0, offsetY = 0;
-      if (currentFrame >= block.endFrame - 50) {
-        block.superpositionT = map(currentFrame, block.endFrame - 50, block.endFrame, 0, 1);
-        block.superpositionT = constrain(block.superpositionT, 0, 1);
+      if (currentFrame >= 1) {
+        // Дрожание (неопределённость)
+        offsetX += cachedNoise(x * 0.1 + currentFrame * 0.03, y * 0.1, 0) * 2 - 1;
+        offsetY += cachedNoise(y * 0.1 + currentFrame * 0.03, x * 0.1, 0) * 2 - 1;
+      }
+      if (currentFrame >= block.startFrame) {
         // Мерцание
         alpha = map(cachedNoise(x * 0.1 + currentFrame * 0.05, y * 0.1, 0), 0, 1, 150, 255);
-        // Дрожание
-        offsetX = cachedNoise(x * 0.1 + currentFrame * 0.03, y * 0.1, 0) * 10 - 5;
-        offsetY = cachedNoise(y * 0.1 + currentFrame * 0.03, x * 0.1, 0) * 10 - 5;
-        // Интерференция
+        // Волновые смещения
         let waveOffset = sin(currentFrame * 0.03 + block.wavePhase) * 10;
         offsetX += waveOffset * cos(block.wavePhase);
         offsetY += waveOffset * sin(block.wavePhase);
-        // Полупрозрачность в конце
+      }
+      if (currentFrame >= block.endFrame - 50) {
+        block.superpositionT = map(currentFrame, block.endFrame - 50, block.endFrame, 0, 1);
+        block.superpositionT = constrain(block.superpositionT, 0, 1);
+        // Полупрозрачность
         alpha *= (1 - block.superpositionT);
       }
       let canvasX = x + (width - img.width) / 2 + offsetX;
       let canvasY = y + (height - img.height) / 2 + offsetY;
 
-      // Основной блок
+      // Основной блок/пиксель
       fill(r, g, b, alpha);
       noStroke();
-      rect(canvasX, canvasY, blockSize, blockSize);
+      rect(canvasX, canvasY, size, size);
 
-      // Суперпозиция (раздвоение)
-      if (block.superpositionT > 0 && random() < 0.3) {
+      // Двойная экспозиция (суперпозиция)
+      if (currentFrame >= block.startFrame && random() < 0.3) {
         fill(r, g, b, alpha * 0.5);
         let superX = canvasX + random(-20, 20);
         let superY = canvasY + random(-20, 20);
-        rect(superX, superY, blockSize, blockSize);
+        rect(superX, superY, size, size);
       }
     }
   }
@@ -194,14 +198,7 @@ function draw() {
 
   let blockList = [];
   if (window.frame <= 150) {
-    if (window.frame <= 50) {
-      // Статичный портрет
-      image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2);
-    } else {
-      // Портрет + мозаика
-      image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2);
-      blockList = renderPartialMosaic(window.img, 16, window.frame);
-    }
+    blockList = renderTransformingPortrait(window.img, window.frame);
     if (window.frame === 101) {
       initializeParticles(blockList);
     }
@@ -235,7 +232,7 @@ function draw() {
 function initializeParticles(blockList) {
   window.particles = [];
   window.quantumStates = [];
-  const blockSize = 16;
+  const maxBlockSize = 16;
   let maxParticles = windowWidth < 768 ? 1500 : 3000;
   let particleCount = 0;
   let imgCenterX = window.img.width / 2 + (width - window.img.width) / 2;
@@ -254,8 +251,8 @@ function initializeParticles(blockList) {
     let col = window.img.get(pixelX, pixelY);
     let brightnessVal = brightness(col);
     if (brightnessVal > 10 && particleCount < maxParticles) {
-      let blockCenterX_canvas = x + (width - window.img.width) / 2 + blockSize / 2;
-      let blockCenterY_canvas = y + (height - window.img.height) / 2 + blockSize / 2;
+      let blockCenterX_canvas = x + (width - window.img.width) / 2 + maxBlockSize / 2;
+      let blockCenterY_canvas = y + (height - window.img.height) / 2 + maxBlockSize / 2;
       let layer = random() < 0.2 ? 'background' : 'main';
       let shapeType = floor(random(4));
       let targetSize = random(1, 20);
@@ -269,7 +266,7 @@ function initializeParticles(blockList) {
         baseY: blockCenterY_canvas,
         offsetX: 0,
         offsetY: 0,
-        size: blockSize,
+        size: maxBlockSize,
         targetSize: targetSize,
         phase: random(TWO_PI),
         gridX: x,
@@ -434,7 +431,7 @@ function renderParticle(particle, state) {
     // Рендеринг как блок
     fill(state.r, state.g, state.b, state.a * (1 - particle.superpositionT));
     rect(-size / 2, -size / 2, size, size);
-    // Суперпозиция (раздвоение)
+    // Двойная экспозиция (суперпозиция)
     if (random() < 0.3) {
       fill(state.r, state.g, state.b, state.a * 0.5 * (1 - particle.superpositionT));
       let superX = random(-20, 20);
