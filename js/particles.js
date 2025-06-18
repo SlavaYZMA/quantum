@@ -96,15 +96,12 @@ function cachedNoise(x, y, z) {
 function renderPartialMosaic(img, blockSize, currentFrame) {
   img.loadPixels();
   let blockList = [];
-  // Собираем все блоки
   for (let y = 0; y < img.height; y += blockSize) {
     for (let x = 0; x < img.width; x += blockSize) {
-      blockList.push({ x, y, startFrame: random(50, 90) }); // Случайное время начала
+      blockList.push({ x, y, startFrame: random(50, 90) });
     }
   }
-  // Сортируем для постепенного появления
   blockList.sort((a, b) => a.startFrame - b.startFrame);
-  // Ограничиваем количество блоков в зависимости от кадра
   let totalBlocks = blockList.length;
   let activeBlocks = map(currentFrame, 50, 100, 0.1 * totalBlocks, totalBlocks);
   activeBlocks = constrain(floor(activeBlocks), 0, totalBlocks);
@@ -114,7 +111,6 @@ function renderPartialMosaic(img, blockSize, currentFrame) {
     if (currentFrame >= block.startFrame) {
       let x = block.x;
       let y = block.y;
-      // Усреднённый цвет блока
       let r = 0, g = 0, b = 0, count = 0;
       for (let dy = 0; dy < blockSize && y + dy < img.height; dy++) {
         for (let dx = 0; dx < blockSize && x + dx < img.width; dx++) {
@@ -139,6 +135,42 @@ function renderPartialMosaic(img, blockSize, currentFrame) {
   }
 }
 
+// Новая функция для квантовых эффектов
+function applyQuantumEffects(particle, state) {
+  // Мерцание (квантовая неопределённость)
+  let flicker = cachedNoise(particle.chaosSeed + window.frame * 0.05, 0, 0);
+  state.a = map(flicker, 0, 1, 150, 255);
+
+  // Волновая интерференция
+  let waveOffset = sin(window.frame * 0.03 + particle.wavePhase) * 5;
+  particle.offsetX += waveOffset * cos(particle.wavePhase);
+  particle.offsetY += waveOffset * sin(particle.wavePhase);
+
+  // Туннелирование
+  if (random() < 0.005 && !particle.tunneled) {
+    particle.tunneled = true;
+    particle.tunnelTargetX = particle.x + random(-50, 50);
+    particle.tunnelTargetY = particle.y + random(-50, 50);
+    particle.alpha = 100; // Размытие при туннелировании
+    setTimeout(() => {
+      particle.tunneled = false;
+      particle.alpha = 255;
+    }, 200);
+  }
+
+  // Усиление цвета
+  if (random() < 0.3) {
+    state.r = min(state.baseR * 1.2, 255);
+    state.g = min(state.baseG * 1.2, 255);
+    state.b = min(state.baseB * 1.2, 255);
+  } else {
+    let neon = random(window.neonColors);
+    state.r = neon[0];
+    state.g = neon[1];
+    state.b = neon[2];
+  }
+}
+
 function draw() {
   if (!window.img || !window.img.width) return;
 
@@ -155,20 +187,17 @@ function draw() {
 
   background(0);
 
-  // Анимация портрета и мозаики
   if (window.frame <= 100) {
     let portraitAlpha = 0;
     if (window.frame <= 50) {
-      // Показ портрета (1–50 кадры)
       portraitAlpha = map(window.frame, 1, 50, 0, 255);
       image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2, window.img.width, window.img.height);
-      tint(255, portraitAlpha); // Плавное появление
+      tint(255, portraitAlpha);
     } else {
-      // Переход к мозаике (50–100 кадры)
       portraitAlpha = map(window.frame, 50, 100, 255, 0);
       image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2, window.img.width, window.img.height);
-      tint(255, portraitAlpha); // Плавное исчезновение портрета
-      renderPartialMosaic(window.img, 16, window.frame); // Частичная мозаика
+      tint(255, portraitAlpha);
+      renderPartialMosaic(window.img, 16, window.frame);
     }
     noTint();
   } else if (window.frame === 101) {
@@ -216,8 +245,8 @@ function draw() {
 function initializeParticles() {
   window.particles = [];
   window.quantumStates = [];
-  const blockSize = 16; // Размер блока мозаики 16x16
-  let gridSize = 4; // Размер шага для частиц внутри блока
+  const blockSize = 16;
+  let gridSize = 4;
   let maxParticles = windowWidth < 768 ? 1500 : 3000;
   let particleCount = 0;
 
@@ -229,7 +258,6 @@ function initializeParticles() {
       let col = window.img.get(pixelX, pixelY);
       let brightnessVal = brightness(col);
       if (brightnessVal > 10 && particleCount < maxParticles) {
-        // Вычисление центра блока 16x16
         let block_i = Math.floor(x / blockSize);
         let block_j = Math.floor(y / blockSize);
         let blockCenterX_img = (block_i * blockSize) + (blockSize / 2);
@@ -245,26 +273,27 @@ function initializeParticles() {
         let targetY = canvasY + sin(angle) * explodeDist * 0.5;
         let layer = random() < 0.2 ? 'background' : 'main';
         let chaosSeed = random(1000);
-        let startFrame = random(100, 200); // Случайная задержка для частицы
+        let startFrame = random(100, 200);
+        let targetSize = random() < 0.5 ? 2 : 4; // Случайный размер 2×2 или 4×4
         window.particles.push({
-          x: blockCenterX_canvas, // Начальная позиция в центре блока
+          x: blockCenterX_canvas,
           y: blockCenterY_canvas,
           baseX: canvasX,
           baseY: canvasY,
           targetX: targetX,
           targetY: targetY,
-          origX: blockCenterX_canvas, // Исходная позиция для анимации
+          origX: blockCenterX_canvas,
           origY: blockCenterY_canvas,
           offsetX: 0,
           offsetY: 0,
-          size: blockSize, // Начальный размер 16
-          targetSize: gridSize, // Целевой размер 4
+          size: blockSize,
+          targetSize: targetSize,
           phase: random(TWO_PI),
           entangledWith: null,
           gridX: x,
           gridY: y,
           shapeType: 0,
-          targetShapeType: 0,
+          targetShapeType: floor(random(3)), // Случайная целевая форма
           shapeMorphT: 0,
           wavePhase: random(TWO_PI),
           waveInfluence: 0,
@@ -284,7 +313,7 @@ function initializeParticles() {
           alpha: 255,
           targetAlpha: 255,
           transitionT: 0,
-          startFrame: startFrame // Задержка для рассыпания
+          startFrame: startFrame
         });
         particleCount++;
       }
@@ -336,8 +365,8 @@ function updateParticle(particle, state) {
   let baseOffsetX = noiseX * 30 * window.chaosFactor;
   let baseOffsetY = noiseY * 30 * window.chaosFactor;
 
-  if (window.frame <= 250 && window.frame >= particle.startFrame) {
-    let breakupT = map(window.frame, particle.startFrame, particle.startFrame + 150, 0, 1);
+  if (window.frame <= 300 && window.frame >= particle.startFrame) {
+    let breakupT = map(window.frame, particle.startFrame, particle.startFrame + 200, 0, 1);
     breakupT = constrain(breakupT, 0, 1);
     let easedT = easeOutQuad(breakupT);
     particle.x = lerp(particle.origX, particle.targetX, easedT);
@@ -348,7 +377,9 @@ function updateParticle(particle, state) {
     particle.offsetX = noiseX * 10 * (1 - easedT);
     particle.offsetY = noiseY * 10 * (1 - easedT);
     particle.transitionT = easedT;
-  } else if (window.frame > 250) {
+    particle.shapeMorphT = min(particle.shapeMorphT + 0.02, 1); // Плавный морфинг форм
+    applyQuantumEffects(particle, state); // Квантовые эффекты
+  } else if (window.frame > 300) {
     let motionOffsetX = 0;
     let motionOffsetY = 0;
     if (particle.motionMode === 0) {
@@ -382,6 +413,7 @@ function updateParticle(particle, state) {
       particle.offsetX = nearestPoint.x - particle.x;
       particle.offsetY = nearestPoint.y - particle.y;
     }
+    applyQuantumEffects(particle, state); // Квантовые эффекты продолжаются
   }
 
   particle.glitchTimer--;
@@ -401,7 +433,7 @@ function updateParticle(particle, state) {
   }
 
   if (random() < 0.05 + influence * 0.1 && !window.isPaused) {
-    particle.targetShapeType = floor(random(5));
+    particle.targetShapeType = floor(random(3));
     particle.shapeMorphT = 0;
   }
   particle.shapeMorphT = min(particle.shapeMorphT + 0.05, 1);
@@ -461,9 +493,9 @@ function renderParticle(particle, state) {
     fill(state.r, state.g, state.b, alpha);
   }
 
-  if (particle.layer === 'main' && window.frame <= 250) {
-    drawingContext.shadowBlur = 15;
-    drawingContext.shadowColor = `rgba(${state.brightColor ? state.brightColor[0] : state.r}, ${state.brightColor ? state.brightColor[1] : state.g}, ${state.brightColor ? state.brightColor[2] : state.b}, 0.7)`;
+  if (particle.layer === 'main' && window.frame <= 300) {
+    drawingContext.shadowBlur = 20 * (0.5 + 0.5 * sin(window.frame * 0.05 + particle.phase)); // Пульсирующее свечение
+    drawingContext.shadowColor = `rgba(${state.brightColor ? state.brightColor[0] : state.r}, ${state.brightColor ? state.brightColor[1] : state.g}, ${state.brightColor ? state.brightColor[2] : state.b}, 0.8)`;
   }
 
   let size = particle.size * (1 + 0.2 * sin(window.frame * 0.05 + particle.phase));
