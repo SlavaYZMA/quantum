@@ -137,37 +137,37 @@ function renderPartialMosaic(img, blockSize, currentFrame) {
 
 // Функция для квантовых эффектов
 function applyQuantumEffects(particle, state) {
-  // Мерцание (квантовая неопределённость)
-  let flicker = cachedNoise(particle.chaosSeed + window.frame * 0.07, 0, 0);
+  // Мерцание
+  let flicker = cachedNoise(particle.chaosSeed + window.frame * 0.08, 0, 0);
   state.a = map(flicker, 0, 1, 100, 255);
 
   // Волновая интерференция
-  let waveOffset = sin(window.frame * 0.05 + particle.wavePhase) * 10; // Увеличена амплитуда
+  let waveOffset = sin(window.frame * 0.06 + particle.wavePhase) * 15; // Увеличена амплитуда
   particle.offsetX += waveOffset * cos(particle.wavePhase);
   particle.offsetY += waveOffset * sin(particle.wavePhase);
 
   // Туннелирование
-  if (random() < 0.01 && !particle.tunneled) { // Увеличена вероятность
+  if (random() < 0.015 && !particle.tunneled) { // Увеличена вероятность
     particle.tunneled = true;
-    particle.tunnelTargetX = particle.x + random(-100, 100);
-    particle.tunnelTargetY = particle.y + random(-100, 100);
-    particle.alpha = 50; // Сильное размытие
+    particle.tunnelTargetX = particle.x + random(-150, 150);
+    particle.tunnelTargetY = particle.y + random(-150, 150);
+    particle.alpha = 40; // Сильное размытие
     setTimeout(() => {
       particle.tunneled = false;
       particle.alpha = 255;
-    }, 300);
+    }, 400);
   }
 
   // Усиление цвета
-  if (random() < 0.5) { // Увеличена вероятность неоновых цветов
+  if (random() < 0.6) { // Увеличена вероятность неоновых цветов
     let neon = random(window.neonColors);
     state.r = neon[0];
     state.g = neon[1];
     state.b = neon[2];
   } else {
-    state.r = min(state.baseR * 1.5, 255); // Более яркие цвета
-    state.g = min(state.baseG * 1.5, 255);
-    state.b = min(state.baseB * 1.5, 255);
+    state.r = min(state.baseR * 1.8, 255); // Очень яркие цвета
+    state.g = min(state.baseG * 1.8, 255);
+    state.b = min(state.baseB * 1.8, 255);
   }
 }
 
@@ -264,26 +264,15 @@ function initializeParticles() {
         let blockCenterY_img = (block_j * blockSize) + (blockSize / 2);
         let blockCenterX_canvas = blockCenterX_img + (width - window.img.width) / 2;
         let blockCenterY_canvas = blockCenterY_img + (height - window.img.height) / 2;
-        let canvasX = x + (width - window.img.width) / 2;
-        let canvasY = y + (height - window.img.height) / 2;
-        let distFromCenter = dist(canvasX, canvasY, width / 2, height / 2);
-        let angle = atan2(canvasY - height / 2, canvasX - width / 2);
-        let explodeDist = distFromCenter * (0.5 + 0.5 * noise(x * 0.01, y * 0.01));
-        let targetX = canvasX + cos(angle) * explodeDist * 0.5;
-        let targetY = canvasY + sin(angle) * explodeDist * 0.5;
         let layer = random() < 0.2 ? 'background' : 'main';
         let chaosSeed = random(1000);
-        let startFrame = random(100, 250); // Расширен диапазон для волнообразного распада
+        let startFrame = random(100, 300); // Расширен для волнообразного распада
         let targetSize = random() < 0.5 ? 2 : 4;
         window.particles.push({
           x: blockCenterX_canvas,
           y: blockCenterY_canvas,
-          baseX: canvasX,
-          baseY: canvasY,
-          targetX: targetX,
-          targetY: targetY,
-          origX: blockCenterX_canvas,
-          origY: blockCenterY_canvas,
+          baseX: blockCenterX_canvas,
+          baseY: blockCenterY_canvas,
           offsetX: 0,
           offsetY: 0,
           size: blockSize,
@@ -313,7 +302,8 @@ function initializeParticles() {
           alpha: 255,
           targetAlpha: 255,
           transitionT: 0,
-          startFrame: startFrame
+          startFrame: startFrame,
+          localOffsetMax: 20 // Максимальное локальное смещение
         });
         particleCount++;
       }
@@ -360,44 +350,27 @@ function updateParticle(particle, state) {
   let d = dist(mouseX, mouseY, particle.x + particle.offsetX, particle.y + particle.offsetY);
   let influence = d < window.mouseInfluenceRadius ? map(d, 0, window.mouseInfluenceRadius, 1, 0) : 0;
 
-  let noiseX = cachedNoise(particle.chaosSeed + window.frame * 0.03, 0, 0) * 2 - 1;
-  let noiseY = cachedNoise(0, particle.chaosSeed + window.frame * 0.03, 0) * 2 - 1;
-  let baseOffsetX = noiseX * 30 * window.chaosFactor;
-  let baseOffsetY = noiseY * 30 * window.chaosFactor;
+  let noiseX = cachedNoise(particle.chaosSeed + window.frame * 0.04, 0, 0) * 2 - 1;
+  let noiseY = cachedNoise(0, particle.chaosSeed + window.frame * 0.04, 0) * 2 - 1;
 
-  if (window.frame <= 350 && window.frame >= particle.startFrame) {
-    let breakupT = map(window.frame, particle.startFrame, particle.startFrame + 250, 0, 1);
+  if (window.frame <= 400 && window.frame >= particle.startFrame) {
+    let breakupT = map(window.frame, particle.startFrame, particle.startFrame + 300, 0, 1);
     breakupT = constrain(breakupT, 0, 1);
     let easedT = easeOutQuad(breakupT);
-    particle.x = lerp(particle.origX, particle.targetX, easedT);
-    particle.y = lerp(particle.origY, particle.targetY, easedT);
+    // Локальное хаотичное движение вместо "взрыва"
+    particle.offsetX = noiseX * particle.localOffsetMax * easedT;
+    particle.offsetY = noiseY * particle.localOffsetMax * easedT;
     particle.size = lerp(particle.size, particle.targetSize, easedT);
     particle.alpha = lerp(255, particle.targetAlpha, easedT);
     state.a = particle.alpha;
-    particle.offsetX = noiseX * 15 * (1 - easedT); // Увеличен шум для заметности
-    particle.offsetY = noiseY * 15 * (1 - easedT);
     particle.transitionT = easedT;
-    particle.shapeMorphT = min(particle.shapeMorphT + 0.03, 1); // Ускорен морфинг
+    particle.shapeMorphT = min(particle.shapeMorphT + 0.04, 1); // Ускорен морфинг
     applyQuantumEffects(particle, state);
-  } else if (window.frame > 350) {
-    let motionOffsetX = 0;
-    let motionOffsetY = 0;
-    if (particle.motionMode === 0) {
-      motionOffsetX = noiseX * 20;
-      motionOffsetY = noiseY * 20;
-    } else if (particle.motionMode === 1) {
-      let radius = 10 + window.chaosFactor * 20;
-      motionOffsetX = cos(window.frame * 0.05 + particle.phase) * radius;
-      motionOffsetY = sin(window.frame * 0.05 + particle.phase) * radius;
-    } else {
-      let angle = atan2(particle.y - height / 2, particle.x - width / 2);
-      let distToCenter = dist(particle.x, particle.y, width / 2, height / 2);
-      motionOffsetX = -sin(angle) * distToCenter * 0.05 * window.chaosFactor;
-      motionOffsetY = cos(angle) * distToCenter * 0.05 * window.chaosFactor;
-    }
-
-    particle.offsetX = baseOffsetX + motionOffsetX;
-    particle.offsetY = baseOffsetY + motionOffsetY;
+  } else if (window.frame > 400) {
+    // Статичное состояние с квантовыми эффектами
+    particle.offsetX = noiseX * particle.localOffsetMax * 0.5; // Уменьшенное движение
+    particle.offsetY = noiseY * particle.localOffsetMax * 0.5;
+    applyQuantumEffects(particle, state);
 
     if (influence > 0 && !window.isPaused) {
       let repelAngle = atan2(particle.y + particle.offsetY - mouseY, particle.x + particle.offsetX - mouseX);
@@ -413,7 +386,6 @@ function updateParticle(particle, state) {
       particle.offsetX = nearestPoint.x - particle.x;
       particle.offsetY = nearestPoint.y - particle.y;
     }
-    applyQuantumEffects(particle, state);
   }
 
   particle.glitchTimer--;
@@ -486,19 +458,19 @@ function renderParticle(particle, state) {
   translate(particle.x + particle.offsetX, particle.y + particle.offsetY);
   rotate(particle.rotation);
   noStroke();
-  let alpha = state.a * (0.7 + 0.3 * cachedNoise(particle.chaosSeed + window.frame * 0.07, 0, 0));
+  let alpha = state.a * (0.7 + 0.3 * cachedNoise(particle.chaosSeed + window.frame * 0.08, 0, 0));
   if (state.brightColor) {
     fill(state.brightColor[0], state.brightColor[1], state.brightColor[2], alpha);
   } else {
     fill(state.r, state.g, state.b, alpha);
   }
 
-  if (particle.layer === 'main' && window.frame <= 350) {
-    drawingContext.shadowBlur = 30 * (0.5 + 0.5 * sin(window.frame * 0.07 + particle.phase)); // Усилено свечение
-    drawingContext.shadowColor = `rgba(${state.brightColor ? state.brightColor[0] : state.r}, ${state.brightColor ? state.brightColor[1] : state.g}, ${state.brightColor ? state.brightColor[2] : state.b}, 0.9)`;
+  if (particle.layer === 'main') {
+    drawingContext.shadowBlur = 40 * (0.5 + 0.5 * sin(window.frame * 0.08 + particle.phase)); // Усилено свечение
+    drawingContext.shadowColor = `rgba(${state.brightColor ? state.brightColor[0] : state.r}, ${state.brightColor ? state.brightColor[1] : state.g}, ${state.brightColor ? state.brightColor[2] : state.b}, 0.95)`;
   }
 
-  let size = particle.size * (1 + 0.3 * sin(window.frame * 0.07 + particle.phase)); // Увеличена пульсация размера
+  let size = particle.size * (1 + 0.4 * sin(window.frame * 0.08 + particle.phase)); // Увеличена пульсация
   let morphT = particle.shapeMorphT;
   let shapeType = particle.shapeType;
   let targetShapeType = particle.targetShapeType;
