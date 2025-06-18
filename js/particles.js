@@ -92,6 +92,34 @@ function cachedNoise(x, y, z) {
   return noise(x, y, z);
 }
 
+// Новая функция для рендеринга мозаики
+function renderMosaic(img, blockSize, alpha) {
+  img.loadPixels();
+  for (let y = 0; y < img.height; y += blockSize) {
+    for (let x = 0; x < img.width; x += blockSize) {
+      // Усреднённый цвет блока
+      let r = 0, g = 0, b = 0, count = 0;
+      for (let dy = 0; dy < blockSize && y + dy < img.height; dy++) {
+        for (let dx = 0; dx < blockSize && x + dx < img.width; dx++) {
+          let col = img.get(x + dx, y + dy);
+          r += red(col);
+          g += green(col);
+          b += blue(col);
+          count++;
+        }
+      }
+      if (count > 0) {
+        r /= count;
+        g /= count;
+        b /= count;
+      }
+      fill(r, g, b, alpha);
+      noStroke();
+      rect(x + (width - img.width) / 2, y + (height - img.height) / 2, blockSize, blockSize);
+    }
+  }
+}
+
 function draw() {
   if (!window.img || !window.img.width) return;
 
@@ -108,7 +136,25 @@ function draw() {
 
   background(0);
 
-  if (window.frame === 10) {
+  // Анимация портрета и мозаики
+  if (window.frame <= 100) {
+    let portraitAlpha = 0;
+    let mosaicAlpha = 0;
+    if (window.frame <= 50) {
+      // Показ портрета (1–50 кадры)
+      portraitAlpha = map(window.frame, 1, 50, 0, 255);
+      image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2, window.img.width, window.img.height);
+      tint(255, portraitAlpha); // Плавное появление
+    } else {
+      // Переход к мозаике (50–100 кадры)
+      portraitAlpha = map(window.frame, 50, 100, 255, 0);
+      mosaicAlpha = map(window.frame, 50, 100, 0, 255);
+      image(window.img, (width - window.img.width) / 2, (height - window.img.height) / 2, window.img.width, window.img.height);
+      tint(255, portraitAlpha); // Плавное исчезновение портрета
+      renderMosaic(window.img, 16, mosaicAlpha); // Плавное появление мозаики
+    }
+    noTint();
+  } else if (window.frame === 101) {
     initializeParticles();
   }
 
@@ -271,8 +317,8 @@ function updateParticle(particle, state) {
   let baseOffsetX = noiseX * 30 * window.chaosFactor;
   let baseOffsetY = noiseY * 30 * window.chaosFactor;
 
-  if (window.frame <= 150) {
-    let breakupT = window.frame < 50 ? 0 : map(window.frame, 50, 150, 0, 1);
+  if (window.frame <= 250) {
+    let breakupT = window.frame < 100 ? 0 : map(window.frame, 100, 250, 0, 1);
     let easedT = easeOutQuad(breakupT);
     particle.x = lerp(particle.origX, particle.targetX, easedT);
     particle.y = lerp(particle.origY, particle.targetY, easedT);
@@ -395,7 +441,7 @@ function renderParticle(particle, state) {
     fill(state.r, state.g, state.b, alpha);
   }
 
-  if (particle.layer === 'main' && window.frame <= 150) {
+  if (particle.layer === 'main' && window.frame <= 250) {
     drawingContext.shadowBlur = 15;
     drawingContext.shadowColor = `rgba(${state.brightColor ? state.brightColor[0] : state.r}, ${state.brightColor ? state.brightColor[1] : state.g}, ${state.brightColor ? state.brightColor[2] : state.b}, 0.7)`;
   }
