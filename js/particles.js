@@ -16,8 +16,10 @@ window.mouseHoverTime = 0;
 window.noiseCache = new Map();
 window.lastFrameTime = 0;
 window.maxParticles = 0;
-window.textMessages = { active: null, queue: [] };
+window.textMessages = { activeMessages: [], queue: [] };
 window.entangledPairs = [];
+window.needsRedraw = true;
+window.interferenceFrame = 0;
 
 function easeOutQuad(t) {
   return t * (2 - t);
@@ -27,8 +29,7 @@ function setup() {
   window.canvas = createCanvas(windowWidth, windowHeight - 100);
   window.canvas.parent('canvasContainer4');
   pixelDensity(1);
-  frameRate(navigator.hardwareConcurrency < 4 ? 20 : 25);
-  noLoop();
+  frameRate(25);
   window.canvas.elt.style.display = 'block';
   window.canvas.elt.style.position = 'absolute';
   window.canvas.elt.style.top = '100px';
@@ -45,11 +46,17 @@ function setup() {
       document.getElementById('canvasContainer4').requestFullscreen().then(() => {
         resizeCanvas(windowWidth, windowHeight);
         updateBoundary();
+        window.trailBuffer = createGraphics(windowWidth, windowHeight);
+        window.trailBuffer.pixelDensity(1);
+        window.needsRedraw = true;
       });
     } else {
       document.exitFullscreen().then(() => {
         resizeCanvas(windowWidth, windowHeight - 100);
         updateBoundary();
+        window.trailBuffer = createGraphics(windowWidth, windowHeight - 100);
+        window.trailBuffer.pixelDensity(1);
+        window.needsRedraw = true;
       });
     }
   });
@@ -59,15 +66,15 @@ function setup() {
 
   window.canvas.elt.addEventListener('click', function() {
     if (window.currentStep === 5) {
-      if (!window.isPaused) {
-        window.isPaused = true;
+      window.isPaused = !window.isPaused;
+      if (window.isPaused) {
         noLoop();
         document.getElementById('saveButton').style.display = 'block';
       } else {
-        window.isPaused = false;
         loop();
         document.getElementById('saveButton').style.display = 'none';
       }
+      window.needsRedraw = true;
     }
   });
 
@@ -76,6 +83,7 @@ function setup() {
     const touch = e.touches[0];
     mouseX = touch.clientX - window.canvas.elt.offsetLeft;
     mouseY = touch.clientY - window.canvas.elt.offsetTop;
+    window.needsRedraw = true;
   }, { passive: false });
 
   window.addEventListener('resize', () => {
@@ -83,10 +91,12 @@ function setup() {
     window.trailBuffer = createGraphics(windowWidth, document.fullscreenElement ? windowHeight : windowHeight - 100);
     window.trailBuffer.pixelDensity(1);
     updateBoundary();
+    window.needsRedraw = true;
   });
 
   updateBoundary();
   window.isCanvasReady = true;
+  loop();
 }
 
 function updateBoundary() {
@@ -121,8 +131,7 @@ function isPointInBoundary(x, y) {
   for (let i = 0, j = window.boundaryPoints.length - 1; i < window.boundaryPoints.length; j = i++) {
     let xi = window.boundaryPoints[i].x, yi = window.boundaryPoints[i].y;
     let xj = window.boundaryPoints[j].x, yj = window.boundaryPoints[j].y;
-    let intersect = ((yi > y) !== (yj > y)) &&
-      (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    let intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
     if (intersect) inside = !inside;
   }
   return inside;
@@ -130,48 +139,48 @@ function isPointInBoundary(x, y) {
 
 function cachedNoise(x, y, z) {
   let key = `${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)}`;
-  if (window.noiseCache.has(key)) {
-    return window.noiseCache.get(key);
-  }
+  if (window.noiseCache.has(key)) return window.noiseCache.get(key);
   let value = noise(x, y, z);
   window.noiseCache.set(key, value);
-  if (window.noiseCache.size > 10000) {
-    window.noiseCache.clear();
-  }
+  if (window.noiseCache.size > 5000) window.noiseCache.clear();
   return value;
 }
 
 function addQuantumMessage(message, eventType) {
-  let newMessage = {
-    text: message,
-    x: random(100, windowWidth - 300),
-    y: random(150, (document.fullscreenElement ? windowHeight : windowHeight - 100) - 50),
-    alpha: 0,
-    fadeIn: true,
-    startFrame: window.frame,
-    eventType: eventType
-  };
-  if (window.textMessages.active) {
-    window.textMessages.queue.push(newMessage);
+  if (window.textMessages.activeMessages.length < 5) {
+    let index = window.textMessages.activeMessages.length;
+    window.textMessages.activeMessages.push({
+      text: message,
+      x: windowWidth - 300,
+      y: 150 + index * 30,
+      alpha: 0,
+      fadeIn: true,
+      startFrame: window.frame,
+      eventType: eventType
+    });
   } else {
-    window.textMessages.active = newMessage;
+    window.textMessages.queue.push({
+      text: message,
+      eventType: eventType
+    });
   }
+  window.needsRedraw = true;
 }
 
 function renderQuantumMessages() {
   textAlign(LEFT, TOP);
   textSize(16);
-  if (window.textMessages.active) {
-    let msg = window.textMessages.active;
-    let t = (window.frame - msg.startFrame) / 300;
+  for (let i = window.textMessages.activeMessages.length - 1; i >= 0; i--) {
+    let msg = window.textMessages.activeMessages[i];
+    let t = (window.frame - msg.startFrame) / 120; // ~4 sec at 30 FPS
     if (msg.fadeIn) {
-      msg.alpha = lerp(0, 255, easeOutQuad(min(t, 0.1)));
-      if (t >= 0.1) msg.fadeIn = false;
+      msg.alpha = lerp(0, 255, easeOutQuad(min(t, 0.075))); // 0.3 sec fade-in
+      if (t >= 0.075) msg.fadeIn = false;
     } else {
-      if (t < 0.8) {
-        msg.alpha = 255;
+      if (t < 0.75) {
+        msg.alpha = 255; // 3 sec visible
       } else {
-        msg.alpha = lerp(255, 0, easeOutQuad((t - 0.8) / 0.2));
+        msg.alpha = lerp(255, 0, easeOutQuad((t - 0.75) / 0.175)); // 0.7 sec fade-out
       }
     }
     fill(255, 255, 255, msg.alpha);
@@ -179,11 +188,23 @@ function renderQuantumMessages() {
     text(msg.text, msg.x, msg.y);
 
     if (t > 1) {
-      window.textMessages.active = null;
-      if (window.textMessages.queue.length > 0) {
-        window.textMessages.active = window.textMessages.queue.shift();
-        window.textMessages.active.startFrame = window.frame;
+      window.textMessages.activeMessages.splice(i, 1);
+      for (let j = i; j < window.textMessages.activeMessages.length; j++) {
+        window.textMessages.activeMessages[j].y -= 30; // Shift up
       }
+      if (window.textMessages.queue.length > 0) {
+        let newMsg = window.textMessages.queue.shift();
+        window.textMessages.activeMessages.push({
+          text: newMsg.text,
+          x: windowWidth - 300,
+          y: 150 + (window.textMessages.activeMessages.length * 30),
+          alpha: 0,
+          fadeIn: true,
+          startFrame: window.frame,
+          eventType: newMsg.eventType
+        });
+      }
+      window.needsRedraw = true;
     }
   }
 }
@@ -246,8 +267,8 @@ function renderTransformingPortrait(img, currentFrame) {
           addQuantumMessage("Суперпозиция: частица в нескольких состояниях одновременно.", "superposition");
         }
       }
-      let canvasX = x + (windowWidth - img.width) / 2 + offsetX;
-      let canvasY = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + offsetY;
+      let canvasX = x + windowWidth / 2 - img.width / 2 + offsetX;
+      let canvasY = y + (document.fullscreenElement ? windowHeight : windowHeight - 100) / 2 - img.height / 2 - 150 + offsetY;
 
       if (currentFrame >= block.startFrame) {
         let probDensity = block.probAmplitude * 100;
@@ -282,9 +303,9 @@ function renderTransformingPortrait(img, currentFrame) {
 }
 
 function draw() {
-  let startTime = performance.now();
-  if (!window.img || !window.img.width) return;
+  if (!window.needsRedraw || !window.img || !window.img.width) return;
 
+  let startTime = performance.now();
   window.frame++;
   window.chaosTimer += 0.016;
   window.chaosFactor = map(cachedNoise(window.frame * 0.01, 0, 0), 0, 1, 0.3, 1) * (window.weirdnessFactor || 0.5);
@@ -310,73 +331,82 @@ function draw() {
     }
   }
 
-  let updateBackground = window.frame % 2 === 0;
-  let vacuumParticles = window.particles.filter(p => p.layer === 'vacuum');
+  let updateBackground = window.frame % 3 === 0;
+  let vacuumParticles = window.particles.filter(p => p.layer === 'vacuum' && p.alpha >= 20);
   let vacuumAlpha = map(cachedNoise(window.frame * 0.005, 0, 0), 0, 1, 30, 70);
   if (updateBackground) {
     for (let particle of vacuumParticles) {
       let state = window.quantumStates[window.particles.indexOf(particle)];
+      if (!isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) continue;
       let noiseVal = cachedNoise(particle.baseX * window.noiseScale, particle.baseY * window.noiseScale, window.frame * 0.005);
       particle.offsetX = noiseVal * 20 - 10;
       particle.offsetY = cachedNoise(particle.baseY * window.noiseScale, window.frame * 0.005, 0) * 20 - 10;
       particle.phase += 0.01;
       state.a = vacuumAlpha;
-      if (particle.alpha >= 20) renderParticle(particle, state);
+      renderParticle(particle, state);
     }
   }
 
-  let backgroundParticles = window.particles.filter(p => p.layer === 'background');
+  let backgroundParticles = window.particles.filter(p => p.layer === 'background' && p.alpha >= 20);
   if (updateBackground) {
     for (let particle of backgroundParticles) {
       let state = window.quantumStates[window.particles.indexOf(particle)];
+      if (!isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) continue;
       let noiseVal = cachedNoise(particle.baseX * window.noiseScale, particle.baseY * window.noiseScale, window.frame * 0.01);
       particle.offsetX = noiseVal * 30 - 15;
       particle.offsetY = cachedNoise(particle.baseY * window.noiseScale, window.frame * 0.01, 0) * 30 - 15;
       particle.phase += particle.individualPeriod * 0.02;
-      if (particle.alpha >= 20) renderParticle(particle, state);
+      renderParticle(particle, state);
     }
   }
 
-  let mainParticles = window.particles.filter(p => p.layer === 'main');
+  let mainParticles = window.particles.filter(p => p.layer === 'main' && p.alpha >= 20);
   let newParticles = [];
   let newStates = [];
-  for (let i = 0; i < mainParticles.length; i++) {
-    let particle = mainParticles[i];
+  for (let particle of mainParticles) {
     let state = window.quantumStates[window.particles.indexOf(particle)];
     updateParticle(particle, state);
-    if (particle.alpha >= 20) {
+    if (isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) {
       renderParticle(particle, state);
       newParticles.push(particle);
       newStates.push(state);
     }
   }
+  window.particles = window.particles.filter(p => p.alpha >= 20 && isPointInBoundary(p.x + p.offsetX, p.y + p.offsetY));
+  window.quantumStates = window.quantumStates.filter((_, i) => window.particles.includes(window.particles[i]));
+
+  if (window.frame % 5 === 0) {
+    renderInterference();
+    if (random() < 0.2) {
+      addQuantumMessage("Интерференция: волновые узоры усиливают или подавляют друг друга.", "interference");
+    }
+    window.interferenceFrame = window.frame;
+  } else if (window.frame - window.interferenceFrame < 5) {
+    image(window.trailBuffer, 0, 0);
+  }
 
   let frameTime = performance.now() - startTime;
   if (frameTime > 40 && window.particles.length > 1000) {
-    window.particles = window.particles.filter((p, i) => {
-      let keep = p.alpha >= 20 || p.layer !== 'main';
-      if (!keep) window.quantumStates.splice(i, 1);
-      return keep;
-    });
-  }
-
-  if (window.frame % 60 === 0) {
-    renderInterference();
-    addQuantumMessage("Интерференция: волновые узоры усиливают или подавляют друг друга.", "interference");
+    window.particles = window.particles.slice(0, window.maxParticles / 2);
+    window.quantumStates = window.quantumStates.slice(0, window.maxParticles / 2);
   }
 
   image(window.trailBuffer, 0, 0);
   renderQuantumMessages();
   window.lastFrameTime = frameTime;
+  window.needsRedraw = false;
+
+  requestAnimationFrame(draw);
 }
 
 function renderInterference() {
+  window.trailBuffer.clear();
   let gridSize = 50;
   let maxY = document.fullscreenElement ? windowHeight : windowHeight - 100;
   for (let x = 0; x < windowWidth; x += gridSize) {
     for (let y = 0; y < maxY; y += gridSize) {
       let amplitude = 0;
-      for (let particle of window.particles.filter(p => p.layer === 'main' && p.superposition)) {
+      for (let particle of window.particles.filter(p => p.layer === 'main' && p.superposition && p.alpha >= 20)) {
         let d = dist(x, y, particle.x + particle.offsetX, particle.y + particle.offsetY);
         if (d < 100) {
           let wave = cos(d * 0.05 + window.frame * 0.02) * particle.probAmplitude;
@@ -396,7 +426,7 @@ function initializeParticles(blockList) {
   window.quantumStates = [];
   window.entangledPairs = [];
   const maxBlockSize = 16;
-  window.maxParticles = windowWidth < 768 ? 2000 : 4000;
+  window.maxParticles = windowWidth < 768 ? 1500 : 3000;
   let particleCount = 0;
 
   window.img.loadPixels();
@@ -412,8 +442,8 @@ function initializeParticles(blockList) {
     let col = window.img.get(pixelX, pixelY);
     let brightnessVal = brightness(col);
     if (brightnessVal > 10 && particleCount < window.maxParticles) {
-      let blockCenterX_canvas = x + (windowWidth - img.width) / 2 + maxBlockSize / 2;
-      let blockCenterY_canvas = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + maxBlockSize / 2;
+      let blockCenterX_canvas = x + windowWidth / 2 - window.img.width / 2 + maxBlockSize / 2;
+      let blockCenterY_canvas = y + (document.fullscreenElement ? windowHeight : windowHeight - 100) / 2 - window.img.height / 2 - 150 + maxBlockSize / 2;
       let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
       let shapeType = floor(random(5));
       let targetSize = random(5, 30);
@@ -503,6 +533,7 @@ function updateParticle(particle, state) {
   let px = particle.x + particle.offsetX;
   let py = particle.y + particle.offsetY;
   if (px < 0 || px > windowWidth || py < 0 || py > (document.fullscreenElement ? windowHeight : windowHeight - 100) || particle.alpha < 20) {
+    particle.alpha = 0;
     return;
   }
 
@@ -518,9 +549,7 @@ function updateParticle(particle, state) {
   if (window.isPaused) {
     particle.offsetX += cachedNoise(particle.chaosSeed, window.frame * 0.01, 0) * 0.5 - 0.25;
     particle.offsetY += cachedNoise(particle.chaosSeed + 100, window.frame * 0.01, 0) * 0.5 - 0.25;
-  }
-
-  if (particle.superpositionT >= 1) {
+  } else {
     particle.offsetX += noiseX * particle.uncertainty * 15 * particle.probAmplitude * particle.speed;
     particle.offsetY += noiseY * particle.uncertainty * 15 * particle.probAmplitude * particle.speed;
     particle.rotation += noiseX * 0.05;
@@ -737,6 +766,7 @@ function updateParticle(particle, state) {
   particle.phase += particle.individualPeriod * 0.03;
   window.lastMouseX = mouseX;
   window.lastMouseY = mouseY;
+  window.needsRedraw = true;
 }
 
 function renderParticle(particle, state) {
