@@ -95,21 +95,154 @@ function setup() {
   });
 
   // Загрузка изображения
-  if (!window.img) {
-    console.log("Loading image...");
-    window.img = loadImage('path/to/your/image.jpg', () => {
-      console.log("Image loaded:", window.img.width, window.img.height);
-      window.needsRedraw = true;
-      loop();
-    }, () => {
-      console.error("Failed to load image");
-    });
-  }
+  console.log("Attempting to load image...");
+  const imagePath = 'assets/portrait.jpg'; // Замените на реальный путь
+  window.img = loadImage(imagePath, () => {
+    console.log("Image loaded successfully:", window.img.width, window.img.height);
+    window.needsRedraw = true;
+    initializeFallbackParticles(); // Инициализация частиц после загрузки
+    loop();
+  }, () => {
+    console.error("Failed to load image at", imagePath);
+    console.log("Using fallback particles...");
+    initializeFallbackParticles(); // Инициализация без изображения
+    window.needsRedraw = true;
+    loop();
+  });
 
   updateBoundary();
   window.isCanvasReady = true;
   window.needsRedraw = true;
   loop();
+}
+
+function initializeFallbackParticles() {
+  window.particles = [];
+  window.quantumStates = [];
+  window.entangledPairs = [];
+  window.maxParticles = windowWidth < 768 ? 1500 : 3000;
+  let particleCount = 0;
+
+  // Создание временных частиц, если изображение не загружено
+  let imgWidth = window.img?.width || windowWidth / 2;
+  let imgHeight = window.img?.height || windowHeight / 2;
+  let maxBlockSize = 16;
+  let blockSize = maxBlockSize;
+  let blockList = [];
+
+  for (let y = 0; y < imgHeight; y += blockSize) {
+    for (let x = 0; x < imgWidth; x += blockSize) {
+      blockList.push({
+        x,
+        y,
+        startFrame: random(15, 30),
+        endFrame: random(31, 60),
+        wavePhase: random(TWO_PI),
+        probAmplitude: random(0.5, 1),
+        noiseSeed: random(1000)
+      });
+    }
+  }
+
+  let usedPositions = new Set();
+  for (let block of blockList) {
+    let x = block.x;
+    let y = block.y;
+    let pixelX = constrain(x, 0, imgWidth - 1);
+    let pixelY = constrain(y, 0, imgHeight - 1);
+    let posKey = `${pixelX},${pixelY}`;
+    if (usedPositions.has(posKey)) continue;
+    usedPositions.add(posKey);
+
+    // Запасной цвет, если изображение отсутствует
+    let col = window.img?.get(pixelX, pixelY) || [random(100, 255), random(100, 255), random(100, 255)];
+    let brightnessVal = window.img ? brightness(col) : 100;
+    if (brightnessVal > 10 && particleCount < window.maxParticles) {
+      let blockCenterX_canvas = x + windowWidth / 2 - imgWidth / 2 + maxBlockSize / 2;
+      let blockCenterY_canvas = y + (document.fullscreenElement ? windowHeight : windowHeight - 100) / 2 - imgHeight / 2 - 150 + maxBlockSize / 2;
+      let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
+      let shapeType = floor(random(5));
+      let targetSize = random(5, 30);
+      let superposition = random() < 0.3;
+      let timeAnomaly = random() < 0.05;
+      let angle = random(TWO_PI);
+      let particle = {
+        x: blockCenterX_canvas,
+        y: blockCenterY_canvas,
+        baseX: blockCenterX_canvas,
+        baseY: blockCenterY_canvas,
+        offsetX: 0,
+        offsetY: 0,
+        size: maxBlockSize,
+        targetSize: targetSize,
+        phase: random(TWO_PI),
+        gridX: x,
+        gridY: y,
+        layer: layer,
+        chaosSeed: random(1000),
+        alpha: 255,
+        startFrame: block.endFrame,
+        birthFrame: window.frame,
+        shapeType: shapeType,
+        sides: shapeType === 2 ? floor(random(5, 13)) : 0,
+        tunneled: false,
+        tunnelTargetX: 0,
+        tunnelTargetY: 0,
+        superposition: superposition,
+        timeAnomaly: timeAnomaly,
+        timeDirection: timeAnomaly ? random([-1, 1]) : 1,
+        uncertainty: random(0.5, 3),
+        wavePhase: block.wavePhase,
+        radialAngle: angle,
+        radialDistance: 0,
+        targetRadialDistance: random(100, 300),
+        superpositionT: 0,
+        probAmplitude: random(0.5, 1.5),
+        barrier: random() < 0.1 ? { x: random(windowWidth), y: random(windowHeight), width: 20, height: 100 } : null,
+        speed: random(0.8, 1.5),
+        rotation: 0,
+        individualPeriod: random(0.5, 3),
+        decoherence: 0,
+        entangledIndex: -1
+      };
+      window.particles.push(particle);
+      particleCount++;
+
+      if (random() < 0.05 && particle.layer === 'main') {
+        let entangled = { ...particle };
+        entangled.x = random(windowWidth);
+        entangled.y = random(document.fullscreenElement ? windowHeight : windowHeight - 100);
+        entangled.baseX = entangled.x;
+        entangled.baseY = entangled.y;
+        entangled.chaosSeed = random(1000);
+        entangled.entangledIndex = window.particles.length;
+        particle.entangledIndex = window.particles.length + 1;
+        window.particles.push(entangled);
+        window.entangledPairs.push([particleCount - 1, particleCount]);
+        particleCount++;
+        addQuantumMessage("Запутанность: две частицы связаны, их состояния синхронизированы.", "entanglement");
+      }
+    }
+  }
+
+  for (let i = 0; i < window.particles.length; i++) {
+    let particle = window.particles[i];
+    let pixelX = constrain(Math.floor(particle.gridX), 0, imgWidth - 1);
+    let pixelY = constrain(Math.floor(particle.gridY), 0, imgHeight - 1);
+    let col = window.img?.get(pixelX, pixelY) || [random(100, 255), random(100, 255), random(100, 255)];
+    let isMonochrome = random() < 0.2;
+    let gray = (red(col) + green(col) + blue(col)) / 3 * random(0.7, 1);
+    window.quantumStates[i] = {
+      r: isMonochrome ? gray : red(col),
+      g: isMonochrome ? gray : green(col),
+      b: isMonochrome ? gray : blue(col),
+      a: 255,
+      baseR: red(col),
+      baseG: green(col),
+      baseB: blue(col),
+      collapsed: false
+    };
+  }
 }
 
 function updateBoundary() {
@@ -345,7 +478,7 @@ function draw() {
   if (window.frame <= 60 && window.img?.width) {
     blockList = renderTransformingPortrait(window.img, window.frame);
     if (window.frame === 31) {
-      initializeParticles(blockList);
+      initializeFallbackParticles();
     }
   }
 
@@ -433,118 +566,6 @@ function renderInterference() {
       window.trailBuffer.noStroke();
       window.trailBuffer.ellipse(x, y, gridSize / 5);
     }
-  }
-}
-
-function initializeParticles(blockList) {
-  window.particles = [];
-  window.quantumStates = [];
-  window.entangledPairs = [];
-  const maxBlockSize = 16;
-  window.maxParticles = windowWidth < 768 ? 1500 : 3000;
-  let particleCount = 0;
-
-  if (!window.img?.width) {
-    console.error("Image10Image not loaded for particle initialization");
-    return;
-  }
-  window.img.loadPixels();
-  let usedPositions = new Set();
-  for (let block of blockList) {
-    let x = block.x;
-    let y = block.y;
-    let pixelX = constrain(x, 0, window.img.width - 1);
-    let pixelY = constrain(y, 0, window.img.height - 1);
-    let posKey = `${pixelX},${pixelY}`;
-    if (usedPositions.has(posKey)) continue;
-    usedPositions.add(posKey);
-    let col = window.img.get(pixelX, pixelY);
-    let brightnessVal = brightness(col);
-    if (brightnessVal > 10 && particleCount < window.maxParticles) {
-      let blockCenterX_canvas = x + windowWidth / 2 - window.img.width / 2 + maxBlockSize / 2;
-      let blockCenterY_canvas = y + (document.fullscreenElement ? windowHeight : windowHeight - 100) / 2 - window.img.height / 2 - 150 + maxBlockSize / 2;
-      let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
-      let shapeType = floor(random(5));
-      let targetSize = random(5, 30);
-      let superposition = random() < 0.3;
-      let timeAnomaly = random() < 0.05;
-      let angle = random(TWO_PI);
-      let particle = {
-        x: blockCenterX_canvas,
-        y: blockCenterY_canvas,
-        baseX: blockCenterX_canvas,
-        baseY: blockCenterY_canvas,
-        offsetX: 0,
-        offsetY: 0,
-        size: maxBlockSize,
-        targetSize: targetSize,
-        phase: random(TWO_PI),
-        gridX: x,
-        gridY: y,
-        layer: layer,
-        chaosSeed: random(1000),
-        alpha: 255,
-        startFrame: block.endFrame,
-        birthFrame: window.frame,
-        shapeType: shapeType,
-        sides: shapeType === 2 ? floor(random(5, 13)) : 0,
-        tunneled: false,
-        tunnelTargetX: 0,
-        tunnelTargetY: 0,
-        superposition: superposition,
-        timeAnomaly: timeAnomaly,
-        timeDirection: timeAnomaly ? random([-1, 1]) : 1,
-        uncertainty: random(0.5, 3),
-        wavePhase: block.wavePhase,
-        radialAngle: angle,
-        radialDistance: 0,
-        targetRadialDistance: random(100, 300),
-        superpositionT: 0,
-        probAmplitude: random(0.5, 1.5),
-        barrier: random() < 0.1 ? { x: random(windowWidth), y: random(windowHeight), width: 20, height: 100 } : null,
-        speed: random(0.8, 1.5),
-        rotation: 0,
-        individualPeriod: random(0.5, 3),
-        decoherence: 0,
-        entangledIndex: -1
-      };
-      window.particles.push(particle);
-      particleCount++;
-
-      if (random() < 0.05 && particle.layer === 'main') {
-        let entangled = { ...particle };
-        entangled.x = random(windowWidth);
-        entangled.y = random(document.fullscreenElement ? windowHeight : windowHeight - 100);
-        entangled.baseX = entangled.x;
-        entangled.baseY = entangled.y;
-        entangled.chaosSeed = random(1000);
-        entangled.entangledIndex = window.particles.length;
-        particle.entangledIndex = window.particles.length + 1;
-        window.particles.push(entangled);
-        window.entangledPairs.push([particleCount - 1, particleCount]);
-        particleCount++;
-        addQuantumMessage("Запутанность: две частицы связаны, их состояния синхронизированы.", "entanglement");
-      }
-    }
-  }
-
-  for (let i = 0; i < window.particles.length; i++) {
-    let particle = window.particles[i];
-    let pixelX = constrain(Math.floor(particle.gridX), 0, window.img.width - 1);
-    let pixelY = constrain(Math.floor(particle.gridY), 0, window.img.height - 1);
-    let col = window.img.get(pixelX, pixelY);
-    let isMonochrome = random() < 0.2;
-    let gray = (red(col) + green(col) + blue(col)) / 3 * random(0.7, 1);
-    window.quantumStates[i] = {
-      r: isMonochrome ? gray : red(col),
-      g: isMonochrome ? gray : green(col),
-      b: isMonochrome ? gray : blue(col),
-      a: 255,
-      baseR: red(col),
-      baseG: green(col),
-      baseB: blue(col),
-      collapsed: false
-    };
   }
 }
 
