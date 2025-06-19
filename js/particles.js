@@ -20,13 +20,17 @@ window.textMessages = { activeMessages: [], queue: [] };
 window.entangledPairs = [];
 window.needsRedraw = true;
 window.interferenceFrame = 0;
+window.imagePixelCache = new Map();
 
 function easeOutQuad(t) {
   return t * (2 - t);
 }
 
 function setup() {
-  window.canvas = createCanvas(windowWidth, windowHeight - 100);
+  // Создание канвы с willReadFrequently для оптимизации getImageData
+  window.canvas = createCanvas(windowWidth, windowHeight - 100, {
+    willReadFrequently: true
+  });
   window.canvas.parent('canvasContainer4');
   pixelDensity(1);
   frameRate(25);
@@ -96,19 +100,33 @@ function setup() {
 
   // Загрузка изображения
   console.log("Attempting to load image...");
-  const imagePath = 'assets/portrait.jpg'; // Замените на реальный путь
-  window.img = loadImage(imagePath, () => {
-    console.log("Image loaded successfully:", window.img.width, window.img.height);
-    window.needsRedraw = true;
-    initializeFallbackParticles(); // Инициализация частиц после загрузки
-    loop();
-  }, () => {
-    console.error("Failed to load image at", imagePath);
-    console.log("Using fallback particles...");
-    initializeFallbackParticles(); // Инициализация без изображения
-    window.needsRedraw = true;
-    loop();
-  });
+  const imagePaths = [
+    '/assets/portrait.jpg', // Для Netlify
+    'assets/portrait.jpg'  // Для локального сервера
+  ];
+  let loaded = false;
+  for (let path of imagePaths) {
+    if (loaded) break;
+    try {
+      window.img = loadImage(path, () => {
+        console.log(`Image loaded successfully from ${path}:`, window.img.width, window.img.height);
+        loaded = true;
+        window.needsRedraw = true;
+        initializeFallbackParticles(); // Инициализация после загрузки
+        loop();
+      }, () => {
+        console.warn(`Failed to load image at ${path}`);
+        if (!loaded && path === imagePaths[imagePaths.length - 1]) {
+          console.log("All paths failed, using fallback particles...");
+          initializeFallbackParticles(); // Запасные частицы
+          window.needsRedraw = true;
+          loop();
+        }
+      });
+    } catch (e) {
+      console.error(`Error attempting to load ${path}:`, e);
+    }
+  }
 
   updateBoundary();
   window.isCanvasReady = true;
@@ -123,7 +141,7 @@ function initializeFallbackParticles() {
   window.maxParticles = windowWidth < 768 ? 1500 : 3000;
   let particleCount = 0;
 
-  // Создание временных частиц, если изображение не загружено
+  // Размеры для частиц
   let imgWidth = window.img?.width || windowWidth / 2;
   let imgHeight = window.img?.height || windowHeight / 2;
   let maxBlockSize = 16;
@@ -154,9 +172,9 @@ function initializeFallbackParticles() {
     if (usedPositions.has(posKey)) continue;
     usedPositions.add(posKey);
 
-    // Запасной цвет, если изображение отсутствует
-    let col = window.img?.get(pixelX, pixelY) || [random(100, 255), random(100, 255), random(100, 255)];
-    let brightnessVal = window.img ? brightness(col) : 100;
+    // Цвет частиц
+    let col = window.img && window.img.width ? window.img.get(pixelX, pixelY) : [random(100, 255), random(100, 255), random(100, 255)];
+    let brightnessVal = window.img && window.img.width ? brightness(col) : 100;
     if (brightnessVal > 10 && particleCount < window.maxParticles) {
       let blockCenterX_canvas = x + windowWidth / 2 - imgWidth / 2 + maxBlockSize / 2;
       let blockCenterY_canvas = y + (document.fullscreenElement ? windowHeight : windowHeight - 100) / 2 - imgHeight / 2 - 150 + maxBlockSize / 2;
@@ -229,7 +247,7 @@ function initializeFallbackParticles() {
     let particle = window.particles[i];
     let pixelX = constrain(Math.floor(particle.gridX), 0, imgWidth - 1);
     let pixelY = constrain(Math.floor(particle.gridY), 0, imgHeight - 1);
-    let col = window.img?.get(pixelX, pixelY) || [random(100, 255), random(100, 255), random(100, 255)];
+    let col = window.img && window.img.width ? window.img.get(pixelX, pixelY) : [random(100, 255), random(100, 255), random(100, 255)];
     let isMonochrome = random() < 0.2;
     let gray = (red(col) + green(col) + blue(col)) / 3 * random(0.7, 1);
     window.quantumStates[i] = {
@@ -386,7 +404,14 @@ function renderTransformingPortrait(img, currentFrame) {
       let size = min(blockSize, img.width - x, img.height - y);
       for (let dy = 0; dy < size && y + dy < img.height; dy++) {
         for (let dx = 0; dx < size && x + dx < img.width; dx++) {
-          let col = img.get(x + dx, y + dy);
+          let pixelKey = `${x + dx},${y + dy}`;
+          let col;
+          if (window.imagePixelCache.has(pixelKey)) {
+            col = window.imagePixelCache.get(pixelKey);
+          } else {
+            col = img.get(x + dx, y + dy);
+            window.imagePixelCache.set(pixelKey, col);
+          }
           r += red(col);
           g += green(col);
           b += blue(col);
@@ -451,7 +476,7 @@ function renderTransformingPortrait(img, currentFrame) {
 
 function draw() {
   let startTime = performance.now();
-  console.log("Draw called, frame:", window.frame, "needsRedraw:", window.needsRedraw, "img loaded:", !!window.img?.width);
+  console.log("Draw called, frame:", window.frame, "needsRedraw:", window.needsRedraw, "img loaded:", window.img && window.img.width > 0);
 
   if (!window.isCanvasReady) return;
 
@@ -475,7 +500,7 @@ function draw() {
   }
 
   let blockList = [];
-  if (window.frame <= 60 && window.img?.width) {
+  if (window.frame <= 60 && window.img && window.img.width > 0) {
     blockList = renderTransformingPortrait(window.img, window.frame);
     if (window.frame === 31) {
       initializeFallbackParticles();
