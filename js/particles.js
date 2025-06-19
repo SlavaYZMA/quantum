@@ -214,7 +214,7 @@ function draw() {
   }
 
   let vacuumParticles = window.particles.filter(p => p.layer === 'vacuum');
-  let vacuumAlpha = map(cachedNoise(window.frame * 0.005, 0, 0), 0, 1, 30, 70); // Дыхание вакуума
+  let vacuumAlpha = map(cachedNoise(window.frame * 0.005, 0, 0), 0, 1, 30, 70);
   for (let particle of vacuumParticles) {
     let state = window.quantumStates[window.particles.indexOf(particle)];
     let noiseVal = cachedNoise(particle.baseX * window.noiseScale, particle.baseY * window.noiseScale, window.frame * 0.005);
@@ -222,7 +222,7 @@ function draw() {
     particle.offsetY = cachedNoise(particle.baseY * window.noiseScale, window.frame * 0.005, 0) * 10 - 5;
     particle.phase += 0.01;
     state.a = vacuumAlpha;
-    renderParticle(particle, state);
+    if (particle.alpha >= 10) renderParticle(particle, state);
   }
 
   let backgroundParticles = window.particles.filter(p => p.layer === 'background');
@@ -232,14 +232,14 @@ function draw() {
     particle.offsetX = noiseVal * 15 - 7.5;
     particle.offsetY = cachedNoise(particle.baseY * window.noiseScale, window.frame * 0.01, 0) * 15 - 7.5;
     particle.phase += particle.individualPeriod * 0.02;
-    renderParticle(particle, state);
+    if (particle.alpha >= 10) renderParticle(particle, state);
   }
 
   let mainParticles = window.particles.filter(p => p.layer === 'main');
   for (let particle of mainParticles) {
     let state = window.quantumStates[window.particles.indexOf(particle)];
     updateParticle(particle, state);
-    renderParticle(particle, state);
+    if (particle.alpha >= 10) renderParticle(particle, state);
   }
 
   image(window.trailBuffer, 0, 0);
@@ -268,7 +268,7 @@ function initializeParticles(blockList) {
     let brightnessVal = brightness(col);
     if (brightnessVal > 10 && particleCount < maxParticles) {
       let blockCenterX_canvas = x + (windowWidth - window.img.width) / 2 + maxBlockSize / 2;
-      let blockCenterY_canvas = y + (windowHeight - window.img.height) / 2 + maxBlockSize / 2;
+      let blockCenterY_canvas = y + (windowHeight - img.height) / 2 + maxBlockSize / 2;
       let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
       let shapeType = floor(random(4));
       let targetSize = random(1, 20);
@@ -337,6 +337,13 @@ function initializeParticles(blockList) {
 }
 
 function updateParticle(particle, state) {
+  // Пропуск частиц за пределами экрана или с низкой прозрачностью
+  let px = particle.x + particle.offsetX;
+  let py = particle.y + particle.offsetY;
+  if (px < 0 || px > windowWidth || py < 0 || py > windowHeight || particle.alpha < 10) {
+    return;
+  }
+
   let noiseX = cachedNoise(particle.chaosSeed + window.frame * 0.03, 0, 0) * 2 - 1;
   let noiseY = cachedNoise(0, particle.chaosSeed + window.frame * 0.03, 0) * 2 - 1;
 
@@ -424,7 +431,7 @@ function updateParticle(particle, state) {
   let influence = d < window.mouseInfluenceRadius ? map(d, 0, window.mouseInfluenceRadius, 1, 0) : 0;
   let mouseSpeed = dist(mouseX, mouseY, window.lastMouseX, window.lastMouseY);
   if (mouseX === window.lastMouseX && mouseY === window.lastMouseY) {
-    window.mouseHoverTime += 0.016; // Накопление при статичном положении
+    window.mouseHoverTime += 0.016;
   } else {
     window.mouseHoverTime = 0;
   }
@@ -453,7 +460,6 @@ function updateParticle(particle, state) {
     particle.offsetX += cos(repelAngle) * 10 * influence;
     particle.offsetY += sin(repelAngle) * 10 * influence;
     particle.speed *= 1.2;
-    // Плавное искажение
     let noiseVal = cachedNoise(particle.chaosSeed, window.frame * 0.05, 4);
     particle.offsetX += noiseVal * 5 * influence;
     particle.offsetY += cachedNoise(particle.chaosSeed + 300, window.frame * 0.05, 4) * 5 * influence;
@@ -461,11 +467,9 @@ function updateParticle(particle, state) {
     let waveOffset = cachedNoise(particle.chaosSeed, window.frame * 0.03, 5) * 30 * influence;
     particle.offsetX += waveOffset * cos(particle.wavePhase);
     particle.offsetY += waveOffset * sin(particle.wavePhase);
-    // Цветовой сдвиг
     state.r = constrain(state.baseR + influence * 20, 0, 255);
     state.g = constrain(state.baseG + influence * 20, 0, 255);
     state.b = constrain(state.baseB + influence * 20, 0, 255);
-    // Новые частицы
     if ((mouseSpeed > 20 || window.mouseHoverTime > 1) && random() < 0.05) {
       window.particles.push({
         x: particle.x,
@@ -526,7 +530,7 @@ function updateParticle(particle, state) {
     particle.offsetY = nearestPoint.y - particle.y;
   }
 
-  if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1 && random() < 0.5) {
+  if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1 && random() < 0.2) {
     let probDensity = particle.probAmplitude * 100;
     window.trailBuffer.fill(state.r, state.g, state.b, probDensity);
     window.trailBuffer.noStroke();
@@ -549,8 +553,13 @@ function updateParticle(particle, state) {
 }
 
 function renderParticle(particle, state) {
+  // Пропуск частиц за пределами экрана
+  let px = particle.x + particle.offsetX;
+  let py = particle.y + particle.offsetY;
+  if (px < 0 || px > windowWidth || py < 0 || py > windowHeight) return;
+
   push();
-  translate(particle.x + particle.offsetX, particle.y + particle.offsetY);
+  translate(px, py);
   rotate(particle.rotation);
   let colorShift = cachedNoise(particle.chaosSeed, window.frame * 0.02, 6) * 15;
   let alpha = particle.alpha * state.a / 255;
@@ -611,8 +620,10 @@ function renderParticle(particle, state) {
       endShape(CLOSE);
     } else {
       beginShape();
+      // Оптимизация: вычисляем шум один раз на частицу
+      let noiseVal = cachedNoise(particle.chaosSeed, window.frame * 0.01, 13);
       for (let a = 0; a < TWO_PI; a += TWO_PI / 20) {
-        let r = size * (0.7 + 0.3 * cachedNoise(a * 2 + particle.chaosSeed, window.frame * 0.01, 13) + waveDistort);
+        let r = size * (0.7 + 0.3 * noiseVal + waveDistort);
         vertex(r * cos(a), r * sin(a));
       }
       endShape(CLOSE);
