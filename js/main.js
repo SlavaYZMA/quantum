@@ -32,7 +32,7 @@ function setup() {
   noLoop();
   window.canvas.elt.style.display = 'block';
   window.canvas.elt.style.position = 'absolute';
-  window.canvas.elt.style.top = '100px'; // Под UI
+  window.canvas.elt.style.top = '100px';
   window.canvas.elt.style.left = '0';
   window.canvas.elt.style.zIndex = '-1';
   document.getElementById('canvasContainer4').style.zIndex = '1';
@@ -44,7 +44,7 @@ function setup() {
   fsButton.position(windowWidth - 100, 10);
   fsButton.mousePressed(() => {
     if (!document.fullscreenElement) {
-      window.canvas.elt.requestFullscreen().then(() => {
+      document.getElementById('canvasContainer4').requestFullscreen().then(() => {
         resizeCanvas(windowWidth, windowHeight);
         updateBoundary();
       });
@@ -160,12 +160,12 @@ function renderQuantumMessages() {
   textSize(16);
   for (let i = window.textMessages.length - 1; i >= 0; i--) {
     let msg = window.textMessages[i];
-    let t = (window.frame - msg.startFrame) / 60; // 60 фреймов = 2-3 сек при 20-25 FPS
+    let t = (window.frame - msg.startFrame) / 60;
     if (msg.fadeIn) {
       msg.alpha = lerp(0, 255, easeOutQuad(min(t, 1)));
       if (t >= 1) msg.fadeIn = false;
     } else {
-      msg.alpha = lerp(255, 0, easeOutQuad(max(0, (t - 3) / 2))); // Угасание после 3 сек
+      msg.alpha = lerp(255, 0, easeOutQuad(max(0, (t - 3) / 2)));
       if (t > 5) {
         window.textMessages.splice(i, 1);
         continue;
@@ -231,6 +231,9 @@ function renderTransformingPortrait(img, currentFrame) {
         offsetX += waveOffset * cos(block.wavePhase);
         offsetY += waveOffset * sin(block.wavePhase);
         rotation += noiseVal * 0.1;
+        if (random() < 0.05 && currentFrame === block.startFrame) {
+          addQuantumMessage("Суперпозиция: частица в нескольких состояниях одновременно.");
+        }
       }
       let canvasX = x + (windowWidth - img.width) / 2 + offsetX;
       let canvasY = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + offsetY;
@@ -240,11 +243,9 @@ function renderTransformingPortrait(img, currentFrame) {
         fill(r, g, b, probDensity);
         noStroke();
         ellipse(canvasX, canvasY, size * 4, size * 4);
-        if (random() < 0.05 && currentFrame === block.startFrame) {
-          addQuantumMessage("Суперпозиция: частица в нескольких состояниях одновременно.");
-        }
       }
       let alpha = map(currentFrame, block.endFrame, block.endFrame + 500, 255, 0);
+      let strokeW = map(currentFrame, block.endFrame, block.endFrame + 500, 1, 0);
       let colorShift = cachedNoise(block.noiseSeed, currentFrame * 0.02, 0) * 15;
       fill(r + colorShift, g + colorShift, b + colorShift, alpha);
       noStroke();
@@ -348,7 +349,6 @@ function draw() {
     });
   }
 
-  // Отрисовка интерференции
   if (window.frame % 30 === 0) {
     renderInterference();
     addQuantumMessage("Интерференция: волновые узоры усиливают или подавляют друг друга.");
@@ -406,9 +406,9 @@ function initializeParticles(blockList) {
       let blockCenterX_canvas = x + (windowWidth - img.width) / 2 + maxBlockSize / 2;
       let blockCenterY_canvas = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + maxBlockSize / 2;
       let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
-      let shapeType = floor(random(5)); // Добавлен тип для органических форм
+      let shapeType = floor(random(5));
       let targetSize = random(5, 30);
-      let superposition = random() < 0.3; // Увеличена вероятность
+      let superposition = random() < 0.3;
       let timeAnomaly = random() < 0.05;
       let angle = random(TWO_PI);
       let particle = {
@@ -440,7 +440,7 @@ function initializeParticles(blockList) {
         wavePhase: block.wavePhase,
         radialAngle: angle,
         radialDistance: 0,
-        targetRadialDistance: random(100, 300), // Увеличен радиус
+        targetRadialDistance: random(100, 300),
         superpositionT: 0,
         probAmplitude: random(0.5, 1.5),
         barrier: random() < 0.1 ? { x: random(windowWidth), y: random(windowHeight), width: 20, height: 100 } : null,
@@ -453,7 +453,6 @@ function initializeParticles(blockList) {
       window.particles.push(particle);
       particleCount++;
 
-      // Создание запутанных пар
       if (random() < 0.05 && particle.layer === 'main') {
         let entangled = { ...particle };
         entangled.x = random(windowWidth);
@@ -513,7 +512,6 @@ function updateParticle(particle, state) {
   }
 
   if (particle.superpositionT >= 1) {
-    // Нелинейное движение с шумом
     particle.offsetX += noiseX * particle.uncertainty * 15 * particle.probAmplitude * particle.speed;
     particle.offsetY += noiseY * particle.uncertainty * 15 * particle.probAmplitude * particle.speed;
     particle.rotation += noiseX * 0.05;
@@ -524,13 +522,12 @@ function updateParticle(particle, state) {
     particle.offsetX += waveOffset * cos(particle.wavePhase);
     particle.offsetY += waveOffset * sin(particle.wavePhase);
 
-    // Декогеренция
     particle.decoherence += 0.001 * cachedNoise(particle.chaosSeed, window.frame * 0.01, 2);
     if (particle.decoherence > 1) {
       particle.alpha *= 0.95;
       particle.probAmplitude *= 0.98;
       if (random() < 0.01) {
-        particle.alpha = 0; // Полное исчезновение
+        particle.alpha = 0;
         addQuantumMessage("Декогеренция: частица потеряла квантовую когерентность.");
       }
     }
@@ -545,7 +542,6 @@ function updateParticle(particle, state) {
       setTimeout(() => particle.alpha *= 0.9, 200);
     }
 
-    // Туннелирование
     if (particle.barrier && random() < 0.1 && !particle.tunneled) {
       let distToBarrier = dist(particle.x, particle.y, particle.barrier.x, particle.barrier.y);
       if (distToBarrier < 50) {
@@ -567,7 +563,6 @@ function updateParticle(particle, state) {
       }
     }
 
-    // Взаимодействие частиц
     for (let other of window.particles) {
       if (other !== particle && random() < 0.005) {
         let d = dist(particle.x + particle.offsetX, particle.y + particle.offsetY, other.x + other.offsetX, other.y + other.offsetY);
@@ -578,7 +573,6 @@ function updateParticle(particle, state) {
       }
     }
 
-    // Нелинейное развитие
     let breakupT = map(window.frame, particle.startFrame, particle.startFrame + 175, 0, 1);
     breakupT = constrain(breakupT, 0, 1);
     if (particle.timeAnomaly) {
@@ -594,7 +588,6 @@ function updateParticle(particle, state) {
     particle.offsetX = cos(angle) * particle.radialDistance;
     particle.offsetY = sin(angle) * particle.radialDistance;
 
-    // Запутанность
     if (particle.entangledIndex >= 0) {
       let other = window.particles[particle.entangledIndex];
       if (other && other.alpha >= 20) {
@@ -803,7 +796,6 @@ function renderParticle(particle, state) {
       }
       endShape(CLOSE);
     } else if (particle.shapeType === 3) {
-      // Органическая форма (волна/облако)
       beginShape();
       let noiseVal = cachedNoise(particle.chaosSeed, window.frame * 0.01, 14);
       for (let a = 0; a < TWO_PI; a += TWO_PI / 30) {
@@ -812,7 +804,6 @@ function renderParticle(particle, state) {
       }
       endShape(CLOSE);
     } else {
-      // Фрактальная форма
       beginShape();
       for (let a = 0; a < TWO_PI; a += TWO_PI / 40) {
         let r = size * (0.6 + 0.4 * cachedNoise(a * 2 + particle.chaosSeed, window.frame * 0.03, 16));
