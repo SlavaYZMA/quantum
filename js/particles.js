@@ -20,13 +20,12 @@ window.textMessages = { active: null, queue: [] };
 window.entangledPairs = [];
 
 function preload() {
-  // Load image (adjust path as needed)
   window.img = loadImage('assets/portrait.jpg', () => {
     console.log('Image loaded successfully:', window.img.width, 'x', window.img.height);
-    loop(); // Start animation after image loads
+    loop();
   }, () => {
     console.error('Failed to load image. Using fallback.');
-    window.img = createImage(100, 100); // Fallback
+    window.img = createImage(100, 100);
     window.img.loadPixels();
     loop();
   });
@@ -42,7 +41,7 @@ function setup() {
   window.canvas.parent('canvasContainer4');
   pixelDensity(1);
   frameRate(navigator.hardwareConcurrency < 4 ? 20 : 25);
-  noLoop(); // Wait for image to load
+  noLoop();
   window.canvas.elt.style.display = 'block';
   window.canvas.elt.style.position = 'absolute';
   window.canvas.elt.style.top = '100px';
@@ -266,7 +265,7 @@ function renderTransformingPortrait(img, currentFrame) {
         }
       }
       let canvasX = x + (windowWidth - img.width) / 2 + offsetX;
-      let canvasY = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + offsetY - 150; // Added 150px offset
+      let canvasY = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + offsetY - 150;
 
       if (currentFrame >= block.startFrame) {
         let probDensity = block.probAmplitude * 100;
@@ -375,7 +374,6 @@ function draw() {
     }
   }
 
-  let frameTime = performance.now() - performance.now(); // Dummy to avoid unused warning
   if (window.particles.length > window.maxParticles) {
     window.particles = window.particles.filter((p, i) => {
       let keep = p.alpha >= 20 || p.layer !== 'main';
@@ -391,7 +389,6 @@ function draw() {
 
   image(window.trailBuffer, 0, 0);
   renderQuantumMessages();
-  window.lastFrameTime = frameTime;
 
   console.log("FPS:", Math.round(frameRate()));
   console.timeEnd("Draw");
@@ -441,7 +438,7 @@ function initializeParticles(blockList) {
     let brightnessVal = brightness(col);
     if (brightnessVal > 10 && particleCount < window.maxParticles) {
       let blockCenterX_canvas = x + (windowWidth - window.img.width) / 2 + maxBlockSize / 2;
-      let blockCenterY_canvas = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - window.img.height) / 2 + maxBlockSize / 2 - 150; // Added 150px offset
+      let blockCenterY_canvas = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - window.img.height) / 2 + maxBlockSize / 2 - 150;
       let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
       let shapeType = floor(random(5));
       let targetSize = random(5, 30);
@@ -586,9 +583,9 @@ function updateParticle(particle, state) {
       if (distToBarrier < 50) {
         particle.tunneled = true;
         particle.tunnelTargetX = particle.barrier.x + random(-20, 20);
-        particle.tunnelTargetY = particle.y + random(-20);
+        particle.tunnelTargetY = particle.y + random(-20, 20);
         window.trailBuffer.noFill();
-        for (let i = 0; i < 3; i < 3; i++) {
+        for (let i = 0; i < 3; i++) { // Fixed syntax error
           window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
           window.trailBuffer.strokeWeight(1);
           window.trailBuffer.ellipse(particle.tunnelTargetX, particle.tunnelTargetY, 10 + i * 5);
