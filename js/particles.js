@@ -5,11 +5,13 @@ window.quantumStates = [];
 window.canvas = null;
 window.isCanvasReady = false;
 window.noiseScale = 0.03;
-window.mouseInfluenceRadius = 200; // Увеличено
+window.mouseInfluenceRadius = 200;
 window.chaosFactor = 0;
 window.boundaryPoints = [];
 window.chaosTimer = 0;
 window.trailBuffer = null;
+window.lastMouseX = 0;
+window.lastMouseY = 0;
 
 // Функция для плавной интерполяции
 function easeOutQuad(t) {
@@ -17,20 +19,19 @@ function easeOutQuad(t) {
 }
 
 function setup() {
-  window.canvas = createCanvas(windowWidth, windowHeight); // Полноэкранная канва
+  window.canvas = createCanvas(windowWidth, windowHeight);
   window.canvas.parent('canvasContainer4');
   pixelDensity(1);
   frameRate(25);
   noLoop();
   window.canvas.elt.style.display = 'none';
-  // Стили для полноэкранной канвы
   window.canvas.elt.style.position = 'absolute';
   window.canvas.elt.style.top = '0';
   window.canvas.elt.style.left = '0';
-  window.canvas.elt.style.zIndex = '0';
-  document.getElementById('canvasContainer4').style.zIndex = '1'; // UI выше
+  window.canvas.elt.style.zIndex = '-1'; // Анимация под UI
+  document.getElementById('canvasContainer4').style.zIndex = '1';
+  document.getElementById('canvasContainer4').style.position = 'relative';
 
-  // Буфер для следов
   window.trailBuffer = createGraphics(windowWidth, windowHeight);
   window.trailBuffer.pixelDensity(1);
 
@@ -95,7 +96,6 @@ function cachedNoise(x, y, z) {
   return noise(x, y, z);
 }
 
-// Рендеринг трансформации портрета
 function renderTransformingPortrait(img, currentFrame) {
   img.loadPixels();
   let blockList = [];
@@ -162,7 +162,7 @@ function renderTransformingPortrait(img, currentFrame) {
       }
       let alpha = map(currentFrame, block.endFrame, block.endFrame + 500, 255, 0);
       let strokeW = map(currentFrame, block.endFrame, block.endFrame + 500, 1, 0);
-      let colorShift = sin(currentFrame * 0.02 + block.wavePhase) * 20;
+      let colorShift = sin(currentFrame * 0.02 + block.wavePhase) * 15; // Плавный сдвиг цвета
       fill(r + colorShift, g + colorShift, b + colorShift, alpha);
       stroke(r + colorShift, g + colorShift, b + colorShift, alpha * 0.5);
       strokeWeight(strokeW);
@@ -174,10 +174,10 @@ function renderTransformingPortrait(img, currentFrame) {
 
       if (currentFrame >= block.startFrame && random() < 0.5) {
         for (let i = 0; i < 2; i++) {
-          fill(r + colorShift, g + colorShift, b + colorShift, alpha * 0.5);
+          fill(r + colorShift, g + colorShift, b + colorShift, alpha * 0.3); // Послеобразы
           noStroke();
-          let superX = canvasX + random(-50, 50);
-          let superY = canvasY + random(-50, 50);
+          let superX = canvasX + random(-30, 30);
+          let superY = canvasY + random(-30, 30);
           let pulse = sin(currentFrame * 0.1 + block.wavePhase) * 5;
           ellipse(superX + pulse, superY + pulse, size * 2);
         }
@@ -197,11 +197,11 @@ function draw() {
   if (window.chaosTimer > 5) {
     window.chaosTimer = 0;
     updateBoundary();
-    window.mouseInfluenceRadius = random(100, 250);
+    window.mouseInfluenceRadius = random(150, 250);
     window.noiseScale = random(0.02, 0.04);
   }
 
-  background(0); // Чёрный фон
+  background(0);
   window.trailBuffer.clear();
 
   let blockList = [];
@@ -218,7 +218,7 @@ function draw() {
     let noiseVal = cachedNoise(particle.baseX * window.noiseScale, particle.baseY * window.noiseScale, window.frame * 0.01);
     particle.offsetX = sin(particle.phase) * 15 * noiseVal;
     particle.offsetY = cos(particle.phase) * 15 * noiseVal;
-    particle.phase += 0.03;
+    particle.phase += 0.02; // Медленные пульсации
     renderParticle(particle, state);
   }
 
@@ -236,7 +236,7 @@ function initializeParticles(blockList) {
   window.particles = [];
   window.quantumStates = [];
   const maxBlockSize = 16;
-  let maxParticles = windowWidth < 768 ? 3000 : 6000; // Увеличено
+  let maxParticles = windowWidth < 768 ? 4000 : 8000; // Увеличено
   let particleCount = 0;
   let imgCenterX = window.img.width / 2 + (windowWidth - window.img.width) / 2;
   let imgCenterY = window.img.height / 2 + (windowHeight - window.img.height) / 2;
@@ -278,6 +278,7 @@ function initializeParticles(blockList) {
         chaosSeed: random(1000),
         alpha: 255,
         startFrame: block.endFrame,
+        birthFrame: window.frame, // Для появления новых частиц
         shapeType: shapeType,
         sides: shapeType === 2 ? floor(random(5, 13)) : 0,
         tunneled: false,
@@ -341,7 +342,7 @@ function updateParticle(particle, state) {
     particle.offsetY += noiseY * particle.uncertainty * 20 * particle.probAmplitude * particle.speed;
     particle.rotation += noiseX * 0.05;
     let sizeNoise = cachedNoise(particle.chaosSeed, window.frame * 0.02, 0);
-    particle.size = particle.targetSize * (1 + 0.5 * sizeNoise);
+    particle.size = particle.targetSize * (1 + 0.3 * sizeNoise); // Пульсация
 
     let waveOffset = sin(window.frame * 0.05 + particle.wavePhase) * 30 * particle.probAmplitude;
     particle.offsetX += waveOffset * cos(particle.wavePhase);
@@ -357,8 +358,7 @@ function updateParticle(particle, state) {
       setTimeout(() => particle.alpha *= 0.9, 200);
     }
 
-    // Усиленное туннелирование
-    if (particle.barrier && random() < 0.05 && !particle.tunneled) {
+    if (particle.barrier && random() < 0.1 && !particle.tunneled) { // Усилено
       let distToBarrier = dist(particle.x, particle.y, particle.barrier.x, particle.barrier.y);
       if (distToBarrier < 50) {
         particle.tunneled = true;
@@ -394,7 +394,7 @@ function updateParticle(particle, state) {
     particle.offsetY = sin(angle) * particle.radialDistance;
   }
 
-  // Усиленная реакция на мышь
+  // Интерактивность курсора
   let d = dist(mouseX, mouseY, particle.x + particle.offsetX, particle.y + particle.offsetY);
   let influence = d < window.mouseInfluenceRadius ? map(d, 0, window.mouseInfluenceRadius, 1, 0) : 0;
   if (influence > 0.5 && !window.isPaused && particle.superposition && !state.collapsed) {
@@ -403,12 +403,11 @@ function updateParticle(particle, state) {
     particle.shapeType = random() < 0.5 ? floor(random(4)) : particle.shapeType;
     particle.uncertainty = 0;
     particle.probAmplitude = 1;
-    // Вспышки при измерении
     window.trailBuffer.noFill();
     for (let i = 0; i < 3; i++) {
       window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
       window.trailBuffer.strokeWeight(1);
-      window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 10 + i * 10);
+      window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 20 + i * 10);
     }
     if (random() < 0.1) {
       window.trailBuffer.stroke(255, 255, 255, 100);
@@ -419,13 +418,23 @@ function updateParticle(particle, state) {
     let repelAngle = atan2(particle.y + particle.offsetY - mouseY, particle.x + particle.offsetX - mouseX);
     particle.offsetX += cos(repelAngle) * 15 * influence;
     particle.offsetY += sin(repelAngle) * 15 * influence;
-    particle.speed *= 1.5; // Ускорение
-    particle.offsetX += random(-5, 5); // Дрожание
-    particle.offsetY += random(-5, 5);
-    // Усиленная интерференция
-    let waveOffset = sin(window.frame * 0.05 + particle.wavePhase) * 40 * influence;
+    particle.speed *= 1.5;
+    particle.offsetX += random(-10, 10); // Дрожание
+    particle.offsetY += random(-10, 10);
+    particle.probAmplitude *= 1.5; // Усиление трансформации
+    let waveOffset = sin(window.frame * 0.05 + particle.wavePhase) * 50 * influence; // Искажение
     particle.offsetX += waveOffset * cos(particle.wavePhase);
     particle.offsetY += waveOffset * sin(particle.wavePhase);
+    // Волновой выброс при быстром движении
+    let mouseSpeed = dist(mouseX, mouseY, window.lastMouseX, window.lastMouseY);
+    if (mouseSpeed > 10) {
+      window.trailBuffer.noFill();
+      for (let i = 0; i < 3; i++) {
+        window.trailBuffer.stroke(255, 255, 255, 100 - i * 30);
+        window.trailBuffer.strokeWeight(0.5);
+        window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 20 + i * 20);
+      }
+    }
   }
 
   if (!isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) {
@@ -437,23 +446,37 @@ function updateParticle(particle, state) {
     particle.offsetY = nearestPoint.y - particle.y;
   }
 
+  // Световые следы
   if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1 && random() < 0.5) {
-    let probDensity = particle.probAmplitude * 400;
+    let probDensity = particle.probAmplitude * 100; // Мягкие следы
     window.trailBuffer.fill(state.r, state.g, state.b, probDensity);
     window.trailBuffer.noStroke();
     window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 2, particle.size / 2);
+    // Тонкие линии интерференции
+    if (random() < 0.3) {
+      window.trailBuffer.stroke(255, 255, 255, 50);
+      window.trailBuffer.strokeWeight(0.5);
+      window.trailBuffer.line(
+        particle.x + particle.offsetX,
+        particle.y + particle.offsetY,
+        particle.x + particle.offsetX + random(-20, 20),
+        particle.y + particle.offsetY + random(-20, 20)
+      );
+    }
   }
 
   particle.phase += 0.02 * particle.speed;
+  window.lastMouseX = mouseX;
+  window.lastMouseY = mouseY;
 }
 
 function renderParticle(particle, state) {
   push();
   translate(particle.x + particle.offsetX, particle.y + particle.offsetY);
   rotate(particle.rotation);
-  let colorShift = sin(window.frame * 0.02 + particle.wavePhase) * 20;
+  let colorShift = sin(window.frame * 0.02 + particle.wavePhase) * 15;
   let alpha = particle.alpha;
-  let strokeW = map(window.frame, particle.startFrame + 250, particle.startFrame + 500, 1, 0);
+  let strokeW = map(window.frame - particle.birthFrame, 250, 500, 1, 0);
   stroke(state.r + colorShift, state.g + colorShift, state.b + colorShift, alpha * 0.5);
   strokeWeight(strokeW);
   fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, alpha);
@@ -463,16 +486,16 @@ function renderParticle(particle, state) {
   let waveDistort = 0.5 * sin(window.frame * 0.07 + particle.wavePhase);
 
   if (particle.superposition && !state.collapsed) {
-    let probDensity = particle.probAmplitude * 250; // Плотнее
+    let probDensity = particle.probAmplitude * 250;
     fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, probDensity);
     noStroke();
     ellipse(0, 0, size * 5, size * 5);
     for (let i = 0; i < 2; i++) {
       if (random() < 0.5) {
-        fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, probDensity * 0.5);
+        fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, probDensity * 0.3); // Послеобразы
         noStroke();
-        let superX = random(-50, 50);
-        let superY = random(-50, 50);
+        let superX = random(-30, 30);
+        let superY = random(-30, 30);
         let pulse = sin(window.frame * 0.1 + particle.wavePhase) * 5;
         ellipse(superX + pulse, superY + pulse, size * 2);
       }
@@ -483,10 +506,10 @@ function renderParticle(particle, state) {
     rect(-size / 2, -size / 2, size, size);
     for (let i = 0; i < 2; i++) {
       if (random() < 0.5) {
-        fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, alpha * 0.5);
+        fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, alpha * 0.3);
         noStroke();
-        let superX = random(-50, 50);
-        let superY = random(-50, 50);
+        let superX = random(-30, 30);
+        let superY = random(-30, 30);
         let pulse = sin(window.frame * 0.1 + particle.wavePhase) * 5;
         ellipse(superX + pulse, superY + pulse, size * 2);
       }
