@@ -415,7 +415,7 @@ function draw() {
   window.lastFrameTime = performance.now() - startTime;
   window.needsRedraw = window.isPaused ? false : true;
 
-  console.log("FPS:", Math.round(1000 / window.lastFrameTime));
+  console.log("FPS:", Math.round(frameRate()));
   console.timeEnd("Draw");
   requestAnimationFrame(draw);
 }
@@ -470,11 +470,11 @@ function updateParticle(particle, state) {
     particle.offsetX += waveOffset * cos(particle.wavePhase);
     particle.offsetY += waveOffset * sin(particle.wavePhase);
 
-    particle.decoherence += 0.001;
+    particle.decoherence += 0.0005; // Уменьшено для сохранения частиц
     if (particle.decoherence > 1) {
-      particle.alpha *= 0.98;
-      particle.probAmplitude *= 0.99;
-      if (random() < 0.005) {
+      particle.alpha *= 0.99;
+      particle.probAmplitude *= 0.995;
+      if (random() < 0.002) { // Уменьшена вероятность исчезновения
         particle.alpha = 0;
         addQuantumMessage("Декогеренция: частица исчезла.", "decoherence");
       }
