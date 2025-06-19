@@ -20,14 +20,21 @@ window.textMessages = { active: null, queue: [] };
 window.entangledPairs = [];
 
 function preload() {
+  console.log('Attempting to load image from: assets/portrait.jpg');
   window.img = loadImage('assets/portrait.jpg', () => {
     console.log('Image loaded successfully:', window.img.width, 'x', window.img.height);
     loop();
   }, () => {
-    console.error('Failed to load image. Using fallback.');
-    window.img = createImage(100, 100);
-    window.img.loadPixels();
-    loop();
+    console.error('Failed to load image from assets/portrait.jpg. Trying fallback path: portrait.jpg');
+    window.img = loadImage('portrait.jpg', () => {
+      console.log('Fallback image loaded successfully:', window.img.width, 'x', window.img.height);
+      loop();
+    }, () => {
+      console.error('Failed to load fallback image. Using empty image.');
+      window.img = createImage(100, 100);
+      window.img.loadPixels();
+      loop();
+    });
   });
 }
 
@@ -585,7 +592,7 @@ function updateParticle(particle, state) {
         particle.tunnelTargetX = particle.barrier.x + random(-20, 20);
         particle.tunnelTargetY = particle.y + random(-20, 20);
         window.trailBuffer.noFill();
-        for (let i = 0; i < 3; i++) { // Fixed syntax error
+        for (let i = 0; i < 3; i++) {
           window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
           window.trailBuffer.strokeWeight(1);
           window.trailBuffer.ellipse(particle.tunnelTargetX, particle.tunnelTargetY, 10 + i * 5);
