@@ -94,8 +94,21 @@ function setup() {
     window.needsRedraw = true;
   });
 
+  // Загрузка изображения
+  if (!window.img) {
+    console.log("Loading image...");
+    window.img = loadImage('path/to/your/image.jpg', () => {
+      console.log("Image loaded:", window.img.width, window.img.height);
+      window.needsRedraw = true;
+      loop();
+    }, () => {
+      console.error("Failed to load image");
+    });
+  }
+
   updateBoundary();
   window.isCanvasReady = true;
+  window.needsRedraw = true;
   loop();
 }
 
@@ -210,6 +223,7 @@ function renderQuantumMessages() {
 }
 
 function renderTransformingPortrait(img, currentFrame) {
+  if (!img || !img.width) return [];
   img.loadPixels();
   let blockList = [];
   let maxBlockSize = 16;
@@ -303,9 +317,11 @@ function renderTransformingPortrait(img, currentFrame) {
 }
 
 function draw() {
-  if (!window.needsRedraw || !window.img || !window.img.width) return;
-
   let startTime = performance.now();
+  console.log("Draw called, frame:", window.frame, "needsRedraw:", window.needsRedraw, "img loaded:", !!window.img?.width);
+
+  if (!window.isCanvasReady) return;
+
   window.frame++;
   window.chaosTimer += 0.016;
   window.chaosFactor = map(cachedNoise(window.frame * 0.01, 0, 0), 0, 1, 0.3, 1) * (window.weirdnessFactor || 0.5);
@@ -320,11 +336,13 @@ function draw() {
     }
   }
 
-  background(0);
-  window.trailBuffer.clear();
+  if (window.needsRedraw) {
+    background(0);
+    window.trailBuffer.clear();
+  }
 
   let blockList = [];
-  if (window.frame <= 60) {
+  if (window.frame <= 60 && window.img?.width) {
     blockList = renderTransformingPortrait(window.img, window.frame);
     if (window.frame === 31) {
       initializeParticles(blockList);
@@ -334,7 +352,7 @@ function draw() {
   let updateBackground = window.frame % 3 === 0;
   let vacuumParticles = window.particles.filter(p => p.layer === 'vacuum' && p.alpha >= 20);
   let vacuumAlpha = map(cachedNoise(window.frame * 0.005, 0, 0), 0, 1, 30, 70);
-  if (updateBackground) {
+  if (updateBackground && window.needsRedraw) {
     for (let particle of vacuumParticles) {
       let state = window.quantumStates[window.particles.indexOf(particle)];
       if (!isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) continue;
@@ -348,7 +366,7 @@ function draw() {
   }
 
   let backgroundParticles = window.particles.filter(p => p.layer === 'background' && p.alpha >= 20);
-  if (updateBackground) {
+  if (updateBackground && window.needsRedraw) {
     for (let particle of backgroundParticles) {
       let state = window.quantumStates[window.particles.indexOf(particle)];
       if (!isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) continue;
@@ -361,19 +379,13 @@ function draw() {
   }
 
   let mainParticles = window.particles.filter(p => p.layer === 'main' && p.alpha >= 20);
-  let newParticles = [];
-  let newStates = [];
   for (let particle of mainParticles) {
     let state = window.quantumStates[window.particles.indexOf(particle)];
     updateParticle(particle, state);
-    if (isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) {
+    if (window.needsRedraw && isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) {
       renderParticle(particle, state);
-      newParticles.push(particle);
-      newStates.push(state);
     }
   }
-  window.particles = window.particles.filter(p => p.alpha >= 20 && isPointInBoundary(p.x + p.offsetX, p.y + p.offsetY));
-  window.quantumStates = window.quantumStates.filter((_, i) => window.particles.includes(window.particles[i]));
 
   if (window.frame % 5 === 0) {
     renderInterference();
@@ -381,7 +393,7 @@ function draw() {
       addQuantumMessage("Интерференция: волновые узоры усиливают или подавляют друг друга.", "interference");
     }
     window.interferenceFrame = window.frame;
-  } else if (window.frame - window.interferenceFrame < 5) {
+  } else if (window.frame - window.interferenceFrame < 5 && window.needsRedraw) {
     image(window.trailBuffer, 0, 0);
   }
 
@@ -391,11 +403,14 @@ function draw() {
     window.quantumStates = window.quantumStates.slice(0, window.maxParticles / 2);
   }
 
-  image(window.trailBuffer, 0, 0);
-  renderQuantumMessages();
+  if (window.needsRedraw) {
+    image(window.trailBuffer, 0, 0);
+    renderQuantumMessages();
+  }
   window.lastFrameTime = frameTime;
-  window.needsRedraw = false;
+  window.needsRedraw = window.isPaused ? false : true;
 
+  console.log("FPS:", Math.round(1000 / window.lastFrameTime));
   requestAnimationFrame(draw);
 }
 
@@ -429,6 +444,10 @@ function initializeParticles(blockList) {
   window.maxParticles = windowWidth < 768 ? 1500 : 3000;
   let particleCount = 0;
 
+  if (!window.img?.width) {
+    console.error("Image10Image not loaded for particle initialization");
+    return;
+  }
   window.img.loadPixels();
   let usedPositions = new Set();
   for (let block of blockList) {
