@@ -152,7 +152,7 @@ function initializeParticles() {
       let blockCenterX_canvas = x + windowWidth / 2 - imgWidth / 2 + maxBlockSize / 2;
       let blockCenterY_canvas = y + (document.fullscreenElement ? windowHeight : windowHeight - 100) / 2 - imgHeight / 2 - 150 + maxBlockSize / 2;
       let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
-      let shapeType = floor(random(2)); // Только круги и треугольники
+      let shapeType = floor(random(2));
       let targetSize = random(5, 20);
       let superposition = random() < 0.2;
       let timeAnomaly = random() < 0.03;
@@ -237,7 +237,7 @@ function initializeParticles() {
 
 function updateBoundary() {
   window.boundaryPoints = [];
-  let numPoints = 20; // Уменьшено для оптимизации
+  let numPoints = 20;
   let margin = 10;
   let maxX = windowWidth - margin;
   let maxY = (document.fullscreenElement ? windowHeight : windowHeight - 100) - margin;
@@ -402,33 +402,27 @@ function draw() {
     if (random() < 0.1) {
       addQuantumMessage("Интерференция: волновые узоры.", "interference");
     }
-    window.interferenceFrame = true;
-  } else if (window.interferenceFrame && window.needsRedraw) {
+    window.interferenceFrame = window.frame;
+  } else if (window.frame - window.interferenceFrame < 10 && window.needsRedraw) {
     image(window.trailBuffer, 0, 0);
   }
 
-  let frameTime = performance.now() - performance.now(); // Заменить для точного времени
-  if (frameTime > 40 && window.particles.length > 500) {
-    window.particles = window.particles.slice(0, window.maxParticles / 2);
-    window.quantumStates = window.quantumStates.slice(0, window.maxParticles / 2);
-    console.log("Reduced particles to:", window.particles.length);
-  }
-
+  let startTime = performance.now();
   if (window.needsRedraw) {
     image(window.trailBuffer, 0, 0);
     renderQuantumMessages();
   }
-  window.lastFrameTime = performance.now() - performance.now(); // Заменить
+  window.lastFrameTime = performance.now() - startTime;
   window.needsRedraw = window.isPaused ? false : true;
 
-  console.log("FPS:", Math.round(1000 / (performance.now() - frameTime)));
+  console.log("FPS:", Math.round(1000 / window.lastFrameTime));
   console.timeEnd("Draw");
   requestAnimationFrame(draw);
 }
 
 function renderInterference() {
   window.trailBuffer.clear();
-  let gridSize = 100; // Увеличен для оптимизации
+  let gridSize = 100;
   let maxY = document.fullscreenElement ? windowHeight : windowHeight - 100;
   for (let x = 0; x < windowWidth; x += gridSize) {
     for (let y = 0; y < maxY; y += gridSize) {
@@ -446,7 +440,6 @@ function renderInterference() {
       window.trailBuffer.ellipse(x, y, gridSize / 5);
     }
   }
-  window.interferenceFrame = true;
 }
 
 function updateParticle(particle, state) {
@@ -500,8 +493,8 @@ function updateParticle(particle, state) {
     }
     let easedT = easeOutQuad(breakupT);
     particle.size = lerp(particle.size, particle.targetSize, easedT);
-    let angle = particle.rradialAngle + noiseVal * PI / 4;
-    particle.radialDistance = lerp(particleRad.radialDistance, particle.targetRad);
+    let angle = particle.radialAngle + noiseVal * PI / 4;
+    particle.radialDistance = lerp(particle.radialDistance, particle.targetRadialDistance, easedT);
     particle.offsetX += cos(angle) * particle.radialDistance;
     particle.offsetY += sin(angle) * particle.radialDistance;
 
@@ -599,4 +592,3 @@ function renderParticle(particle, state) {
   }
   pop();
 }
-</script>
