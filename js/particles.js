@@ -35,6 +35,8 @@ function setup() {
   window.canvas.elt.style.zIndex = '-1';
   document.getElementById('canvasContainer4').style.zIndex = '1';
   document.getElementById('canvasContainer4').style.position = 'relative';
+  // Удаление любых границ для контейнера
+  document.getElementById('canvasContainer4').style.border = 'none';
 
   window.trailBuffer = createGraphics(windowWidth, windowHeight);
   window.trailBuffer.pixelDensity(1);
@@ -73,18 +75,41 @@ function setup() {
 
 function updateBoundary() {
   window.boundaryPoints = [];
-  let numPoints = 20;
-  for (let i = 0; i < numPoints; i++) {
-    let angle = TWO_PI * i / numPoints;
-    let radius = (min(windowWidth, windowHeight) / 2) * (0.7 + 0.3 * cachedNoise(i * 0.1, window.frame * 0.01, 0));
-    window.boundaryPoints.push({
-      x: windowWidth / 2 + cos(angle) * radius,
-      y: windowHeight / 2 + sin(angle) * radius
-    });
+  let numPoints = 40; // Увеличено для более плавной границы
+  let portraitWidth = windowWidth * 0.2; // 20% экрана для портрета (~300px)
+  let textHeight = 100; // 100px сверху для текста
+  let rightBound = windowWidth - 10; // Отступ справа
+  let bottomBound = windowHeight - 10; // Отступ снизу
+
+  // Формируем границу: прямоугольник, исключающий левую и верхнюю зоны
+  // Верхняя граница (от portraitWidth до rightBound)
+  for (let i = 0; i < numPoints / 4; i++) {
+    let x = lerp(portraitWidth, rightBound, i / (numPoints / 4));
+    window.boundaryPoints.push({ x, y: textHeight });
+  }
+  // Правая граница (от textHeight до bottomBound)
+  for (let i = 0; i < numPoints / 4; i++) {
+    let y = lerp(textHeight, bottomBound, i / (numPoints / 4));
+    window.boundaryPoints.push({ x: rightBound, y });
+  }
+  // Нижняя граница (от rightBound до portraitWidth)
+  for (let i = 0; i < numPoints / 4; i++) {
+    let x = lerp(rightBound, portraitWidth, i / (numPoints / 4));
+    window.boundaryPoints.push({ x, y: bottomBound });
+  }
+  // Левая граница (от bottomBound до textHeight)
+  for (let i = 0; i < numPoints / 4; i++) {
+    let y = lerp(bottomBound, textHeight, i / (numPoints / 4));
+    window.boundaryPoints.push({ x: portraitWidth, y });
   }
 }
 
 function isPointInBoundary(x, y) {
+  let portraitWidth = windowWidth * 0.2;
+  let textHeight = 100;
+  // Быстрая проверка: вне левой или верхней зоны
+  if (x < portraitWidth || y < textHeight) return false;
+  // Проверка внутри прямоугольной границы
   let inside = false;
   for (let i = 0, j = window.boundaryPoints.length - 1; i < window.boundaryPoints.length; j = i++) {
     let xi = window.boundaryPoints[i].x, yi = window.boundaryPoints[i].y;
@@ -115,6 +140,18 @@ function renderTransformingPortrait(img, currentFrame) {
   let maxBlockSize = 16;
   let blockSize = map(currentFrame, 1, 30, 1, maxBlockSize);
   blockSize = constrain(blockSize, 1, maxBlockSize);
+
+  // Статичный портрет слева (без рамки)
+  if (currentFrame > 60) {
+    let portraitWidth = windowWidth * 0.2;
+    let portraitHeight = img.height * (portraitWidth / img.width);
+    let xOffset = 10; // Отступ от левого края
+    let yOffset = 110; // Под текстовым блоком
+    push();
+    noStroke(); // Удаляем любую рамку
+    image(img, xOffset, yOffset, portraitWidth - 20, portraitHeight);
+    pop();
+  }
 
   for (let y = 0; y < img.height; y += blockSize) {
     for (let x = 0; x < img.width; x += blockSize) {
@@ -177,8 +214,7 @@ function renderTransformingPortrait(img, currentFrame) {
       let strokeW = map(currentFrame, block.endFrame, block.endFrame + 500, 1, 0);
       let colorShift = cachedNoise(block.noiseSeed, currentFrame * 0.02, 0) * 15;
       fill(r + colorShift, g + colorShift, b + colorShift, alpha);
-      stroke(r + colorShift, g + colorShift, b + colorShift, alpha * 0.5);
-      strokeWeight(strokeW);
+      noStroke(); // Удаляем обводку для блоков
       push();
       translate(canvasX, canvasY);
       rotate(rotation);
@@ -224,6 +260,8 @@ function draw() {
     if (window.frame === 31) {
       initializeParticles(blockList);
     }
+  } else {
+    blockList = renderTransformingPortrait(window.img, window.frame); // Для статичного портрета
   }
 
   let updateBackground = window.frame % 2 === 0;
@@ -286,8 +324,8 @@ function initializeParticles(blockList) {
   const maxBlockSize = 16;
   window.maxParticles = windowWidth < 768 ? 2000 : 4000;
   let particleCount = 0;
-  let imgCenterX = window.img.width / 2 + (windowWidth - window.img.width) / 2;
-  let imgCenterY = window.img.height / 2 + (windowHeight - window.img.height) / 2;
+  let imgCenterX = window.img.width / 2 + (windowWidth - img.width) / 2;
+  let imgCenterY = window.img.height / 2 + (windowHeight - img.height) / 2;
 
   window.img.loadPixels();
   let usedPositions = new Set();
@@ -302,8 +340,8 @@ function initializeParticles(blockList) {
     let col = window.img.get(pixelX, pixelY);
     let brightnessVal = brightness(col);
     if (brightnessVal > 10 && particleCount < window.maxParticles) {
-      let blockCenterX_canvas = x + (windowWidth - window.img.width) / 2 + maxBlockSize / 2;
-      let blockCenterY_canvas = y + (windowHeight - window.img.height) / 2 + maxBlockSize / 2;
+      let blockCenterX_canvas = x + (windowWidth - img.width) / 2 + maxBlockSize / 2;
+      let blockCenterY_canvas = y + (windowHeight - img.height) / 2 + maxBlockSize / 2;
       let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
       let shapeType = floor(random(4));
       let targetSize = random(1, 20);
@@ -339,7 +377,7 @@ function initializeParticles(blockList) {
         wavePhase: block.wavePhase,
         radialAngle: angle,
         radialDistance: 0,
-        targetRadialDistance: random(50, 100),
+        targetRadialDistance: random(50, 200), // Увеличен радиус для большего рассеивания
         superpositionT: 0,
         probAmplitude: random(0.5, 1),
         barrier: random() < 0.1 ? { x: random(windowWidth), y: random(windowHeight), width: 20, height: 100 } : null,
@@ -532,7 +570,7 @@ function updateParticle(particle, state) {
         wavePhase: random(TWO_PI),
         radialAngle: random(TWO_PI),
         radialDistance: 0,
-        targetRadialDistance: random(50, 100),
+        targetRadialDistance: random(50, 200),
         superpositionT: 1,
         probAmplitude: random(0.5, 1),
         barrier: null,
