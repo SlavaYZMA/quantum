@@ -20,14 +20,13 @@ window.textMessages = { activeMessages: [], queue: [] };
 window.entangledPairs = [];
 window.needsRedraw = true;
 window.interferenceFrame = 0;
-window.imagePixelCache = new Map();
 
 function easeOutQuad(t) {
   return t * (2 - t);
 }
 
 function setup() {
-  // Создание канвы с willReadFrequently для оптимизации getImageData
+  // Создание канвы с willReadFrequently
   window.canvas = createCanvas(windowWidth, windowHeight - 100, {
     willReadFrequently: true
   });
@@ -98,52 +97,25 @@ function setup() {
     window.needsRedraw = true;
   });
 
-  // Загрузка изображения
-  console.log("Attempting to load image...");
-  const imagePaths = [
-    '/assets/portrait.jpg', // Для Netlify
-    'assets/portrait.jpg'  // Для локального сервера
-  ];
-  let loaded = false;
-  for (let path of imagePaths) {
-    if (loaded) break;
-    try {
-      window.img = loadImage(path, () => {
-        console.log(`Image loaded successfully from ${path}:`, window.img.width, window.img.height);
-        loaded = true;
-        window.needsRedraw = true;
-        initializeFallbackParticles(); // Инициализация после загрузки
-        loop();
-      }, () => {
-        console.warn(`Failed to load image at ${path}`);
-        if (!loaded && path === imagePaths[imagePaths.length - 1]) {
-          console.log("All paths failed, using fallback particles...");
-          initializeFallbackParticles(); // Запасные частицы
-          window.needsRedraw = true;
-          loop();
-        }
-      });
-    } catch (e) {
-      console.error(`Error attempting to load ${path}:`, e);
-    }
-  }
-
+  // Инициализация частиц без изображения
+  console.log("Initializing particles without image...");
+  initializeParticles();
   updateBoundary();
   window.isCanvasReady = true;
   window.needsRedraw = true;
   loop();
 }
 
-function initializeFallbackParticles() {
+function initializeParticles() {
   window.particles = [];
   window.quantumStates = [];
   window.entangledPairs = [];
   window.maxParticles = windowWidth < 768 ? 1500 : 3000;
   let particleCount = 0;
 
-  // Размеры для частиц
-  let imgWidth = window.img?.width || windowWidth / 2;
-  let imgHeight = window.img?.height || windowHeight / 2;
+  // Размеры области для частиц (имитация изображения)
+  let imgWidth = windowWidth / 2;
+  let imgHeight = windowHeight / 2;
   let maxBlockSize = 16;
   let blockSize = maxBlockSize;
   let blockList = [];
@@ -172,9 +144,15 @@ function initializeFallbackParticles() {
     if (usedPositions.has(posKey)) continue;
     usedPositions.add(posKey);
 
-    // Цвет частиц
-    let col = window.img && window.img.width ? window.img.get(pixelX, pixelY) : [random(100, 255), random(100, 255), random(100, 255)];
-    let brightnessVal = window.img && window.img.width ? brightness(col) : 100;
+    // Генерация градиентного цвета
+    let t = (pixelX / imgWidth + pixelY / imgHeight) / 2;
+    let col = [
+      lerp(100, 255, t), // R
+      lerp(100, 200, t), // G
+      lerp(150, 255, t)  // B
+    ];
+    let brightnessVal = (col[0] + col[1] + col[2]) / 3;
+
     if (brightnessVal > 10 && particleCount < window.maxParticles) {
       let blockCenterX_canvas = x + windowWidth / 2 - imgWidth / 2 + maxBlockSize / 2;
       let blockCenterY_canvas = y + (document.fullscreenElement ? windowHeight : windowHeight - 100) / 2 - imgHeight / 2 - 150 + maxBlockSize / 2;
@@ -247,20 +225,26 @@ function initializeFallbackParticles() {
     let particle = window.particles[i];
     let pixelX = constrain(Math.floor(particle.gridX), 0, imgWidth - 1);
     let pixelY = constrain(Math.floor(particle.gridY), 0, imgHeight - 1);
-    let col = window.img && window.img.width ? window.img.get(pixelX, pixelY) : [random(100, 255), random(100, 255), random(100, 255)];
+    let t = (pixelX / imgWidth + pixelY / imgHeight) / 2;
+    let col = [
+      lerp(100, 255, t),
+      lerp(100, 200, t),
+      lerp(150, 255, t)
+    ];
     let isMonochrome = random() < 0.2;
-    let gray = (red(col) + green(col) + blue(col)) / 3 * random(0.7, 1);
+    let gray = (col[0] + col[1] + col[2]) / 3 * random(0.7, 1);
     window.quantumStates[i] = {
-      r: isMonochrome ? gray : red(col),
-      g: isMonochrome ? gray : green(col),
-      b: isMonochrome ? gray : blue(col),
+      r: isMonochrome ? gray : col[0],
+      g: isMonochrome ? gray : col[1],
+      b: isMonochrome ? gray : col[2],
       a: 255,
-      baseR: red(col),
-      baseG: green(col),
-      baseB: blue(col),
+      baseR: col[0],
+      baseG: col[1],
+      baseB: col[2],
       collapsed: false
     };
   }
+  console.log(`Initialized ${particleCount} particles, canvas size: ${windowWidth}x${windowHeight - 100}`);
 }
 
 function updateBoundary() {
@@ -373,110 +357,9 @@ function renderQuantumMessages() {
   }
 }
 
-function renderTransformingPortrait(img, currentFrame) {
-  if (!img || !img.width) return [];
-  img.loadPixels();
-  let blockList = [];
-  let maxBlockSize = 16;
-  let blockSize = map(currentFrame, 1, 30, 1, maxBlockSize);
-  blockSize = constrain(blockSize, 1, maxBlockSize);
-
-  for (let y = 0; y < img.height; y += blockSize) {
-    for (let x = 0; x < img.width; x += blockSize) {
-      blockList.push({
-        x,
-        y,
-        startFrame: random(15, 30),
-        endFrame: random(31, 60),
-        superpositionT: 0,
-        wavePhase: random(TWO_PI),
-        probAmplitude: random(0.5, 1),
-        noiseSeed: random(1000)
-      });
-    }
-  }
-
-  for (let block of blockList) {
-    if (currentFrame <= block.endFrame + 500) {
-      let x = block.x;
-      let y = block.y;
-      let r = 0, g = 0, b = 0, count = 0;
-      let size = min(blockSize, img.width - x, img.height - y);
-      for (let dy = 0; dy < size && y + dy < img.height; dy++) {
-        for (let dx = 0; dx < size && x + dx < img.width; dx++) {
-          let pixelKey = `${x + dx},${y + dy}`;
-          let col;
-          if (window.imagePixelCache.has(pixelKey)) {
-            col = window.imagePixelCache.get(pixelKey);
-          } else {
-            col = img.get(x + dx, y + dy);
-            window.imagePixelCache.set(pixelKey, col);
-          }
-          r += red(col);
-          g += green(col);
-          b += blue(col);
-          count++;
-        }
-      }
-      if (count > 0) {
-        r = r / count;
-        g = g / count;
-        b = b / count;
-      }
-
-      let offsetX = 0, offsetY = 0, rotation = 0;
-      let noiseVal = cachedNoise(block.noiseSeed + currentFrame * 0.05, 0, 0);
-      if (currentFrame >= 1) {
-        offsetX += noiseVal * 10 - 5;
-        offsetY += cachedNoise(0, block.noiseSeed + currentFrame * 0.05, 0) * 10 - 5;
-      }
-      if (currentFrame >= block.startFrame) {
-        let waveOffset = cachedNoise(block.noiseSeed, currentFrame * 0.03, 0) * 30 * block.probAmplitude;
-        offsetX += waveOffset * cos(block.wavePhase);
-        offsetY += waveOffset * sin(block.wavePhase);
-        rotation += noiseVal * 0.1;
-        if (random() < 0.05 && currentFrame === block.startFrame) {
-          addQuantumMessage("Суперпозиция: частица в нескольких состояниях одновременно.", "superposition");
-        }
-      }
-      let canvasX = x + windowWidth / 2 - img.width / 2 + offsetX;
-      let canvasY = y + (document.fullscreenElement ? windowHeight : windowHeight - 100) / 2 - img.height / 2 - 150 + offsetY;
-
-      if (currentFrame >= block.startFrame) {
-        let probDensity = block.probAmplitude * 100;
-        fill(r, g, b, probDensity);
-        noStroke();
-        ellipse(canvasX, canvasY, size * 4, size * 4);
-      }
-      let alpha = map(currentFrame, block.endFrame, block.endFrame + 500, 255, 0);
-      let strokeW = map(currentFrame, block.endFrame, block.endFrame + 500, 1, 0);
-      let colorShift = cachedNoise(block.noiseSeed, currentFrame * 0.02, 0) * 15;
-      fill(r + colorShift, g + colorShift, b + colorShift, alpha);
-      noStroke();
-      push();
-      translate(canvasX, canvasY);
-      rotate(rotation);
-      rect(-size / 2, -size / 2, size, size);
-      pop();
-
-      if (currentFrame >= block.startFrame && random() < 0.5) {
-        for (let i = 0; i < 2; i++) {
-          fill(r + colorShift, g + colorShift, b + colorShift, alpha * 0.3);
-          noStroke();
-          let superX = canvasX + random(-30, 30);
-          let superY = canvasY + random(-30, 30);
-          let pulse = cachedNoise(block.noiseSeed, currentFrame * 0.1, i) * 5;
-          ellipse(superX + pulse, superY + pulse, size * 2);
-        }
-      }
-    }
-  }
-  return blockList;
-}
-
 function draw() {
   let startTime = performance.now();
-  console.log("Draw called, frame:", window.frame, "needsRedraw:", window.needsRedraw, "img loaded:", window.img && window.img.width > 0);
+  console.log("Draw called, frame:", window.frame, "needsRedraw:", window.needsRedraw, "particles:", window.particles.length);
 
   if (!window.isCanvasReady) return;
 
@@ -497,14 +380,6 @@ function draw() {
   if (window.needsRedraw) {
     background(0);
     window.trailBuffer.clear();
-  }
-
-  let blockList = [];
-  if (window.frame <= 60 && window.img && window.img.width > 0) {
-    blockList = renderTransformingPortrait(window.img, window.frame);
-    if (window.frame === 31) {
-      initializeFallbackParticles();
-    }
   }
 
   let updateBackground = window.frame % 3 === 0;
@@ -559,6 +434,7 @@ function draw() {
   if (frameTime > 40 && window.particles.length > 1000) {
     window.particles = window.particles.slice(0, window.maxParticles / 2);
     window.quantumStates = window.quantumStates.slice(0, window.maxParticles / 2);
+    console.log("Reduced particles to:", window.particles.length);
   }
 
   if (window.needsRedraw) {
