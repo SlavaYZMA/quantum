@@ -1,712 +1,430 @@
-window.frame = 0;
-window.isPaused = false;
-window.particles = [];
-window.quantumStates = [];
-window.canvas = null;
-window.isCanvasReady = false;
-window.noiseScale = 0.03;
-window.mouseInfluenceRadius = 200;
-window.chaosFactor = 0;
-window.boundaryPoints = [];
-window.chaosTimer = 0;
-window.trailBuffer = null;
-window.lastMouseX = 0;
-window.lastMouseY = 0;
-window.mouseHoverTime = 0;
-window.noiseCache = new Map();
-window.lastFrameTime = 0;
-window.maxParticles = 0;
+// main.js
 
-// Функция для плавной интерполяции
-function easeOutQuad(t) {
-  return t * (2 - t);
-}
+// Общие переменные
+window.currentStep = 0;
+window.language = 'ru';
+window.timeOnPage = 0;
+window.weirdnessFactor = 0;
+window.simplifyAnimations = false;
+window.uploadedImageUrl = '';
+window.portraitUrls = [
+  'https://via.placeholder.com/100',
+  'https://via.placeholder.com/100',
+  'https://via.placeholder.com/100'
+];
+window.img = null;
 
-function setup() {
-  window.canvas = createCanvas(windowWidth, windowHeight);
-  window.canvas.parent('canvasContainer4');
-  pixelDensity(1);
-  frameRate(navigator.hardwareConcurrency < 4 ? 20 : 25);
-  noLoop();
-  window.canvas.elt.style.display = 'none';
-  window.canvas.elt.style.position = 'absolute';
-  window.canvas.elt.style.top = '0';
-  window.canvas.elt.style.left = '0';
-  window.canvas.elt.style.zIndex = '-1';
-  document.getElementById('canvasContainer4').style.zIndex = '1';
-  document.getElementById('canvasContainer4').style.position = 'relative';
-  // Удаление любых границ для контейнера
-  document.getElementById('canvasContainer4').style.border = 'none';
+let startTime = performance.now();
+setInterval(() => {
+  window.timeOnPage = (performance.now() - startTime) / 1000;
+  window.weirdnessFactor = Math.min(window.timeOnPage / 300, 1);
+}, 1000);
 
-  window.trailBuffer = createGraphics(windowWidth, windowHeight);
-  window.trailBuffer.pixelDensity(1);
-
-  window.canvas.elt.addEventListener('click', function() {
-    if (window.currentStep === 5) {
-      if (!window.isPaused) {
-        window.isPaused = true;
-        noLoop();
-        document.getElementById('saveButton').style.display = 'block';
-      } else {
-        window.isPaused = false;
-        loop();
-        document.getElementById('saveButton').style.display = 'none';
-      }
-    }
-  });
-
-  window.canvas.elt.addEventListener('touchmove', function(e) {
-    e.preventDefault();
-    const touch = e.touches[0];
-    mouseX = touch.clientX - window.canvas.elt.offsetLeft;
-    mouseY = touch.clientY - window.canvas.elt.offsetTop;
-  }, { passive: false });
-
-  window.addEventListener('resize', () => {
-    resizeCanvas(windowWidth, windowHeight);
-    window.trailBuffer = createGraphics(windowWidth, windowHeight);
-    window.trailBuffer.pixelDensity(1);
-    updateBoundary();
-  });
-
-  updateBoundary();
-  window.isCanvasReady = true;
-}
-
-function updateBoundary() {
-  window.boundaryPoints = [];
-  let numPoints = 40; // Увеличено для более плавной границы
-  let portraitWidth = windowWidth * 0.2; // 20% экрана для портрета (~300px)
-  let textHeight = 100; // 100px сверху для текста
-  let rightBound = windowWidth - 10; // Отступ справа
-  let bottomBound = windowHeight - 10; // Отступ снизу
-
-  // Формируем границу: прямоугольник, исключающий левую и верхнюю зоны
-  // Верхняя граница (от portraitWidth до rightBound)
-  for (let i = 0; i < numPoints / 4; i++) {
-    let x = lerp(portraitWidth, rightBound, i / (numPoints / 4));
-    window.boundaryPoints.push({ x, y: textHeight });
-  }
-  // Правая граница (от textHeight до bottomBound)
-  for (let i = 0; i < numPoints / 4; i++) {
-    let y = lerp(textHeight, bottomBound, i / (numPoints / 4));
-    window.boundaryPoints.push({ x: rightBound, y });
-  }
-  // Нижняя граница (от rightBound до portraitWidth)
-  for (let i = 0; i < numPoints / 4; i++) {
-    let x = lerp(rightBound, portraitWidth, i / (numPoints / 4));
-    window.boundaryPoints.push({ x, y: bottomBound });
-  }
-  // Левая граница (от bottomBound до textHeight)
-  for (let i = 0; i < numPoints / 4; i++) {
-    let y = lerp(bottomBound, textHeight, i / (numPoints / 4));
-    window.boundaryPoints.push({ x: portraitWidth, y });
-  }
-}
-
-function isPointInBoundary(x, y) {
-  let portraitWidth = windowWidth * 0.2;
-  let textHeight = 100;
-  // Быстрая проверка: вне левой или верхней зоны
-  if (x < portraitWidth || y < textHeight) return false;
-  // Проверка внутри прямоугольной границы
-  let inside = false;
-  for (let i = 0, j = window.boundaryPoints.length - 1; i < window.boundaryPoints.length; j = i++) {
-    let xi = window.boundaryPoints[i].x, yi = window.boundaryPoints[i].y;
-    let xj = window.boundaryPoints[j].x, yj = window.boundaryPoints[j].y;
-    let intersect = ((yi > y) !== (yj > y)) &&
-      (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-    if (intersect) inside = !inside;
-  }
-  return inside;
-}
-
-function cachedNoise(x, y, z) {
-  let key = `${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)}`;
-  if (window.noiseCache.has(key)) {
-    return window.noiseCache.get(key);
-  }
-  let value = noise(x, y, z);
-  window.noiseCache.set(key, value);
-  if (window.noiseCache.size > 10000) {
-    window.noiseCache.clear();
-  }
-  return value;
-}
-
-function renderTransformingPortrait(img, currentFrame) {
-  img.loadPixels();
-  let blockList = [];
-  let maxBlockSize = 16;
-  let blockSize = map(currentFrame, 1, 30, 1, maxBlockSize);
-  blockSize = constrain(blockSize, 1, maxBlockSize);
-
-  // Статичный портрет слева (без рамки)
-  if (currentFrame > 60) {
-    let portraitWidth = windowWidth * 0.2;
-    let portraitHeight = img.height * (portraitWidth / img.width);
-    let xOffset = 10; // Отступ от левого края
-    let yOffset = 110; // Под текстовым блоком
-    push();
-    noStroke(); // Удаляем любую рамку
-    image(img, xOffset, yOffset, portraitWidth - 20, portraitHeight);
-    pop();
-  }
-
-  for (let y = 0; y < img.height; y += blockSize) {
-    for (let x = 0; x < img.width; x += blockSize) {
-      blockList.push({
-        x,
-        y,
-        startFrame: random(15, 30),
-        endFrame: random(31, 60),
-        superpositionT: 0,
-        wavePhase: random(TWO_PI),
-        probAmplitude: random(0.5, 1),
-        noiseSeed: random(1000)
-      });
-    }
-  }
-
-  for (let block of blockList) {
-    if (currentFrame <= block.endFrame + 500) {
-      let x = block.x;
-      let y = block.y;
-      let r = 0, g = 0, b = 0, count = 0;
-      let size = min(blockSize, img.width - x, img.height - y);
-      for (let dy = 0; dy < size && y + dy < img.height; dy++) {
-        for (let dx = 0; dx < size && x + dx < img.width; dx++) {
-          let col = img.get(x + dx, y + dy);
-          r += red(col);
-          g += green(col);
-          b += blue(col);
-          count++;
-        }
-      }
-      if (count > 0) {
-        r = r / count;
-        g = g / count;
-        b = b / count;
-      }
-
-      let offsetX = 0, offsetY = 0, rotation = 0;
-      let noiseVal = cachedNoise(block.noiseSeed + currentFrame * 0.05, 0, 0);
-      if (currentFrame >= 1) {
-        offsetX += noiseVal * 10 - 5;
-        offsetY += cachedNoise(0, block.noiseSeed + currentFrame * 0.05, 0) * 10 - 5;
-      }
-      if (currentFrame >= block.startFrame) {
-        let waveOffset = cachedNoise(block.noiseSeed, currentFrame * 0.03, 0) * 30 * block.probAmplitude;
-        offsetX += waveOffset * cos(block.wavePhase);
-        offsetY += waveOffset * sin(block.wavePhase);
-        rotation += noiseVal * 0.1;
-      }
-      let canvasX = x + (windowWidth - img.width) / 2 + offsetX;
-      let canvasY = y + (windowHeight - img.height) / 2 + offsetY;
-
-      if (currentFrame >= block.startFrame) {
-        let probDensity = block.probAmplitude * 100;
-        fill(r, g, b, probDensity);
-        noStroke();
-        ellipse(canvasX, canvasY, size * 4, size * 4);
-      }
-      let alpha = map(currentFrame, block.endFrame, block.endFrame + 500, 255, 0);
-      let strokeW = map(currentFrame, block.endFrame, block.endFrame + 500, 1, 0);
-      let colorShift = cachedNoise(block.noiseSeed, currentFrame * 0.02, 0) * 15;
-      fill(r + colorShift, g + colorShift, b + colorShift, alpha);
-      noStroke(); // Удаляем обводку для блоков
-      push();
-      translate(canvasX, canvasY);
-      rotate(rotation);
-      rect(-size / 2, -size / 2, size, size);
-      pop();
-
-      if (currentFrame >= block.startFrame && random() < 0.5) {
-        for (let i = 0; i < 2; i++) {
-          fill(r + colorShift, g + colorShift, b + colorShift, alpha * 0.3);
-          noStroke();
-          let superX = canvasX + random(-30, 30);
-          let superY = canvasY + random(-30, 30);
-          let pulse = cachedNoise(block.noiseSeed, currentFrame * 0.1, i) * 5;
-          ellipse(superX + pulse, superY + pulse, size * 2);
-        }
-      }
-    }
-  }
-  return blockList;
-}
-
-function draw() {
-  let startTime = performance.now();
-  if (!window.img || !window.img.width) return;
-
-  window.frame++;
-  window.chaosTimer += 0.016;
-  window.chaosFactor = map(cachedNoise(window.frame * 0.01, 0, 0), 0, 1, 0.3, 1) * (window.weirdnessFactor || 0.5);
-
-  if (window.chaosTimer > 5) {
-    window.chaosTimer = 0;
-    updateBoundary();
-    window.mouseInfluenceRadius = random(150, 250);
-    window.noiseScale = random(0.02, 0.04);
-  }
-
-  background(0);
-  window.trailBuffer.clear();
-
-  let blockList = [];
-  if (window.frame <= 60) {
-    blockList = renderTransformingPortrait(window.img, window.frame);
-    if (window.frame === 31) {
-      initializeParticles(blockList);
-    }
-  } else {
-    blockList = renderTransformingPortrait(window.img, window.frame); // Для статичного портрета
-  }
-
-  let updateBackground = window.frame % 2 === 0;
-  let vacuumParticles = window.particles.filter(p => p.layer === 'vacuum');
-  let vacuumAlpha = map(cachedNoise(window.frame * 0.005, 0, 0), 0, 1, 30, 70);
-  if (updateBackground) {
-    for (let particle of vacuumParticles) {
-      let state = window.quantumStates[window.particles.indexOf(particle)];
-      let noiseVal = cachedNoise(particle.baseX * window.noiseScale, particle.baseY * window.noiseScale, window.frame * 0.005);
-      particle.offsetX = noiseVal * 10 - 5;
-      particle.offsetY = cachedNoise(particle.baseY * window.noiseScale, window.frame * 0.005, 0) * 10 - 5;
-      particle.phase += 0.01;
-      state.a = vacuumAlpha;
-      if (particle.alpha >= 20) renderParticle(particle, state);
-    }
-  }
-
-  let backgroundParticles = window.particles.filter(p => p.layer === 'background');
-  if (updateBackground) {
-    for (let particle of backgroundParticles) {
-      let state = window.quantumStates[window.particles.indexOf(particle)];
-      let noiseVal = cachedNoise(particle.baseX * window.noiseScale, particle.baseY * window.noiseScale, window.frame * 0.01);
-      particle.offsetX = noiseVal * 15 - 7.5;
-      particle.offsetY = cachedNoise(particle.baseY * window.noiseScale, window.frame * 0.01, 0) * 15 - 7.5;
-      particle.phase += particle.individualPeriod * 0.02;
-      if (particle.alpha >= 20) renderParticle(particle, state);
-    }
-  }
-
-  let mainParticles = window.particles.filter(p => p.layer === 'main');
-  let newParticles = [];
-  let newStates = [];
-  for (let i = 0; i < mainParticles.length; i++) {
-    let particle = mainParticles[i];
-    let state = window.quantumStates[window.particles.indexOf(particle)];
-    updateParticle(particle, state);
-    if (particle.alpha >= 20) {
-      renderParticle(particle, state);
-      newParticles.push(particle);
-      newStates.push(state);
-    }
-  }
-
-  let frameTime = performance.now() - startTime;
-  if (frameTime > 40 && window.particles.length > 1000) {
-    window.particles = window.particles.filter((p, i) => {
-      let keep = p.alpha >= 20 || p.layer !== 'main';
-      if (!keep) window.quantumStates.splice(i, 1);
-      return keep;
-    });
-  }
-
-  image(window.trailBuffer, 0, 0);
-  window.lastFrameTime = frameTime;
-}
-
-function initializeParticles(blockList) {
-  window.particles = [];
-  window.quantumStates = [];
-  const maxBlockSize = 16;
-  window.maxParticles = windowWidth < 768 ? 2000 : 4000;
-  let particleCount = 0;
-  let imgCenterX = window.img.width / 2 + (windowWidth - img.width) / 2;
-  let imgCenterY = window.img.height / 2 + (windowHeight - img.height) / 2;
-
-  window.img.loadPixels();
-  let usedPositions = new Set();
-  for (let block of blockList) {
-    let x = block.x;
-    let y = block.y;
-    let pixelX = constrain(x, 0, window.img.width - 1);
-    let pixelY = constrain(y, 0, window.img.height - 1);
-    let posKey = `${pixelX},${pixelY}`;
-    if (usedPositions.has(posKey)) continue;
-    usedPositions.add(posKey);
-    let col = window.img.get(pixelX, pixelY);
-    let brightnessVal = brightness(col);
-    if (brightnessVal > 10 && particleCount < window.maxParticles) {
-      let blockCenterX_canvas = x + (windowWidth - img.width) / 2 + maxBlockSize / 2;
-      let blockCenterY_canvas = y + (windowHeight - img.height) / 2 + maxBlockSize / 2;
-      let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
-      let shapeType = floor(random(4));
-      let targetSize = random(1, 20);
-      let superposition = random() < 0.1;
-      let timeAnomaly = random() < 0.05;
-      let angle = atan2(blockCenterY_canvas - imgCenterY, blockCenterX_canvas - imgCenterX) + random(-PI / 6, PI / 6);
-      window.particles.push({
-        x: blockCenterX_canvas,
-        y: blockCenterY_canvas,
-        baseX: blockCenterX_canvas,
-        baseY: blockCenterY_canvas,
-        offsetX: 0,
-        offsetY: 0,
-        size: maxBlockSize,
-        targetSize: targetSize,
-        phase: random(TWO_PI),
-        gridX: x,
-        gridY: y,
-        layer: layer,
-        chaosSeed: random(1000),
-        alpha: 255,
-        startFrame: block.endFrame,
-        birthFrame: window.frame,
-        shapeType: shapeType,
-        sides: shapeType === 2 ? floor(random(5, 13)) : 0,
-        tunneled: false,
-        tunnelTargetX: 0,
-        tunnelTargetY: 0,
-        superposition: superposition,
-        timeAnomaly: timeAnomaly,
-        timeDirection: timeAnomaly ? random([-1, 1]) : 1,
-        uncertainty: random(0.5, 2),
-        wavePhase: block.wavePhase,
-        radialAngle: angle,
-        radialDistance: 0,
-        targetRadialDistance: random(50, 200), // Увеличен радиус для большего рассеивания
-        superpositionT: 0,
-        probAmplitude: random(0.5, 1),
-        barrier: random() < 0.1 ? { x: random(windowWidth), y: random(windowHeight), width: 20, height: 100 } : null,
-        speed: random(0.8, 1.2),
-        rotation: 0,
-        individualPeriod: random(0.5, 2)
-      });
-      particleCount++;
-    }
-  }
-
-  for (let i = 0; i < window.particles.length; i++) {
-    let particle = window.particles[i];
-    let pixelX = constrain(Math.floor(particle.gridX), 0, window.img.width - 1);
-    let pixelY = constrain(Math.floor(particle.gridY), 0, window.img.height - 1);
-    let col = window.img.get(pixelX, pixelY);
-    let isMonochrome = random() < 0.2;
-    let gray = (red(col) + green(col) + blue(col)) / 3 * random(0.7, 1);
-    window.quantumStates[i] = {
-      r: isMonochrome ? gray : red(col),
-      g: isMonochrome ? gray : green(col),
-      b: isMonochrome ? gray : blue(col),
-      a: 255,
-      baseR: red(col),
-      baseG: green(col),
-      baseB: blue(col),
-      collapsed: false
+window.debounce = function(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
     };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+
+window.debouncedNextStep = window.debounce(nextStep, 300);
+window.debouncedGoBack = window.debounce(goBack, 300);
+
+function selectLanguage(lang) {
+  window.language = lang;
+  updateContinueButtonText();
+  window.debouncedNextStep();
+}
+
+function showCanvas(containerId) {
+  if (!window.canvas) {
+    console.error(`Канва не создана для ${containerId}!`);
+    return;
+  }
+  const canvasElement = window.canvas.elt;
+  const currentParent = canvasElement.parentElement;
+  if (currentParent) {
+    currentParent.removeChild(canvasElement);
+  }
+  const container = document.getElementById(containerId);
+  if (container) {
+    container.appendChild(canvasElement);
+    canvasElement.style.display = 'block';
+  } else {
+    console.error(`Контейнер ${containerId} не найден!`);
   }
 }
 
-function updateParticle(particle, state) {
-  let px = particle.x + particle.offsetX;
-  let py = particle.y + particle.offsetY;
-  if (px < 0 || px > windowWidth || py < 0 || py > windowHeight || particle.alpha < 20) {
+function hideCanvas() {
+  if (window.canvas) {
+    window.canvas.elt.style.display = 'none';
+  }
+}
+
+function showPreviewImage(step) {
+  const previewImage = document.getElementById(`previewImage${step}`);
+  if (previewImage && window.uploadedImageUrl) {
+    previewImage.src = window.uploadedImageUrl;
+    previewImage.style.display = 'block';
+  }
+}
+
+function hidePreviewImage(step) {
+  const previewImage = document.getElementById(`previewImage${step}`);
+  if (previewImage) {
+    previewImage.style.display = 'none';
+  }
+}
+
+function nextStep() {
+  if (window.currentStep >= 7) return;
+
+  if (window.currentStep >= 2 && !window.img) {
+    alert(window.language === 'ru' ? 'Пожалуйста, загрузите фото или выберите из архива.' : 'Please upload a photo or select from the archive.');
     return;
   }
 
-  let noiseX = cachedNoise(particle.chaosSeed + window.frame * 0.03, 0, 0) * 2 - 1;
-  let noiseY = cachedNoise(0, particle.chaosSeed + window.frame * 0.03, 0) * 2 - 1;
+  const currentStepElement = document.querySelector(`#step${window.currentStep}`);
+  if (currentStepElement) currentStepElement.classList.remove('active');
 
-  if (window.frame >= particle.startFrame - 25 && window.frame <= particle.startFrame) {
-    particle.superpositionT = map(window.frame, particle.startFrame - 25, particle.startFrame, 0, 1);
-  } else if (window.frame > particle.startFrame) {
-    particle.superpositionT = 1;
+  window.currentStep++;
+  const nextStepElement = document.querySelector(`#step${window.currentStep}`);
+  if (!nextStepElement) {
+    console.error(`Шаг ${window.currentStep} не найден!`);
+    window.currentStep--;
+    return;
   }
 
-  if (window.isPaused) {
-    particle.offsetX += cachedNoise(particle.chaosSeed, window.frame * 0.01, 0) * 0.5 - 0.25;
-    particle.offsetY += cachedNoise(particle.chaosSeed + 100, window.frame * 0.01, 0) * 0.5 - 0.25;
-  }
+  nextStepElement.classList.add('active');
+  document.getElementById('backButton').style.display = window.currentStep > 0 ? 'block' : 'none';
+  document.getElementById('continueButton').style.display = window.currentStep > 0 && window.currentStep < 7 ? 'block' : 'none';
+  updateContinueButtonState();
 
-  if (particle.superpositionT >= 1) {
-    particle.offsetX += noiseX * particle.uncertainty * 10 * particle.probAmplitude * particle.speed;
-    particle.offsetY += noiseY * particle.uncertainty * 10 * particle.probAmplitude * particle.speed;
-    particle.rotation += noiseX * 0.03;
-    let sizeNoise = cachedNoise(particle.chaosSeed, window.frame * 0.02, 0);
-    particle.size = particle.targetSize * (1 + 0.2 * sizeNoise);
-
-    let waveOffset = cachedNoise(particle.chaosSeed, window.frame * 0.03, 1) * 30 * particle.probAmplitude;
-    particle.offsetX += waveOffset * cos(particle.wavePhase);
-    particle.offsetY += waveOffset * sin(particle.wavePhase);
-
-    if (particle.superposition) {
-      particle.offsetX += cachedNoise(particle.chaosSeed, window.frame * 0.02, 2) * 5;
-      particle.offsetY += cachedNoise(particle.chaosSeed + 200, window.frame * 0.02, 2) * 5;
+  if (window.currentStep === 1) {
+    triggerFlash();
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 2) {
+    hideCanvas();
+    hidePreviewImage(4);
+    hidePreviewImage(5);
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 3) {
+    if (!window.img) {
+      window.debouncedGoBack();
+      return;
     }
-
-    if (random() < 0.02) {
-      particle.alpha = 255;
-      setTimeout(() => particle.alpha *= 0.9, 200);
-    }
-
-    if (particle.barrier && random() < 0.1 && !particle.tunneled) {
-      let distToBarrier = dist(particle.x, particle.y, particle.barrier.x, particle.barrier.y);
-      if (distToBarrier < 50) {
-        particle.tunneled = true;
-        particle.tunnelTargetX = particle.barrier.x + particle.barrier.width + random(-20, 20);
-        particle.tunnelTargetY = particle.y + random(-20, 20);
-        window.trailBuffer.noFill();
-        for (let i = 0; i < 3; i++) {
-          window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
-          window.trailBuffer.strokeWeight(1);
-          window.trailBuffer.ellipse(particle.tunnelTargetX, particle.tunnelTargetY, 10 + i * 5);
+    triggerFlash();
+    hideCanvas();
+    hidePreviewImage(4);
+    hidePreviewImage(5);
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 4) {
+    if (window.isCanvasReady) {
+      showCanvas('canvasContainer4');
+      showPreviewImage(4);
+      loop();
+    } else {
+      setTimeout(() => {
+        if (window.isCanvasReady) {
+          showCanvas('canvasContainer4');
+          showPreviewImage(4);
+          loop();
         }
-        setTimeout(() => {
-          particle.tunneled = false;
-          particle.x = particle.tunnelTargetX;
-          particle.y = particle.tunnelTargetY;
-        }, 500);
-      }
+      }, 500);
     }
-
-    for (let other of window.particles) {
-      if (other !== particle && random() < 0.005) {
-        let d = dist(particle.x + particle.offsetX, particle.y + particle.offsetY, other.x + other.offsetX, other.y + other.offsetY);
-        if (d < 30 && d > 0) {
-          particle.offsetX += (other.offsetX - particle.offsetX) * 0.1;
-          particle.offsetY += (other.offsetY - particle.offsetY) * 0.1;
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 5) {
+    if (window.isCanvasReady) {
+      showCanvas('canvasContainer5');
+      showPreviewImage(5);
+      if (!window.isPaused) loop();
+    } else {
+      setTimeout(() => {
+        if (window.isCanvasReady) {
+          showCanvas('canvasContainer5');
+          showPreviewImage(5);
+          if (!window.isPaused) loop();
         }
-      }
+      }, 500);
     }
-
-    let breakupT = map(window.frame, particle.startFrame, particle.startFrame + 175, 0, 1);
-    breakupT = constrain(breakupT, 0, 1);
-    if (particle.timeAnomaly) {
-      breakupT += particle.timeDirection * 0.02 * cachedNoise(particle.chaosSeed, window.frame * 0.05, 3);
-      breakupT = constrain(breakupT, 0, 1);
-    }
-    let easedT = easeOutQuad(breakupT);
-
-    particle.size = lerp(particle.size, particle.targetSize, easedT);
-    let noiseAngle = cachedNoise(particle.chaosSeed + window.frame * 0.02, 0, 0) * PI / 6;
-    let angle = particle.radialAngle + noiseAngle;
-    particle.radialDistance = lerp(particle.radialDistance, particle.targetRadialDistance, easedT);
-    particle.offsetX = cos(angle) * particle.radialDistance;
-    particle.offsetY = sin(angle) * particle.radialDistance;
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 6) {
+    hideCanvas();
+    hidePreviewImage(4);
+    hidePreviewImage(5);
+    noLoop();
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 7) {
+    hideCanvas();
+    hidePreviewImage(4);
+    hidePreviewImage(5);
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
   }
-
-  let d = dist(mouseX, mouseY, particle.x + particle.offsetX, particle.y + particle.offsetY);
-  let influence = d < window.mouseInfluenceRadius ? map(d, 0, window.mouseInfluenceRadius, 1, 0) : 0;
-  let mouseSpeed = dist(mouseX, mouseY, window.lastMouseX, window.lastMouseY);
-  if (mouseX === window.lastMouseX && mouseY === window.lastMouseY) {
-    window.mouseHoverTime += 0.016;
-  } else {
-    window.mouseHoverTime = 0;
-  }
-  if (influence > 0.5 && !window.isPaused && particle.superposition && !state.collapsed) {
-    let collapseProb = mouseSpeed > 20 ? 0.15 : 0.1;
-    if (random() < collapseProb) {
-      state.collapsed = true;
-      particle.superposition = false;
-      particle.shapeType = random() < 0.5 ? floor(random(4)) : particle.shapeType;
-      particle.uncertainty = 0;
-      particle.probAmplitude = 1;
-      window.trailBuffer.noFill();
-      for (let i = 0; i < 3; i++) {
-        window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
-        window.trailBuffer.strokeWeight(1);
-        window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 20 + i * 10);
-      }
-      if (random() < 0.1) {
-        window.trailBuffer.stroke(255, 255, 255, 100);
-        window.trailBuffer.line(particle.x + particle.offsetX, particle.y + particle.offsetY, mouseX, mouseY);
-      }
-    }
-  }
-  if (influence > 0 && !window.isPaused) {
-    let repelAngle = atan2(particle.y + particle.offsetY - mouseY, particle.x + particle.offsetX - mouseX);
-    particle.offsetX += cos(repelAngle) * 10 * influence;
-    particle.offsetY += sin(repelAngle) * 10 * influence;
-    particle.speed *= 1.2;
-    let noiseVal = cachedNoise(particle.chaosSeed, window.frame * 0.05, 4);
-    particle.offsetX += noiseVal * 5 * influence;
-    particle.offsetY += cachedNoise(particle.chaosSeed + 300, window.frame * 0.05, 4) * 5 * influence;
-    particle.probAmplitude += influence * 0.01 * (window.mouseHoverTime > 1 ? 2 : 1);
-    let waveOffset = cachedNoise(particle.chaosSeed, window.frame * 0.03, 5) * 30 * influence;
-    particle.offsetX += waveOffset * cos(particle.wavePhase);
-    particle.offsetY += waveOffset * sin(particle.wavePhase);
-    state.r = constrain(state.baseR + influence * 20, 0, 255);
-    state.g = constrain(state.baseG + influence * 20, 0, 255);
-    state.b = constrain(state.baseB + influence * 20, 0, 255);
-    if ((mouseSpeed > 20 || window.mouseHoverTime > 1) && random() < 0.05 && window.particles.length < window.maxParticles) {
-      window.particles.push({
-        x: particle.x,
-        y: particle.y,
-        baseX: particle.x,
-        baseY: particle.y,
-        offsetX: 0,
-        offsetY: 0,
-        size: random(1, 10),
-        targetSize: random(1, 10),
-        phase: random(TWO_PI),
-        gridX: particle.gridX,
-        gridY: particle.gridY,
-        layer: 'main',
-        chaosSeed: random(1000),
-        alpha: 255,
-        startFrame: window.frame,
-        birthFrame: window.frame,
-        shapeType: floor(random(4)),
-        sides: floor(random(5, 13)),
-        tunneled: false,
-        tunnelTargetX: 0,
-        tunnelTargetY: 0,
-        superposition: random() < 0.1,
-        timeAnomaly: random() < 0.05,
-        timeDirection: random([-1, 1]),
-        uncertainty: random(0.5, 2),
-        wavePhase: random(TWO_PI),
-        radialAngle: random(TWO_PI),
-        radialDistance: 0,
-        targetRadialDistance: random(50, 200),
-        superpositionT: 1,
-        probAmplitude: random(0.5, 1),
-        barrier: null,
-        speed: random(0.8, 1.2),
-        rotation: 0,
-        individualPeriod: random(0.5, 2)
-      });
-      window.quantumStates.push({
-        r: state.r,
-        g: state.g,
-        b: state.b,
-        a: 255,
-        baseR: state.baseR,
-        baseG: state.baseG,
-        baseB: state.baseB,
-        collapsed: false
-      });
-    }
-  }
-
-  if (!isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) {
-    let nearestPoint = window.boundaryPoints.reduce((closest, p) => {
-      let distToP = dist(particle.x + particle.offsetX, particle.y + particle.offsetY, p.x, p.y);
-      return distToP < closest.dist ? { x: p.x, y: p.y, dist: distToP } : closest;
-    }, { x: 0, y: 0, dist: Infinity });
-    particle.offsetX = nearestPoint.x - particle.x;
-    particle.offsetY = nearestPoint.y - particle.y;
-  }
-
-  if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1 && random() < 0.1 && particle.probAmplitude > 0.7) {
-    let probDensity = particle.probAmplitude * 100;
-    window.trailBuffer.fill(state.r, state.g, state.b, probDensity);
-    window.trailBuffer.noStroke();
-    window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 2, particle.size / 2);
-    if (random() < 0.3) {
-      window.trailBuffer.stroke(255, 255, 255, 50);
-      window.trailBuffer.strokeWeight(0.5);
-      window.trailBuffer.line(
-        particle.x + particle.offsetX,
-        particle.y + particle.offsetY,
-        particle.x + particle.offsetX + random(-20, 20),
-        particle.y + particle.offsetY + random(-20, 20)
-      );
-    }
-  }
-
-  particle.phase += particle.individualPeriod * 0.03;
-  window.lastMouseX = mouseX;
-  window.lastMouseY = mouseY;
 }
 
-function renderParticle(particle, state) {
-  let px = particle.x + particle.offsetX;
-  let py = particle.y + particle.offsetY;
-  if (px < 0 || px > windowWidth || py < 0 || py > windowHeight) return;
+function goBack() {
+  if (window.currentStep <= 0) return;
 
-  push();
-  translate(px, py);
-  rotate(particle.rotation);
-  let colorShift = cachedNoise(particle.chaosSeed, window.frame * 0.02, 6) * 15;
-  let alpha = particle.alpha * state.a / 255;
-  let strokeW = map(window.frame - particle.birthFrame, 250, 500, 1, 0);
-  stroke(state.r + colorShift, state.g + colorShift, state.b + colorShift, alpha * 0.5);
-  strokeWeight(strokeW);
-  fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, alpha);
-  drawingContext.shadowBlur = 0;
+  const currentStepElement = document.querySelector(`#step${window.currentStep}`);
+  if (currentStepElement) currentStepElement.classList.remove('active');
 
-  let size = particle.size;
-  let waveDistort = 0.5 * cachedNoise(particle.chaosSeed, window.frame * 0.07, 7);
-
-  if (particle.superposition && !state.collapsed) {
-    let probDensity = particle.probAmplitude * 250;
-    fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, probDensity);
-    noStroke();
-    ellipse(0, 0, size * 5, size * 5);
-    for (let i = 0; i < 2; i++) {
-      if (random() < 0.5) {
-        fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, probDensity * 0.3);
-        noStroke();
-        let superX = random(-30, 30);
-        let superY = random(-30, 30);
-        let pulse = cachedNoise(particle.chaosSeed, window.frame * 0.1, i + 8) * 5;
-        ellipse(superX + pulse, superY + pulse, size * 2);
-      }
-    }
+  window.currentStep--;
+  const previousStepElement = document.querySelector(`#step${window.currentStep}`);
+  if (!previousStepElement) {
+    console.error(`Шаг ${window.currentStep} не найден!`);
+    window.currentStep++;
+    return;
   }
 
-  if (particle.superpositionT < 1) {
-    rect(-size / 2, -size / 2, size, size);
-    for (let i = 0; i < 2; i++) {
-      if (random() < 0.5) {
-        fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, alpha * 0.3);
-        noStroke();
-        let superX = random(-30, 30);
-        let superY = random(-30, 30);
-        let pulse = cachedNoise(particle.chaosSeed, window.frame * 0.1, i + 10) * 5;
-        ellipse(superX + pulse, superY + pulse, size * 2);
-      }
-    }
-  } else {
-    if (particle.shapeType === 0) {
-      ellipse(0, 0, size * (1 + waveDistort), size * (1 - waveDistort));
-    } else if (particle.shapeType === 1) {
-      beginShape();
-      for (let a = 0; a < TWO_PI; a += TWO_PI / 3) {
-        let r = size * (1 + waveDistort * cos(a));
-        vertex(r * cos(a), r * sin(a));
-      }
-      endShape(CLOSE);
-    } else if (particle.shapeType === 2) {
-      beginShape();
-      for (let a = 0; a < TWO_PI; a += TWO_PI / particle.sides) {
-        let r = size * (0.8 + 0.2 * cachedNoise(a * 3 + particle.chaosSeed, window.frame * 0.02, 12));
-        vertex(r * cos(a), r * sin(a));
-      }
-      endShape(CLOSE);
+  previousStepElement.classList.add('active');
+  document.getElementById('backButton').style.display = window.currentStep > 0 ? 'block' : 'none';
+  document.getElementById('continueButton').style.display = window.currentStep > 0 && window.currentStep < 7 ? 'block' : 'none';
+  updateContinueButtonState();
+
+  if (window.currentStep === 0) {
+    hideCanvas();
+    hidePreviewImage(4);
+    hidePreviewImage(5);
+    const step0Buttons = document.getElementById('step0Buttons');
+    step0Buttons.innerHTML = `
+      <button class="button" aria-label="Выбрать русский язык" onclick="selectLanguage('ru')">RU</button>
+      <button class="button" aria-label="Выбрать английский язык" onclick="selectLanguage('en')">ENG</button>
+    `;
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 1) {
+    hideCanvas();
+    hidePreviewImage(4);
+    hidePreviewImage(5);
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 2) {
+    hideCanvas();
+    hidePreviewImage(4);
+    hidePreviewImage(5);
+    document.getElementById('portraitGallery').style.display = 'none';
+    noLoop();
+    window.particles = [];
+    window.quantumStates = [];
+    window.frame = 0;
+    window.isPaused = false;
+    window.img = null;
+    const step2Buttons = document.getElementById('step2Buttons');
+    step2Buttons.innerHTML = `
+      <input type="file" id="imageInput" accept="image/*" style="display: none;">
+      <button class="button" aria-label="Загрузить фото" onclick="document.getElementById('imageInput').click()">${window.language === 'ru' ? 'Загрузить фото' : 'Upload Photo'}</button>
+      <button class="button" aria-label="Выбрать из архива" onclick="openGallery()">${window.language === 'ru' ? 'Выбрать готовое' : 'Select from Archive'}</button>
+    `;
+    window.typeText('typewriter2', window.translations.step2[window.language]);
+  } else if (window.currentStep === 3) {
+    hideCanvas();
+    hidePreviewImage(4);
+    hidePreviewImage(5);
+    noLoop();
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 4) {
+    if (window.isCanvasReady) {
+      showCanvas('canvasContainer4');
+      showPreviewImage(4);
+      if (!window.isPaused) loop();
     } else {
-      beginShape();
-      let noiseVal = cachedNoise(particle.chaosSeed, window.frame * 0.01, 13);
-      for (let a = 0; a < TWO_PI; a += TWO_PI / 20) {
-        let r = size * (0.7 + 0.3 * noiseVal + waveDistort);
-        vertex(r * cos(a), r * sin(a));
-      }
-      endShape(CLOSE);
+      setTimeout(() => {
+        if (window.isCanvasReady) {
+          showCanvas('canvasContainer4');
+          showPreviewImage(4);
+          if (!window.isPaused) loop();
+        }
+      }, 500);
     }
-  }
-
-  if (particle.barrier) {
-    fill(255, 255, 255, 50);
-    noStroke();
-    rect(particle.barrier.x - particle.x, particle.barrier.y - particle.y, particle.barrier.width, particle.barrier.height);
-    if (particle.tunneled) {
-      fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, 30);
-      ellipse(particle.tunnelTargetX - particle.x, particle.tunnelTargetY - particle.y, size / 2);
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 5) {
+    if (window.isCanvasReady) {
+      showCanvas('canvasContainer5');
+      showPreviewImage(5);
+      if (!window.isPaused) loop();
+    } else {
+      setTimeout(() => {
+        if (window.isCanvasReady) {
+          showCanvas('canvasContainer5');
+          showPreviewImage(5);
+          if (!window.isPaused) loop();
+        }
+      }, 500);
     }
+    document.getElementById('saveButton').style.display = window.isPaused ? 'block' : 'none';
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+  } else if (window.currentStep === 6) {
+    hideCanvas();
+    hidePreviewImage(4);
+    hidePreviewImage(5);
+    noLoop();
+    window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
   }
+}
 
-  pop();
+function restart() {
+  window.currentStep = 0;
+  window.language = 'ru';
+  window.img = null;
+  window.frame = 0;
+  window.isPaused = false;
+  window.particles = [];
+  window.quantumStates = [];
+  window.isCanvasReady = false;
+  window.timeOnPage = 0;
+  window.weirdnessFactor = 0;
+  window.simplifyAnimations = false;
+  window.uploadedImageUrl = '';
+  startTime = performance.now();
+
+  if (window.canvas) {
+    window.canvas.remove();
+    window.canvas = null;
+  }
+  noLoop();
+
+  document.getElementById('portraitGallery').style.display = 'none';
+  document.getElementById('authorsPage').style.display = 'none';
+  hidePreviewImage(4);
+  hidePreviewImage(5);
+
+  document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+
+  const step0Element = document.getElementById('step0');
+  step0Element.classList.add('active');
+  const step0Buttons = document.getElementById('step0Buttons');
+  step0Buttons.innerHTML = `
+    <button class="button" aria-label="Выбрать русский язык" onclick="selectLanguage('ru')">RU</button>
+    <button class="button" aria-label="Выбрать английский язык" onclick="selectLanguage('en')">ENG</button>
+  `;
+
+  document.getElementById('backButton').style.display = 'none';
+  document.getElementById('continueButton').style.display = 'none';
+  updateContinueButtonState();
+
+  window.typeText('typewriter0', window.translations.step0[window.language]);
+
+  window.setup();
+}
+
+window.onload = () => {
+  document.getElementById('step0').classList.add('active');
+  window.typeText('typewriter0', window.translations.step0[window.language]);
+  window.onerror = function(message, source, lineno, colno, error) {
+    console.error(`Ошибка: ${message} в ${source}:${lineno}:${colno}`);
+    document.body.innerHTML = `<div style="color: white; text-align: center; padding-top: 50px;">
+      Произошла ошибка: ${message}. Пожалуйста, обновите страницу или проверьте консоль для деталей.
+    </div>`;
+  };
+};
+
+document.getElementById('imageInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const url = URL.createObjectURL(file);
+    window.uploadedImageUrl = url;
+    loadImageFromUrl(url);
+  }
+});
+
+function openGallery() {
+  const gallery = document.getElementById('portraitGallery');
+  gallery.innerHTML = '';
+  gallery.style.display = 'flex';
+  window.portraitUrls.forEach((url, index) => {
+    const div = document.createElement('div');
+    div.className = 'portrait';
+    div.style.backgroundImage = `url('${url}')`;
+    div.setAttribute('aria-label', `Портрет ${index + 1}`);
+    div.onclick = () => {
+      window.uploadedImageUrl = url;
+      loadImageFromUrl(url);
+      gallery.style.display = 'none';
+    };
+    gallery.appendChild(div);
+  });
+}
+
+function loadImageFromUrl(url) {
+  document.getElementById('loader').style.display = 'block';
+  loadImage(url, (loadedImg) => {
+    window.img = loadedImg;
+    document.getElementById('portraitGallery').style.display = 'none';
+    const typewriter2 = document.getElementById('typewriter2');
+    typewriter2.innerHTML = '';
+    const step2Buttons = document.getElementById('step2Buttons');
+    step2Buttons.innerHTML = '';
+    window.typeText('typewriter2', window.translations.step2_after[window.language]);
+    document.getElementById('loader').style.display = 'none';
+    updateContinueButtonState();
+  }, () => {
+    document.getElementById('loader').style.display = 'none';
+    alert(window.language === 'ru' ? 'Ошибка загрузки изображения. Попробуйте другое.' : 'Image loading error. Please try another.');
+    updateContinueButtonState();
+  });
+}
+
+function openAuthors() {
+  document.getElementById('authorsPage').style.display = 'block';
+}
+
+function closeAuthors() {
+  document.getElementById('authorsPage').style.display = 'none';
+}
+
+function shareObservation() {
+  try {
+    window.open('https://t.me/quantportrat', '_blank');
+    alert(window.language === 'ru' ? 'Ссылка открыта в новой вкладке.' : 'Link opened in a new tab.');
+  } catch (e) {
+    console.error('Ошибка при открытии ссылки:', e);
+    alert(window.language === 'ru' ? 'Не удалось открыть ссылку. Проверьте настройки браузера.' : 'Failed to open link. Check browser settings.');
+  }
+}
+
+function goToArchive() {
+  try {
+    window.open('https://t.me/quantportrat', '_blank');
+    alert(window.language === 'ru' ? 'Ссылка открыта в новой вкладке.' : 'Link opened in a new tab.');
+  } catch (e) {
+    console.error('Ошибка при открытии ссылки:', e);
+    alert(window.language === 'ru' ? 'Не удалось открыть ссылку. Проверьте настройки браузера.' : 'Failed to open link. Check browser settings.');
+  }
+}
+
+function saveCurrentState() {
+  try {
+    if (!window.canvas) {
+      alert(window.language === 'ru' ? 'Canvas не найден. Убедитесь, что изображение отображается.' : 'Canvas not found. Ensure the image is displayed.');
+      return;
+    }
+    const dataURL = window.canvas.elt.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'quantum-portrait.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    alert(window.language === 'ru' ? 'Изображение сохранено как quantum-portrait.png' : 'Image saved as quantum-portrait.png');
+  } catch (e) {
+    console.error('Ошибка сохранения изображения:', e);
+    alert(window.language === 'ru' ? 'Не удалось сохранить изображение. Попробуйте загрузить сайт на хостинг.' : 'Failed to save image. Try hosting the site.');
+  }
+}
+
+function updateContinueButtonText() {
+  document.getElementById('continueButton').textContent = window.language === 'ru' ? 'Продолжить / Continue' : 'Continue';
+}
+
+function updateContinueButtonState() {
+  document.getElementById('continueButton').disabled = window.currentStep === 2 && !window.img;
+}
+
+function triggerFlash() {
+  document.getElementById('noiseOverlay').style.opacity = '0.1';
+  setTimeout(() => document.getElementById('noiseOverlay').style.opacity = '0', 1000);
+  document.getElementById('flashEffect').classList.add('active');
 }
