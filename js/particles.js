@@ -12,7 +12,7 @@ window.chaosFactor = 0;
 window.boundaryPoints = [];
 window.chaosTimer = 0;
 window.trailBuffer = null;
-window.scaleFactor = 1; // Для визуализации масштаба
+window.scaleFactor = 1; // Для визуализации перехода в микромир
 
 // Функция для плавной интерполяции
 function easeOutQuad(t) {
@@ -150,19 +150,16 @@ function renderTransformingPortrait(img, currentFrame) {
       let canvasY = y + (height - img.height) / 2 + offsetY;
 
       // Вероятностное облако для суперпозиции
+      if (currentFrame >= block.startFrame) {
+        let probDensity = block.probAmplitude * 255;
+        fill(r, g, b, probDensity);
+        noStroke();
+        ellipse(canvasX, canvasY, size * 2, size * 2); // Облако вероятности
+      }
       fill(r, g, b, 255);
       stroke(r, g, b, 50);
       strokeWeight(0.5);
       rect(canvasX, canvasY, size, size);
-
-      if (currentFrame >= block.startFrame && random() < 0.3) {
-        fill(r, g, b, 255);
-        stroke(r, g, b, 30);
-        strokeWeight(0.5);
-        let superX = canvasX + random(-20, 20);
-        let superY = canvasY + random(-20, 20);
-        rect(superX, superY, size, size);
-      }
     }
   }
   return blockList;
@@ -186,7 +183,9 @@ function draw() {
   window.trailBuffer.clear();
 
   push();
-  scale(window.scaleFactor); // Визуализация зума
+  translate(width / 2, height / 2);
+  scale(window.scaleFactor); // Визуализация зума в микромир
+  translate(-width / 2, -height / 2);
   let blockList = [];
   if (window.frame <= 150) {
     blockList = renderTransformingPortrait(window.img, window.frame);
@@ -279,7 +278,7 @@ function initializeParticles(blockList) {
         targetRadialDistance: random(50, 100),
         superpositionT: 0,
         probAmplitude: random(0.5, 1),
-        barrier: null // Для туннелирования
+        barrier: random() < 0.1 ? { x: random(width), y: random(height), width: 20, height: 100 } : null // Потенциальный барьер
       });
       particleCount++;
     }
@@ -307,3 +306,169 @@ function initializeParticles(blockList) {
 
 function updateParticle(particle, state) {
   let noiseX = cachedNoise(particle.chaosSeed + window.frame * 0.03, 0, 0) * 2 - 1;
+  let noiseY = cachedNoise(0, particle.chaosSeed + window.frame * 0.03, 0) * 2 - 1;
+
+  // Суперпозиция во время перехода
+  if (window.frame >= particle.startFrame - 50 && window.frame <= particle.startFrame) {
+    particle.superpositionT = map(window.frame, particle.startFrame - 50, particle.startFrame, 0, 1);
+  } else if (window.frame > particle.startFrame) {
+    particle.superpositionT = 1;
+  }
+
+  // Квантовые эффекты
+  if (particle.superpositionT >= 1) {
+    // Неопределённость Гейзенберга
+    particle.offsetX += noiseX * particle.uncertainty * 5 * particle.probAmplitude;
+    particle.offsetY += noiseY * particle.uncertainty * 5 * particle.probAmplitude;
+    particle.size = particle.targetSize * (1 + 0.2 * sin(window.frame * 0.04 + particle.phase));
+
+    // Интерференция
+    let waveOffset = sin(window.frame * 0.03 + particle.wavePhase) * 10 * particle.probAmplitude;
+    particle.offsetX += waveOffset * cos(particle.wavePhase);
+    particle.offsetY += waveOffset * sin(particle.wavePhase);
+
+    // Туннелирование
+    if (particle.barrier && random() < 0.02 && !particle.tunneled) {
+      let distToBarrier = dist(particle.x, particle.y, particle.barrier.x, particle.barrier.y);
+      if (distToBarrier < 50) {
+        particle.tunneled = true;
+        particle.tunnelTargetX = particle.barrier.x + particle.barrier.width + random(-20, 20);
+        particle.tunnelTargetY = particle.y + random(-20, 20);
+        setTimeout(() => {
+          particle.tunneled = false;
+          particle.x = particle.tunnelTargetX;
+          particle.y = particle.tunnelTargetY;
+        }, 500);
+      }
+    }
+
+    // Временные аномалии
+    let breakupT = map(window.frame, particle.startFrame, particle.startFrame + 350, 0, 1);
+    breakupT = constrain(breakupT, 0, 1);
+    if (particle.timeAnomaly) {
+      breakupT += particle.timeDirection * 0.02 * sin(window.frame * 0.05);
+      breakupT = constrain(breakupT, 0, 1);
+    }
+    let easedT = easeOutQuad(breakupT);
+
+    // Радиальный разлёт
+    particle.size = lerp(particle.size, particle.targetSize, easedT);
+    let noiseAngle = cachedNoise(particle.chaosSeed + window.frame * 0.02, 0, 0) * PI / 6;
+    let angle = particle.radialAngle + noiseAngle;
+    particle.radialDistance = lerp(particle.radialDistance, particle.targetRadialDistance, easedT);
+    particle.offsetX = cos(angle) * particle.radialDistance;
+    particle.offsetY = sin(angle) * particle.radialDistance;
+  }
+
+  // Измерение через мышь (физический пробник)
+  let d = dist(mouseX, mouseY, particle.x + particle.offsetX, particle.y + particle.offsetY);
+  let influence = d < window.mouseInfluenceRadius ? map(d, 0, window.mouseInfluenceRadius, 1, 0) : 0;
+  if (influence > 0.5 && !window.isPaused && particle.superposition && !state.collapsed) {
+    state.collapsed = true;
+    particle.superposition = false;
+    particle.shapeType = random() < 0.5 ? floor(random(4)) : particle.shapeType;
+    particle.uncertainty = 0;
+    particle.probAmplitude = 1; // Коллапс в определённое состояние
+    // Визуализация коллапса (копенгагенская интерпретация)
+    window.trailBuffer.noFill();
+    window.trailBuffer.stroke(state.r, state.g, state.b, 255);
+    window.trailBuffer.strokeWeight(1);
+    window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 50, 50);
+    // Намёк на многомировую интерпретацию
+    if (random() < 0.1) {
+      window.trailBuffer.stroke(255, 255, 255, 100);
+      window.trailBuffer.line(particle.x + particle.offsetX, particle.y + particle.offsetY, mouseX, mouseY);
+    }
+  }
+  if (influence > 0 && !window.isPaused) {
+    let repelAngle = atan2(particle.y + particle.offsetY - mouseY, particle.x + particle.offsetX - mouseX);
+    particle.offsetX += cos(repelAngle) * 15 * influence;
+    particle.offsetY += sin(repelAngle) * 15 * influence;
+  }
+
+  // Границы
+  if (!isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) {
+    let nearestPoint = window.boundaryPoints.reduce((closest, p) => {
+      let distToP = dist(particle.x + particle.offsetX, particle.y + particle.offsetY, p.x, p.y);
+      return distToP < closest.dist ? { x: p.x, y: p.y, dist: distToP } : closest;
+    }, { x: 0, y: 0, dist: Infinity });
+    particle.offsetX = nearestPoint.x - particle.x;
+    particle.offsetY = nearestPoint.y - particle.y;
+  }
+
+  // Следы интерференции
+  if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1 && random() < 0.3) {
+    let probDensity = particle.probAmplitude * 255;
+    window.trailBuffer.fill(state.r, state.g, state.b, probDensity);
+    window.trailBuffer.noStroke();
+    window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 2, particle.size / 2);
+  }
+
+  particle.phase += 0.02;
+}
+
+function renderParticle(particle, state) {
+  push();
+  translate(particle.x + particle.offsetX, particle.y + particle.offsetY);
+  stroke(state.r, state.g, state.b, 255);
+  strokeWeight(0.5);
+  fill(state.r, state.g, state.b, 255);
+  drawingContext.shadowBlur = 0;
+
+  let size = particle.size;
+  let waveDistort = 0.2 * sin(window.frame * 0.05 + particle.wavePhase);
+
+  // Вероятностное облако для суперпозиции
+  if (particle.superposition && !state.collapsed) {
+    let probDensity = particle.probAmplitude * 100;
+    fill(state.r, state.g, state.b, probDensity);
+    noStroke();
+    ellipse(0, 0, size * 3, size * 3);
+  }
+
+  // Отрисовка частиц
+  if (particle.superpositionT < 1) {
+    fill(state.r, state.g, state.b, 255);
+    stroke(state.r, state.g, state.b, 50);
+    strokeWeight(0.5);
+    rect(-size / 2, -size / 2, size, size);
+  } else {
+    if (particle.shapeType === 0) {
+      ellipse(0, 0, size * (1 + waveDistort), size * (1 - waveDistort));
+    } else if (particle.shapeType === 1) {
+      beginShape();
+      for (let a = 0; a < TWO_PI; a += TWO_PI / 3) {
+        let r = size * (1 + waveDistort * cos(a));
+        vertex(r * cos(a), r * sin(a));
+      }
+      endShape(CLOSE);
+    } else if (particle.shapeType === 2) {
+      beginShape();
+      for (let a = 0; a < TWO_PI; a += TWO_PI / particle.sides) {
+        let r = size * (0.8 + 0.2 * cos(a * 3 + window.frame * 0.02 + waveDistort));
+        vertex(r * cos(a), r * sin(a));
+      }
+      endShape(CLOSE);
+    } else {
+      beginShape();
+      for (let a = 0; a < TWO_PI; a += TWO_PI / 20) {
+        let r = size * (0.7 + 0.3 * cachedNoise(a * 2 + particle.chaosSeed, window.frame * 0.01, 0) + waveDistort);
+        vertex(r * cos(a), r * sin(a));
+      }
+      endShape(CLOSE);
+    }
+  }
+
+  // Отрисовка потенциального барьера
+  if (particle.barrier) {
+    fill(255, 255, 255, 50); // Полупрозрачная стена
+    noStroke();
+    rect(particle.barrier.x - particle.x, particle.barrier.y - particle.y, particle.barrier.width, particle.barrier.height);
+    if (particle.tunneled) {
+      fill(state.r, state.g, state.b, 30);
+      ellipse(particle.tunnelTargetX - particle.x, particle.tunnelTargetY - particle.y, size / 2);
+    }
+  }
+
+  pop();
+}
