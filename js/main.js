@@ -1,127 +1,134 @@
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quantum Portraits</title>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div id="noiseOverlay"></div>
-  <div class="flash" id="flashEffect"></div>
-  <div id="loader">Загрузка...</div>
-  <div class="container">
-    <button class="back-button" id="backButton" style="display: none;" aria-label="Вернуться на предыдущий шаг" onclick="debouncedGoBack()">Назад / Back</button>
-    <button class="continue-button" id="continueButton" style="display: none;" disabled aria-label="Перейти к следующему шагу" onclick="debouncedNextStep()">Продолжить / Continue</button>
+```javascript
+// main.js
 
-    <div class="step active" id="step0">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter0"></div>
-      </div>
-      <div class="button-container" id="step0Buttons">
-        <button class="button" aria-label="Выбрать русский язык" onclick="selectLanguage('ru')">RU</button>
-        <button class="button" aria-label="Выбрать английский язык" onclick="selectLanguage('en')">ENG</button>
-      </div>
-    </div>
+// Убедимся, что p5.js загружен
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof createCanvas === 'undefined') {
+    console.error('p5.js is not loaded or createCanvas is undefined');
+    return;
+  }
 
-    <div class="step" id="step1">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter1"></div>
-      </div>
-      <div class="button-container"></div>
-    </div>
+  // Инициализация холста p5.js
+  window.setup = function() {
+    window.p5Canvas = createCanvas(windowWidth, windowHeight - 100);
+    window.p5Canvas.elt.style.display = 'none'; // Скрываем холст до шага 4
+    window.isCanvasReady = true;
+  };
 
-    <div class="step" id="step2">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter2"></div>
-      </div>
-      <div class="button-container" id="step2Buttons">
-        <input type="file" id="imageInput" accept="image/*" style="display: none;">
-        <button class="button" aria-label="Загрузить фото" onclick="document.getElementById('imageInput').click()">Загрузить фото / Upload Photo</button>
-        <button class="button" aria-label="Выбрать из архива" onclick="openGallery()">Выбрать готовое / Select from Archive</button>
-      </div>
-    </div>
+  // Обработчик загрузки изображения
+  document.getElementById('imageInput').addEventListener('change', (event) => {
+    if (event.target.files[0]) {
+      window.uploadedImageUrl = URL.createObjectURL(event.target.files[0]);
+      handleFile({ type: 'image', data: window.uploadedImageUrl });
+    }
+  });
 
-    <div class="step" id="step3">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter3"></div>
-      </div>
-      <div class="button-container"></div>
-    </div>
+  // Функция обработки загруженного изображения
+  window.handleFile = function(file) {
+    if (file.type === 'image') {
+      loadImage(file.data, (loadedImg) => {
+        window.img = loadedImg;
+        window.currentStep = 3; // Переходим к шагу 3 (инициализация)
+        updateStep();
+      });
+    }
+  };
 
-    <div class="step" id="step4">
-      <div class="top-section">
-        <div class="text-container">
-          <div class="typewriter" id="typewriter4"></div>
-        </div>
-        <div class="portrait-container">
-          <img id="previewImage4" class="preview-image" alt="Uploaded portrait preview">
-        </div>
-      </div>
-      <div class="middle-section">
-        <div id="terminal" class="terminal"></div>
-        <canvas id="quantum-explainer" class="quantum-explainer"></canvas>
-      </div>
-      <div class="canvas-container" id="canvasContainer4"></div>
-      <div class="button-container"></div>
-    </div>
+  // Обновление шага приложения
+  window.updateStep = function() {
+    const steps = document.querySelectorAll('.step');
+    steps.forEach((step, index) => {
+      step.classList.toggle('active', index === window.currentStep);
+    });
 
-    <div class="step" id="step5">
-      <div class="top-section">
-        <div class="text-container">
-          <div class="typewriter" id="typewriter5"></div>
-        </div>
-        <div class="portrait-container">
-          <img id="previewImage5" class="preview-image" alt="Uploaded portrait preview">
-        </div>
-      </div>
-      <div class="middle-section">
-        <div id="terminal" class="terminal"></div>
-        <canvas id="quantum-explainer" class="quantum-explainer"></canvas>
-      </div>
-      <button class="save-button" id="saveButton" style="display: none;" aria-label="Сохранить изображение" onclick="saveCurrentState()">Сохранить изображение / Save Image</button>
-      <div class="canvas-container" id="canvasContainer5"></div>
-      <div class="button-container"></div>
-    </div>
+    const backButton = document.getElementById('backButton');
+    const continueButton = document.getElementById('continueButton');
+    backButton.style.display = window.currentStep > 0 ? 'block' : 'none';
+    continueButton.style.display = window.currentStep < 7 ? 'block' : 'none';
 
-    <div class="step" id="step6">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter6"></div>
-      </div>
-      <div class="button-container">
-        <button class="button" aria-label="Поделиться наблюдением" onclick="shareObservation()">ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ / SHARE OBSERVATION</button>
-      </div>
-    </div>
+    // Отображаем холст на шагах 4 и 5
+    if (window.currentStep === 4 || window.currentStep === 5) {
+      window.p5Canvas.elt.style.display = 'block';
+      document.getElementById(`canvasContainer${window.currentStep}`).appendChild(window.p5Canvas.elt);
+    } else {
+      window.p5Canvas.elt.style.display = 'none';
+    }
 
-    <div class="step" id="step7">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter7"></div>
-      </div>
-      <div class="button-container">
-        <button class="button" aria-label="Начать заново" onclick="restart()">↻ НАЧАТЬ СНАЧАЛА / RESTART</button>
-        <button class="button" aria-label="Перейти в архив" onclick="goToArchive()">⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ / GO TO ARCHIVE</button>
-        <button class="button" aria-label="О разработчиках" onclick="openAuthors()">ОБ АВТОРАХ / ABOUT US</button>
-        <button class="button" aria-label="Упростить анимацию" onclick="simplifyAnimation()">УПРОСТИТЬ АНИМАЦИЮ / SIMPLIFY ANIMATION</button>
-      </div>
-    </div>
+    // Запускаем текст для текущего шага
+    if (window.translations[`step${window.currentStep}`]) {
+      window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+    }
+  };
 
-    <div id="portraitGallery"></div>
-    <div id="authorsPage">
-      <button class="button" aria-label="Закрыть страницу авторов" onclick="closeAuthors()">Закрыть / Close</button>
-      <div class="text-container">
-        <div class="typewriter">Слава Саша</div>
-      </div>
-    </div>
-  </div>
+  // Переход к следующему шагу
+  window.debouncedNextStep = window.debounce(() => {
+    if (window.currentStep < 7) {
+      window.currentStep++;
+      updateStep();
+    }
+  }, 300);
 
-  <script defer src="/js/globals.js"></script>
-  <script defer src="/js/utils.js"></script>
-  <script defer src="/js/main.js"></script>
-  <script defer src="/js/textsteps.js"></script>
-  <script defer src="/js/observer.js"></script>
-  <script defer src="/js/particles.js"></script>
-</body>
-</html>
+  // Переход к предыдущему шагу
+  window.debouncedGoBack = window.debounce(() => {
+    if (window.currentStep > 0) {
+      window.currentStep--;
+      updateStep();
+    }
+  }, 300);
+
+  // Выбор языка
+  window.selectLanguage = function(lang) {
+    window.language = lang;
+    window.currentStep = 1;
+    updateStep();
+  };
+
+  // Открытие галереи
+  window.openGallery = function() {
+    const gallery = document.getElementById('portraitGallery');
+    gallery.innerHTML = window.portraitUrls.map((url, index) => `
+      <img src="${url}" alt="Portrait ${index + 1}" onclick="handleFile({ type: 'image', data: '${url}' })">
+    `).join('');
+    gallery.style.display = 'block';
+  };
+
+  // Сохранение текущего состояния
+  window.saveCurrentState = function() {
+    saveCanvas(window.p5Canvas, 'quantum_portrait', 'png');
+  };
+
+  // Перезапуск приложения
+  window.restart = function() {
+    window.currentStep = 0;
+    window.img = null;
+    window.uploadedImageUrl = '';
+    window.particles = [];
+    updateStep();
+  };
+
+  // Открытие страницы авторов
+  window.openAuthors = function() {
+    document.getElementById('authorsPage').style.display = 'block';
+  };
+
+  // Закрытие страницы авторов
+  window.closeAuthors = function() {
+    document.getElementById('authorsPage').style.display = 'none';
+  };
+
+  // Упрощение анимации
+  window.simplifyAnimation = function() {
+    window.simplifyAnimations = true;
+  };
+
+  // Поделиться наблюдением
+  window.shareObservation = function() {
+    alert('Функция поделиться пока не реализована!');
+  };
+
+  // Переход в архив
+  window.goToArchive = function() {
+    alert('Архив пока недоступен!');
+  };
+});
 ```
