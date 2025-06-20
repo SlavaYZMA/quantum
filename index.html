@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +16,7 @@
     <button class="back-button" id="backButton" style="display: none;" aria-label="Вернуться на предыдущий шаг" onclick="debouncedGoBack()">Назад / Back</button>
     <button class="continue-button" id="continueButton" style="display: none;" disabled aria-label="Перейти к следующему шагу" onclick="debouncedNextStep()">Продолжить / Continue</button>
 
-    <div class="step" id="step0">
+    <div class="step active" id="step0">
       <div class="text-container">
         <div class="typewriter" id="typewriter0"></div>
       </div>
@@ -115,11 +116,12 @@
     </div>
   </div>
 
-  <script src="/js/globals.js"></script>
-  <script src="/js/utils.js"></script>
-  <script src="/js/textsteps.js"></script>
-  <script src="/js/main.js"></script>
-  <script src="/js/observer.js"></script>
-  <script src="/js/particles.js"></script>
+  <script defer src="/js/globals.js"></script>
+  <script defer src="/js/utils.js"></script>
+  <script defer src="/js/main.js"></script>
+  <script defer src="/js/textsteps.js"></script>
+  <script defer src="/js/observer.js"></script>
+  <script defer src="/js/particles.js"></script>
 </body>
 </html>
+```
