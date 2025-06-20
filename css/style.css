@@ -235,6 +235,10 @@ canvas {
   50% { transform: rotate(calc(45deg * var(--random-rotation))); }
 }
 
+.glitch-char.stabilized::before, .glitch-char.stabilized::after {
+  content: none;
+}
+
 .button-container {
   width: 100%;
   display: flex;
@@ -302,4 +306,82 @@ canvas {
   position: fixed;
   top: 20px;
   right: 20px;
-  padding: 10px
+  padding: 10px 20px;
+  background: none;
+  border: 1px solid #fff;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  transition: background 0.3s;
+  z-index: 10;
+}
+
+.continue-button:hover, .continue-button:focus {
+  background: #333;
+}
+
+#noiseOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVQIW2NkYGD4z8DAwMDAwMAIABJ7A/kG1B1KAAAAAElFTkSuQmCC');
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+#flashEffect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
+}
+
+#portraitGallery {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  overflow-y: auto;
+  z-index: 20;
+}
+
+#portraitGallery img {
+  width: 100px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+#authorsPage {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  text-align: center;
+  z-index: 20;
+}
+
+#authorsPage .button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
