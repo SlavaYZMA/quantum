@@ -77,7 +77,7 @@ function cachedNoise(x, y, z) {
 function addQuantumMessage(message, eventType) {
   let newMessage = {
     text: message,
-    x: window.p5Instance.random(100, window.p5Instance.width - 300),
+    x: window.p5Instance.random(100, window.p5Instance.width - 100),
     y: window.p5Instance.random(150, window.p5Instance.height - 50),
     alpha: 0,
     fadeIn: true,
@@ -96,7 +96,7 @@ function renderQuantumMessages() {
   window.p5Instance.textSize(16);
   if (window.textMessages.active) {
     let msg = window.textMessages.active;
-    let t = (window.frame - msg.startFrame) / 300;
+    let t = (window.frame - msg.startFrame) / 30;
     if (msg.fadeIn) {
       msg.alpha = window.p5Instance.lerp(0, 255, easeOutQuad(window.p5Instance.min(t, 0.1)));
       if (t >= 0.1) msg.fadeIn = false;
@@ -121,15 +121,16 @@ function renderQuantumMessages() {
   }
 }
 
-function renderTransformingPortrait(img, currentFrame) {
-  img.loadPixels();
+function renderTransformingPortrait() {
+  if (!window.img || !window.img.width) return [];
+  window.img.loadPixels();
   let blockList = [];
   let maxBlockSize = 16;
-  let blockSize = window.p5Instance.map(currentFrame, 1, 30, 1, maxBlockSize);
+  let blockSize = window.p5Instance.map(window.frame, 1, 30, 1, maxBlockSize);
   blockSize = window.p5Instance.constrain(blockSize, 1, maxBlockSize);
 
-  for (let y = 0; y < img.height; y += blockSize) {
-    for (let x = 0; x < img.width; x += blockSize) {
+  for (let y = 0; y < window.img.height; y += blockSize) {
+    for (let x = 0; x < window.img.width; x += blockSize) {
       blockList.push({
         x,
         y,
@@ -144,14 +145,14 @@ function renderTransformingPortrait(img, currentFrame) {
   }
 
   for (let block of blockList) {
-    if (currentFrame <= block.endFrame + 500) {
+    if (window.frame <= block.endFrame + 500) {
       let x = block.x;
       let y = block.y;
       let r = 0, g = 0, b = 0, count = 0;
-      let size = window.p5Instance.min(blockSize, img.width - x, img.height - y);
-      for (let dy = 0; dy < size && y + dy < img.height; dy++) {
-        for (let dx = 0; dx < size && x + dx < img.width; dx++) {
-          let col = img.get(x + dx, y + dy);
+      let size = window.p5Instance.min(blockSize, window.img.width - x, window.img.height - y);
+      for (let dy = 0; dy < size && y + dy < window.img.height; dy++) {
+        for (let dx = 0; dx < size && x + dx < window.img.width; dx++) {
+          let col = window.img.get(x + dx, y + dy);
           r += window.p5Instance.red(col);
           g += window.p5Instance.green(col);
           b += window.p5Instance.blue(col);
@@ -165,32 +166,32 @@ function renderTransformingPortrait(img, currentFrame) {
       }
 
       let offsetX = 0, offsetY = 0, rotation = 0;
-      let noiseVal = cachedNoise(block.noiseSeed + currentFrame * 0.05, 0, 0);
-      if (currentFrame >= 1) {
+      let noiseVal = cachedNoise(block.noiseSeed + window.frame * 0.05, 0, 0);
+      if (window.frame >= 1) {
         offsetX += noiseVal * 10 - 5;
-        offsetY += cachedNoise(0, block.noiseSeed + currentFrame * 0.05, 0) * 10 - 5;
+        offsetY += cachedNoise(0, block.noiseSeed + window.frame * 0.05, 0) * 10 - 5;
       }
-      if (currentFrame >= block.startFrame) {
-        let waveOffset = cachedNoise(block.noiseSeed, currentFrame * 0.03, 0) * 30 * block.probAmplitude;
+      if (window.frame >= block.startFrame) {
+        let waveOffset = cachedNoise(block.noiseSeed, window.frame * 0.03, 0) * 30 * block.probAmplitude;
         offsetX += waveOffset * window.p5Instance.cos(block.wavePhase);
         offsetY += waveOffset * window.p5Instance.sin(block.wavePhase);
         rotation += noiseVal * 0.1;
-        if (window.p5Instance.random() < 0.05 && currentFrame === block.startFrame) {
+        if (window.p5Instance.random() < 0.05 && window.frame === block.startFrame) {
           addQuantumMessage("Суперпозиция: частица в нескольких состояниях одновременно.", "superposition");
         }
       }
-      let canvasX = x + (window.p5Instance.width - img.width) / 2 + offsetX;
-      let canvasY = y + (window.p5Instance.height - img.height) / 2 + offsetY;
+      let canvasX = x + (window.p5Instance.width - window.img.width) / 2 + offsetX;
+      let canvasY = y + (window.p5Instance.height - window.img.height) / 2 + offsetY;
 
-      if (currentFrame >= block.startFrame) {
+      if (window.frame >= block.startFrame) {
         let probDensity = block.probAmplitude * 100;
         window.p5Instance.fill(r, g, b, probDensity);
         window.p5Instance.noStroke();
         window.p5Instance.ellipse(canvasX, canvasY, size * 4, size * 4);
       }
-      let alpha = window.p5Instance.map(currentFrame, block.endFrame, block.endFrame + 500, 255, 0);
-      let strokeW = window.p5Instance.map(currentFrame, block.endFrame, block.endFrame + 500, 1, 0);
-      let colorShift = cachedNoise(block.noiseSeed, currentFrame * 0.02, 0) * 15;
+      let alpha = window.p5Instance.map(window.frame, block.endFrame, block.endFrame + 500, 255, 0);
+      let strokeW = window.p5Instance.map(window.frame, block.endFrame, block.endFrame + 500, 1, 0);
+      let colorShift = cachedNoise(block.noiseSeed, window.frame * 0.02, 0) * 15;
       window.p5Instance.fill(r + colorShift, g + colorShift, b + colorShift, alpha);
       window.p5Instance.noStroke();
       window.p5Instance.push();
@@ -199,13 +200,13 @@ function renderTransformingPortrait(img, currentFrame) {
       window.p5Instance.rect(-size / 2, -size / 2, size, size);
       window.p5Instance.pop();
 
-      if (currentFrame >= block.startFrame && window.p5Instance.random() < 0.5) {
+      if (window.frame >= block.startFrame && window.p5Instance.random() < 0.5) {
         for (let i = 0; i < 2; i++) {
           window.p5Instance.fill(r + colorShift, g + colorShift, b + colorShift, alpha * 0.3);
           window.p5Instance.noStroke();
           let superX = canvasX + window.p5Instance.random(-30, 30);
           let superY = canvasY + window.p5Instance.random(-30, 30);
-          let pulse = cachedNoise(block.noiseSeed, currentFrame * 0.1, i) * 5;
+          let pulse = cachedNoise(block.noiseSeed, window.frame * 0.1, i) * 5;
           window.p5Instance.ellipse(superX + pulse, superY + pulse, size * 2);
         }
       }
@@ -219,8 +220,12 @@ window.initializeParticles = function(blockList) {
     console.warn('Cannot initialize particles: image, canvas, or p5 instance not ready');
     return;
   }
+  if (!Array.isArray(blockList)) {
+    console.warn('blockList is not an array, initializing empty particles');
+    blockList = [];
+  }
 
-  console.log('Initializing particles with blockList');
+  console.log('Initializing particles with blockList:', blockList.length);
   window.particles = [];
   window.quantumStates = [];
   window.entangledPairs = [];
@@ -264,7 +269,7 @@ window.initializeParticles = function(blockList) {
         layer: layer,
         chaosSeed: window.p5Instance.random(1000),
         alpha: 255,
-        startFrame: block.endFrame,
+        startFrame: block.endFrame || window.frame + 30,
         birthFrame: window.frame,
         shapeType: shapeType,
         sides: shapeType === 2 ? window.p5Instance.floor(window.p5Instance.random(5, 13)) : 0,
@@ -275,7 +280,7 @@ window.initializeParticles = function(blockList) {
         timeAnomaly: timeAnomaly,
         timeDirection: timeAnomaly ? window.p5Instance.random([-1, 1]) : 1,
         uncertainty: window.p5Instance.random(0.5, 3),
-        wavePhase: block.wavePhase,
+        wavePhase: block.wavePhase || window.p5Instance.random(window.p5Instance.TWO_PI),
         radialAngle: angle,
         radialDistance: 0,
         targetRadialDistance: window.p5Instance.random(100, 300),
@@ -326,6 +331,7 @@ window.initializeParticles = function(blockList) {
       collapsed: false
     };
   }
+  console.log('Created', particleCount, 'particles');
 }
 
 function updateParticle(particle, state) {
@@ -386,11 +392,13 @@ function updateParticle(particle, state) {
         particle.tunneled = true;
         particle.tunnelTargetX = particle.barrier.x + particle.barrier.width + window.p5Instance.random(-20, 20);
         particle.tunnelTargetY = particle.y + window.p5Instance.random(-20, 20);
-        window.trailBuffer.noFill();
-        for (let i = 0; i < 3; i++) {
-          window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
-          window.trailBuffer.strokeWeight(1);
-          window.trailBuffer.ellipse(particle.tunnelTargetX, particle.tunnelTargetY, 10 + i * 5);
+        if (window.trailBuffer) {
+          window.trailBuffer.noFill();
+          for (let i = 0; i < 3; i++) {
+            window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
+            window.trailBuffer.strokeWeight(1);
+            window.trailBuffer.ellipse(particle.tunnelTargetX, particle.tunnelTargetY, 10 + i * 5);
+          }
         }
         setTimeout(() => {
           particle.tunneled = false;
@@ -455,15 +463,17 @@ function updateParticle(particle, state) {
       particle.shapeType = window.p5Instance.random() < 0.5 ? window.p5Instance.floor(window.p5Instance.random(5)) : particle.shapeType;
       particle.uncertainty = 0;
       particle.probAmplitude = 1;
-      window.trailBuffer.noFill();
-      for (let i = 0; i < 3; i++) {
-        window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
-        window.trailBuffer.strokeWeight(1);
-        window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 20 + i * 10);
-      }
-      if (window.p5Instance.random() < 0.1) {
-        window.trailBuffer.stroke(255, 255, 255, 100);
-        window.trailBuffer.line(particle.x + particle.offsetX, particle.y + particle.offsetY, window.cursorX, window.cursorY);
+      if (window.trailBuffer) {
+        window.trailBuffer.noFill();
+        for (let i = 0; i < 3; i++) {
+          window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
+          window.trailBuffer.strokeWeight(1);
+          window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 20 + i * 10);
+        }
+        if (window.p5Instance.random() < 0.1) {
+          window.trailBuffer.stroke(255, 255, 255, 100);
+          window.trailBuffer.line(particle.x + particle.offsetX, particle.y + particle.offsetY, window.cursorX, window.cursorY);
+        }
       }
       addQuantumMessage("Коллапс: измерение вызвало выбор одного состояния.", "collapse");
     }
@@ -548,18 +558,20 @@ function updateParticle(particle, state) {
 
   if (particle.layer === 'main' && window.frame >= particle.startFrame && particle.superpositionT >= 1 && window.p5Instance.random() < 0.1 && particle.probAmplitude > 0.7) {
     let probDensity = particle.probAmplitude * 100;
-    window.trailBuffer.fill(state.r, state.g, state.b, probDensity);
-    window.trailBuffer.noStroke();
-    window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 2, particle.size / 2);
-    if (window.p5Instance.random() < 0.3) {
-      window.trailBuffer.stroke(255, 255, 255, 50);
-      window.trailBuffer.strokeWeight(0.5);
-      window.trailBuffer.line(
-        particle.x + particle.offsetX,
-        particle.y + particle.offsetY,
-        particle.x + particle.offsetX + window.p5Instance.random(-20, 20),
-        particle.y + particle.offsetY + window.p5Instance.random(-20, 20)
-      );
+    if (window.trailBuffer) {
+      window.trailBuffer.fill(state.r, state.g, state.b, probDensity);
+      window.trailBuffer.noStroke();
+      window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 2, particle.size / 2);
+      if (window.p5Instance.random() < 0.3) {
+        window.trailBuffer.stroke(255, 255, 255, 50);
+        window.trailBuffer.strokeWeight(0.5);
+        window.trailBuffer.line(
+          particle.x + particle.offsetX,
+          particle.y + particle.offsetY,
+          particle.x + particle.offsetX + window.p5Instance.random(-20, 20),
+          particle.y + particle.offsetY + window.p5Instance.random(-20, 20)
+        );
+      }
     }
   }
 
@@ -666,6 +678,7 @@ function renderParticle(particle, state) {
 }
 
 function renderInterference() {
+  if (!window.trailBuffer) return;
   let gridSize = 50;
   let maxY = window.p5Instance.height;
   for (let x = 0; x < window.p5Instance.width; x += gridSize) {
@@ -687,8 +700,8 @@ function renderInterference() {
 }
 
 window.draw = function() {
-  if (!window.p5Instance || !window.isCanvasReady || !window.img || !window.img.width || window.currentStep < 4) {
-    console.log('Draw skipped: p5 instance, canvas, image not ready, or step < 4');
+  if (!window.p5Instance || !window.isCanvasReady || !window.img || !window.img.width || window.currentStep < 4 || !window.trailBuffer) {
+    console.log('Draw skipped: p5 instance, canvas, image, or trailBuffer not ready, or step < 4');
     return;
   }
 
@@ -712,7 +725,7 @@ window.draw = function() {
 
   let blockList = [];
   if (window.frame <= 60) {
-    blockList = renderTransformingPortrait(window.img, window.frame);
+    blockList = renderTransformingPortrait();
     if (window.frame === 31) {
       window.initializeParticles(blockList);
     }
@@ -813,7 +826,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { passive: false });
 
   window.addEventListener('resize', () => {
-    if (window.p5Instance && window.p5Canvas) {
+    if (window.p5Instance && window.p5Canvas && window.trailBuffer) {
       window.p5Instance.resizeCanvas(window.p5Instance.windowWidth, window.p5Instance.windowHeight - 100);
       window.trailBuffer = window.p5Instance.createGraphics(window.p5Instance.width, window.p5Instance.height);
       window.trailBuffer.pixelDensity(1);
