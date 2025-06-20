@@ -1,7 +1,3 @@
-```javascript
-// main.js
-
-// Убедимся, что p5.js загружен
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof createCanvas === 'undefined') {
     console.error('p5.js is not loaded or createCanvas is undefined');
@@ -11,8 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Инициализация холста p5.js
   window.setup = function() {
     window.p5Canvas = createCanvas(windowWidth, windowHeight - 100);
-    window.p5Canvas.elt.style.display = 'none'; // Скрываем холст до шага 4
+    window.p5Canvas.elt.style.display = 'none';
     window.isCanvasReady = true;
+    if (window.img) initializeParticles();
   };
 
   // Обработчик загрузки изображения
@@ -28,8 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (file.type === 'image') {
       loadImage(file.data, (loadedImg) => {
         window.img = loadedImg;
-        window.currentStep = 3; // Переходим к шагу 3 (инициализация)
+        window.currentStep = 3;
         updateStep();
+        initializeParticles();
       });
     }
   };
@@ -49,7 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Отображаем холст на шагах 4 и 5
     if (window.currentStep === 4 || window.currentStep === 5) {
       window.p5Canvas.elt.style.display = 'block';
-      document.getElementById(`canvasContainer${window.currentStep}`).appendChild(window.p5Canvas.elt);
+      const container = document.getElementById(`canvasContainer${window.currentStep}`);
+      if (container && !container.contains(window.p5Canvas.elt)) {
+        container.appendChild(window.p5Canvas.elt);
+      }
     } else {
       window.p5Canvas.elt.style.display = 'none';
     }
@@ -119,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Упрощение анимации
   window.simplifyAnimation = function() {
     window.simplifyAnimations = true;
+    initializeParticles();
   };
 
   // Поделиться наблюдением
@@ -130,5 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.goToArchive = function() {
     alert('Архив пока недоступен!');
   };
+
+  // Инициализация первого шага
+  updateStep();
 });
-```
