@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(initInterval);
         console.error('Failed to load p5.js after multiple attempts');
         document.getElementById('loader').textContent = 'Ошибка загрузки: p5.js не доступен. Пожалуйста, проверьте интернет-соединение.';
-        return false;
+        return;
       }
-      return false;
+      return;
     }
 
     clearInterval(initInterval);
@@ -27,8 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
           window.p5Canvas.elt.style.display = 'none';
           window.isCanvasReady = true;
           console.log('p5.js canvas initialized');
-          updateStep(); // Вызываем updateStep после создания холста
-          if (window.img) initializeParticles();
+          updateStep();
+          if (window.img) {
+            setTimeout(() => initializeParticles(), 100);
+          }
         } else {
           console.error('Failed to create p5.js canvas');
           document.getElementById('loader').textContent = 'Ошибка: не удалось создать холст p5.js';
@@ -69,9 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
           window.currentStep = 3;
           updateStep();
           if (window.isCanvasReady) {
+            console.log('Canvas ready, initializing particles');
             initializeParticles();
           } else {
             console.warn('Canvas not ready, deferring particle initialization');
+            setTimeout(() => {
+              if (window.isCanvasReady) initializeParticles();
+            }, 1000);
           }
         }, (error) => {
           console.error('Failed to load image in p5.js:', error);
@@ -98,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const container = document.getElementById(`canvasContainer${window.currentStep}`);
           if (container && !container.contains(window.p5Canvas.elt)) {
             container.appendChild(window.p5Canvas.elt);
+            console.log(`Canvas attached to canvasContainer${window.currentStep}`);
           }
         } else {
           console.warn('p5Canvas is not initialized, skipping canvas display');
@@ -184,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Архив пока недоступен!');
     };
 
-    // Инициализация первого шага только если холст не нужен
+    // Инициализация первого шага
     if (window.currentStep === 0) {
       updateStep();
     }
