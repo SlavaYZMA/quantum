@@ -1,4 +1,5 @@
-function debounce(func, wait) {
+```javascript
+window.debounce = function(func, wait) {
   let timeout;
   return function executedFunction(...args) {
     const later = () => {
@@ -8,4 +9,5 @@ function debounce(func, wait) {
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
-}
+};
+```
