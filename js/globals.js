@@ -1,3 +1,4 @@
+```javascript
 let currentStep = 0;
 let language = 'ru';
 let img = null;
@@ -5,7 +6,7 @@ let frame = 0;
 let isPaused = false;
 let particles = [];
 let quantumStates = [];
-let canvas = null;
+let p5Canvas = null; // Переименовано с canvas на p5Canvas
 let isCanvasReady = false;
 let timeOnPage = 0;
 let weirdnessFactor = 0;
@@ -31,3 +32,4 @@ const translations = {
   step6: { ru: 'Шаг 5: РЕАКЦИЯ СИСТЕМЫ\n> Это не портрет.\n> Это — хаотичная реакция системы на тебя.\n> Ты породил абсурд.', en: 'Step 5: SYSTEM REACTION\n> This is not a portrait.\n> This is the system\'s chaotic reaction to you.\n> You spawned absurdity.' },
   step7: { ru: 'Ты — не единственный наблюдатель.\nКаждое наблюдение — это акт, порождающий\nхаос. Здесь ты — одновременно субъект и\nобъект абсурда.', en: 'You are not the only observer.\nEach observation is an act that spawns\nchaos. Here, you are both subject and object\nof absurdity.' }
 };
+```
