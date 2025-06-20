@@ -5,9 +5,9 @@ window.weirdnessFactor = 0;
 window.simplifyAnimations = false;
 window.uploadedImageUrl = '';
 window.portraitUrls = [
-  'https://via.placeholder.com/100',
-  'https://via.placeholder.com/100',
-  'https://via.placeholder.com/100'
+  'https://via.placeholder.com/300',
+  'https://via.placeholder.com/300',
+  'https://via.placeholder.com/300'
 ];
 window.img = null;
 
@@ -34,8 +34,13 @@ window.debouncedGoBack = window.debounce(goBack, 300);
 
 function selectLanguage(lang) {
   window.language = lang;
-  updateContinueButtonText();
-  window.debouncedNextStep();
+  updateContinueButton();
+  window.debancedNextStep();
+}
+
+function updateContinueButton() {
+  const continueButton = document.getElementById('continueButton');
+  continueButton.textContent = window.language === 'ru' ? 'Продолжить' : 'Continue';
 }
 
 function showCanvas(containerId) {
@@ -100,7 +105,7 @@ function nextStep() {
   nextStepElement.classList.add('active');
   document.getElementById('backButton').style.display = window.currentStep > 0 ? 'block' : 'none';
   document.getElementById('continueButton').style.display = window.currentStep > 0 && window.currentStep < 7 ? 'block' : 'none';
-  updateContinueButtonState();
+  updateContinueButton();
 
   if (window.currentStep === 1) {
     triggerFlash();
@@ -181,7 +186,7 @@ function goBack() {
   previousStepElement.classList.add('active');
   document.getElementById('backButton').style.display = window.currentStep > 0 ? 'block' : 'none';
   document.getElementById('continueButton').style.display = window.currentStep > 0 && window.currentStep < 7 ? 'block' : 'none';
-  updateContinueButtonState();
+  updateContinueButton();
 
   if (window.currentStep === 0) {
     hideCanvas();
@@ -300,3 +305,73 @@ function restart() {
 
   document.getElementById('backButton').style.display = 'none';
   document.getElementById('continueButton').style.display = 'none';
+  window.typeText('typewriter0', window.translations.step0[window.language]);
+}
+
+function openGallery() {
+  const gallery = document.getElementById('portraitGallery');
+  gallery.style.display = 'flex';
+  gallery.innerHTML = '';
+  window.portraitUrls.forEach((url, index) => {
+    const portrait = document.createElement('div');
+    portrait.className = 'portrait';
+    portrait.style.backgroundImage = `url(${url})`;
+    portrait.style.backgroundSize = 'cover';
+    portrait.addEventListener('click', () => {
+      window.uploadedImageUrl = url;
+      handleFile({ type: 'image', data: url });
+      gallery.style.display = 'none';
+      window.debouncedNextStep();
+    });
+    gallery.appendChild(portrait);
+  });
+}
+
+function saveCurrentState() {
+  if (window.canvas) {
+    const link = document.createElement('a');
+    link.download = 'quantum_portrait.png';
+    link.href = window.canvas.elt.toDataURL('image/png');
+    link.click();
+  }
+}
+
+function shareObservation() {
+  alert(window.language === 'ru' ? 'Функция поделиться в разработке!' : 'Share function is under development!');
+}
+
+function goToArchive() {
+  alert(window.language === 'ru' ? 'Архив в разработке!' : 'Archive is under development!');
+}
+
+function openAuthors() {
+  document.getElementById('authorsPage').style.display = 'block';
+}
+
+function closeAuthors() {
+  document.getElementById('authorsPage').style.display = 'none';
+}
+
+function simplifyAnimation() {
+  window.simplifyAnimations = true;
+  window.maxParticles = Math.floor(window.maxParticles / 2);
+  window.particles = window.particles.slice(0, window.maxParticles);
+  window.quantumStates = window.quantumStates.slice(0, window.maxParticles);
+}
+
+function triggerFlash() {
+  const flash = document.getElementById('flashEffect');
+  flash.classList.add('active');
+  setTimeout(() => flash.classList.remove('active'), 300);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.canvas = createCanvas(windowWidth, windowHeight - 100);
+  window.canvas.elt.style.display = 'none';
+  document.getElementById('imageInput').addEventListener('change', (event) => {
+    if (event.target.files[0]) {
+      window.uploadedImageUrl = URL.createObjectURL(event.target.files[0]);
+      handleFile({ type: 'image', data: window.uploadedImageUrl });
+    }
+  });
+});
