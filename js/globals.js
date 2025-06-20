@@ -1,27 +1,26 @@
-```javascript
-let currentStep = 0;
-let language = 'ru';
-let img = null;
-let frame = 0;
-let isPaused = false;
-let particles = [];
-let quantumStates = [];
-let p5Canvas = null; // Переименовано с canvas на p5Canvas
-let isCanvasReady = false;
-let timeOnPage = 0;
-let weirdnessFactor = 0;
-let simplifyAnimations = false;
-let uploadedImageUrl = '';
-let cursorX = 0;
-let cursorY = 0;
+window.currentStep = 0;
+window.language = 'ru';
+window.img = null;
+window.frame = 0;
+window.isPaused = false;
+window.particles = [];
+window.quantumStates = [];
+window.p5Canvas = null;
+window.isCanvasReady = false;
+window.timeOnPage = 0;
+window.weirdnessFactor = 0;
+window.simplifyAnimations = false;
+window.uploadedImageUrl = '';
+window.cursorX = 0;
+window.cursorY = 0;
 
-const portraitUrls = [
+window.portraitUrls = [
   'https://via.placeholder.com/100',
   'https://via.placeholder.com/100',
   'https://via.placeholder.com/100'
 ];
 
-const translations = {
+window.translations = {
   step0: { ru: 'Пожалуйста, выберите язык\nPlease select a language', en: 'Please select a language' },
   step1: { ru: 'СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН\n> Чему Шредингер может научить нас в области\nцифровой идентификации?\n> Добро пожаловать в экспериментальную зону.\n> Здесь наблюдение = вмешательство.', en: 'STATUS: OBSERVER CONNECTED\n> What can Schrödinger teach us about\ndigital identification?\n> Welcome to the experimental zone.\n> Here, observation = interference.' },
   step2: { ru: 'Шаг 1: Сканируйте лицо суперпозиции.\nВы можете загрузить изображение или выбрать вариант из архива.', en: 'Step 1: Scan the face of superposition.\nYou can upload an image or select from the archive.' },
@@ -30,6 +29,5 @@ const translations = {
   step4: { ru: 'Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ\n> Двигайте курсором по изображению.\n> Каждый ваш жест запускает хаотический распад.\n> Система формирует абсурдный образ.', en: 'Step 3: BEGIN OBSERVATION\n> Move the cursor over the image.\n> Each gesture triggers chaotic decay.\n> The system forms an absurd image.' },
   step5: { ru: 'Шаг 4: ФИКСАЦИЯ\n> Портрет — это хаос.\n> Зафиксируйте один миг этого безумия.\n> Это будет твой абсурдный образ.', en: 'Step 4: FIXATION\n> A portrait is chaos.\n> Freeze a moment of this madness.\n> This will be your absurd self.' },
   step6: { ru: 'Шаг 5: РЕАКЦИЯ СИСТЕМЫ\n> Это не портрет.\n> Это — хаотичная реакция системы на тебя.\n> Ты породил абсурд.', en: 'Step 5: SYSTEM REACTION\n> This is not a portrait.\n> This is the system\'s chaotic reaction to you.\n> You spawned absurdity.' },
-  step7: { ru: 'Ты — не единственный наблюдатель.\nКаждое наблюдение — это акт, порождающий\nхаос. Здесь ты — одновременно субъект и\nобъект абсурда.', en: 'You are not the only observer.\nEach observation is an act that spawns\nchaos. Here, you are both subject and object\nof absurdity.' }
+  step7: { ru: 'Ты — не единственный наблюдатель.\nКаждое наблюдение — это акт, порождающий\nхаос. Здесь ты — одновременно субъект и\nобъект абсурда.', en: 'You are not the only observer.\nEach observation is an act that spawns\nchaos. Here, you are both subject and object of absurdity.' }
 };
-```
