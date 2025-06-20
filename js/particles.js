@@ -23,7 +23,6 @@ function easeOutQuad(t) {
 }
 
 function setup() {
-  // Удалено createCanvas, position, style и прочее
   pixelDensity(1);
   frameRate(navigator.hardwareConcurrency < 4 ? 20 : 25);
   noLoop();
@@ -114,10 +113,9 @@ function addQuantumMessage(message, eventType) {
 }
 
 function renderQuantumMessages() {
-  // Перенесено в index.html, но оставлено для совместимости
   textAlign(LEFT, TOP);
   textSize(16);
-  fill(0, 255, 0); // Зелёный для терминала
+  fill(0, 255, 0);
   noStroke();
 
   if (window.textMessages.queue.length > 0 && window.textMessages.active.length < 5) {
@@ -127,7 +125,7 @@ function renderQuantumMessages() {
   }
 
   let spacing = 30;
-  let baseY = 10; // Смещение для терминала
+  let baseY = 10;
   for (let i = 0; i < window.textMessages.active.length; i++) {
     let msg = window.textMessages.active[i];
     let t = (window.frame - msg.startFrame) / (10 * frameRate());
@@ -342,7 +340,6 @@ function draw() {
   renderQuantumMessages();
   window.lastFrameTime = frameTime;
 
-  // Отрисовка на мини-канве
   let explainerCanvas = select('#quantum-explainer');
   if (explainerCanvas) {
     renderQuantumExplainer(explainerCanvas.elt.getContext('2d'));
@@ -356,7 +353,6 @@ function renderQuantumExplainer(ctx) {
   ctx.fillStyle = 'rgba(0, 255, 0, 0.7)';
   ctx.strokeStyle = 'rgba(0, 255, 0, 0.7)';
 
-  // Простая визуализация в зависимости от событий
   let lastMessage = window.textMessages.active[window.textMessages.active.length - 1];
   if (lastMessage) {
     switch (lastMessage.eventType) {
@@ -543,6 +539,68 @@ function initializeParticles(blockList) {
   }
 }
 
+function renderParticle(particle, state) {
+  let px = particle.x + particle.offsetX;
+  let py = particle.y + particle.offsetY;
+  if (!isPointInBoundary(px, py)) return;
+
+  fill(state.r, state.g, state.b, particle.alpha * (state.a / 255));
+  noStroke();
+  push();
+  translate(px, py);
+  rotate(particle.rotation);
+
+  if (particle.shapeType === 0) {
+    ellipse(0, 0, particle.size, particle.size);
+  } else if (particle.shapeType === 1) {
+    rect(-particle.size / 2, -particle.size / 2, particle.size, particle.size);
+  } else if (particle.shapeType === 2) {
+    beginShape();
+    for (let a = 0; a < TWO_PI; a += TWO_PI / particle.sides) {
+      let x = cos(a) * particle.size / 2;
+      let y = sin(a) * particle.size / 2;
+      vertex(x, y);
+    }
+    endShape(CLOSE);
+  } else if (particle.shapeType === 3) {
+    beginShape();
+    for (let a = 0; a < TWO_PI; a += PI / 3) {
+      let x = cos(a) * particle.size / 2;
+      let y = sin(a) * particle.size / 2;
+      vertex(x, y);
+    }
+    endShape(CLOSE);
+  } else if (particle.shapeType === 4) {
+    let r = particle.size / 2;
+    beginShape();
+    for (let a = 0; a < TWO_PI; a += PI / 5) {
+      let radius = (a % (PI / 2.5)) === 0 ? r : r * 0.5;
+      let x = cos(a) * radius;
+      let y = sin(a) * radius;
+      vertex(x, y);
+    }
+    endShape(CLOSE);
+  }
+
+  if (particle.superposition) {
+    for (let i = 0; i < 2; i++) {
+      let offsetX = cachedNoise(particle.chaosSeed + i, window.frame * 0.05, 0) * particle.uncertainty * 10;
+      let offsetY = cachedNoise(particle.chaosSeed + i + 100, window.frame * 0.05, 0) * particle.uncertainty * 10;
+      fill(state.r, state.g, state.b, particle.alpha * 0.3);
+      ellipse(offsetX, offsetY, particle.size * 0.7);
+    }
+  }
+
+  pop();
+
+  window.trailBuffer.push();
+  window.trailBuffer.translate(px, py);
+  window.trailBuffer.fill(state.r, state.g, state.b, particle.alpha * 0.1);
+  window.trailBuffer.noStroke();
+  window.trailBuffer.ellipse(0, 0, particle.size * 1.5);
+  window.trailBuffer.pop();
+}
+
 function updateParticle(particle, state) {
   let px = particle.x + particle.offsetX;
   let py = particle.y + particle.offsetY;
@@ -566,7 +624,7 @@ function updateParticle(particle, state) {
 
   if (particle.superpositionT >= 1) {
     particle.offsetX += noiseX * particle.uncertainty * 10 * particle.probAmplitude * particle.speed;
-    particle.offsetX += noiseY * particle.uncertainty * 10 * particle.probAmplitude * particle.speed;
+    particle.offsetY += noiseY * particle.uncertainty * 10 * particle.probAmplitude * particle.speed;
     particle.rotation += noiseX * 0.05;
     let sizeNoise = cachedNoise(particle.chaosSeed, window.frame * 0.02, 0);
     particle.size = particle.targetSize * (1 + 0.3 * sizeNoise);
@@ -720,153 +778,36 @@ function updateParticle(particle, state) {
         sides: floor(random(5, 13)),
         tunneled: false,
         tunnelTargetX: 0,
-        tunnelнах
-//main.js
-- **Файл**: `main.js`
-- **Где**: В функции `setup` (около строки 50), где ранее создавался `createFileInput` и `fsButton`
-- **Изменение**: Удалить создание элементов и перенести их в `index.html`
-  ```javascript
-  function setup() {
-    // Удалено:
-    // let fileInput = createFileInput(handleFile);
-    // fileInput.position(10, 10);
-    // fileInput.attribute('accept', 'image/*');
-    // let fsButton = createButton('Full Screen');
-    // fsButton.position(windowWidth - 100, 10);
-    // fsButton.mousePressed(() => { ... });
-    // Остальная логика setup перенесена в particles.js
+        tunnelTargetY: 0,
+        superposition: random() < 0.3,
+        timeAnomaly: random() < 0.05,
+        timeDirection: random([-1, 1]),
+        uncertainty: random(0.5, 3),
+        wavePhase: random(TWO_PI),
+        radialAngle: random(TWO_PI),
+        radialDistance: 0,
+        targetRadialDistance: random(100, 300),
+        superpositionT: 0,
+        probAmplitude: random(0.5, 1.5),
+        barrier: null,
+        speed: random(0.8, 1.5),
+        rotation: 0,
+        individualPeriod: random(0.5, 3),
+        decoherence: 0,
+        entangledIndex: -1
+      };
+      window.particles.push(newParticle);
+      window.quantumStates.push({
+        r: state.r,
+        g: state.g,
+        b: state.b,
+        a: 255,
+        baseR: state.baseR,
+        baseG: state.baseG,
+        baseB: state.baseB,
+        collapsed: false
+      });
+      addQuantumMessage("Обнаружено рождение новой частицы.", "spawn");
+    }
   }
-  ```
-- **Эффект**: Удаляет управление элементами интерфейса, оставляя только логику canvas.
-
-#### index.html
-Добавлены:
-- Контейнер `<div id="terminal">` для сообщений.
-- Мини-канва `<canvas id="quantum-explainer">` для квантовых эффектов.
-- Рамки для всех элементов.
-- Контейнеры для шагов 4 и 5 обновлены для новой структуры.
-
-<xaiArtifact artifact_id="081502cd-c3a2-49af-a785-bd1a9da827e8" artifact_version_id="fd9d8310-7a90-4b62-b3d6-a7e478216094" title="index.html" contentType="text/html">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quantum Portraits</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <div id="noiseOverlay"></div>
-  <div class="flash" id="flashEffect"></div>
-  <div id="loader">Загрузка...</div>
-  <div class="container">
-    <button class="back-button" id="backButton" style="display: none;" aria-label="Вернуться на предыдущий шаг" onclick="debouncedGoBack()">Назад / Back</button>
-    <button class="continue-button" id="continueButton" style="display: none;" disabled aria-label="Перейти к следующему шагу" onclick="debouncedNextStep()">Продолжить / Continue</button>
-
-    <div class="step" id="step0">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter0"></div>
-      </div>
-      <div class="button-container" id="step0Buttons">
-        <button class="button" aria-label="Выбрать русский язык" onclick="selectLanguage('ru')">RU</button>
-        <button class="button" aria-label="Выбрать английский язык" onclick="selectLanguage('en')">ENG</button>
-      </div>
-    </div>
-
-    <div class="step" id="step1">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter1"></div>
-      </div>
-      <div class="button-container"></div>
-    </div>
-
-    <div class="step" id="step2">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter2"></div>
-      </div>
-      <div class="button-container" id="step2Buttons">
-        <input type="file" id="imageInput" accept="image/*" style="display: none;">
-        <button class="button" aria-label="Загрузить фото" onclick="document.getElementById('imageInput').click()">Загрузить фото / Upload Photo</button>
-        <button class="button" aria-label="Выбрать из архива" onclick="openGallery()">Выбрать готовое / Select from Archive</button>
-      </div>
-    </div>
-
-    <div class="step" id="step3">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter3"></div>
-      </div>
-      <div class="button-container"></div>
-    </div>
-
-    <div class="step" id="step4">
-      <div class="top-section">
-        <div class="text-container">
-          <div class="typewriter" id="typewriter4"></div>
-        </div>
-        <div class="portrait-container">
-          <img id="previewImage4" class="preview-image" alt="Uploaded portrait preview">
-        </div>
-      </div>
-      <div class="middle-section">
-        <div id="terminal" class="terminal"></div>
-        <canvas id="quantum-explainer" class="quantum-explainer"></canvas>
-      </div>
-      <div class="canvas-container" id="canvasContainer4"></div>
-      <div class="button-container"></div>
-    </div>
-
-    <div class="step" id="step5">
-      <div class="top-section">
-        <div class="text-container">
-          <div class="typewriter" id="typewriter5"></div>
-        </div>
-        <div class="portrait-container">
-          <img id="previewImage5" class="preview-image" alt="Uploaded portrait preview">
-        </div>
-      </div>
-      <div class="middle-section">
-        <div id="terminal" class="terminal"></div>
-        <canvas id="quantum-explainer" class="quantum-explainer"></canvas>
-      </div>
-      <button class="save-button" id="saveButton" style="display: none;" aria-label="Сохранить изображение" onclick="saveCurrentState()">Сохранить изображение / Save Image</button>
-      <div class="canvas-container" id="canvasContainer5"></div>
-      <div class="button-container"></div>
-    </div>
-
-    <div class="step" id="step6">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter6"></div>
-      </div>
-      <div class="button-container">
-        <button class="button" aria-label="Поделиться наблюдением" onclick="shareObservation()">ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ / SHARE OBSERVATION</button>
-      </div>
-    </div>
-
-    <div class="step" id="step7">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter7"></div>
-      </div>
-      <div class="button-container">
-        <button class="button" aria-label="Начать заново" onclick="restart()">↻ НАЧАТЬ СНАЧАЛА / RESTART</button>
-        <button class="button" aria-label="Перейти в архив" onclick="goToArchive()">⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ / GO TO ARCHIVE</button>
-        <button class="button" aria-label="О разработчиках" onclick="openAuthors()">ОБ АВТОРАХ / ABOUT US</button>
-        <button class="button" aria-label="Упростить анимацию" onclick="simplifyAnimation()">УПРОСТИТЬ АНИМАЦИЮ / SIMPLIFY ANIMATION</button>
-      </div>
-    </div>
-
-    <div id="portraitGallery"></div>
-    <div id="authorsPage">
-      <button class="button" aria-label="Закрыть страницу авторов" onclick="closeAuthors()">Закрыть / Close</button>
-      <div class="text-container">
-        <div class="typewriter">Слава Саша</div>
-      </div>
-    </div>
-  </div>
-
-  <script src="js/particles.js"></script>
-  <script src="js/textSteps.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/observer.js"></script>
-</body>
-</html>
+}
