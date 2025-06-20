@@ -1,9 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
   let initInterval;
+  let initAttempts = 0;
+  const maxAttempts = 20;
 
   function initializeP5() {
     if (typeof createCanvas === 'undefined') {
       console.warn('p5.js is not yet loaded, retrying...');
+      initAttempts++;
+      if (initAttempts >= maxAttempts) {
+        clearInterval(initInterval);
+        console.error('Failed to load p5.js after multiple attempts');
+        document.getElementById('loader').textContent = 'Ошибка загрузки: p5.js не доступен. Пожалуйста, проверьте интернет-соединение.';
+        return false;
+      }
       return false;
     }
 
@@ -12,10 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Инициализация холста p5.js
     window.setup = function() {
-      window.p5Canvas = createCanvas(windowWidth, windowHeight - 100);
-      window.p5Canvas.elt.style.display = 'none';
-      window.isCanvasReady = true;
-      if (window.img) initializeParticles();
+      try {
+        window.p5Canvas = createCanvas(windowWidth, windowHeight - 100);
+        if (window.p5Canvas) {
+          window.p5Canvas.elt.style.display = 'none';
+          window.isCanvasReady = true;
+          console.log('p5.js canvas initialized');
+          updateStep(); // Вызываем updateStep только после инициализации холста
+          if (window.img) initializeParticles();
+        } else {
+          console.error('Failed to create p5.js canvas');
+          document.getElementById('loader').textContent = 'Ошибка: не удалось создать холст p5.js';
+        }
+      } catch (e) {
+        console.error('Error in p5.js setup:', e);
+        document.getElementById('loader').textContent = 'Ошибка инициализации p5.js';
+      }
     };
 
     // Обработчик загрузки изображения
@@ -33,7 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
           window.img = loadedImg;
           window.currentStep = 3;
           updateStep();
-          initializeParticles();
+          if (window.isCanvasReady) {
+            initializeParticles();
+          } else {
+            console.warn('Canvas not ready, deferring particle initialization');
+          }
         });
       }
     };
@@ -52,12 +77,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Отображаем холст на шагах 4 и 5
       if (window.currentStep === 4 || window.currentStep === 5) {
-        window.p5Canvas.elt.style.display = 'block';
-        const container = document.getElementById(`canvasContainer${window.currentStep}`);
-        if (container && !container.contains(window.p5Canvas.elt)) {
-          container.appendChild(window.p5Canvas.elt);
+        if (window.p5Canvas && window.p5Canvas.elt) {
+          window.p5Canvas.elt.style.display = 'block';
+          const container = document.getElementById(`canvasContainer${window.currentStep}`);
+          if (container && !container.contains(window.p5Canvas.elt)) {
+            container.appendChild(window.p5Canvas.elt);
+          }
+        } else {
+          console.warn('p5Canvas is not initialized, skipping canvas display');
         }
-      } else {
+      } else if (window.p5Canvas && window.p5Canvas.elt) {
         window.p5Canvas.elt.style.display = 'none';
       }
 
@@ -103,7 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Сохранение текущего состояния
     window.saveCurrentState = function() {
-      saveCanvas(window.p5Canvas, 'quantum_portrait', 'png');
+      if (window.p5Canvas) {
+        saveCanvas(window.p5Canvas, 'quantum_portrait', 'png');
+      } else {
+        console.error('Cannot save canvas: p5Canvas is not initialized');
+      }
     };
 
     // Перезапуск приложения
@@ -135,18 +168,16 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Архив пока недоступен!');
     };
 
-    // Инициализация первого шага
-    updateStep();
     return true;
   }
 
   // Пытаемся инициализировать сразу
   if (!initializeP5()) {
-    // Если p5.js не загружен, повторяем попытки каждые 100 мс
+    // Если p5.js не загружен, повторяем попытки каждые 1000 мс
     initInterval = setInterval(() => {
       if (initializeP5()) {
         clearInterval(initInterval);
       }
-    }, 100);
+    }, 1000);
   }
 });
