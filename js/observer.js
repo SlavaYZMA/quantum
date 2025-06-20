@@ -1,5 +1,3 @@
-// observer.js
-
 window.cursorX = 0;
 window.cursorY = 0;
 
