@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quantum Portraits</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="noiseOverlay"></div>
@@ -51,19 +51,35 @@
     </div>
 
     <div class="step" id="step4">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter4"></div>
+      <div class="top-section">
+        <div class="text-container">
+          <div class="typewriter" id="typewriter4"></div>
+        </div>
+        <div class="portrait-container">
+          <img id="previewImage4" class="preview-image" alt="Uploaded portrait preview">
+        </div>
       </div>
-      <img id="previewImage4" class="preview-image" alt="Uploaded portrait preview">
+      <div class="middle-section">
+        <div id="terminal" class="terminal"></div>
+        <canvas id="quantum-explainer" class="quantum-explainer"></canvas>
+      </div>
       <div class="canvas-container" id="canvasContainer4"></div>
       <div class="button-container"></div>
     </div>
 
     <div class="step" id="step5">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter5"></div>
+      <div class="top-section">
+        <div class="text-container">
+          <div class="typewriter" id="typewriter5"></div>
+        </div>
+        <div class="portrait-container">
+          <img id="previewImage5" class="preview-image" alt="Uploaded portrait preview">
+        </div>
       </div>
-      <img id="previewImage5" class="preview-image" alt="Uploaded portrait preview">
+      <div class="middle-section">
+        <div id="terminal" class="terminal"></div>
+        <canvas id="quantum-explainer" class="quantum-explainer"></canvas>
+      </div>
       <button class="save-button" id="saveButton" style="display: none;" aria-label="Сохранить изображение" onclick="saveCurrentState()">Сохранить изображение / Save Image</button>
       <div class="canvas-container" id="canvasContainer5"></div>
       <div class="button-container"></div>
@@ -99,10 +115,9 @@
     </div>
   </div>
 
-  <script src="js/particles.js"></script>
-  <script src="js/textSteps.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/observer.js"></script>
-  
+  <script src="textSteps.js"></script>
+  <script src="observer.js"></script>
+  <script src="particles.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
