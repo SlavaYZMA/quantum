@@ -57,7 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Запускаем текст для текущего шага
     if (window.translations[`step${window.currentStep}`]) {
-      window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language]);
+      window.typeText(`typewriter${window.currentStep}`, window.translations[`step${window.currentStep}`][window.language], () => {
+        document.getElementById('continueButton').disabled = false;
+      });
     }
   };
 
@@ -115,12 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Закрытие страницы авторов
   window.closeAuthors = function() {
     document.getElementById('authorsPage').style.display = 'none';
-  };
-
-  // Упрощение анимации
-  window.simplifyAnimation = function() {
-    window.simplifyAnimations = true;
-    initializeParticles();
   };
 
   // Поделиться наблюдением
