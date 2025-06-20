@@ -1,5 +1,79 @@
+window.initializeParticles = function() {
+  if (!window.img || !window.p5Canvas || !window.isCanvasReady) {
+    console.warn('Cannot initialize particles: image or canvas not ready');
+    return;
+  }
+
+  console.log('Initializing particles with image');
+  window.particles = [];
+  window.img.loadPixels();
+  const d = pixelDensity();
+  const stepSize = window.simplifyAnimations ? 10 : 5;
+
+  try {
+    for (let y = 0; y < window.img.height; y += stepSize) {
+      for (let x = 0; x < window.img.width; x += stepSize) {
+        const index = (x * d + y * d * window.img.width) * 4;
+        const r = window.img.pixels[index];
+        const g = window.img.pixels[index + 1];
+        const b = window.img.pixels[index + 2];
+        const a = window.img.pixels[index + 3];
+
+        if (a > 128) {
+          const scaledX = map(x, 0, window.img.width, 0, width);
+          const scaledY = map(y, 0, window.img.height, 0, height);
+          window.particles.push({
+            x: scaledX,
+            y: scaledY,
+            vx: random(-1, 1),
+            vy: random(-1, 1),
+            size: random(2, 5),
+            color: [r, g, b],
+            alpha: 255,
+            quantumPhase: random(TWO_PI)
+          });
+        }
+      }
+    }
+    console.log(`Created ${window.particles.length} particles`);
+  } catch (e) {
+    console.error('Error initializing particles:', e);
+  }
+};
+
+function updateParticles() {
+  if (window.isPaused) return;
+
+  console.log('Updating particles');
+  window.particles.forEach(p => {
+    const dx = window.cursorX - p.x;
+    const dy = window.cursorY - p.y;
+    const distance = sqrt(dx * dx + dy * dy);
+    if (distance < 100) {
+      const force = 50 / (distance + 1);
+      p.vx += (dx / distance) * force * 0.01;
+      p.vy += (dy / distance) * force * 0.01;
+      p.alpha = constrain(p.alpha - 5, 0, 255);
+    }
+
+    p.quantumPhase += 0.05;
+    p.vx += sin(p.quantumPhase) * 0.1 * (window.weirdnessFactor || 1);
+    p.vy += cos(p.quantumPhase) * 0.1 * (window.weirdnessFactor || 1);
+
+    p.x += p.vx;
+    p.y += p.vy;
+
+    p.x = constrain(p.x, 0, width);
+    p.y = constrain(p.y, 0, height);
+
+    p.vx *= 0.98;
+    p.vy *= 0.98;
+  });
+}
+
 window.draw = function() {
   if (!window.isCanvasReady || !window.img || window.currentStep < 4) {
+    console.log('Draw skipped: canvas not ready, no image, or step < 4');
     return;
   }
 
@@ -17,91 +91,31 @@ window.draw = function() {
 
   if (window.isPaused) {
     document.getElementById('saveButton').style.display = 'block';
+  } else {
+    document.getElementById('saveButton').style.display = 'none';
   }
 };
-
-window.initializeParticles = function() {
-  if (!window.img || !window.p5Canvas) return;
-
-  window.particles = [];
-  window.img.loadPixels();
-  const d = pixelDensity();
-  const stepSize = window.simplifyAnimations ? 10 : 5;
-
-  for (let y = 0; y < window.img.height; y += stepSize) {
-    for (let x = 0; x < window.img.width; x += stepSize) {
-      const index = (x * d + y * d * window.img.width) * 4;
-      const r = window.img.pixels[index];
-      const g = window.img.pixels[index + 1];
-      const b = window.img.pixels[index + 2];
-      const a = window.img.pixels[index + 3];
-
-      if (a > 128) {
-        const scaledX = map(x, 0, window.img.width, 0, width);
-        const scaledY = map(y, 0, window.img.height, 0, height);
-        window.particles.push({
-          x: scaledX,
-          y: scaledY,
-          vx: random(-1, 1),
-          vy: random(-1, 1),
-          size: random(2, 5),
-          color: [r, g, b],
-          alpha: 255,
-          quantumPhase: random(TWO_PI)
-        });
-      }
-    }
-  }
-};
-
-function updateParticles() {
-  if (window.isPaused) return;
-
-  window.particles.forEach(p => {
-    const dx = window.cursorX - p.x;
-    const dy = window.cursorY - p.y;
-    const distance = sqrt(dx * dx + dy * dy);
-    if (distance < 100) {
-      const force = 50 / (distance + 1);
-      p.vx += (dx / distance) * force * 0.01;
-      p.vy += (dy / distance) * force * 0.01;
-      p.alpha = constrain(p.alpha - 5, 0, 255);
-    }
-
-    p.quantumPhase += 0.05;
-    p.vx += sin(p.quantumPhase) * 0.1 * window.weirdnessFactor;
-    p.vy += cos(p.quantumPhase) * 0.1 * window.weirdnessFactor;
-
-    p.x += p.vx;
-    p.y += p.vy;
-
-    p.x = constrain(p.x, 0, width);
-    p.y = constrain(p.y, 0, height);
-
-    p.vx *= 0.98;
-    p.vy *= 0.98;
-  });
-}
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('imageInput').addEventListener('change', () => {
-    if (window.uploadedImageUrl) {
-      setTimeout(() => {
-        if (window.img) initializeParticles();
-      }, 1000);
+  // Обработчик движения мыши для cursorX и cursorY
+  document.addEventListener('mousemove', (e) => {
+    window.cursorX = e.clientX;
+    window.cursorY = e.clientY;
+  });
+
+  // Обработчик клика для паузы
+  document.addEventListener('click', () => {
+    if (window.currentStep === 4 || window.currentStep === 5) {
+      window.isPaused = !window.isPaused;
+      if (window.isPaused) {
+        noLoop();
+        document.getElementById('saveButton').style.display = 'block';
+        console.log('Animation paused');
+      } else {
+        loop();
+        document.getElementById('saveButton').style.display = 'none';
+        console.log('Animation resumed');
+      }
     }
   });
-});
-
-document.addEventListener('click', () => {
-  if (window.currentStep === 4 || window.currentStep === 5) {
-    window.isPaused = !window.isPaused;
-    if (window.isPaused) {
-      noLoop();
-      document.getElementById('saveButton').style.display = 'block';
-    } else {
-      loop();
-      document.getElementById('saveButton').style.display = 'none';
-    }
-  }
 });
