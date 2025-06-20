@@ -16,8 +16,27 @@ window.mouseHoverTime = 0;
 window.noiseCache = new Map();
 window.lastFrameTime = 0;
 window.maxParticles = 0;
-window.textMessages = { active: null, queue: [] };
+window.textMessages = { active: [], queue: [] }; // Изменено: active теперь массив
 window.entangledPairs = [];
+
+function preload() {
+  console.log('Attempting to load image from: assets/portrait.jpg');
+  window.img = loadImage('assets/portrait.jpg', () => {
+    console.log('Image loaded successfully:', window.img.width, 'x', window.img.height);
+    loop();
+  }, () => {
+    console.error('Failed to load image from assets/portrait.jpg. Trying fallback path: portrait.jpg');
+    window.img = loadImage('portrait.jpg', () => {
+      console.log('Fallback image loaded successfully:', window.img.width, 'x', window.img.height);
+      loop();
+    }, () => {
+      console.error('Failed to load fallback image. Using empty image.');
+      window.img = createImage(100, 100);
+      window.img.loadPixels();
+      loop();
+    });
+  });
+}
 
 function easeOutQuad(t) {
   return t * (2 - t);
@@ -45,11 +64,15 @@ function setup() {
       document.getElementById('canvasContainer4').requestFullscreen().then(() => {
         resizeCanvas(windowWidth, windowHeight);
         updateBoundary();
+        window.trailBuffer = createGraphics(windowWidth, windowHeight);
+        window.trailBuffer.pixelDensity(1);
       });
     } else {
       document.exitFullscreen().then(() => {
         resizeCanvas(windowWidth, windowHeight - 100);
         updateBoundary();
+        window.trailBuffer = createGraphics(windowWidth, windowHeight - 100);
+        window.trailBuffer.pixelDensity(1);
       });
     }
   });
@@ -94,7 +117,7 @@ function updateBoundary() {
   let numPoints = 40;
   let margin = 10;
   let maxX = windowWidth - margin;
-  let maxY = (document.fullscreenElement ? windowHeight : windowHeight - 100) - margin;
+  let maxY = (document.fullscreenElement ? windowHeight : windowHeight - 20) - margin;
   for (let i = 0; i < numPoints / 4; i++) {
     let x = lerp(margin, maxX, i / (numPoints / 4));
     window.boundaryPoints.push({ x, y: margin });
@@ -144,46 +167,63 @@ function cachedNoise(x, y, z) {
 function addQuantumMessage(message, eventType) {
   let newMessage = {
     text: message,
-    x: random(100, windowWidth - 300),
-    y: random(150, (document.fullscreenElement ? windowHeight : windowHeight - 100) - 50),
+    y: 150, // Начальная позиция, будет корректироваться
     alpha: 0,
+    offsetX: -20, // Для эффекта появления слева
     fadeIn: true,
     startFrame: window.frame,
     eventType: eventType
   };
-  if (window.textMessages.active) {
-    window.textMessages.queue.push(newMessage);
-  } else {
-    window.textMessages.active = newMessage;
-  }
+  window.textMessages.queue.push(newMessage);
 }
 
 function renderQuantumMessages() {
   textAlign(LEFT, TOP);
   textSize(16);
-  if (window.textMessages.active) {
-    let msg = window.textMessages.active;
-    let t = (window.frame - msg.startFrame) / 300;
+  fill(255, 255, 255);
+  noStroke();
+
+  // Обрабатываем очередь сообщений
+  if (window.textMessages.queue.length > 0 && window.textMessages.active.length < 5) {
+    let newMsg = window.textMessages.queue.shift();
+    newMsg.startFrame = window.frame;
+    window.textMessages.active.push(newMsg);
+  }
+
+  // Рендерим активные сообщения
+  let spacing = 30; // Расстояние между сообщениями
+  let baseY = 150; // Начальная позиция сверху
+  for (let i = 0; i < window.textMessages.active.length; i++) {
+    let msg = window.textMessages.active[i];
+    let t = (window.frame - msg.startFrame) / (10 * frameRate()); // 10 секунд
+    let xPos = 20 + msg.offsetX;
+
+    // Эффекты появления и исчезновения
     if (msg.fadeIn) {
-      msg.alpha = lerp(0, 255, easeOutQuad(min(t, 0.1)));
-      if (t >= 0.1) msg.fadeIn = false;
+      let fadeT = min(t * 2, 1); // 0.5 секунды для появления
+      msg.alpha = lerp(0, 255, easeOutQuad(fadeT));
+      msg.offsetX = lerp(-20, 0, easeOutQuad(fadeT));
+      if (fadeT >= 1) msg.fadeIn = false;
     } else {
-      if (t < 0.8) {
-        msg.alpha = 255;
+      if (t >= 0.95) { // Начинаем исчезновение за 0.5 секунды до конца
+        let fadeOutT = (t - 0.95) / 0.05; // 0.5 секунды
+        msg.alpha = lerp(255, 0, easeOutQuad(fadeOutT));
+        msg.offsetX = lerp(0, -20, easeOutQuad(fadeOutT));
       } else {
-        msg.alpha = lerp(255, 0, easeOutQuad((t - 0.8) / 0.2));
+        msg.alpha = 255;
+        msg.offsetX = 0;
       }
     }
-    fill(255, 255, 255, msg.alpha);
-    noStroke();
-    text(msg.text, msg.x, msg.y);
 
+    // Позиция сообщения
+    msg.y = baseY + i * spacing;
+    fill(255, 255, 255, msg.alpha);
+    text(msg.text, xPos, msg.y);
+
+    // Удаляем сообщения, которые закончили отображение
     if (t > 1) {
-      window.textMessages.active = null;
-      if (window.textMessages.queue.length > 0) {
-        window.textMessages.active = window.textMessages.queue.shift();
-        window.textMessages.active.startFrame = window.frame;
-      }
+      window.textMessages.active.splice(i, 1);
+      i--;
     }
   }
 }
@@ -243,11 +283,11 @@ function renderTransformingPortrait(img, currentFrame) {
         offsetY += waveOffset * sin(block.wavePhase);
         rotation += noiseVal * 0.1;
         if (random() < 0.05 && currentFrame === block.startFrame) {
-          addQuantumMessage("Суперпозиция: частица в нескольких состояниях одновременно.", "superposition");
+          addQuantumMessage("Инициализация суперпозиции…", "superposition");
         }
       }
       let canvasX = x + (windowWidth - img.width) / 2 + offsetX;
-      let canvasY = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + offsetY;
+      let canvasY = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + offsetY - 150;
 
       if (currentFrame >= block.startFrame) {
         let probDensity = block.probAmplitude * 100;
@@ -295,7 +335,7 @@ function draw() {
     window.mouseInfluenceRadius = random(150, 250);
     window.noiseScale = random(0.02, 0.04);
     if (random() < 0.1) {
-      addQuantumMessage("Декогеренция: система теряет квантовую когерентность.", "decoherence");
+      addQuantumMessage("Система вступила в фазу декогеренции.", "decoherence");
     }
   }
 
@@ -362,7 +402,7 @@ function draw() {
 
   if (window.frame % 60 === 0) {
     renderInterference();
-    addQuantumMessage("Интерференция: волновые узоры усиливают или подавляют друг друга.", "interference");
+    addQuantumMessage("Интерференционные узоры стабилизированы.", "interference");
   }
 
   image(window.trailBuffer, 0, 0);
@@ -412,8 +452,8 @@ function initializeParticles(blockList) {
     let col = window.img.get(pixelX, pixelY);
     let brightnessVal = brightness(col);
     if (brightnessVal > 10 && particleCount < window.maxParticles) {
-      let blockCenterX_canvas = x + (windowWidth - img.width) / 2 + maxBlockSize / 2;
-      let blockCenterY_canvas = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + maxBlockSize / 2;
+      let blockCenterX_canvas = x + (windowWidth - window.img.width) / 2 + maxBlockSize / 2;
+      let blockCenterY_canvas = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - window.img.height) / 2 + maxBlockSize / 2 - 150;
       let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
       let shapeType = floor(random(5));
       let targetSize = random(5, 30);
@@ -474,7 +514,7 @@ function initializeParticles(blockList) {
         window.particles.push(entangled);
         window.entangledPairs.push([particleCount - 1, particleCount]);
         particleCount++;
-        addQuantumMessage("Запутанность: две частицы связаны, их состояния синхронизированы.", "entanglement");
+        addQuantumMessage("Обнаружена квантовая запутанность.", "entanglement");
       }
     }
   }
@@ -521,8 +561,8 @@ function updateParticle(particle, state) {
   }
 
   if (particle.superpositionT >= 1) {
-    particle.offsetX += noiseX * particle.uncertainty * 15 * particle.probAmplitude * particle.speed;
-    particle.offsetY += noiseY * particle.uncertainty * 15 * particle.probAmplitude * particle.speed;
+    particle.offsetX += noiseX * particle.uncertainty * 10 * particle.probAmplitude * particle.speed;
+    particle.offsetY += noiseY * particle.uncertainty * 10 * particle.probAmplitude * particle.speed;
     particle.rotation += noiseX * 0.05;
     let sizeNoise = cachedNoise(particle.chaosSeed, window.frame * 0.02, 0);
     particle.size = particle.targetSize * (1 + 0.3 * sizeNoise);
@@ -537,13 +577,13 @@ function updateParticle(particle, state) {
       particle.probAmplitude *= 0.98;
       if (random() < 0.01) {
         particle.alpha = 0;
-        addQuantumMessage("Декогеренция: частица потеряла квантовую когерентность.", "decoherence");
+        addQuantumMessage("Система вступила в фазу декогеренции.", "decoherence");
       }
     }
 
     if (particle.superposition) {
-      particle.offsetX += cachedNoise(particle.chaosSeed, window.frame * 0.02, 3) * 10;
-      particle.offsetY += cachedNoise(particle.chaosSeed + 200, window.frame * 0.02, 3) * 10;
+      particle.offsetX += cachedNoise(particle.chaosSeed, window.frame * 0.02, 3) * 5;
+      particle.offsetY += cachedNoise(particle.chaosSeed + 200, window.frame * 0.02, 3) * 5;
     }
 
     if (random() < 0.02) {
@@ -567,7 +607,7 @@ function updateParticle(particle, state) {
           particle.tunneled = false;
           particle.x = particle.tunnelTargetX;
           particle.y = particle.tunnelTargetY;
-          addQuantumMessage("Туннелирование: частица преодолела барьер.", "tunneling");
+          addQuantumMessage("Обнаружено туннелирование: частицы пересекли барьер.", "tunneling");
         }, 500);
       }
     }
@@ -636,7 +676,7 @@ function updateParticle(particle, state) {
         window.trailBuffer.stroke(255, 255, 255, 100);
         window.trailBuffer.line(particle.x + particle.offsetX, particle.y + particle.offsetY, mouseX, mouseY);
       }
-      addQuantumMessage("Коллапс: измерение вызвало выбор одного состояния.", "collapse");
+      addQuantumMessage("Наблюдение подтверждено. Волновая функция коллапсирует.", "collapse");
     }
   }
   if (influence > 0 && !window.isPaused) {
