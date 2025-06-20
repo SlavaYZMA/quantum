@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Portraits</title>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" onload="console.log('p5.js loaded from CDN')" onerror="console.error('Failed to load p5.js from CDN')"></script>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Portraits</title>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" onload="console.log('p5.js loaded from cdnjs')" onerror="console.error('Failed to load p5.js from cdnjs')"></script>
+  <script defer src="https://unpkg.com/p5@1.9.0/lib/p5.min.js" onload="console.log('p5.js loaded from unpkg')" onerror="console.error('Failed to load p5.js from unpkg')"></script>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <div id="noiseOverlay"></div>
   <div class="flash" id="flashEffect"></div>
   <div id="loader">Загрузка...</div>
   <div class="container">
-    <button class="back-button" id="backButton" style="display: none;" aria-label="Вернуться на предыдуший шаг" onclick="debouncedGoBack()">Back / Назад</button>
+    <button class="back-button" id="backButton" style="display: fixed;" aria-label="Вернуться на предыдущий шаг" onclick="debouncedGoBack()">Назад / Back</button>
     <button class="continue-button" id="continueButton" style="display: none;" disabled aria-label="Перейти к следующему шагу" onclick="debouncedNextStep()">Продолжить / Continue</button>
 
     <div class="step active" id="step0">
