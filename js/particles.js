@@ -16,27 +16,9 @@ window.mouseHoverTime = 0;
 window.noiseCache = new Map();
 window.lastFrameTime = 0;
 window.maxParticles = 0;
-window.textMessages = { active: [], queue: [] }; // Изменено: active теперь массив
+window.textMessages = { active: [], queue: [] };
 window.entangledPairs = [];
-
-function preload() {
-  console.log('Attempting to load image from: assets/portrait.jpg');
-  window.img = loadImage('assets/portrait.jpg', () => {
-    console.log('Image loaded successfully:', window.img.width, 'x', window.img.height);
-    loop();
-  }, () => {
-    console.error('Failed to load image from assets/portrait.jpg. Trying fallback path: portrait.jpg');
-    window.img = loadImage('portrait.jpg', () => {
-      console.log('Fallback image loaded successfully:', window.img.width, 'x', window.img.height);
-      loop();
-    }, () => {
-      console.error('Failed to load fallback image. Using empty image.');
-      window.img = createImage(100, 100);
-      window.img.loadPixels();
-      loop();
-    });
-  });
-}
+window.img = null; // Изображение будет задано после загрузки пользователем
 
 function easeOutQuad(t) {
   return t * (2 - t);
@@ -47,7 +29,7 @@ function setup() {
   window.canvas.parent('canvasContainer4');
   pixelDensity(1);
   frameRate(navigator.hardwareConcurrency < 4 ? 20 : 25);
-  noLoop();
+  noLoop(); // Останавливаем draw() до загрузки изображения
   window.canvas.elt.style.display = 'block';
   window.canvas.elt.style.position = 'absolute';
   window.canvas.elt.style.top = '100px';
@@ -56,6 +38,11 @@ function setup() {
   document.getElementById('canvasContainer4').style.zIndex = '1';
   document.getElementById('canvasContainer4').style.position = 'relative';
   document.getElementById('canvasContainer4').style.border = 'none';
+
+  // Создаём input для загрузки изображения
+  let fileInput = createFileInput(handleFile);
+  fileInput.position(10, 10);
+  fileInput.attribute('accept', 'image/*');
 
   let fsButton = createButton('Full Screen');
   fsButton.position(windowWidth - 100, 10);
@@ -112,12 +99,28 @@ function setup() {
   window.isCanvasReady = true;
 }
 
+// Обработчик загрузки файла
+function handleFile(file) {
+  if (file.type === 'image') {
+    window.img = loadImage(file.data, () => {
+      console.log('User image loaded successfully:', window.img.width, 'x', window.img.height);
+      loop(); // Запускаем визуализацию после загрузки
+    }, () => {
+      console.error('Failed to load user image.');
+      window.img = null;
+    });
+  } else {
+    console.error('Please upload an image file.');
+    window.img = null;
+  }
+}
+
 function updateBoundary() {
   window.boundaryPoints = [];
   let numPoints = 40;
   let margin = 10;
   let maxX = windowWidth - margin;
-  let maxY = (document.fullscreenElement ? windowHeight : windowHeight - 20) - margin;
+  let maxY = (document.fullscreenElement ? windowHeight : windowHeight - 100) - margin;
   for (let i = 0; i < numPoints / 4; i++) {
     let x = lerp(margin, maxX, i / (numPoints / 4));
     window.boundaryPoints.push({ x, y: margin });
@@ -167,9 +170,9 @@ function cachedNoise(x, y, z) {
 function addQuantumMessage(message, eventType) {
   let newMessage = {
     text: message,
-    y: 150, // Начальная позиция, будет корректироваться
+    y: 150,
     alpha: 0,
-    offsetX: -20, // Для эффекта появления слева
+    offsetX: -20,
     fadeIn: true,
     startFrame: window.frame,
     eventType: eventType
@@ -183,30 +186,27 @@ function renderQuantumMessages() {
   fill(255, 255, 255);
   noStroke();
 
-  // Обрабатываем очередь сообщений
   if (window.textMessages.queue.length > 0 && window.textMessages.active.length < 5) {
     let newMsg = window.textMessages.queue.shift();
     newMsg.startFrame = window.frame;
     window.textMessages.active.push(newMsg);
   }
 
-  // Рендерим активные сообщения
-  let spacing = 30; // Расстояние между сообщениями
-  let baseY = 150; // Начальная позиция сверху
+  let spacing = 30;
+  let baseY = 150;
   for (let i = 0; i < window.textMessages.active.length; i++) {
     let msg = window.textMessages.active[i];
-    let t = (window.frame - msg.startFrame) / (10 * frameRate()); // 10 секунд
+    let t = (window.frame - msg.startFrame) / (10 * frameRate());
     let xPos = 20 + msg.offsetX;
 
-    // Эффекты появления и исчезновения
     if (msg.fadeIn) {
-      let fadeT = min(t * 2, 1); // 0.5 секунды для появления
+      let fadeT = min(t * 2, 1);
       msg.alpha = lerp(0, 255, easeOutQuad(fadeT));
       msg.offsetX = lerp(-20, 0, easeOutQuad(fadeT));
       if (fadeT >= 1) msg.fadeIn = false;
     } else {
-      if (t >= 0.95) { // Начинаем исчезновение за 0.5 секунды до конца
-        let fadeOutT = (t - 0.95) / 0.05; // 0.5 секунды
+      if (t >= 0.95) {
+        let fadeOutT = (t - 0.95) / 0.05;
         msg.alpha = lerp(255, 0, easeOutQuad(fadeOutT));
         msg.offsetX = lerp(0, -20, easeOutQuad(fadeOutT));
       } else {
@@ -215,12 +215,10 @@ function renderQuantumMessages() {
       }
     }
 
-    // Позиция сообщения
     msg.y = baseY + i * spacing;
     fill(255, 255, 255, msg.alpha);
     text(msg.text, xPos, msg.y);
 
-    // Удаляем сообщения, которые закончили отображение
     if (t > 1) {
       window.textMessages.active.splice(i, 1);
       i--;
@@ -323,7 +321,7 @@ function renderTransformingPortrait(img, currentFrame) {
 
 function draw() {
   let startTime = performance.now();
-  if (!window.img || !window.img.width) return;
+  if (!window.img || !window.img.width) return; // Пропускаем, если изображение не загружено
 
   window.frame++;
   window.chaosTimer += 0.016;
@@ -344,7 +342,7 @@ function draw() {
 
   let blockList = [];
   if (window.frame <= 60) {
-    blockList = renderTransformingPortrait(window.img, window.frame);
+    blockList = renderTransformingPortrait(windowWidth.img, window.frame);
     if (window.frame === 31) {
       initializeParticles(blockList);
     }
@@ -547,7 +545,7 @@ function updateParticle(particle, state) {
   }
 
   let noiseX = cachedNoise(particle.chaosSeed + window.frame * 0.03, 0, 0) * 2 - 1;
-  let noiseY = cachedNoise(0, particle.chaosSeed + window.frame * 0.03, 0) * 2 - 1;
+  let noiseY = cachedNoise(particle.chaosSeed + window.frame * 0.03, 1) * 2 - 1;
 
   if (window.frame >= particle.startFrame - 25 && window.frame <= particle.startFrame) {
     particle.superpositionT = map(window.frame, particle.startFrame - 25, particle.startFrame, 0, 1);
@@ -557,7 +555,7 @@ function updateParticle(particle, state) {
 
   if (window.isPaused) {
     particle.offsetX += cachedNoise(particle.chaosSeed, window.frame * 0.01, 0) * 0.5 - 0.25;
-    particle.offsetY += cachedNoise(particle.chaosSeed + 100, window.frame * 0.01, 0) * 0.5 - 0.25;
+    particle.offsetY += cachedNoise(particle.chaosSeed + 100, window.frame * 0.01, 1) * 0.5 - 0.25;
   }
 
   if (particle.superpositionT >= 1) {
@@ -583,7 +581,7 @@ function updateParticle(particle, state) {
 
     if (particle.superposition) {
       particle.offsetX += cachedNoise(particle.chaosSeed, window.frame * 0.02, 3) * 5;
-      particle.offsetY += cachedNoise(particle.chaosSeed + 200, window.frame * 0.02, 3) * 5;
+      particle.offsetY += cachedNoise(particle.chaosSeed + 15, window.frame * 0.02, 3) * 5;
     }
 
     if (random() < 0.02) {
@@ -631,7 +629,7 @@ function updateParticle(particle, state) {
     let easedT = easeOutQuad(breakupT);
 
     particle.size = lerp(particle.size, particle.targetSize, easedT);
-    let noiseAngle = cachedNoise(particle.chaosSeed + window.frame * 0.02, 0, 0) * PI / 4;
+    let noiseAngle = noiseX * PI / 4;
     let angle = particle.radialAngle + noiseAngle;
     particle.radialDistance = lerp(particle.radialDistance, particle.targetRadialDistance, easedT);
     particle.offsetX = cos(angle) * particle.radialDistance;
@@ -670,7 +668,7 @@ function updateParticle(particle, state) {
       for (let i = 0; i < 3; i++) {
         window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
         window.trailBuffer.strokeWeight(1);
-        window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 20 + i * 10);
+        window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 20 + i * 5);
       }
       if (random() < 0.1) {
         window.trailBuffer.stroke(255, 255, 255, 100);
@@ -763,7 +761,7 @@ function updateParticle(particle, state) {
     window.trailBuffer.noStroke();
     window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size / 2, particle.size / 2);
     if (random() < 0.3) {
-      window.trailBuffer.stroke(255, 255, 255, 50);
+      window.trailBuffer.stroke(255, 255, 255, 25);
       window.trailBuffer.strokeWeight(0.5);
       window.trailBuffer.line(
         particle.x + particle.offsetX,
@@ -787,7 +785,7 @@ function renderParticle(particle, state) {
   push();
   translate(px, py);
   rotate(particle.rotation);
-  let colorShift = cachedNoise(particle.chaosSeed, window.frame * 0.02, 7) * 20;
+  let colorShift = cachedNoise(particle.chaosSeed, window.frame * 0.02, 0) * 15;
   let alpha = particle.alpha * state.a / 255;
   let strokeW = map(window.frame - particle.birthFrame, 250, 500, 1, 0);
   stroke(state.r + colorShift, state.g + colorShift, state.b + colorShift, alpha * 0.5);
@@ -796,8 +794,6 @@ function renderParticle(particle, state) {
   drawingContext.shadowBlur = particle.superposition ? 10 : 0;
 
   let size = particle.size;
-  let waveDistort = 0.7 * cachedNoise(particle.chaosSeed, window.frame * 0.07, 8);
-
   if (particle.superposition && !state.collapsed) {
     let probDensity = particle.probAmplitude * 250;
     fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, probDensity * 0.5);
@@ -809,7 +805,7 @@ function renderParticle(particle, state) {
         noStroke();
         let superX = random(-30, 30);
         let superY = random(-30, 30);
-        let pulse = cachedNoise(particle.chaosSeed, window.frame * 0.1, i + 9) * 10;
+        let pulse = cachedNoise(particle.chaosSeed, window.frame * 0.1, i + 9) * 5;
         ellipse(superX + pulse, superY + pulse, size * 3);
       }
     }
