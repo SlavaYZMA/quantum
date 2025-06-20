@@ -366,6 +366,10 @@ function triggerFlash() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof createCanvas === 'undefined') {
+    console.error('p5.js is not loaded or createCanvas is undefined');
+    return;
+  }
   window.canvas = createCanvas(windowWidth, windowHeight - 100);
   window.canvas.elt.style.display = 'none';
   document.getElementById('imageInput').addEventListener('change', (event) => {
