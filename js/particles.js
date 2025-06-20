@@ -19,31 +19,11 @@ window.maxParticles = 0;
 window.textMessages = { active: null, queue: [] };
 window.entangledPairs = [];
 
-function preload() {
-  console.log('Attempting to load image from: assets/portrait.jpg');
-  window.img = loadImage('assets/portrait.jpg', () => {
-    console.log('Image loaded successfully:', window.img.width, 'x', window.img.height);
-    loop();
-  }, () => {
-    console.error('Failed to load image from assets/portrait.jpg. Trying fallback path: portrait.jpg');
-    window.img = loadImage('portrait.jpg', () => {
-      console.log('Fallback image loaded successfully:', window.img.width, 'x', window.img.height);
-      loop();
-    }, () => {
-      console.error('Failed to load fallback image. Using empty image.');
-      window.img = createImage(100, 100);
-      window.img.loadPixels();
-      loop();
-    });
-  });
-}
-
 function easeOutQuad(t) {
   return t * (2 - t);
 }
 
 function setup() {
-  console.time("Setup");
   window.canvas = createCanvas(windowWidth, windowHeight - 100);
   window.canvas.parent('canvasContainer4');
   pixelDensity(1);
@@ -65,15 +45,11 @@ function setup() {
       document.getElementById('canvasContainer4').requestFullscreen().then(() => {
         resizeCanvas(windowWidth, windowHeight);
         updateBoundary();
-        window.trailBuffer = createGraphics(windowWidth, windowHeight);
-        window.trailBuffer.pixelDensity(1);
       });
     } else {
       document.exitFullscreen().then(() => {
         resizeCanvas(windowWidth, windowHeight - 100);
         updateBoundary();
-        window.trailBuffer = createGraphics(windowWidth, windowHeight - 100);
-        window.trailBuffer.pixelDensity(1);
       });
     }
   });
@@ -111,7 +87,6 @@ function setup() {
 
   updateBoundary();
   window.isCanvasReady = true;
-  console.timeEnd("Setup");
 }
 
 function updateBoundary() {
@@ -272,7 +247,7 @@ function renderTransformingPortrait(img, currentFrame) {
         }
       }
       let canvasX = x + (windowWidth - img.width) / 2 + offsetX;
-      let canvasY = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + offsetY - 150;
+      let canvasY = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + offsetY;
 
       if (currentFrame >= block.startFrame) {
         let probDensity = block.probAmplitude * 100;
@@ -307,13 +282,8 @@ function renderTransformingPortrait(img, currentFrame) {
 }
 
 function draw() {
-  console.time("Draw");
-  console.log("Draw called, frame:", window.frame, "particles:", window.particles.length);
-
-  if (!window.img || !window.img.width) {
-    console.warn("Image not loaded yet.");
-    return;
-  }
+  let startTime = performance.now();
+  if (!window.img || !window.img.width) return;
 
   window.frame++;
   window.chaosTimer += 0.016;
@@ -381,7 +351,8 @@ function draw() {
     }
   }
 
-  if (window.particles.length > window.maxParticles) {
+  let frameTime = performance.now() - startTime;
+  if (frameTime > 40 && window.particles.length > 1000) {
     window.particles = window.particles.filter((p, i) => {
       let keep = p.alpha >= 20 || p.layer !== 'main';
       if (!keep) window.quantumStates.splice(i, 1);
@@ -396,9 +367,7 @@ function draw() {
 
   image(window.trailBuffer, 0, 0);
   renderQuantumMessages();
-
-  console.log("FPS:", Math.round(frameRate()));
-  console.timeEnd("Draw");
+  window.lastFrameTime = frameTime;
 }
 
 function renderInterference() {
@@ -423,7 +392,6 @@ function renderInterference() {
 }
 
 function initializeParticles(blockList) {
-  console.time("InitializeParticles");
   window.particles = [];
   window.quantumStates = [];
   window.entangledPairs = [];
@@ -444,8 +412,8 @@ function initializeParticles(blockList) {
     let col = window.img.get(pixelX, pixelY);
     let brightnessVal = brightness(col);
     if (brightnessVal > 10 && particleCount < window.maxParticles) {
-      let blockCenterX_canvas = x + (windowWidth - window.img.width) / 2 + maxBlockSize / 2;
-      let blockCenterY_canvas = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - window.img.height) / 2 + maxBlockSize / 2 - 150;
+      let blockCenterX_canvas = x + (windowWidth - img.width) / 2 + maxBlockSize / 2;
+      let blockCenterY_canvas = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + maxBlockSize / 2;
       let layer = random() < 0.1 ? 'vacuum' : random() < 0.2 ? 'background' : 'main';
       let shapeType = floor(random(5));
       let targetSize = random(5, 30);
@@ -529,8 +497,6 @@ function initializeParticles(blockList) {
       collapsed: false
     };
   }
-  console.log(`Initialized ${particleCount} particles, canvas: ${windowWidth}x${windowHeight - 100}`);
-  console.timeEnd("InitializeParticles");
 }
 
 function updateParticle(particle, state) {
@@ -589,7 +555,7 @@ function updateParticle(particle, state) {
       let distToBarrier = dist(particle.x, particle.y, particle.barrier.x, particle.barrier.y);
       if (distToBarrier < 50) {
         particle.tunneled = true;
-        particle.tunnelTargetX = particle.barrier.x + random(-20, 20);
+        particle.tunnelTargetX = particle.barrier.x + particle.barrier.width + random(-20, 20);
         particle.tunnelTargetY = particle.y + random(-20, 20);
         window.trailBuffer.noFill();
         for (let i = 0; i < 3; i++) {
@@ -818,7 +784,7 @@ function renderParticle(particle, state) {
         let superX = random(-30, 30);
         let superY = random(-30, 30);
         let pulse = cachedNoise(particle.chaosSeed, window.frame * 0.1, i + 11) * 5;
-        ellipse(superX + pulse, superY, size * 2);
+        ellipse(superX + pulse, superY + pulse, size * 2);
       }
     }
   } else {
