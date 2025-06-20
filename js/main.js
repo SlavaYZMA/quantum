@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
           window.p5Canvas.elt.style.display = 'none';
           window.isCanvasReady = true;
           console.log('p5.js canvas initialized');
-          updateStep(); // Вызываем updateStep только после инициализации холста
+          updateStep(); // Вызываем updateStep после создания холста
           if (window.img) initializeParticles();
         } else {
           console.error('Failed to create p5.js canvas');
@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('imageInput').addEventListener('change', (event) => {
       if (event.target.files[0]) {
         window.uploadedImageUrl = URL.createObjectURL(event.target.files[0]);
+        console.log('Image uploaded:', window.uploadedImageUrl);
         handleFile({ type: 'image', data: window.uploadedImageUrl });
       }
     });
@@ -50,7 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Функция обработки загруженного изображения
     window.handleFile = function(file) {
       if (file.type === 'image') {
+        // Устанавливаем изображение для предпросмотра
+        const previewImage4 = document.getElementById('previewImage4');
+        const previewImage5 = document.getElementById('previewImage5');
+        if (previewImage4) {
+          previewImage4.src = file.data;
+          previewImage4.style.display = 'block';
+        }
+        if (previewImage5) {
+          previewImage5.src = file.data;
+          previewImage5.style.display = 'block';
+        }
+
         loadImage(file.data, (loadedImg) => {
+          console.log('Image loaded into p5.js:', file.data);
           window.img = loadedImg;
           window.currentStep = 3;
           updateStep();
@@ -59,6 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             console.warn('Canvas not ready, deferring particle initialization');
           }
+        }, (error) => {
+          console.error('Failed to load image in p5.js:', error);
         });
       }
     };
@@ -168,7 +184,10 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Архив пока недоступен!');
     };
 
-    return true;
+    // Инициализация первого шага только если холст не нужен
+    if (window.currentStep === 0) {
+      updateStep();
+    }
   }
 
   // Пытаемся инициализировать сразу
