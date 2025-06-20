@@ -721,7 +721,7 @@ function updateParticle(particle, state) {
         tunneled: false,
         tunnelTargetX: 0,
         tunnelнах
-main.js
+//main.js
 - **Файл**: `main.js`
 - **Где**: В функции `setup` (около строки 50), где ранее создавался `createFileInput` и `fsButton`
 - **Изменение**: Удалить создание элементов и перенести их в `index.html`
