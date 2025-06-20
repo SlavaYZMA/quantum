@@ -68,12 +68,16 @@ body {
 }
 
 .preview-image {
-  display: none;
   width: 150px;
   height: auto;
   max-height: 150px;
   border: 1px solid #aaa;
   object-fit: contain;
+  display: none; /* По умолчанию скрыто */
+}
+
+#step4 .preview-image, #step5 .preview-image {
+  display: block; /* Видно на шагах 4 и 5 */
 }
 
 .middle-section {
@@ -191,17 +195,16 @@ canvas {
 }
 
 @keyframes random-glitch-before {
-  0%, 100% { transform: translate(0, 0); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
-  25% { transform: translate(calc(3px * var(--random-offset-x)), calc(-2px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
-  50% { transform: translate(calc(-2px * var(--random-offset-x)), calc(3px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
-  75% { transform: translate(calc(2px * var(--random-offset-x)), calc(-3px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
+  0%, 100% { transform: translate(0, 0); clip-path: polygon(0 0, 100% 33%, 0 33); }
+  25% { transform: translate(calc(3px * var(--random-offset-x)), calc(-2px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 66%, 0 66%); }
+  50% { transform: translate(calc(-2px * var(--random-offset-x)), calc(3px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 100%, 0 100%); }
+  75% { transform: translate(calc(2px * var(--random-offset-x)), calc(-3px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 33%, 0 33%); }
 }
 
 @keyframes random-glitch-after {
-  0%, 100% { transform: translate(0, 0); clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
-  25% { transform: translate(calc(-3px * var(--random-offset-x)), calc(2px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
-  50% { transform: translate(calc(2px * var(--random-offset-x)), calc(-3px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
-  75% { transform: translate(calc(-2px * var(--random-offset-x)), calc(3px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 66%, 0 100%); }
+  0%, 100% { transform: translate(0(calc(-3px * var(--random-offset-x)), calc(2px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
+  25% { transform: translate(calc(2px * var(--random-offset-x)), calc(-3px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
+  50% { transform: translate(calc(-2px * var(--random-offset-x)), calc(3px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 66%, 0 100%); }
 }
 
 @keyframes random-glitch-strong {
