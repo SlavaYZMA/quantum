@@ -2,13 +2,13 @@ let sketch = function(p) {
   p.setup = function() {
     window.p5Instance = p;
     let containerId = window.currentStep === 5 ? 'canvasContainer5' : window.currentStep === 4 ? 'canvasContainer4' : 'canvasContainer3';
-    window.p5Canvas = p.createCanvas(320, 320, p.P2D, { willReadFrequently: true }); // Установлен атрибут
+    window.p5Canvas = p.createCanvas(320, 320, p.P2D, { willReadFrequently: true });
     window.p5Canvas.parent(containerId);
     p.pixelDensity(1);
-    p.frameRate(navigator.hardwareConcurrency < 4 ? 10 : 15); // Ещё ниже FPS
+    p.frameRate(navigator.hardwareConcurrency < 4 ? 10 : 15);
     window.p5Canvas.elt.style.display = 'block';
     window.isCanvasReady = true;
-    console.log('p5.js canvas initialized for', containerId);
+    console.log('p5.js canvas initialized for', containerId, 'with loop:', window.currentStep >= 3 && window.img);
     if (window.currentStep >= 3 && window.img) {
       p.loop();
     }
@@ -72,7 +72,7 @@ window.showPreview = function(img) {
   preview.classList.add('active');
   setTimeout(() => {
     window.typeText('typewriter2_response', window.translations[window.language].step2Images, () => {
-      document.querySelector('#step2 .continue-button').style.display = 'block';
+      document.querySelector('#step2 .continue-button').style.display = 'block');
     });
   }, 500);
 };
