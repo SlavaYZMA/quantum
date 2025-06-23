@@ -109,7 +109,7 @@ window.saveObservation = function() {
 };
 
 window.shareObservation = function() {
-  const url = 'https://t.me/share/url?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent('Мой квантовый портрет!');
+  const url = 'https://t.me/share/url?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent('My quantum portrait!');
   window.open(url, '_blank');
 };
 
@@ -123,7 +123,7 @@ window.restart = function() {
 };
 
 window.goToArchive = function() {
-  alert('Архив наблюдений пока недоступен.');
+  alert('Archive of observations is not available yet.');
 };
 
 window.showAuthors = function() {
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         video.play();
         video.style.display = 'block';
         const takePhotoButton = document.createElement('button');
-        takePhotoButton.textContent = 'Сделать фото';
+        takePhotoButton.textContent = 'Take Photo';
         takePhotoButton.className = 'button';
         document.querySelector('#step2 .button-container').appendChild(takePhotoButton);
         takePhotoButton.onclick = () => {
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
           };
         };
       })
-      .catch(err => console.error('Ошибка доступа к камере:', err));
+      .catch(err => console.error('Camera access error:', err));
   });
 
   const archiveButton = document.getElementById('archiveButton');
