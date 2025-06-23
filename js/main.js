@@ -6,14 +6,13 @@ let sketch = function(p) {
     window.p5Canvas.parent(containerId);
     p.pixelDensity(1);
     p.frameRate(navigator.hardwareConcurrency < 4 ? 20 : 25);
-    p.noLoop();
     window.p5Canvas.elt.style.display = 'block';
     window.trailBuffer = p.createGraphics(p.width, p.height);
     window.trailBuffer.pixelDensity(1);
     window.isCanvasReady = true;
     console.log('p5.js canvas initialized for', containerId);
     if (window.currentStep >= 3 && window.img) {
-      p.loop();
+      p.loop(); // Убедимся, что анимация запускается
     }
   };
 
@@ -83,6 +82,10 @@ window.goToStep = function(step) {
   } else if (step === 7) {
     window.typeText('typewriter7', window.translations[window.language].step7);
   }
+  // Показываем кнопку "Продолжить" на всех шагах
+  document.querySelectorAll('.continue-button').forEach(btn => {
+    btn.style.display = 'block'; // Убедимся, что кнопка видима
+  });
 };
 
 window.showPreview = function(img) {
