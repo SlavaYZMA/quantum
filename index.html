@@ -3,123 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quantum Portraits</title>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" onload="console.log('p5.js loaded from cdnjs')" onerror="console.error('Failed to load p5.js from cdnjs')"></script>
-  <link rel="stylesheet" href="/css/style.css">
+  <title data-i18n="title">Quantum Portrait</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .language-selector button {
+      background: #444;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      margin: 0 5px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .language-selector button:hover {
+      background: #666;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    .steps {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .step {
+      cursor: pointer;
+      padding: 10px 20px;
+      background: #333;
+      border-radius: 4px;
+      margin: 5px;
+      transition: background 0.3s;
+    }
+    .step.active, .step:hover {
+      background: #666;
+    }
+    #imageInput {
+      display: block;
+      margin: 20px 0;
+      padding: 10px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #imageInput::file-selector-button {
+      background: #555;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #canvasContainer4, #canvasContainer5 {
+      position: relative;
+      min-height: 400px;
+    }
+    #saveButton {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 10;
+    }
+    #saveButton:hover {
+      background: #ddd;
+    }
+    @media (max-width: 768px) {
+      .steps {
+        flex-direction: column;
+        align-items: center;
+      }
+      .step {
+        width: 80%;
+        text-align: center;
+        margin: 5px 0;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .language-selector {
+        margin-top: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div id="noiseOverlay"></div>
-  <div class="flash" id="flashEffect"></div>
-  <div id="loader">Загрузка...</div>
   <div class="container">
-    <button class="back-button" id="backButton" style="display: none;" aria-label="Вернуться на предыдущий шаг" onclick="debouncedGoBack()">Назад / Back</button>
-    <button class="continue-button" id="continueButton" style="display: none;" disabled aria-label="Перейти к следующему шагу" onclick="debouncedNextStep()">Продолжить / Continue</button>
-
-    <div class="step active" id="step0">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter0"></div>
-      </div>
-      <div class="button-container" id="step0Buttons">
-        <button class="button" aria-label="Выбрать русский язык" onclick="selectLanguage('ru')">RU</button>
-        <button class="button" aria-label="Выбрать английский язык" onclick="selectLanguage('en')">ENG</button>
+    <div class="header">
+      <h1 data-i18n="title">Quantum Portrait</h1>
+      <div class="language-selector">
+        <button onclick="selectLanguage('en')">English</button>
+        <button onclick="selectLanguage('ru')">Русский</button>
       </div>
     </div>
-
-    <div class="step" id="step1">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter1"></div>
-      </div>
-      <div class="button-container"></div>
+    <div class="steps">
+      <div class="step" data-i18n="step1">Step 1: Upload an Image</div>
+      <div class="step" data-i18n="step2">Step 2: Process Image</div>
+      <div class="step" data-i18n="step3">Step 3: Analyze</div>
+      <div class="step" data-i18n="step4">Step 4: Quantum Transformation</div>
+      <div class="step" data-i18n="step5">Step 5: Interact and Save</div>
     </div>
-
-    <div class="step" id="step2">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter2"></div>
-      </div>
-      <div class="button-container" id="step2Buttons">
-        <input type="file" id="imageInput" accept="image/*" style="display: none;">
-        <button class="button" aria-label="Загрузить фото" onclick="document.getElementById('imageInput').click()">Загрузить фото / Upload Photo</button>
-        <button class="button" aria-label="Выбрать из архива" onclick="openGallery()">Выбрать готовое / Select from Archive</button>
-      </div>
-    </div>
-
-    <div class="step" id="step3">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter3"></div>
-      </div>
-      <div class="button-container"></div>
-    </div>
-
-    <div class="step" id="step4">
-      <div class="top-section">
-        <div class="text-container">
-          <div class="typewriter" id="typewriter4"></div>
-        </div>
-        <div class="portrait-container">
-          <img id="previewImage4" class="preview-image" alt="Uploaded portrait preview">
-        </div>
-      </div>
-      <div class="middle-section">
-        <div id="terminal" class="terminal"></div>
-        <canvas id="quantum-explainer" class="quantum-explainer"></canvas>
-      </div>
-      <div class="canvas-container" id="canvasContainer4"></div>
-      <div class="button-container"></div>
-    </div>
-
-    <div class="step" id="step5">
-      <div class="top-section">
-        <div class="text-container">
-          <div class="typewriter" id="typewriter5"></div>
-        </div>
-        <div class="portrait-container">
-          <img id="previewImage5" class="preview-image" alt="Uploaded portrait preview">
-        </div>
-      </div>
-      <div class="middle-section">
-        <div id="terminal" class="terminal"></div>
-        <canvas id="quantum-explainer" class="quantum-explainer"></canvas>
-      </div>
-      <button class="save-button" id="saveButton" style="display: none;" aria-label="Сохранить изображение" onclick="saveCurrentState()">Сохранить изображение / Save Image</button>
-      <div class="canvas-container" id="canvasContainer5"></div>
-      <div class="button-container"></div>
-    </div>
-
-    <div class="step" id="step6">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter6"></div>
-      </div>
-      <div class="button-container">
-        <button class="button" aria-label="Поделиться наблюдением" onclick="shareObservation()">ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ / SHARE OBSERVATION</button>
-      </div>
-    </div>
-
-    <div class="step" id="step7">
-      <div class="text-container">
-        <div class="typewriter" id="typewriter7"></div>
-      </div>
-      <div class="button-container">
-        <button class="button" aria-label="Начать заново" onclick="restart()">↻ НАЧАТЬ СНАЧАЛА / RESTART</button>
-        <button class="button" aria-label="Перейти в архив" onclick="goToArchive()">⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ / GO TO ARCHIVE</button>
-        <button class="button" aria-label="О разработчиках" onclick="openAuthors()">ОБ АВТОРАХ / ABOUT US</button>
-        <button class="button" aria-label="Упростить анимацию" onclick="simplifyAnimation()">УПРОСТИТЬ АНИМАЦИЮ / SIMPLIFY ANIMATION</button>
-      </div>
-    </div>
-
-    <div id="portraitGallery"></div>
-    <div id="authorsPage">
-      <button class="button" aria-label="Закрыть страницу авторов" onclick="closeAuthors()">Закрыть / Close</button>
-      <div class="text-container">
-        <div class="typewriter">Слава Саша</div>
-      </div>
-    </div>
+    <input type="file" id="imageInput" accept="image/*">
+    <div id="canvasContainer4"></div>
+    <div id="canvasContainer5"></div>
+    <button id="saveButton" data-i18n="saveButton">Save</button>
   </div>
-
-  <script defer src="/js/globals.js"></script>
-  <script defer src="/js/utils.js"></script>
-  <script defer src="/js/main.js"></script>
-  <script defer src="/js/textSteps.js"></script>
-  <script defer src="/js/observer.js"></script>
-  <script defer src="/js/particles.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
