@@ -72,7 +72,7 @@ window.showPreview = function(img) {
   preview.classList.add('active');
   setTimeout(() => {
     window.typeText('typewriter2_response', window.translations[window.language].step2Images, () => {
-      document.querySelector('#step2 .continue-button').style.display = 'block');
+      document.querySelector('#step2 .continue-button').style.display = 'block';
     });
   }, 500);
 };
