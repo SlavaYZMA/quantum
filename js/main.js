@@ -2,10 +2,10 @@ let sketch = function(p) {
   p.setup = function() {
     window.p5Instance = p;
     let containerId = window.currentStep === 5 ? 'canvasContainer5' : window.currentStep === 4 ? 'canvasContainer4' : 'canvasContainer3';
-    window.p5Canvas = p.createCanvas(320, 320, p.P2D);
+    window.p5Canvas = p.createCanvas(320, 320, p.P2D, { willReadFrequently: true }); // Установлен атрибут
     window.p5Canvas.parent(containerId);
     p.pixelDensity(1);
-    p.frameRate(navigator.hardwareConcurrency < 4 ? 15 : 20); // Уменьшен FPS
+    p.frameRate(navigator.hardwareConcurrency < 4 ? 10 : 15); // Ещё ниже FPS
     window.p5Canvas.elt.style.display = 'block';
     window.isCanvasReady = true;
     console.log('p5.js canvas initialized for', containerId);
@@ -25,10 +25,8 @@ window.selectLanguage = function(lang) {
   if (!window.translations || !window.translations[lang]) {
     console.warn(`Language ${lang} not supported, defaulting to 'ru'`);
     lang = 'ru';
-    if (!window.translations) {
-      console.error('Translations undefined');
-      return;
-    }
+    if (!window.translations) console.error('Translations undefined');
+    return;
   }
   window.language = lang;
   localStorage.setItem('language', lang);
@@ -126,9 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.translations) {
       const savedLang = localStorage.getItem('language') || 'ru';
       window.selectLanguage(savedLang);
-    } else {
-      setTimeout(checkTranslations, 100);
-    }
+    } else setTimeout(checkTranslations, 100);
   };
   checkTranslations();
   new p5(sketch);
