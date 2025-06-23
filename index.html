@@ -10,12 +10,11 @@
   <div id="app">
     <div id="step0" class="step">
       <div id="typewriter0"></div>
-      <button class="continue-button" onclick="selectLanguage('ru')">Русский</button>
-      <button class="continue-button" onclick="selectLanguage('en')">English</button>
+      <button class="continue-button" onclick="goToStep(1)">Продолжить</button>
     </div>
     <div id="step1" class="step">
       <div id="typewriter1"></div>
-      <button class="continue-button" onclick="goToStep(2)" style="display: none;">Продолжить</button>
+      <button class="continue-button" onclick="goToStep(2)">Продолжить</button>
     </div>
     <div id="step2" class="step">
       <div id="typewriter2"></div>
@@ -27,22 +26,22 @@
       <div class="camera-container">
         <video id="video" autoplay></video>
       </div>
-      <button class="continue-button" onclick="goToStep(3)" style="display: none;">Продолжить</button>
+      <button class="continue-button" onclick="goToStep(3)">Продолжить</button>
     </div>
     <div id="step3" class="step">
       <div id="typewriter3"></div>
       <div id="canvasContainer3"></div>
-      <button class="continue-button" onclick="goToStep(4)" style="display: none;">Продолжить</button>
+      <button class="continue-button" onclick="goToStep(4)">Продолжить</button>
     </div>
     <div id="step4" class="step">
       <div id="typewriter4"></div>
       <div id="canvasContainer4"></div>
-      <button class="continue-button" onclick="goToStep(5)" style="display: none;">Продолжить</button>
+      <button class="continue-button" onclick="goToStep(5)">Продолжить</button>
     </div>
     <div id="step5" class="step">
       <div id="typewriter5"></div>
       <div id="canvasContainer5"></div>
-      <button class="continue-button" onclick="goToStep(6)" style="display: none;">Продолжить</button>
+      <button class="continue-button" onclick="goToStep(6)">Продолжить</button>
     </div>
     <div id="step6" class="step">
       <div id="typewriter6"></div>
@@ -54,6 +53,7 @@
       <button class="button" onclick="shareObservation()">Поделиться</button>
       <button class="button" onclick="restart()">Начать заново</button>
       <button class="button" onclick="showAuthors()">Об авторах</button>
+      <button class="continue-button" onclick="goToStep(0)">Продолжить</button> <!-- Возврат к началу -->
     </div>
     <div id="authorsPage">
       <p data-i18n="authors">Авторы: Команда Quantum</p>
