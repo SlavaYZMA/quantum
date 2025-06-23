@@ -5,7 +5,7 @@ window.quantumStates = [];
 window.isCanvasReady = false;
 window.noiseScale = 0.03;
 window.mouseInfluenceRadius = 200;
-window.chaosFactor = 0;
+window.chaoticFactor = 0;
 window.boundaryPoints = [];
 window.chaosTimer = 0;
 window.trailBuffer = null;
@@ -130,7 +130,7 @@ function renderTransformingPortrait() {
   window.img.loadPixels();
   let blockList = [];
   let maxBlockSize = 16;
-  let blockSize = window.p5Instance.map(window.frame, 1, 30, 1, maxBlockSize);
+  let blockSize = window.p5Instance.map(window.frame, 1, 60, 1, maxBlockSize); // Увеличен диапазон кадров
   blockSize = window.p5Instance.constrain(blockSize, 1, maxBlockSize);
   console.log('Block size:', blockSize, 'Frame:', window.frame);
 
@@ -140,7 +140,7 @@ function renderTransformingPortrait() {
         x,
         y,
         startFrame: 0,
-        endFrame: 60,
+        endFrame: 120, // Увеличен диапазон для частиц
         superpositionT: 0,
         wavePhase: window.p5Instance.random(window.p5Instance.TWO_PI),
         probAmplitude: window.p5Instance.random(0.5, 1),
@@ -179,11 +179,13 @@ function renderTransformingPortrait() {
     console.log('Average color for block at', x, y, ':', r, g, b);
 
     let offsetX = 0, offsetY = 0, rotation = 0;
-    let noiseVal = cachedNoise(block.noiseSeed + window.frame * 0.05, 0, 0);
+    let noiseVal = cachedNoise(block.noiseSeed + window.frame * 0.1, 0, 0); // Увеличен множитель
     if (window.frame >= 1) {
-      offsetX += noiseVal * 10 - 5;
-      offsetY += cachedNoise(0, block.noiseSeed + window.frame * 0.05, 0) * 10 - 5;
+      offsetX += noiseVal * 20 - 10; // Увеличена амплитуда
+      offsetY += cachedNoise(0, block.noiseSeed + window.frame * 0.1, 0) * 20 - 10;
+      rotation = cachedNoise(block.noiseSeed, window.frame * 0.05, 0) * 0.2 - 0.1; // Добавлено вращение
     }
+    console.log('Offsets for block at', x, y, ':', offsetX, offsetY, 'rotation:', rotation); // Отладка смещений
     let canvasX = x + (window.p5Instance.width - window.img.width) / 2 + offsetX;
     let canvasY = y + (window.p5Instance.height - window.img.height) / 2 + offsetY;
     console.log('Calculated canvas coords:', canvasX, canvasY, 'for block at', x, y);
@@ -309,7 +311,6 @@ function updateParticle(particle, state, index) {
       state.collapsed = true;
       particle.superposition = false;
       particle.decoherence = 1;
-      // window.playCollapseSound();
       addQuantumMessage("Коллапс: состояние определено.", "collapse");
     }
     let pushStrength = window.p5Instance.map(distToMouse, 0, window.mouseInfluenceRadius, 5, 0);
@@ -414,7 +415,7 @@ window.draw = function() {
   }
   if (window.currentStep === 3 && window.img) {
     console.log('Attempting to render portrait for step 3');
-    window.p5Instance.background(0); // Очистка перед рендерингом
+    window.p5Instance.background(0);
     let blockList = renderTransformingPortrait();
     if (window.frame >= 60 && window.particles.length === 0) {
       console.log('Initializing particles for step 3');
@@ -422,7 +423,7 @@ window.draw = function() {
     }
   } else if (window.currentStep >= 4 && window.particles.length > 0) {
     console.log('Rendering particles for step', window.currentStep);
-    window.p5Instance.background(0); // Очистка перед рендерингом
+    window.p5Instance.background(0);
     for (let i = 0; i < window.particles.length; i++) {
       let particle = window.particles[i];
       let state = window.quantumStates[i];
@@ -431,7 +432,7 @@ window.draw = function() {
     }
   } else {
     console.warn('No rendering: Step', window.currentStep, 'Image:', !!window.img);
-    window.p5Instance.background(0); // Очистка для других шагов
+    window.p5Instance.background(0);
   }
   window.p5Instance.image(window.trailBuffer, 0, 0);
   renderQuantumMessages();
