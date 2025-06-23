@@ -161,6 +161,7 @@ function renderTransformingPortrait() {
         let key = `${x + dx},${y + dy}`;
         let col = pixelCache.get(key) || window.img.get(x + dx, y + dy);
         pixelCache.set(key, col);
+        console.log('Pixel at', x + dx, y + dy, 'color:', col); // Добавляем отладку
         r += window.p5Instance.red(col);
         g += window.p5Instance.green(col);
         b += window.p5Instance.blue(col);
@@ -175,6 +176,7 @@ function renderTransformingPortrait() {
       console.warn('No valid pixels for block at', x, y);
       continue;
     }
+    console.log('Average color for block at', x, y, ':', r, g, b); // Добавляем отладку
 
     let offsetX = 0, offsetY = 0, rotation = 0;
     let noiseVal = cachedNoise(block.noiseSeed + window.frame * 0.05, 0, 0);
@@ -332,7 +334,7 @@ function updateParticle(particle, state, index) {
   particle.rotation += 0.01;
 
   if (particle.entangledIndex !== -1 && window.particles[particle.entangledIndex]) {
-    let partner = window.particles[particle.entangledIndex];
+    let partner = window.p5Instance[particle.entangledIndex];
     let syncFactor = 0.1;
     particle.offsetX += (partner.offsetX - particle.offsetX) * syncFactor;
     particle.offsetY += (partner.offsetY - particle.offsetY) * syncFactor;
@@ -421,7 +423,7 @@ window.draw = function() {
   } else if (window.currentStep >= 4 && window.particles.length > 0) {
     console.log('Rendering particles for step', window.currentStep);
     for (let i = 0; i < window.particles.length; i++) {
-      let particle = window.particles[i];
+      let particle = window.p5Instance[i];
       let state = window.quantumStates[i];
       updateParticle(particle, state, i);
       renderParticle(particle, state);
