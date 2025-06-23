@@ -32,6 +32,50 @@ let sketch = function(p) {
   };
 };
 
+// Объект с переводами
+const translations = {
+  en: {
+    title: "Quantum Portrait",
+    step1: "Step 1: Upload an Image",
+    step2: "Step 2: Process Image",
+    step3: "Step 3: Analyze",
+    step4: "Step 4: Quantum Transformation",
+    step5: "Step 5: Interact and Save",
+    uploadButton: "Upload Image",
+    saveButton: "Save"
+  },
+  ru: {
+    title: "Квантовый портрет",
+    step1: "Шаг 1: Загрузите изображение",
+    step2: "Шаг 2: Обработка изображения",
+    step3: "Шаг 3: Анализ",
+    step4: "Шаг 4: Квантовая трансформация",
+    step5: "Шаг 5: Взаимодействие и сохранение",
+    uploadButton: "Загрузить изображение",
+    saveButton: "Сохранить"
+  }
+};
+
+window.selectLanguage = function(lang) {
+  if (!translations[lang]) {
+    console.warn(`Language ${lang} not supported, defaulting to 'en'`);
+    lang = 'en';
+  }
+  localStorage.setItem('language', lang);
+  console.log('Language set to:', lang);
+
+  // Обновление текста на странице
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    if (translations[lang][key]) {
+      element.textContent = translations[lang][key];
+    }
+  });
+
+  // Обновление заголовка страницы
+  document.title = translations[lang].title;
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   window.cursorX = 0;
   window.cursorY = 0;
@@ -39,6 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
   window.isPaused = false;
   window.simplifyAnimations = false;
   window.weirdnessFactor = 0.5;
+
+  // Загрузка сохранённого языка или установка по умолчанию
+  const savedLang = localStorage.getItem('language') || 'en';
+  window.selectLanguage(savedLang);
 
   new p5(sketch);
 
