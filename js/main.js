@@ -223,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.canvas.willReadFrequently = true;
           ctx.drawImage(img, 0, 0, w, h);
           window.img.loadPixels();
+          console.log('Image loaded, size:', w, h);
           showPreview(img);
         };
       };
@@ -263,6 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.canvas.willReadFrequently = true;
             ctx.drawImage(img, 0, 0, w, h);
             window.img.loadPixels();
+            console.log('Camera image loaded, size:', w, h);
             showPreview(img);
             video.srcObject.getTracks().forEach(track => track.stop());
             video.style.display = 'none';
@@ -277,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
   archiveButton.addEventListener('click', () => {
     const gallery = document.createElement('div');
     gallery.id = 'portraitGallery';
-    window.portraitImages.forEach(url => {
+    window.portraitUrls.forEach(url => {
       const img = document.createElement('img');
       img.src = url;
       img.onclick = () => {
@@ -288,68 +290,22 @@ document.addEventListener('DOMContentLoaded', () => {
           let w = selectedImg.width;
           let h = selectedImg.height;
           if (w > maxSize || h > maxSize) {
-            const ratio = Math.min(maxSize, w, h / w);
+            const ratio = Math.min(maxSize / w, maxSize / h);
             w = Math.floor(w * ratio);
             h = Math.floor(h * ratio);
           }
           window.img = window.p5Instance.createImage(w, h);
-          const ctx = window.img.drawingContext(w, h);
+          const ctx = window.img.drawingContext;
           ctx.canvas.willReadFrequently = true;
           ctx.drawImage(selectedImg, 0, 0, w, h);
           window.img.loadPixels();
-          showPreview(img);
+          console.log('Archive image loaded, size:', w, h);
+          showPreview(selectedImg);
           gallery.remove();
         };
-      });
-      gallery.append(img);
+      };
+      gallery.appendChild(img);
     });
     document.body.appendChild(gallery);
   });
-</script>
-</body>
-</html>
-```
-
-### Пояснения к изменениям
-
-- **style.css**:
-  - Восстановлен минималистичный стиль, близкий к исходному.
-  - Добавлен `z-index` для `#canvasContainer3` (50), `.button` (60), `#authorsPage` (40).
-  - `#authorsPage` имеет `display: none !important`.
-  - `background: red` для `#canvasContainer3` для отладки.
-
-- **particles.js**:
-  - Убрано условие `window.frame <= block.endFrame + 500` в `renderTransformingPortrait`.
-  - Добавлен `pixelCache` для оптимизации `img.get`.
-  - Добавлен лог `Current frame:` в `window.draw` (строка 435).
-  - Увеличен `endFrame` до 30.
-
-- **main.js**:
-  - Добавлены проверки `.continue-button` для всех шагов с логами.
-  - Вызов `hideAuthors()` в `goToStep` и `DOMContentLoaded`.
-  - Исправлены опечатки в обработке `archiveButton`.
-
-### Следующие шаги
-
-1. **Развернуть файлы**:
-   - Скопируйте `style.css`, `particles.js`, и `main.js` в проект.
-   - Убедитесь, что `index.html` содержит правильную структуру (см. пример выше).
-   - Разверните на Netlify.
-
-2. **Проверить**:
-   - **Блок "Об авторах"**: Должен быть скрыт на всех шагах. Проверьте лог `Hiding authors page`.
-   - **Кнопки "Продолжить"**: Должны появляться. Проверьте логи `Continue button displayed for step ...`.
-   - **Изображение на шаге 3**: Должна быть видна канва (красный фон) и сетка блоков. Проверьте логи `Drawing block at ...`.
-   - Если канва видна, но блоки не рисуются, проверьте координаты `canvasX`, `canvasY` в логах.
-
-3. **Отправить данные**:
-   - Логи консоли (особенно `Drawing block at ...`, `Current frame`, `Continue button ...`).
-   - Полный `index.html`.
-   - Исходный `style.css` (если он отличается).
-   - Браузер и версия (например, Chrome 130).
-   - Скриншот шага 3.
-
-4. **Предупреждение `willReadFrequently`**:
-   Если предупреждение сохраняется, проверьте, уменьшилось ли количество вызовов `img.get` с `pixelCache`.
-
-Если что-то не работает или нужно уточнить, напиши!
+});
