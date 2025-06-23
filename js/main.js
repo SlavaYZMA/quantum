@@ -25,9 +25,13 @@ let sketch = function(p) {
 };
 
 window.selectLanguage = function(lang) {
-  if (!window.translations[lang]) {
-    console.warn(`Language ${lang} not supported, defaulting to 'ru'`);
+  if (!window.translations || !window.translations[lang]) {
+    console.warn(`Language ${lang} not supported or translations not loaded, defaulting to 'ru'`);
     lang = 'ru';
+    if (!window.translations) {
+      console.error('Translations object is undefined. Ensure globals.js is loaded correctly.');
+      return;
+    }
   }
   window.language = lang;
   localStorage.setItem('language', lang);
@@ -37,7 +41,7 @@ window.selectLanguage = function(lang) {
       element.textContent = window.translations[lang][key];
     }
   });
-  document.title = window.translations[lang].title;
+  document.title = window.translations[lang].title || 'Quantum Portrait';
   goToStep(1);
 };
 
@@ -136,8 +140,16 @@ document.addEventListener('DOMContentLoaded', () => {
   window.currentStep = 0;
   window.isPaused = false;
   window.weirdnessFactor = 0.5;
-  const savedLang = localStorage.getItem('language') || 'ru';
-  window.selectLanguage(savedLang);
+  const checkTranslations = () => {
+    if (window.translations) {
+      const savedLang = localStorage.getItem('language') || 'ru';
+      window.selectLanguage(savedLang);
+    } else {
+      console.warn('Translations not loaded, retrying...');
+      setTimeout(checkTranslations, 100);
+    }
+  };
+  checkTranslations();
   new p5(sketch);
 
   const imageInput = document.getElementById('imageInput');
