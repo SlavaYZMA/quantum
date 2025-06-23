@@ -1,224 +1,131 @@
-body {
+/* Сброс базовых стилей */
+* {
   margin: 0;
   padding: 0;
-  background-color: #000;
-  color: #fff;
+  box-sizing: border-box;
+}
+
+body {
   font-family: 'Courier New', Courier, monospace;
-  height: 100vh;
+  background: #000;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
   overflow-y: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.container {
-  position: relative;
-  width: 90%;
-  max-width: 1200px;
-  min-height: 100vh;
-  padding: 20px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.step {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* Контейнер для шагов */
+#app {
+  max-width: 600px;
   width: 100%;
-  min-height: 100vh;
-  flex-grow: 1;
+  padding: 20px;
   text-align: center;
 }
 
-.step.active {
-  display: flex;
-}
-
-.typewriter {
-  font-size: 1.2rem;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  max-width: 800px;
-  margin-bottom: 20px;
-}
-
-.preview-image {
-  max-width: 500px;
-  height: auto;
-  margin: 20px 0;
+/* Стили для шагов */
+.step {
   display: none;
 }
-
-#step2 .preview-image.active {
+.step.active {
   display: block;
 }
 
-.canvas-container {
+/* Стили для контейнеров канвы */
+#canvasContainer3, #canvasContainer4, #canvasContainer5 {
   width: 320px;
   height: 320px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid #fff;
-  margin: 20px 0;
+  margin: 20px auto;
+  background: #000; /* Для визуальной проверки */
+  visibility: visible;
+  opacity: 1;
+  border: 1px solid #333; /* Для отладки */
 }
 
 canvas {
+  display: block !important;
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Стили для текста typewriter */
+.typewriter {
+  white-space: pre-wrap;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: left;
+  margin: 20px auto;
+  max-width: 320px;
+}
+
+/* Стили для кнопок */
+.button, .continue-button {
+  background: none;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 10px 20px;
+  margin: 10px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+.button:hover, .continue-button:hover {
+  background: #fff;
+  color: #000;
+}
+.continue-button {
+  display: none; /* Скрыт по умолчанию, отображается через JS */
+}
+
+/* Стили для загрузки изображения */
+#imageInput, #cameraButton, #archiveButton {
+  margin: 10px;
+}
+#previewImage {
+  max-width: 320px;
+  max-height: 320px;
+  margin: 20px auto;
+  display: none;
+}
+#previewImage.active {
   display: block;
-  width: 100%;
-  height: auto;
 }
 
-.glitch-char {
-  position: relative;
-  display: inline-block;
+/* Стили для видео (камера) */
+#video {
+  max-width: 320px;
+  max-height: 320px;
+  display: none;
+  margin: 20px auto;
+}
+.camera-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.random-glitch {
-  animation: random-glitch 0.5s ease-in-out 2;
-  animation-delay: var(--random-delay);
-}
-
-.random-glitch-char::before,
-.random-glitch-char::after {
-  content: random-glitch-char  before;
-  animation-delay: var(--random-delay);
-}
-
-.random-glitch-char::before {
-  color: #ff0000;
-  animation: random-glitch-before 0.5px ease-in-out 2;
-}
-
-.random-glitch-char::after {
-  color: #00ff00;
-  animation: random-glitch-after 0.5s ease-in-out 2;
-}
-
-.random-glitch-char.noise {
-  animation: noise-char 0.3s ease-in-out infinite;
-}
-
-.random-glitch-char.rotate {
-  animation: rotate-char 0.7s ease-in-out 2;
-}
-
-#step4 .random-glitch-char,
-#step5 .random-glitch-char {
-  random-glitch-char 0.4s ease-in-out 2;
-}
-
-@keyframes random-glitch {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(calc(5px * var(--random-offset-x)), calc(5px * var(--random-offset-y))); }
-  50% { transform: translate(calc(-5px * var(--random-offset-x)), calc(5px * var(--random-offset-y))); }
-  75% { transform: translate(calc(3px * var(--random-offset-x)), calc(-3px * var(--random-offset-y))); }
-}
-
-@keyframes random-glitch-before {
-  0%, 100% { transform: translate(0, 0); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
-  25% { transform: translate(calc(3px * var(--random-offset-x)), calc(-2px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
-  50% { transform: translate(calc(-2px * var(--random-offset-x)), calc(3px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
-  75% { transform: translate(calc(2px * var(--random-offset-x)), calc(-3px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 33%, 0 33%); }
-}
-
-@keyframes random-glitch-after {
-  0%, 100% { transform: translate(calc(-3px * var(--random-offset-x)), calc(2px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
-  25% { transform: translate(calc(2px * var(--random-offset-x)), calc(-3px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
-  50% { transform: translate(calc(-2px * var(--random-offset-x)), calc(3px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 66%, 0 100%); }
-}
-
-@keyframes random-glitch-strong {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(calc(5px * var(--random-offset-x)), calc(5px * var(--random-offset-y))); }
-  50% { transform: translate(calc(-5px * var(--random-offset-x)), calc(5px * var(--random-offset-y))); }
-  75% { transform: translate(calc(4px * var(--random-offset-x)), calc(-4px * var(--random-offset-y))); }
-}
-
-@keyframes random-glitch-before-strong {
-  0%, 100% { transform: translate(0, 0); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
-  25% { transform: translate(calc(5px * var(--random-offset-x)), calc(-3px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
-  50% { transform: translate(calc(-4px * var(--random-offset-x)), calc(4px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
-  75% { transform: translate(calc(3px * var(--random-offset-x)), calc(-4px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
-}
-
-@keyframes random-glitch-after-strong {
-  0%, 100% { transform: translate(0, 0); clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
-  25% { transform: translate(calc(-4px * var(--random-offset-x)), calc(3px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
-  50% { transform: translate(calc(4px * var(--random-offset-x)), calc(-4px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
-  75% { transform: translate(calc(-3px * var(--random-offset-x)), calc(4px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
-}
-
-@keyframes noise-char {
-  0%, 100% { content: attr(data-text); }
-  50% { content: '█'; }
-}
-
-@keyframes rotate-char {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(calc(45deg * var(--random-rotation))); }
-}
-
-.glitch-char.stabilized::before, .glitch-char.stabilized::after {
-  content: none;
-}
-
-.button-container {
-  width: 100%;
+/* Стили для галереи архива */
+#portraitGallery {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  padding: 10px;
+  margin: 20px auto;
 }
-
-.button, input[type="file"], #cameraButton, #archiveButton, #saveButton {
-  padding: 10px 20px;
-  background: none;
-  border: 1px solid #fff;
-  color: #fff;
-  font-family: 'Courier New', monospace;
+#portraitGallery img {
+  width: 100px;
+  height: 100px;
   cursor: pointer;
-  transition: background 0.3s;
-}
-
-.button:hover, input[type="file"]:hover, #cameraButton:hover, #archiveButton:hover, #saveButton:hover {
-  background: #333;
-}
-
-.continue-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 10px 20px;
-  background: none;
   border: 1px solid #fff;
-  color: #fff;
-  font-family: 'Courier New', monospace;
-  cursor: pointer;
-  transition: background 0.3s;
-  z-index: 10;
 }
 
-.continue-button:hover {
-  background: #333;
-}
-
-#noiseOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVQIW2NkYGD4z8DAwMDAwMAIABJ7A/kG1B1KAAAAAElFTkSuQmCC');
-  opacity: 0.1;
-  pointer-events: none;
-}
-
+/* Стили для эффекта вспышки */
 #flashEffect {
   position: fixed;
   top: 0;
@@ -228,40 +135,50 @@ canvas {
   background: #fff;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.1s;
+  transition: opacity 0.3s;
 }
 
+/* Стили для страницы авторов */
 #authorsPage {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
-  text-align: center;
-  z-index: 1000;
-  flex-direction: column;
+  display: none;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  z-index: 1000;
+}
+#authorsPage p {
+  font-size: 16px;
+  margin: 10px;
+}
+#authorsPage button {
+  margin-top: 20px;
 }
 
-#authorsPage .button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-}
-
-@media (max-width: 768px) {
+/* Адаптивность */
+@media (max-width: 480px) {
+  #app {
+    padding: 10px;
+  }
   .typewriter {
-    font-size: 1rem;
+    font-size: 14px;
+    max-width: 280px;
   }
-  .button-container {
-    flex-direction: column;
-    align-items: center;
+  #canvasContainer3, #canvasContainer4, #canvasContainer5 {
+    width: 280px;
+    height: 280px;
   }
-  .canvas-container {
-    width: 100%;
-    height: auto;
+  canvas {
+    width: 280px !important;
+    height: 280px !important;
+  }
+  #previewImage, #video {
+    max-width: 280px;
+    max-height: 280px;
   }
 }
