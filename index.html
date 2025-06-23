@@ -1,79 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="title">Квантовый портрет</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Quantum Portrait</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="noiseOverlay"></div>
-  <div id="flashEffect"></div>
-  <div class="container">
-    <div class="step" id="step0">
-      <div class="typewriter" id="typewriter0"></div>
-      <div class="button-container">
-        <button onclick="selectLanguage('ru')">Русский</button>
-        <button onclick="selectLanguage('en')">English</button>
+  <div id="app">
+    <div id="step0" class="step">
+      <div id="typewriter0"></div>
+      <button class="continue-button" onclick="selectLanguage('ru')">Русский</button>
+      <button class="continue-button" onclick="selectLanguage('en')">English</button>
+    </div>
+    <div id="step1" class="step">
+      <div id="typewriter1"></div>
+      <button class="continue-button" onclick="goToStep(2)" style="display: none;">Продолжить</button>
+    </div>
+    <div id="step2" class="step">
+      <div id="typewriter2"></div>
+      <div id="typewriter2_response"></div>
+      <img id="previewImage" alt="Preview">
+      <input type="file" id="imageInput" accept="image/*">
+      <button id="cameraButton" class="button">Камера</button>
+      <button id="archiveButton" class="button">Архив</button>
+      <div class="camera-container">
+        <video id="video" autoplay></video>
       </div>
+      <button class="continue-button" onclick="goToStep(3)" style="display: none;">Продолжить</button>
     </div>
-    <div class="step" id="step1">
-      <div class="typewriter" id="typewriter1"></div>
-      <button class="continue-button" onclick="goToStep(2)">Продолжить</button>
-    </div>
-    <div class="step" id="step2">
-      <div class="typewriter" id="typewriter2"></div>
-      <div class="button-container">
-        <input type="file" id="imageInput" accept="image/*">
-        <button id="cameraButton">Активировать камеру</button>
-        <button id="archiveButton">Выбрать из архива</button>
-      </div>
-      <div class="preview-image" id="previewImage"></div>
-      <div class="typewriter" id="typewriter2_response"></div>
-      <button class="continue-button" onclick="goToStep(3)">Продолжить</button>
-    </div>
-    <div class="step" id="step3">
-      <div class="typewriter" id="typewriter3"></div>
+    <div id="step3" class="step">
+      <div id="typewriter3"></div>
       <div id="canvasContainer3"></div>
-      <button class="continue-button" onclick="goToStep(4)">Продолжить</button>
+      <button class="continue-button" onclick="goToStep(4)" style="display: none;">Продолжить</button>
     </div>
-    <div class="step" id="step4">
-      <div class="typewriter" id="typewriter4"></div>
+    <div id="step4" class="step">
+      <div id="typewriter4"></div>
       <div id="canvasContainer4"></div>
-      <button class="continue-button" onclick="goToStep(5)">Продолжить</button>
+      <button class="continue-button" onclick="goToStep(5)" style="display: none;">Продолжить</button>
     </div>
-    <div class="step" id="step5">
-      <div class="typewriter" id="typewriter5"></div>
+    <div id="step5" class="step">
+      <div id="typewriter5"></div>
       <div id="canvasContainer5"></div>
-      <button id="saveButton" onclick="saveObservation()">Записать наблюдение</button>
-      <button class="continue-button" onclick="goToStep(6)">Продолжить</button>
+      <button class="continue-button" onclick="goToStep(6)" style="display: none;">Продолжить</button>
     </div>
-    <div class="step" id="step6">
-      <div class="typewriter" id="typewriter6"></div>
-      <button onclick="shareObservation()">Поделиться наблюдением</button>
+    <div id="step6" class="step">
+      <div id="typewriter6"></div>
       <button class="continue-button" onclick="goToStep(7)">Продолжить</button>
     </div>
-    <div class="step" id="step7">
-      <div class="typewriter" id="typewriter7"></div>
-      <div class="button-container">
-        <button onclick="restart()">Начать сначала</button>
-        <button onclick="goToArchive()">Перейти в архив наблюдений</button>
-        <button onclick="showAuthors()">Об авторах</button>
-      </div>
+    <div id="step7" class="step">
+      <div id="typewriter7"></div>
+      <button class="button" onclick="saveObservation()">Сохранить</button>
+      <button class="button" onclick="shareObservation()">Поделиться</button>
+      <button class="button" onclick="restart()">Начать заново</button>
+      <button class="button" onclick="showAuthors()">Об авторах</button>
     </div>
     <div id="authorsPage">
-      <div class="typewriter">Об авторах: Проект создан командой энтузиастов квантовой механики и цифрового искусства.</div>
+      <p data-i18n="authors">Авторы: Команда Quantum</p>
       <button class="button" onclick="hideAuthors()">Закрыть</button>
     </div>
-    <video id="video" style="display:none;"></video>
+    <div id="flashEffect"></div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-  <script src="js/audio.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/globals.js"></script>
-  <script src="js/particles.js"></script>
-  <script src="js/observer.js"></script>
-  <script src="js/textSteps.js"></script>
-  <script src="js/main.js"></script>
+  <script src="audio.js"></script>
+  <script src="utils.js"></script>
+  <script src="globals.js"></script>
+  <script src="particles.js"></script>
+  <script src="observer.js"></script>
+  <script src="textSteps.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
