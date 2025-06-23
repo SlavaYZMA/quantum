@@ -123,12 +123,16 @@ function renderQuantumMessages() {
 
 function renderTransformingPortrait() {
   console.log('Rendering portrait, img:', window.img, 'width:', window.img?.width);
-  if (!window.img || !window.img.width) return [];
+  if (!window.img || !window.img.width) {
+    console.warn('No image or invalid image width');
+    return [];
+  }
   window.img.loadPixels();
   let blockList = [];
   let maxBlockSize = 16;
   let blockSize = window.p5Instance.map(window.frame, 1, 30, 1, maxBlockSize);
   blockSize = window.p5Instance.constrain(blockSize, 1, maxBlockSize);
+  console.log('Block size:', blockSize, 'Frame:', window.frame);
 
   for (let y = 0; y < window.img.height; y += blockSize) {
     for (let x = 0; x < window.img.width; x += blockSize) {
@@ -144,6 +148,7 @@ function renderTransformingPortrait() {
       });
     }
   }
+  console.log('Created blockList with', blockList.length, 'blocks');
 
   let pixelCache = new Map();
   for (let block of blockList) {
@@ -166,6 +171,9 @@ function renderTransformingPortrait() {
       r = r / count;
       g = g / count;
       b = b / count;
+    } else {
+      console.warn('No valid pixels for block at', x, y);
+      continue;
     }
 
     let offsetX = 0, offsetY = 0, rotation = 0;
@@ -176,6 +184,7 @@ function renderTransformingPortrait() {
     }
     let canvasX = x + (window.p5Instance.width - window.img.width) / 2 + offsetX;
     let canvasY = y + (window.p5Instance.height - window.img.height) / 2 + offsetY;
+    console.log('Calculated canvas coords:', canvasX, canvasY, 'for block at', x, y);
 
     window.p5Instance.fill(r, g, b, 255);
     window.p5Instance.noStroke();
@@ -363,9 +372,9 @@ function renderParticle(particle, state) {
     let r1 = particle.size * 0.5;
     let r2 = particle.size * 0.25;
     window.p5Instance.beginShape();
-    for (let a = 0; a < window.p5Instance.TWO; a += window.p5Instance.PI / 5) {
+    for (let a = 0; a < window.p5Instance.TWO_PI; a += window.p5Instance.PI / 5) {
       window.p5Instance.vertex(r1 * window.p5Instance.cos(a), r1 * window.p5Instance.sin(a));
-      window.p5Instance.vertex(r2 * window.p5Instance.cos(a + window.p5Instance.PI / 5), r2 * sin(a + window.p5Instance.PI / 5));
+      window.p5Instance.vertex(r2 * window.p5Instance.cos(a + window.p5Instance.PI / 10), r2 * window.p5Instance.sin(a + window.p5Instance.PI / 10));
     }
     window.p5Instance.endShape(window.p5Instance.CLOSE);
   }
