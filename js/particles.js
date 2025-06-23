@@ -390,9 +390,13 @@ function renderParticle(particle, state) {
 }
 
 window.draw = function() {
-  if (!window.isCanvasReady || !window.p5Instance) return;
+  if (!window.isCanvasReady || !window.p5Instance) {
+    console.warn('Canvas not ready or p5Instance undefined');
+    return;
+  }
   window.frame++;
   console.log('Current frame:', window.frame);
+  console.log('Current step:', window.currentStep, 'Image available:', !!window.img);
   window.p5Instance.background(0);
   if (!window.trailBuffer) {
     window.trailBuffer = window.p5Instance.createGraphics(window.p5Instance.width, window.p5Instance.height);
@@ -408,17 +412,22 @@ window.draw = function() {
     window.lastMouseY = mouseY;
   }
   if (window.currentStep === 3 && window.img) {
+    console.log('Attempting to render portrait for step 3');
     let blockList = renderTransformingPortrait();
     if (window.frame >= 60 && window.particles.length === 0) {
+      console.log('Initializing particles for step 3');
       window.initializeParticles(blockList);
     }
   } else if (window.currentStep >= 4 && window.particles.length > 0) {
+    console.log('Rendering particles for step', window.currentStep);
     for (let i = 0; i < window.particles.length; i++) {
       let particle = window.particles[i];
       let state = window.quantumStates[i];
       updateParticle(particle, state, i);
       renderParticle(particle, state);
     }
+  } else {
+    console.warn('No rendering: Step', window.currentStep, 'Image:', !!window.img);
   }
   window.p5Instance.image(window.trailBuffer, 0, 0);
   renderQuantumMessages();
