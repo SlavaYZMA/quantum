@@ -130,7 +130,7 @@ function renderTransformingPortrait() {
   window.img.loadPixels();
   let blockList = [];
   let maxBlockSize = 16;
-  let blockSize = window.p5Instance.map(window.frame, 1, 60, 1, maxBlockSize); // Увеличен диапазон кадров
+  let blockSize = window.p5Instance.map(window.frame, 1, 60, 1, maxBlockSize);
   blockSize = window.p5Instance.constrain(blockSize, 1, maxBlockSize);
   console.log('Block size:', blockSize, 'Frame:', window.frame);
 
@@ -140,7 +140,7 @@ function renderTransformingPortrait() {
         x,
         y,
         startFrame: 0,
-        endFrame: 120, // Увеличен диапазон для частиц
+        endFrame: 120,
         superpositionT: 0,
         wavePhase: window.p5Instance.random(window.p5Instance.TWO_PI),
         probAmplitude: window.p5Instance.random(0.5, 1),
@@ -169,9 +169,12 @@ function renderTransformingPortrait() {
       }
     }
     if (count > 0) {
-      r = r / count;
-      g = g / count;
-      b = b / count;
+      r = r / count * 1.5; // Увеличение яркости на 50%
+      g = g / count * 1.5;
+      b = b / count * 1.5;
+      r = window.p5Instance.constrain(r, 0, 255);
+      g = window.p5Instance.constrain(g, 0, 255);
+      b = window.p5Instance.constrain(b, 0, 255);
     } else {
       console.warn('No valid pixels for block at', x, y);
       continue;
@@ -179,18 +182,18 @@ function renderTransformingPortrait() {
     console.log('Average color for block at', x, y, ':', r, g, b);
 
     let offsetX = 0, offsetY = 0, rotation = 0;
-    let noiseVal = cachedNoise(block.noiseSeed + window.frame * 0.1, 0, 0); // Увеличен множитель
+    let noiseVal = cachedNoise(block.noiseSeed + window.frame * 0.1, 0, 0);
     if (window.frame >= 1) {
-      offsetX += noiseVal * 20 - 10; // Увеличена амплитуда
+      offsetX += noiseVal * 20 - 10;
       offsetY += cachedNoise(0, block.noiseSeed + window.frame * 0.1, 0) * 20 - 10;
-      rotation = cachedNoise(block.noiseSeed, window.frame * 0.05, 0) * 0.2 - 0.1; // Добавлено вращение
+      rotation = cachedNoise(block.noiseSeed, window.frame * 0.05, 0) * 0.2 - 0.1;
     }
-    console.log('Offsets for block at', x, y, ':', offsetX, offsetY, 'rotation:', rotation); // Отладка смещений
+    console.log('Offsets for block at', x, y, ':', offsetX, offsetY, 'rotation:', rotation);
     let canvasX = x + (window.p5Instance.width - window.img.width) / 2 + offsetX;
     let canvasY = y + (window.p5Instance.height - window.img.height) / 2 + offsetY;
     console.log('Calculated canvas coords:', canvasX, canvasY, 'for block at', x, y);
 
-    window.p5Instance.fill(r, g, b, 255);
+    window.p5Instance.fill(r, g, b, 255); // Установлен alpha = 255
     window.p5Instance.noStroke();
     window.p5Instance.push();
     window.p5Instance.translate(canvasX, canvasY);
@@ -321,7 +324,7 @@ function updateParticle(particle, state, index) {
 
   if (particle.decoherence > 0) {
     particle.decoherence = window.p5Instance.max(0, particle.decoherence - 0.005);
-    particle.alpha = window.p5Instance.lerp(particle.alpha, 100, 0.02);
+    particle.alpha = window.p5Instance.lerp(particle.alpha, 200, 0.02); // Увеличен минимальный alpha с 100 до 200
   }
 
   particle.x = particle.baseX + particle.offsetX;
@@ -356,10 +359,10 @@ function renderParticle(particle, state) {
   window.p5Instance.noStroke();
   let h = state.hue;
   let s = 80;
-  let l = 60;
-  window.p5Instance.drawingContext.shadowBlur = 10;
-  window.p5Instance.drawingContext.shadowColor = window.p5Instance.color(h, s, l);
-  window.p5Instance.fill(h, s, l, particle.alpha);
+  let l = 80; // Увеличена яркость с 60 до 80
+  window.drawingContext.shadowBlur = 10;
+  window.drawingContext.shadowColor = window.p5Instance.color(h, s, l);
+  window.p5Instance.fill(h, s, l, particle.alpha); // Используем particle.alpha
   if (particle.shapeType === 'circle') {
     window.p5Instance.ellipse(0, 0, particle.size, particle.size);
   } else if (particle.shapeType === 'spiral') {
@@ -381,9 +384,9 @@ function renderParticle(particle, state) {
     }
     window.p5Instance.endShape(window.p5Instance.CLOSE);
   }
-  window.p5Instance.drawingContext.shadowBlur = 0;
+  window.drawingContext.shadowBlur = 0;
   if (particle.superposition) {
-    window.p5Instance.fill(h, 50, 30, particle.alpha * 0.3);
+    window.p5Instance.fill(h, 50, 50, particle.alpha * 0.5); // Увеличена яркость с 30 до 50
     for (let i = 0; i < 2; i++) {
       let offset = cachedNoise(particle.chaosSeed, window.frame * 0.1, i) * 10;
       window.p5Instance.ellipse(offset, offset, particle.size * 0.5);
@@ -417,7 +420,7 @@ window.draw = function() {
     console.log('Attempting to render portrait for step 3');
     window.p5Instance.background(0);
     let blockList = renderTransformingPortrait();
-    if (window.frame >= 60 && window.particles.length === 0) {
+    if (window.frame >= 30 && window.particles.length === 0) {
       console.log('Initializing particles for step 3');
       window.initializeParticles(blockList);
     }
