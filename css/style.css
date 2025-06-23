@@ -34,8 +34,8 @@ body {
   height: 320px;
   margin: 20px auto;
   display: block;
-  background: red; /* Для отладки */
-  border: 2px solid yellow; /* Добавлен для отладки */
+  background: #fff; /* Белый фон для теста */
+  border: 2px solid yellow; /* Для отладки */
   z-index: 50;
   position: relative;
 }
@@ -43,7 +43,7 @@ body {
 canvas {
   display: block;
   z-index: 50;
-  background: #000;
+  background: #fff; /* Белый фон для канвы */
   opacity: 1 !important;
 }
 
