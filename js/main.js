@@ -65,8 +65,11 @@ window.goToStep = function(step) {
     window.typeText('typewriter2', window.translations[window.language].step2);
   } else if (step === 3) {
     window.typeText('typewriter3', window.translations[window.language].step3);
-    if (window.img && window.isCanvasReady) {
+    if (window.img && window.img.width && window.isCanvasReady) {
       window.p5Instance.loop();
+      console.log('Starting animation for step 3, img:', window.img);
+    } else {
+      console.warn('Image not loaded or canvas not ready for step 3');
     }
   } else if (step === 4) {
     window.typeText('typewriter4', window.translations[window.language].step4);
@@ -140,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.currentStep = 0;
   window.isPaused = false;
   window.weirdnessFactor = 0.5;
-  console.log('Translations:', window.translations); // Для отладки
+  console.log('Translations:', window.translations);
   const checkTranslations = () => {
     if (window.translations) {
       const savedLang = localStorage.getItem('language') || 'ru';
@@ -162,8 +165,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const img = new Image();
         img.src = e.target.result;
         img.onload = () => {
-          window.img = window.p5Instance.createImage(img.width, img.height);
-          window.img.drawingContext.drawImage(img, 0, 0);
+          const maxSize = 320;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxSize || h > maxSize) {
+            const ratio = Math.min(maxSize / w, maxSize / h);
+            w = Math.floor(w * ratio);
+            h = Math.floor(h * ratio);
+          }
+          window.img = window.p5Instance.createImage(w, h);
+          const ctx = window.img.drawingContext;
+          ctx.canvas.willReadFrequently = true; // Оптимизация
+          ctx.drawImage(img, 0, 0, w, h);
           window.img.loadPixels();
           showPreview(img);
         };
@@ -183,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const takePhotoButton = document.createElement('button');
         takePhotoButton.textContent = 'Take Photo';
         takePhotoButton.className = 'button';
-        document.querySelector('#step2 .button-container').appendChild(takePhotoButton);
+        document.querySelector('#step2 .camera-container').appendChild(takePhotoButton);
         takePhotoButton.onclick = () => {
           const canvas = document.createElement('canvas');
           canvas.width = video.videoWidth;
@@ -192,8 +205,18 @@ document.addEventListener('DOMContentLoaded', () => {
           const img = new Image();
           img.src = canvas.toDataURL('image/png');
           img.onload = () => {
-            window.img = window.p5Instance.createImage(img.width, img.height);
-            window.img.drawingContext.drawImage(img, 0, 0);
+            const maxSize = 320;
+            let w = img.width;
+            let h = img.height;
+            if (w > maxSize || h > maxSize) {
+              const ratio = Math.min(maxSize / w, maxSize / h);
+              w = Math.floor(w * ratio);
+              h = Math.floor(h * ratio);
+            }
+            window.img = window.p5Instance.createImage(w, h);
+            const ctx = window.img.drawingContext;
+            ctx.canvas.willReadFrequently = true; // Оптимизация
+            ctx.drawImage(img, 0, 0, w, h);
             window.img.loadPixels();
             showPreview(img);
             video.srcObject.getTracks().forEach(track => track.stop());
@@ -216,8 +239,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedImg = new Image();
         selectedImg.src = url;
         selectedImg.onload = () => {
-          window.img = window.p5Instance.createImage(selectedImg.width, selectedImg.height);
-          window.img.drawingContext.drawImage(img, 0, 0);
+          const maxSize = 320;
+          let w = selectedImg.width;
+          let h = selectedImg.height;
+          if (w > maxSize || h > maxSize) {
+            const ratio = Math.min(maxSize / w, maxSize / h);
+            w = Math.floor(w * ratio);
+            h = Math.floor(h * ratio);
+          }
+          window.img = window.p5Instance.createImage(w, h);
+          const ctx = window.img.drawingContext;
+          ctx.canvas.willReadFrequently = true; // Оптимизация
+          ctx.drawImage(selectedImg, 0, 0, w, h);
           window.img.loadPixels();
           showPreview(selectedImg);
           gallery.remove();
