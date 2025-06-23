@@ -8,7 +8,7 @@ body {
   overflow-y: auto;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .container {
@@ -20,113 +20,57 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .step {
   display: none;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
   min-height: 100vh;
   flex-grow: 1;
+  text-align: center;
 }
 
 .step.active {
   display: flex;
 }
 
-#step4, #step5 {
-  justify-content: flex-start;
-  flex-direction: column;
-}
-
-.top-section {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
-}
-
-.text-container {
-  width: 60%;
-  padding: 10px;
-  padding-top: 80px;
-  word-wrap: break-word;
-  text-align: left;
-  flex-shrink: 0;
-  border: 1px solid #fff;
-}
-
-.portrait-container {
-  width: 30%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #fff;
-}
-
-.preview-image {
-  width: 150px;
-  height: auto;
-  max-height: 150px;
-  border: 1px solid #aaa;
-  object-fit: contain;
-  display: none; /* По умолчанию скрыто */
-}
-
-#step4 .preview-image, #step5 .preview-image {
-  display: block; /* Видно на шагах 4 и 5 */
-}
-
-.middle-section {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.terminal {
-  width: 48%;
-  height: 200px;
-  background: #000;
-  border: 2px solid #fff;
-  color: #0f0;
-  font-family: 'Courier New', monospace;
-  font-size: 1rem;
-  padding: 10px;
-  overflow-y: auto;
-}
-
-.quantum-explainer {
-  width: 48%;
-  height: 200px;
-  background: #000;
-  border: 2px solid #fff;
-}
-
-.canvas-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  border: 2px solid #fff;
-}
-
-canvas {
-  display: none;
-  width: 70%;
-  height: auto;
-  max-height: calc(100vh - 250px);
-  object-fit: contain;
-  margin: 20px 0;
-  cursor: pointer;
-}
-
 .typewriter {
   font-size: 1.2rem;
   line-height: 1.5;
   white-space: pre-wrap;
+  max-width: 800px;
+  margin-bottom: 20px;
+}
+
+.preview-image {
+  max-width: 500px;
+  height: auto;
+  margin: 20px 0;
+  display: none;
+}
+
+#step2 .preview-image.active {
+  display: block;
+}
+
+.canvas-container {
+  width: 320px;
+  height: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #fff;
+  margin: 20px 0;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .glitch-char {
@@ -141,25 +85,18 @@ canvas {
 
 .random-glitch-char::before,
 .random-glitch-char::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  content: random-glitch-char  before;
+  animation-delay: var(--random-delay);
 }
 
 .random-glitch-char::before {
   color: #ff0000;
-  animation: random-glitch-before 0.5s ease-in-out 2;
-  animation-delay: var(--random-delay);
+  animation: random-glitch-before 0.5px ease-in-out 2;
 }
 
 .random-glitch-char::after {
-  color: #00fffb;
+  color: #00ff00;
   animation: random-glitch-after 0.5s ease-in-out 2;
-  animation-delay: var(--random-delay);
 }
 
 .random-glitch-char.noise {
@@ -172,19 +109,7 @@ canvas {
 
 #step4 .random-glitch-char,
 #step5 .random-glitch-char {
-  animation: random-glitch-strong 0.4s ease-in-out 2;
-}
-
-#step4 .random-glitch-char::before,
-#step5 .random-glitch-char::before {
-  animation: random-glitch-before-strong 0.4s ease-in-out 2;
-  animation-delay: var(--random-delay);
-}
-
-#step4 .random-glitch-char::after,
-#step5 .random-glitch-char::after {
-  animation: random-glitch-after-strong 0.4s ease-in-out 2;
-  animation-delay: var(--random-delay);
+  random-glitch-char 0.4s ease-in-out 2;
 }
 
 @keyframes random-glitch {
@@ -195,14 +120,14 @@ canvas {
 }
 
 @keyframes random-glitch-before {
-  0%, 100% { transform: translate(0, 0); clip-path: polygon(0 0, 100% 33%, 0 33); }
-  25% { transform: translate(calc(3px * var(--random-offset-x)), calc(-2px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 66%, 0 66%); }
-  50% { transform: translate(calc(-2px * var(--random-offset-x)), calc(3px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 100%, 0 100%); }
+  0%, 100% { transform: translate(0, 0); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
+  25% { transform: translate(calc(3px * var(--random-offset-x)), calc(-2px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
+  50% { transform: translate(calc(-2px * var(--random-offset-x)), calc(3px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
   75% { transform: translate(calc(2px * var(--random-offset-x)), calc(-3px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 33%, 0 33%); }
 }
 
 @keyframes random-glitch-after {
-  0%, 100% { transform: translate(0(calc(-3px * var(--random-offset-x)), calc(2px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
+  0%, 100% { transform: translate(calc(-3px * var(--random-offset-x)), calc(2px * var(--random-offset-y))); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
   25% { transform: translate(calc(2px * var(--random-offset-x)), calc(-3px * var(--random-offset-y))); clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
   50% { transform: translate(calc(-2px * var(--random-offset-x)), calc(3px * var(--random-offset-y))); clip-path: polygon(0 66%, 100% 66%, 0 100%); }
 }
@@ -249,10 +174,9 @@ canvas {
   justify-content: center;
   gap: 10px;
   padding: 10px;
-  flex-shrink: 0;
 }
 
-.button {
+.button, input[type="file"], #cameraButton, #archiveButton, #saveButton {
   padding: 10px 20px;
   background: none;
   border: 1px solid #fff;
@@ -262,52 +186,13 @@ canvas {
   transition: background 0.3s;
 }
 
-.button:hover, .button:focus {
-  background: #333;
-  outline: 2px solid #fff;
-}
-
-.button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.save-button {
-  padding: 10px 20px;
-  background: none;
-  border: 1px solid #fff;
-  color: #fff;
-  font-family: 'Courier New', monospace;
-  cursor: pointer;
-  transition: background 0.3s;
-  margin: 10px auto;
-}
-
-.save-button:hover, .save-button:focus {
-  background: #333;
-}
-
-.back-button {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  padding: 10px 20px;
-  background: none;
-  border: 1px solid #fff;
-  color: #fff;
-  font-family: 'Courier New', monospace;
-  cursor: pointer;
-  transition: background 0.3s;
-  z-index: 10;
-}
-
-.back-button:hover, .back-button:focus {
+.button:hover, input[type="file"]:hover, #cameraButton:hover, #archiveButton:hover, #saveButton:hover {
   background: #333;
 }
 
 .continue-button {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
   padding: 10px 20px;
   background: none;
@@ -319,7 +204,7 @@ canvas {
   z-index: 10;
 }
 
-.continue-button:hover, .continue-button:focus {
+.continue-button:hover {
   background: #333;
 }
 
@@ -343,32 +228,7 @@ canvas {
   background: #fff;
   opacity: 0;
   pointer-events: none;
-}
-
-#loader {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.5em;
-}
-
-#portraitGallery {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  overflow-y: auto;
-  z-index: 20;
-}
-
-#portraitGallery img {
-  width: 100px;
-  margin: 10px;
-  cursor: pointer;
+  transition: opacity 0.1s;
 }
 
 #authorsPage {
@@ -380,11 +240,28 @@ canvas {
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
   text-align: center;
-  z-index: 20;
+  z-index: 1000;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #authorsPage .button {
   position: absolute;
   top: 20px;
   right: 20px;
+}
+
+@media (max-width: 768px) {
+  .typewriter {
+    font-size: 1rem;
+  }
+  .button-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .canvas-container {
+    width: 100%;
+    height: auto;
+  }
 }
