@@ -48,12 +48,7 @@ window.selectLanguage = function(lang) {
 window.goToStep = function(step) {
   window.currentStep = step;
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  const stepEl = document.getElementById(`step${step}`);
-  if (!stepEl) {
-    console.warn(`Step element #step${step} not found`);
-    return;
-  }
-  stepEl.classList.add('active');
+  document.getElementById(`step${step}`).classList.add('active');
   if (step === 0) {
     window.typeText('typewriter0', window.translations[window.language].step0);
   } else if (step === 1) {
@@ -62,70 +57,32 @@ window.goToStep = function(step) {
         { text: window.translations[window.language].step1_part1, speed: () => 70 },
         { text: window.translations[window.language].step1_part2, speed: () => 35 + Math.random() * 5, delay: 700 }
       ], () => {
-        const btn = document.querySelector('#step1 .continue-button');
-        if (btn) {
-          btn.style.display = 'block';
-          console.log('Continue button displayed for step 1');
-        } else {
-          console.warn('Continue button not found for step 1');
-        }
+        document.querySelector('#step1 .continue-button').style.display = 'block';
       });
       triggerFlashEffect();
     }, 600);
   } else if (step === 2) {
     window.typeText('typewriter2', window.translations[window.language].step2);
-    const btn = document.querySelector('#step2 .continue-button');
-    if (btn) {
-      btn.style.display = 'block';
-      console.log('Continue button displayed for step 2');
-    } else {
-      console.warn('Continue button not found for step 2');
-    }
   } else if (step === 3) {
     window.typeText('typewriter3', window.translations[window.language].step3);
-    if (window.img && window.img.width && window.isCanvasReady) {
+    if (window.img && window.isCanvasReady) {
       window.p5Instance.loop();
-      console.log('Starting animation for step 3, img:', window.img);
-    } else {
-      console.warn('Image not loaded or canvas not ready for step 3');
-    }
-    const btn = document.querySelector('#step3 .continue-button');
-    if (btn) {
-      btn.style.display = 'block';
-      console.log('Continue button displayed for step 3');
-    } else {
-      console.warn('Continue button not found for step 3');
     }
   } else if (step === 4) {
     window.typeText('typewriter4', window.translations[window.language].step4);
     if (window.img && window.isCanvasReady) {
       window.p5Instance.loop();
     }
-    const btn = document.querySelector('#step4 .continue-button');
-    if (btn) {
-      btn.style.display = 'block';
-      console.log('Continue button displayed for step 4');
-    } else {
-      console.warn('Continue button not found for step 4');
-    }
   } else if (step === 5) {
     window.typeText('typewriter5', window.translations[window.language].step5);
     if (window.img && window.isCanvasReady) {
       window.p5Instance.loop();
-    }
-    const btn = document.querySelector('#step5 .continue-button');
-    if (btn) {
-      btn.style.display = 'block';
-      console.log('Continue button displayed for step 5');
-    } else {
-      console.warn('Continue button not found for step 5');
     }
   } else if (step === 6) {
     window.typeText('typewriter6', window.translations[window.language].step6);
   } else if (step === 7) {
     window.typeText('typewriter7', window.translations[window.language].step7);
   }
-  window.hideAuthors();
 };
 
 window.showPreview = function(img) {
@@ -134,13 +91,7 @@ window.showPreview = function(img) {
   preview.classList.add('active');
   setTimeout(() => {
     window.typeText('typewriter2_response', window.translations[window.language].step2Images, () => {
-      const btn = document.querySelector('#step2 .continue-button');
-      if (btn) {
-        btn.style.display = 'block';
-        console.log('Continue button displayed after preview');
-      } else {
-        console.warn('Continue button not found after preview');
-      }
+      document.querySelector('#step2 .continue-button').style.display = 'block';
     });
   }, 500);
 };
@@ -171,13 +122,15 @@ window.restart = function() {
   goToStep(0);
 };
 
+window.goToArchive = function() {
+  alert('Archive of observations is not available yet.');
+};
+
 window.showAuthors = function() {
-  console.log('Showing authors page');
   document.getElementById('authorsPage').style.display = 'flex';
 };
 
 window.hideAuthors = function() {
-  console.log('Hiding authors page');
   document.getElementById('authorsPage').style.display = 'none';
 };
 
@@ -187,8 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.currentStep = 0;
   window.isPaused = false;
   window.weirdnessFactor = 0.5;
-  console.log('Translations:', window.translations);
-  window.hideAuthors();
+  console.log('Translations:', window.translations); // Для отладки
   const checkTranslations = () => {
     if (window.translations) {
       const savedLang = localStorage.getItem('language') || 'ru';
@@ -210,20 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const img = new Image();
         img.src = e.target.result;
         img.onload = () => {
-          const maxSize = 320;
-          let w = img.width;
-          let h = img.height;
-          if (w > maxSize || h > maxSize) {
-            const ratio = Math.min(maxSize / w, maxSize / h);
-            w = Math.floor(w * ratio);
-            h = Math.floor(h * ratio);
-          }
-          window.img = window.p5Instance.createImage(w, h);
-          const ctx = window.img.drawingContext;
-          ctx.canvas.willReadFrequently = true;
-          ctx.drawImage(img, 0, 0, w, h);
+          window.img = window.p5Instance.createImage(img.width, img.height);
+          window.img.drawingContext.drawImage(img, 0, 0);
           window.img.loadPixels();
-          console.log('Image loaded, size:', w, h);
           showPreview(img);
         };
       };
@@ -242,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const takePhotoButton = document.createElement('button');
         takePhotoButton.textContent = 'Take Photo';
         takePhotoButton.className = 'button';
-        document.querySelector('#step2 .camera-container').appendChild(takePhotoButton);
+        document.querySelector('#step2 .button-container').appendChild(takePhotoButton);
         takePhotoButton.onclick = () => {
           const canvas = document.createElement('canvas');
           canvas.width = video.videoWidth;
@@ -251,20 +192,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const img = new Image();
           img.src = canvas.toDataURL('image/png');
           img.onload = () => {
-            const maxSize = 320;
-            let w = img.width;
-            let h = img.height;
-            if (w > maxSize || h > maxSize) {
-              const ratio = Math.min(maxSize / w, maxSize / h);
-              w = Math.floor(w * ratio);
-              h = Math.floor(h * ratio);
-            }
-            window.img = window.p5Instance.createImage(w, h);
-            const ctx = window.img.drawingContext;
-            ctx.canvas.willReadFrequently = true;
-            ctx.drawImage(img, 0, 0, w, h);
+            window.img = window.p5Instance.createImage(img.width, img.height);
+            window.img.drawingContext.drawImage(img, 0, 0);
             window.img.loadPixels();
-            console.log('Camera image loaded, size:', w, h);
             showPreview(img);
             video.srcObject.getTracks().forEach(track => track.stop());
             video.style.display = 'none';
@@ -286,20 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedImg = new Image();
         selectedImg.src = url;
         selectedImg.onload = () => {
-          const maxSize = 320;
-          let w = selectedImg.width;
-          let h = selectedImg.height;
-          if (w > maxSize || h > maxSize) {
-            const ratio = Math.min(maxSize / w, maxSize / h);
-            w = Math.floor(w * ratio);
-            h = Math.floor(h * ratio);
-          }
-          window.img = window.p5Instance.createImage(w, h);
-          const ctx = window.img.drawingContext;
-          ctx.canvas.willReadFrequently = true;
-          ctx.drawImage(selectedImg, 0, 0, w, h);
+          window.img = window.p5Instance.createImage(selectedImg.width, selectedImg.height);
+          window.img.drawingContext.drawImage(img, 0, 0);
           window.img.loadPixels();
-          console.log('Archive image loaded, size:', w, h);
           showPreview(selectedImg);
           gallery.remove();
         };
