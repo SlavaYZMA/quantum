@@ -135,8 +135,8 @@ function renderTransformingPortrait() {
       blockList.push({
         x,
         y,
-        startFrame: 0, // Устанавливаем 0 для немедленного рендеринга
-        endFrame: window.p5Instance.random(31, 60),
+        startFrame: 0,
+        endFrame: 60,
         superpositionT: 0,
         wavePhase: window.p5Instance.random(window.p5Instance.TWO_PI),
         probAmplitude: window.p5Instance.random(0.5, 1),
@@ -145,49 +145,49 @@ function renderTransformingPortrait() {
     }
   }
 
+  let pixelCache = new Map();
   for (let block of blockList) {
-    if (window.frame <= block.endFrame + 500) {
-      let x = block.x;
-      let y = block.y;
-      let r = 0, g = 0, b = 0, count = 0;
-      let size = window.p5Instance.min(blockSize, window.img.width - x, window.img.height - y);
-      for (let dy = 0; dy < size && y + dy < window.img.height; dy++) {
-        for (let dx = 0; dx < size && x + dx < window.img.width; dx++) {
-          let col = window.img.get(x + dx, y + dy);
-          r += window.p5Instance.red(col);
-          g += window.p5Instance.green(col);
-          b += window.p5Instance.blue(col);
-          count++;
-        }
+    let x = block.x;
+    let y = block.y;
+    let r = 0, g = 0, b = 0, count = 0;
+    let size = window.p5Instance.min(blockSize, window.img.width - x, window.img.height - y);
+    for (let dy = 0; dy < size && y + dy < window.img.height; dy++) {
+      for (let dx = 0; dx < size && x + dx < window.img.width; dx++) {
+        let key = `${x + dx},${y + dy}`;
+        let col = pixelCache.get(key) || window.img.get(x + dx, y + dy);
+        pixelCache.set(key, col);
+        r += window.p5Instance.red(col);
+        g += window.p5Instance.green(col);
+        b += window.p5Instance.blue(col);
+        count++;
       }
-      if (count > 0) {
-        r = r / count;
-        g = g / count;
-        b = b / count;
-      }
+    }
+    if (count > 0) {
+      r = r / count;
+      g = g / count;
+      b = b / count;
+    }
 
-      let offsetX = 0, offsetY = 0, rotation = 0;
-      let noiseVal = cachedNoise(block.noiseSeed + window.frame * 0.05, 0, 0);
-      if (window.frame >= 1) {
-        offsetX += noiseVal * 10 - 5;
-        offsetY += cachedNoise(0, block.noiseSeed + window.frame * 0.05, 0) * 10 - 5;
-      }
-      let canvasX = x + (window.p5Instance.width - window.img.width) / 2 + offsetX;
-      let canvasY = y + (window.p5Instance.height - window.img.height) / 2 + offsetY;
+    let offsetX = 0, offsetY = 0, rotation = 0;
+    let noiseVal = cachedNoise(block.noiseSeed + window.frame * 0.05, 0, 0);
+    if (window.frame >= 1) {
+      offsetX += noiseVal * 10 - 5;
+      offsetY += cachedNoise(0, block.noiseSeed + window.frame * 0.05, 0) * 10 - 5;
+    }
+    let canvasX = x + (window.p5Instance.width - window.img.width) / 2 + offsetX;
+    let canvasY = y + (window.p5Instance.height - window.img.height) / 2 + offsetY;
 
-      // Упрощённый рендеринг: рисуем прямоугольники вместо эллипсов
-      window.p5Instance.fill(r, g, b, 255); // Полная непрозрачность
-      window.p5Instance.noStroke();
-      window.p5Instance.push();
-      window.p5Instance.translate(canvasX, canvasY);
-      window.p5Instance.rotate(rotation);
-      window.p5Instance.rect(-size / 2, -size / 2, size, size);
-      window.p5Instance.pop();
-      console.log('Drawing block at', canvasX, canvasY, 'size:', size, 'color:', r, g, b); // Отладка
+    window.p5Instance.fill(r, g, b, 255);
+    window.p5Instance.noStroke();
+    window.p5Instance.push();
+    window.p5Instance.translate(canvasX, canvasY);
+    window.p5Instance.rotate(rotation);
+    window.p5Instance.rect(-size / 2, -size / 2, size, size);
+    window.p5Instance.pop();
+    console.log('Drawing block at', canvasX, canvasY, 'size:', size, 'color:', r, g, b);
 
-      if (window.frame >= block.startFrame && window.p5Instance.random() < 0.05) {
-        addQuantumMessage("Суперпозиция: частица в нескольких состояниях.", "superposition");
-      }
+    if (window.frame >= block.startFrame && window.p5Instance.random() < 0.05) {
+      addQuantumMessage("Суперпозиция: частица в нескольких состояниях.", "superposition");
     }
   }
   return blockList;
@@ -363,9 +363,9 @@ function renderParticle(particle, state) {
     let r1 = particle.size * 0.5;
     let r2 = particle.size * 0.25;
     window.p5Instance.beginShape();
-    for (let a = 0; a < window.p5Instance.TWO_PI; a += window.p5Instance.PI / 5) {
+    for (let a = 0; a < window.p5Instance.TWO; a += window.p5Instance.PI / 5) {
       window.p5Instance.vertex(r1 * window.p5Instance.cos(a), r1 * window.p5Instance.sin(a));
-      window.p5Instance.vertex(r2 * window.p5Instance.cos(a + window.p5Instance.PI / 10), r2 * window.p5Instance.sin(a + window.p5Instance.PI / 10));
+      window.p5Instance.vertex(r2 * window.p5Instance.cos(a + window.p5Instance.PI / 5), r2 * sin(a + window.p5Instance.PI / 5));
     }
     window.p5Instance.endShape(window.p5Instance.CLOSE);
   }
@@ -383,6 +383,7 @@ function renderParticle(particle, state) {
 window.draw = function() {
   if (!window.isCanvasReady || !window.p5Instance) return;
   window.frame++;
+  console.log('Current frame:', window.frame);
   window.p5Instance.background(0);
   if (!window.trailBuffer) {
     window.trailBuffer = window.p5Instance.createGraphics(window.p5Instance.width, window.p5Instance.height);
