@@ -3,148 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="title">Quantum Portrait</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      background: #000;
-      color: #fff;
-      overflow-x: hidden;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .language-selector button {
-      background: #444;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      margin: 0 5px;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    .language-selector button:hover {
-      background: #666;
-    }
-    h1 {
-      font-size: 24px;
-    }
-    .steps {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-    .step {
-      cursor: pointer;
-      padding: 10px 20px;
-      background: #333;
-      border-radius: 4px;
-      margin: 5px;
-      transition: background 0.3s;
-    }
-    .step.active, .step:hover {
-      background: #666;
-    }
-    #imageInput {
-      display: block;
-      margin: 20px 0;
-      padding: 10px;
-      background: #333;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    #imageInput::file-selector-button {
-      background: #555;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    #canvasContainer4, #canvasContainer5 {
-      position: relative;
-      min-height: 400px;
-    }
-    #saveButton {
-      display: none;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 10px 20px;
-      background: #fff;
-      color: #000;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      z-index: 10;
-    }
-    #saveButton:hover {
-      background: #ddd;
-    }
-    @media (max-width: 768px) {
-      .steps {
-        flex-direction: column;
-        align-items: center;
-      }
-      .step {
-        width: 80%;
-        text-align: center;
-        margin: 5px 0;
-      }
-      h1 {
-        font-size: 20px;
-      }
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .language-selector {
-        margin-top: 10px;
-      }
-    }
-  </style>
+  <title data-i18n="title">Квантовый портрет</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <div id="noiseOverlay"></div>
+  <div id="flashEffect"></div>
   <div class="container">
-    <div class="header">
-      <h1 data-i18n="title">Quantum Portrait</h1>
-      <div class="language-selector">
-        <button onclick="selectLanguage('en')">English</button>
+    <div class="step" id="step0">
+      <div class="typewriter" id="typewriter0"></div>
+      <div class="button-container">
         <button onclick="selectLanguage('ru')">Русский</button>
+        <button onclick="selectLanguage('en')">English</button>
       </div>
     </div>
-    <div class="steps">
-      <div class="step" data-i18n="step1">Step 1: Upload an Image</div>
-      <div class="step" data-i18n="step2">Step 2: Process Image</div>
-      <div class="step" data-i18n="step3">Step 3: Analyze</div>
-      <div class="step" data-i18n="step4">Step 4: Quantum Transformation</div>
-      <div class="step" data-i18n="step5">Step 5: Interact and Save</div>
+    <div class="step" id="step1">
+      <div class="typewriter" id="typewriter1"></div>
+      <button class="continue-button" onclick="goToStep(2)">Продолжить</button>
     </div>
-    <input type="file" id="imageInput" accept="image/*">
-    <div id="canvasContainer4"></div>
-    <div id="canvasContainer5"></div>
-    <button id="saveButton" data-i18n="saveButton">Save</button>
+    <div class="step" id="step2">
+      <div class="typewriter" id="typewriter2"></div>
+      <div class="button-container">
+        <input type="file" id="imageInput" accept="image/*">
+        <button id="cameraButton">Активировать камеру</button>
+        <button id="archiveButton">Выбрать из архива</button>
+      </div>
+      <div class="preview-image" id="previewImage"></div>
+      <div class="typewriter" id="typewriter2_response"></div>
+      <button class="continue-button" onclick="goToStep(3)">Продолжить</button>
+    </div>
+    <div class="step" id="step3">
+      <div class="typewriter" id="typewriter3"></div>
+      <div id="canvasContainer3"></div>
+      <button class="continue-button" onclick="goToStep(4)">Продолжить</button>
+    </div>
+    <div class="step" id="step4">
+      <div class="typewriter" id="typewriter4"></div>
+      <div id="canvasContainer4"></div>
+      <button class="continue-button" onclick="goToStep(5)">Продолжить</button>
+    </div>
+    <div class="step" id="step5">
+      <div class="typewriter" id="typewriter5"></div>
+      <div id="canvasContainer5"></div>
+      <button id="saveButton" onclick="saveObservation()">Записать наблюдение</button>
+      <button class="continue-button" onclick="goToStep(6)">Продолжить</button>
+    </div>
+    <div class="step" id="step6">
+      <div class="typewriter" id="typewriter6"></div>
+      <button onclick="shareObservation()">Поделиться наблюдением</button>
+      <button class="continue-button" onclick="goToStep(7)">Продолжить</button>
+    </div>
+    <div class="step" id="step7">
+      <div class="typewriter" id="typewriter7"></div>
+      <div class="button-container">
+        <button onclick="restart()">Начать сначала</button>
+        <button onclick="goToArchive()">Перейти в архив наблюдений</button>
+        <button onclick="showAuthors()">Об авторах</button>
+      </div>
+    </div>
+    <div id="authorsPage">
+      <div class="typewriter">Об авторах: Проект создан командой энтузиастов квантовой механики и цифрового искусства.</div>
+      <button class="button" onclick="hideAuthors()">Закрыть</button>
+    </div>
+    <video id="video" style="display:none;"></video>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/globals.js"></script>
   <script src="js/particles.js"></script>
+  <script src="js/observer.js"></script>
+  <script src="js/textSteps.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
