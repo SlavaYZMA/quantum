@@ -122,6 +122,7 @@ function renderQuantumMessages() {
 }
 
 function renderTransformingPortrait() {
+  console.log('Rendering portrait, img:', window.img, 'width:', window.img?.width);
   if (!window.img || !window.img.width) return [];
   window.img.loadPixels();
   let blockList = [];
@@ -134,7 +135,7 @@ function renderTransformingPortrait() {
       blockList.push({
         x,
         y,
-        startFrame: window.p5Instance.random(15, 30),
+        startFrame: 0, // Устанавливаем 0 для немедленного рендеринга
         endFrame: window.p5Instance.random(31, 60),
         superpositionT: 0,
         wavePhase: window.p5Instance.random(window.p5Instance.TWO_PI),
@@ -171,44 +172,21 @@ function renderTransformingPortrait() {
         offsetX += noiseVal * 10 - 5;
         offsetY += cachedNoise(0, block.noiseSeed + window.frame * 0.05, 0) * 10 - 5;
       }
-      if (window.frame >= block.startFrame) {
-        let waveOffset = cachedNoise(block.noiseSeed, window.frame * 0.03, 0) * 30 * block.probAmplitude;
-        offsetX += waveOffset * window.p5Instance.cos(block.wavePhase);
-        offsetY += waveOffset * window.p5Instance.sin(block.wavePhase);
-        rotation += noiseVal * 0.1;
-        if (window.p5Instance.random() < 0.05 && window.frame === block.startFrame) {
-          addQuantumMessage("Суперпозиция: частица в нескольких состояниях.", "superposition");
-        }
-      }
       let canvasX = x + (window.p5Instance.width - window.img.width) / 2 + offsetX;
       let canvasY = y + (window.p5Instance.height - window.img.height) / 2 + offsetY;
 
-      if (window.frame >= block.startFrame) {
-        let probDensity = block.probAmplitude * 100;
-        window.p5Instance.fill(r, g, b, probDensity);
-        window.p5Instance.noStroke();
-        window.p5Instance.ellipse(canvasX, canvasY, size * 4, size * 4);
-      }
-      let alpha = window.p5Instance.map(window.frame, block.endFrame, block.endFrame + 500, 255, 0);
-      let strokeW = window.p5Instance.map(window.frame, block.endFrame, block.endFrame + 500, 1, 0);
-      let hue = window.p5Instance.map(noiseVal, 0, 1, 0, 360);
-      window.p5Instance.fill(hue, 80, 60, alpha);
+      // Упрощённый рендеринг: рисуем прямоугольники вместо эллипсов
+      window.p5Instance.fill(r, g, b, 255); // Полная непрозрачность
       window.p5Instance.noStroke();
       window.p5Instance.push();
       window.p5Instance.translate(canvasX, canvasY);
       window.p5Instance.rotate(rotation);
       window.p5Instance.rect(-size / 2, -size / 2, size, size);
       window.p5Instance.pop();
+      console.log('Drawing block at', canvasX, canvasY, 'size:', size, 'color:', r, g, b); // Отладка
 
-      if (window.frame >= block.startFrame && window.p5Instance.random() < 0.5) {
-        for (let i = 0; i < 2; i++) {
-          window.p5Instance.fill(hue, 50, 30, alpha * 0.3);
-          window.p5Instance.noStroke();
-          let superX = canvasX + window.p5Instance.random(-30, 30);
-          let superY = canvasY + window.p5Instance.random(-30, 30);
-          let pulse = cachedNoise(block.noiseSeed, window.frame * 0.1, i) * 5;
-          window.p5Instance.ellipse(superX + pulse, superY + pulse, size * 2);
-        }
+      if (window.frame >= block.startFrame && window.p5Instance.random() < 0.05) {
+        addQuantumMessage("Суперпозиция: частица в нескольких состояниях.", "superposition");
       }
     }
   }
