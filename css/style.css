@@ -37,11 +37,14 @@ body {
   background: red; /* Для отладки */
   border: 1px solid #333;
   z-index: 50;
+  position: relative;
 }
 
 canvas {
   display: block;
   z-index: 50;
+  background: #000; /* Чёрный фон для канвы */
+  opacity: 1 !important; /* Гарантируем видимость */
 }
 
 .typewriter {
@@ -50,6 +53,7 @@ canvas {
   text-align: left;
   max-width: 320px;
   margin: 20px auto;
+  z-index: 40;
 }
 
 .button, .continue-button {
@@ -76,6 +80,7 @@ canvas {
   max-height: 320px;
   margin: 20px auto;
   display: none;
+  opacity: 1 !important;
 }
 #previewImage.active {
   display: block;
