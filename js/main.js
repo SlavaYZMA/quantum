@@ -2,7 +2,7 @@ let sketch = function(p) {
   p.setup = function() {
     window.p5Instance = p;
     let containerId = window.currentStep === 5 ? 'canvasContainer5' : window.currentStep === 4 ? 'canvasContainer4' : 'canvasContainer3';
-    window.p5Canvas = p.createCanvas(320, 320);
+    window.p5Canvas = p.createCanvas(320, 320, p.P2D, { willReadFrequently: true });
     window.p5Canvas.parent(containerId);
     p.pixelDensity(1);
     p.frameRate(navigator.hardwareConcurrency < 4 ? 20 : 25);
@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.currentStep = 0;
   window.isPaused = false;
   window.weirdnessFactor = 0.5;
+  console.log('Translations:', window.translations); // Для отладки
   const checkTranslations = () => {
     if (window.translations) {
       const savedLang = localStorage.getItem('language') || 'ru';
@@ -216,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedImg.src = url;
         selectedImg.onload = () => {
           window.img = window.p5Instance.createImage(selectedImg.width, selectedImg.height);
-          window.img.drawingContext.drawImage(selectedImg, 0, 0);
+          window.img.drawingContext.drawImage(img, 0, 0);
           window.img.loadPixels();
           showPreview(selectedImg);
           gallery.remove();
