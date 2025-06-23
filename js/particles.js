@@ -192,7 +192,7 @@ function renderTransformingPortrait() {
       let alpha = window.p5Instance.map(window.frame, block.endFrame, block.endFrame + 500, 255, 0);
       let strokeW = window.p5Instance.map(window.frame, block.endFrame, block.endFrame + 500, 1, 0);
       let hue = window.p5Instance.map(noiseVal, 0, 1, 0, 360);
-      window.p5Instance.fill(`hsl(${hue}, 80%, 60%)`, alpha);
+      window.p5Instance.fill(hue, 80, 60, alpha);
       window.p5Instance.noStroke();
       window.p5Instance.push();
       window.p5Instance.translate(canvasX, canvasY);
@@ -202,7 +202,7 @@ function renderTransformingPortrait() {
 
       if (window.frame >= block.startFrame && window.p5Instance.random() < 0.5) {
         for (let i = 0; i < 2; i++) {
-          window.p5Instance.fill(`hsl(${hue}, 50%, 30%)`, alpha * 0.3);
+          window.p5Instance.fill(hue, 50, 30, alpha * 0.3);
           window.p5Instance.noStroke();
           let superX = canvasX + window.p5Instance.random(-30, 30);
           let superY = canvasY + window.p5Instance.random(-30, 30);
@@ -286,7 +286,8 @@ window.initializeParticles = function(blockList) {
 
   for (let i = 0; i < window.particles.length; i++) {
     let particle = window.particles[i];
-    let hue = window.p5Instance.hue(particle.color);
+    let col = window.p5Instance.color(particle.color[0], particle.color[1], particle.color[2], particle.color[3]);
+    let hue = window.p5Instance.hue(col);
     window.quantumStates[i] = {
       hue: hue,
       baseHue: hue,
@@ -319,7 +320,7 @@ function updateParticle(particle, state, index) {
       state.collapsed = true;
       particle.superposition = false;
       particle.decoherence = 1;
-      window.playCollapseSound();
+      // window.playCollapseSound();
       addQuantumMessage("Коллапс: состояние определено.", "collapse");
     }
     let pushStrength = window.p5Instance.map(distToMouse, 0, window.mouseInfluenceRadius, 5, 0);
@@ -367,8 +368,8 @@ function renderParticle(particle, state) {
   let s = 80;
   let l = 60;
   window.p5Instance.drawingContext.shadowBlur = 10;
-  window.p5Instance.drawingContext.shadowColor = `hsl(${h}, ${s}%, ${l}%)`;
-  window.p5Instance.fill(`hsl(${h}, ${s}%, ${l}%)`, particle.alpha);
+  window.p5Instance.drawingContext.shadowColor = window.p5Instance.color(h, s, l);
+  window.p5Instance.fill(h, s, l, particle.alpha);
   if (particle.shapeType === 'circle') {
     window.p5Instance.ellipse(0, 0, particle.size, particle.size);
   } else if (particle.shapeType === 'spiral') {
@@ -392,7 +393,7 @@ function renderParticle(particle, state) {
   }
   window.p5Instance.drawingContext.shadowBlur = 0;
   if (particle.superposition) {
-    window.p5Instance.fill(`hsl(${h}, 50%, 30%)`, particle.alpha * 0.3);
+    window.p5Instance.fill(h, 50, 30, particle.alpha * 0.3);
     for (let i = 0; i < 2; i++) {
       let offset = cachedNoise(particle.chaosSeed, window.frame * 0.1, i) * 10;
       window.p5Instance.ellipse(offset, offset, particle.size * 0.5);
