@@ -647,3 +647,13 @@ function renderInterference() {
         if (d < 100) {
           let wave = window.p5Instance.cos(d * 0.05 + window.frame * 0.02) * particle.probAmplitude;
           amplitude += wave;
+        }
+      }
+      // Рендеринг интерференционного узора
+      let intensity = window.p5Instance.map(amplitude, -1, 1, 0, 255);
+      window.trailBuffer.fill(intensity, intensity, intensity, 50);
+      window.trailBuffer.noStroke();
+      window.trailBuffer.ellipse(x, y, gridSize / 2, gridSize / 2);
+    }
+  }
+}
