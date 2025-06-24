@@ -87,9 +87,9 @@ function renderQuantumMessages() {
         msg.alpha = window.p5Instance.lerp(255, 0, easeOutQuad((t - 0.8) / 0.2));
       }
     }
-    window.p5Instance.fill((255, 255, 255, * msg.alpha);
+    window.p5Instance.fill(255, 255, 255, msg.alpha);
     window.p5Instance.noStroke();
-    window.p5Instance.text((msg.text, * msg.x, msg.y);
+    window.p5Instance.text(msg.text, msg.x, msg.y);
 
     if (t > 1) {
       window.textMessages.active = null;
