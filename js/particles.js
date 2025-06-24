@@ -1,3 +1,6 @@
+console.log('Начало particles.js');
+console.log('p5Instance:', window.p5Instance);
+console.log('trailBuffer:', window.trailBuffer);
 function easeOutQuad(t) {
   return t * (2 - t);
 }
@@ -657,3 +660,4 @@ function renderInterference() {
     }
   }
 }
+console.log('Конец particles.js');
