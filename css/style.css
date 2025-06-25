@@ -5,19 +5,19 @@ body {
     background-color: #1a1a1a;
     color: #ffffff;
     font-family: Arial, sans-serif;
-    overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
+    overflow-x: hidden;
 }
 
 /* Стили для секций шагов */
 section[id^="step-"] {
     width: 100vw;
     height: 100vh;
-    border: 1px dashed red; /* Красная пунктирная рамка */
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
-    overflow-y: auto; /* Разрешаем вертикальную прокрутку */
+    overflow-y: auto;
     visibility: visible !important; /* Убеждаемся, что секции видны */
+    border: 1px dashed red; /* Временная рамка для отладки */
 }
 
 /* Центральный контейнер шага */
@@ -36,7 +36,6 @@ section[id^="step-"] {
 .animation-container,
 .terminal-container,
 .portrait-animation-container {
-    border: 1px solid white; /* Белая сплошная рамка */
     margin: 10px 0;
     padding: 15px;
     text-align: center;
