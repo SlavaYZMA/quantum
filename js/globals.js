@@ -69,63 +69,41 @@ function setLanguage(lang) {
         console.error('No elements with class .language-text found');
         return;
     }
-    elements.forEach(element => {
-        const stepId = element.parentElement.parentElement.parentElement.id;
-        console.log('Processing stepId:', stepId); // Отладка: проверяем stepId
-        const texts = element.textContent.split('\n').filter(t => t.trim());
-        element.innerHTML = ''; // Очистка текущего содержимого
-        switch (stepId) {
-            case 'step-0':
-                element.textContent = translations[lang].step0_text;
-                break;
-            case 'step-2':
-                element.textContent = [translations[lang].step2_text1, translations[lang].step2_text2].join('\n');
-                break;
-            case 'step-3':
-                element.textContent = [
-                    translations[lang].step3_text1,
-                    translations[lang].step3_text2,
-                    translations[lang].step3_text3,
-                    translations[lang].step3_text4,
-                    translations[lang].step3_text5,
-                    translations[lang].step3_text6,
-                    translations[lang].step3_text7,
-                    translations[lang].step3_text8
-                ].join('\n');
-                break;
-            case 'step-4':
-                element.textContent = [
-                    translations[lang].step4_text1,
-                    translations[lang].step4_text2,
-                    translations[lang].step4_text3,
-                    translations[lang].step4_text4
-                ].join('\n');
-                break;
-            case 'step-5':
-                element.textContent = [
-                    translations[lang].step5_text1,
-                    translations[lang].step5_text2,
-                    translations[lang].step5_text3,
-                    translations[lang].step5_text4
-                ].join('\n');
-                break;
-            case 'step-6':
-                element.textContent = [
-                    translations[lang].step6_text1,
-                    translations[lang].step6_text2,
-                    translations[lang].step6_text3,
-                    translations[lang].step6_text4
-                ].join('\n');
-                break;
-            case 'step-7':
-                element.textContent = [
-                    translations[lang].step7_text1,
-                    translations[lang].step7_text2,
-                    translations[lang].step7_text3,
-                    translations[lang].step7_text4
-                ].join('\n');
-                break;
+
+    // Определяем индексы для каждого шага
+    const stepIndices = [
+        { start: 0, end: 0, texts: [translations[lang].step0_text] }, // step-0
+        { start: 1, end: 2, texts: [translations[lang].step2_text1, translations[lang].step2_text2] }, // step-2
+        { start: 3, end: 10, texts: [
+            translations[lang].step3_text1, translations[lang].step3_text2, translations[lang].step3_text3,
+            translations[lang].step3_text4, translations[lang].step3_text5, translations[lang].step3_text6,
+            translations[lang].step3_text7, translations[lang].step3_text8
+        ] }, // step-3
+        { start: 11, end: 14, texts: [
+            translations[lang].step4_text1, translations[lang].step4_text2,
+            translations[lang].step4_text3, translations[lang].step4_text4
+        ] }, // step-4
+        { start: 15, end: 18, texts: [
+            translations[lang].step5_text1, translations[lang].step5_text2,
+            translations[lang].step5_text3, translations[lang].step5_text4
+        ] }, // step-5
+        { start: 19, end: 22, texts: [
+            translations[lang].step6_text1, translations[lang].step6_text2,
+            translations[lang].step6_text3, translations[lang].step6_text4
+        ] }, // step-6
+        { start: 23, end: 26, texts: [
+            translations[lang].step7_text1, translations[lang].step7_text2,
+            translations[lang].step7_text3, translations[lang].step7_text4
+        ] } // step-7
+    ];
+
+    elements.forEach((element, index) => {
+        const stepIndex = Math.floor(index / (elements.length / stepIndices.length));
+        const localIndex = index % (elements.length / stepIndices.length);
+        const step = stepIndices[stepIndex];
+        if (index >= step.start && index <= step.end) {
+            element.textContent = step.texts[localIndex - step.start] || '';
+            console.log(`Updated text at index ${index} (step ${stepIndex}, local ${localIndex}):`, element.textContent);
         }
-        console.log('Updated text for', stepId, ':', element.textContent); // Отладка: проверяем обновление
     });
 }
