@@ -42,6 +42,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Обработчики для специфичных кнопок в step-7
+    const step7Buttons = document.querySelectorAll('#step-7 .action-btn');
+    step7Buttons.forEach(button => {
+        if (button.textContent.includes('[↻ НАЧАТЬ СНАЧАЛА]')) {
+            button.addEventListener('click', () => {
+                console.log('Restart button clicked');
+                showStep(0);
+            });
+        } else if (button.textContent.includes('[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]')) {
+            button.addEventListener('click', () => {
+                console.log('Archive button clicked');
+                window.open('https://t.me/your_archive', '_blank');
+            });
+        } else if (button.textContent.includes('[ОБ АВТОРАХ]')) {
+            button.addEventListener('click', () => {
+                console.log('Show authors triggered');
+                alert('Информация об авторах будет добавлена позже.');
+            });
+        }
+    });
+
     // Модальное окно для галереи
     const galleryModal = document.createElement('div');
     galleryModal.className = 'modal';
@@ -63,17 +84,5 @@ document.addEventListener('DOMContentLoaded', () => {
     window.selectImage = (img) => {
         console.log('Selected image:', img.alt);
         galleryModal.style.display = 'none';
-    };
-
-    // Новая функция для перезапуска
-    window.restart = () => {
-        showStep(0);
-        console.log('Restarting to step 0');
-    };
-
-    // Новая функция для отображения авторов (пока заглушка)
-    window.showAuthors = () => {
-        alert('Информация об авторах будет добавлена позже.');
-        console.log('Show authors triggered');
     };
 });
