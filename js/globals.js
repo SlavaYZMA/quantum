@@ -15,7 +15,11 @@ const translations = {
         step4_text1: "Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ",
         step4_text2: "Двигайте курсором по изображению.",
         step4_text3: "Каждый ваш жест запускает коллапс.",
-        step4_text4: "Система реагирует. Наблюдаемый образ формируется здесь и сейчас."
+        step4_text4: "Система реагирует. Наблюдаемый образ формируется здесь и сейчас.",
+        step5_text1: "Шаг 4: ФИКСАЦИЯ",
+        step5_text2: "Портрет — это процесс.",
+        step5_text3: "Но ты можешь зафиксировать один миг.",
+        step5_text4: "Это будет один из возможных тебя."
     },
     eng: {
         step0_text: "Please select language RU / ENG",
@@ -32,7 +36,11 @@ const translations = {
         step4_text1: "Step 3: START OBSERVATION",
         step4_text2: "Move the cursor over the image.",
         step4_text3: "Each gesture triggers a collapse.",
-        step4_text4: "The system reacts. The observed image is formed here and now."
+        step4_text4: "The system reacts. The observed image is formed here and now.",
+        step5_text1: "Step 4: FIXATION",
+        step5_text2: "The portrait is a process.",
+        step5_text3: "But you can fix one moment.",
+        step5_text4: "This will be one of your possible selves."
     }
 };
 
@@ -40,7 +48,8 @@ const translations = {
 function setLanguage(lang) {
     const elements = document.querySelectorAll('.language-text');
     elements.forEach(element => {
-        switch (element.parentElement.parentElement.parentElement.id) {
+        const stepId = element.parentElement.parentElement.parentElement.id;
+        switch (stepId) {
             case 'step-0':
                 element.textContent = translations[lang].step0_text;
                 break;
@@ -63,6 +72,12 @@ function setLanguage(lang) {
                 else if (element.textContent.includes(translations['ru'].step4_text2)) element.textContent = translations[lang].step4_text2;
                 else if (element.textContent.includes(translations['ru'].step4_text3)) element.textContent = translations[lang].step4_text3;
                 else if (element.textContent.includes(translations['ru'].step4_text4)) element.textContent = translations[lang].step4_text4;
+                break;
+            case 'step-5':
+                if (element.textContent.includes(translations['ru'].step5_text1)) element.textContent = translations[lang].step5_text1;
+                else if (element.textContent.includes(translations['ru'].step5_text2)) element.textContent = translations[lang].step5_text2;
+                else if (element.textContent.includes(translations['ru'].step5_text3)) element.textContent = translations[lang].step5_text3;
+                else if (element.textContent.includes(translations['ru'].step5_text4)) element.textContent = translations[lang].step5_text4;
                 break;
         }
     });
