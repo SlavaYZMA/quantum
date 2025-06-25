@@ -1,22 +1,38 @@
-/* Базовые стили для сайта */
+/* Базовые стили для тела страницы */
 body {
+    margin: 0;
+    padding: 0;
     background-color: #1a1a1a;
     color: #ffffff;
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+    overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
+}
+
+/* Контейнер экрана, занимающий всю видимую область */
+.screen-container {
+    width: 100vw;
+    height: 100vh;
+    border: 1px dashed red; /* Красная пунктирная рамка для внешнего контейнера */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    overflow-y: auto; /* Разрешаем вертикальную прокрутку для мобильных */
 }
 
-/* Стили для контейнеров шагов */
-.step-container {
-    border: 1px dashed red;
-    padding: 20px;
-    max-width: 800px;
+/* Стили для секций шагов */
+section[id^="step-"] {
+    display: none; /* По умолчанию скрыты, кроме текущего шага */
     width: 100%;
+    height: 100%;
+}
+
+/* Центральный контейнер с контентом шага */
+.step-container {
+    border: 1px solid white; /* Белая сплошная рамка для внутреннего контейнера */
+    max-width: 800px; /* Ограничение ширины для читаемости */
+    width: 90%; /* Адаптивность для мобильных */
+    padding: 20px;
+    box-sizing: border-box; /* Учитываем padding в ширину */
     text-align: center;
 }
 
@@ -143,4 +159,18 @@ input[type="text"] {
 
 .final-buttons button:hover, .final-buttons a:hover {
     background-color: #555;
+}
+
+/* Адаптивность для мобильных устройств */
+@media screen and (max-width: 600px) {
+    .step-container {
+        width: 85%; /* Уменьшаем ширину для мобильных */
+        padding: 15px;
+    }
+    .split-container {
+        flex-direction: column; /* Столбец для мобильных */
+    }
+    .animation-zone, .terminal-zone {
+        margin: 5px 0;
+    }
 }
