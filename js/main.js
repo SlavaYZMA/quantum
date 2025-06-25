@@ -1,3 +1,9 @@
+// Глобальная функция для выбора языка и перехода на следующий шаг
+function setLanguageAndNext(lang) {
+    currentLanguage = lang;
+    showStep(1); // Переход на шаг 1 после выбора языка
+}
+
 // Обработчик загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
     let currentLanguage = 'ru'; // Глобальная переменная для языка
@@ -69,12 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
-
-    // Обработчики для выбора языка с переходом на следующий шаг
-    function setLanguageAndNext(lang) {
-        currentLanguage = lang;
-        showStep(1); // Переход на шаг 1 после выбора языка
-    }
 
     // Модальное окно для галереи
     const galleryModal = document.createElement('div');
