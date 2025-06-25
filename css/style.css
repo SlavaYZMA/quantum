@@ -3,7 +3,6 @@ body {
     margin: 0;
     padding: 0;
     background-color: #1a1a1a;
-    color: #000000; /* Чёрный текст */
     font-family: Arial, sans-serif;
     overflow-x: hidden;
 }
@@ -41,7 +40,7 @@ section[id^="step-"] {
     margin: 10px 0;
     padding: 15px;
     text-align: center;
-    color: #000000; /* Чёрный текст */
+    color: #ffffff; /* Белый текст по умолчанию */
 }
 
 /* Контейнер с разделением на две части */
@@ -106,8 +105,8 @@ section[id^="step-"] {
     color: #fff;
     border: none;
     cursor: pointer;
-    display: inline-block; /* Горизонтальное расположение */
-    width: 200px; /* Фиксированный размер */
+    display: inline-block;
+    width: 200px;
     text-align: center;
     box-sizing: border-box;
 }
@@ -120,8 +119,24 @@ section[id^="step-"] {
 #step-7 .button-container {
     display: flex;
     justify-content: center;
-    gap: 10px; /* Расстояние между кнопками */
-    flex-wrap: nowrap; /* Запрет переноса */
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+/* Стили для текста */
+.step-title {
+    color: #d800ff; /* Цвет заголовков шагов */
+    background-color: #e7c2f4; /* Подсветка заголовков */
+    padding: 5px;
+    display: inline-block;
+}
+
+.highlight {
+    color: #ffffff; /* Белый текст для основного контента */
+}
+
+.green-text {
+    color: #00ff00; /* Зелёный текст для математических символов */
 }
 
 /* Стили для canvas */
@@ -162,7 +177,7 @@ section[id^="step-"] {
         gap: 5px;
     }
     .action-btn {
-        width: 100%; /* Полная ширина на мобильных */
+        width: 100%;
     }
 }
 
