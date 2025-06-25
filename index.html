@@ -7,133 +7,100 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <section id="step-0">
-        <div class="step-container">
-            <div class="buttons">
-                <button class="back">назад</button>
-                <button class="continue">продолжить</button>
+    <section id="step-0" class="step">
+        <div class="step-content">
+            <div class="text-block">
+                <p class="language-text" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</p>
             </div>
-            <div class="content-container">
-                <div class="text-container">
-                    <p class="language-text">Пожалуйста, выберите язык RU / ENG</p>
-                </div>
-                <div class="button-container">
-                    <button class="language-btn" onclick="setLanguage('ru')">RU</button>
-                    <button class="language-btn" onclick="setLanguage('eng')">ENG</button>
-                </div>
+            <div class="button-block">
+                <button class="language-btn" onclick="setLanguage('ru')">RU</button>
+                <button class="language-btn" onclick="setLanguage('eng')">ENG</button>
             </div>
         </div>
     </section>
 
-    <section id="step-2">
-        <div class="step-container">
-            <div class="buttons">
-                <button class="back">назад</button>
-                <button class="continue">продолжить</button>
+    <section id="step-2" class="step">
+        <div class="step-content">
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step2_title">Шаг 1: Сканируйте лицо суперпозиции.</p>
             </div>
-            <div class="content-container">
-                <div class="text-container">
-                    <p class="language-text step-title">Шаг 2: Инициализация</p>
-                    <p class="language-text"><span class="highlight">> Изображение преобразовано в пиксельную сетку.</span></p>
-                    <p class="language-text"><span class="highlight">> Каждому пикселю назначены параметры (x, y, brightness, color)<span class="green-text"> (x, y, brightness, color)</span>.</span></p>
-                    <p class="language-text"><span class="highlight">> На их основе построена волновая функция: ψ(x, y, t)<span class="green-text"> ψ(x, y, t)</span>.</span></p>
-                    <p class="language-text">Уравнение эволюции:</p>
-                    <p class="language-text green-text">iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
-                    <p class="language-text"><span class="highlight">> Потенциал V(x, y)<span class="green-text"> V(x, y)</span> формируется из визуальных характеристик изображения.</span></p>
-                    <p class="language-text"><span class="highlight">> Система переходит в режим временной симуляции.</span></p>
-                    <p class="language-text"><span class="highlight">> Портрет существует как совокупность возможных состояний.</span></p>
-                </div>
-                <div class="button-container">
-                    <button class="action-btn" onclick="loadImage()">Загрузить фото</button>
-                    <button class="action-btn" onclick="openGallery()">Выбрать из архива</button>
-                </div>
+            <div class="text-block">
+                <p class="language-text" data-i18n="step2_text1">Вы можете загрузить изображение или выбрать вариант из архива.</p>
+            </div>
+            <div class="button-block">
+                <button class="action-btn" onclick="loadImage()">Загрузить фото</button>
+                <button class="action-btn" onclick="openGallery()">Выбрать из архива</button>
             </div>
         </div>
     </section>
 
-    <section id="step-3">
-        <div class="step-container">
-            <div class="buttons">
-                <button class="back">назад</button>
-                <button class="continue">продолжить</button>
+    <section id="step-3" class="step">
+        <div class="step-content">
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step3_title">Шаг 2: Инициализация</p>
             </div>
-            <div class="content-container">
-                <div class="text-container">
-                    <p class="language-text step-title">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</p>
-                    <p class="language-text"><span class="highlight">Двигайте курсором по изображению.</span></p>
-                    <p class="language-text"><span class="highlight">Каждый ваш жест запускает коллапс.</span></p>
-                    <p class="language-text"><span class="highlight">Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</span></p>
-                </div>
-                <div class="split-container">
-                    <div class="animation-container">
-                        <p>Контейнер для анимации (зарезервировано)</p>
-                    </div>
-                    <div class="terminal-container">
-                        <p>Терминал: Инициализация квантовой анимации...</p>
-                    </div>
-                </div>
-                <div class="portrait-animation-container"></div>
+            <div class="text-block">
+                <p class="language-text" data-i18n="step3_text1">> Изображение преобразовано в пиксельную сетку.</p>
             </div>
-        </div>
-    </section>
-
-    <section id="step-4">
-        <div class="step-container">
-            <div class="buttons">
-                <button class="back">назад</button>
-                <button class="continue">продолжить</button>
+            <div class="text-block">
+                <p class="language-text" data-i18n="step3_text2">> Каждому пикселю назначены параметры (x, y, brightness, color)<span class="green-text"> (x, y, brightness, color)</span>.</p>
             </div>
-            <div class="content-container">
-                <div class="text-container">
-                    <p class="language-text step-title">Шаг 4: ФИКСАЦИЯ</p>
-                    <p class="language-text"><span class="highlight">Портрет — это процесс.</span></p>
-                    <p class="language-text"><span class="highlight">Но ты можешь зафиксировать один миг.</span></p>
-                    <p class="language-text"><span class="highlight">Это будет один из возможных тебя.</span></p>
-                </div>
-                <div class="portrait-animation-container"></div>
-                <div class="button-container">
-                    <button class="action-btn" onclick="recordObservation()">[ЗАПИСАТЬ НАБЛЮДЕНИЕ]</button>
-                </div>
+            <div class="text-block">
+                <p class="language-text" data-i18n="step3_text3">> На их основе построена волновая функция: ψ(x, y, t)<span class="green-text"> ψ(x, y, t)</span>.</p>
+            </div>
+            <div class="text-block">
+                <p class="language-text" data-i18n="step3_text4">Уравнение эволюции:</p>
+            </div>
+            <div class="text-block">
+                <p class="language-text green-text" data-i18n="step3_text5">iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
+            </div>
+            <div class="text-block">
+                <p class="language-text" data-i18n="step3_text6">> Потенциал V(x, y)<span class="green-text"> V(x, y)</span> формируется из визуальных характеристик изображения.</p>
+            </div>
+            <div class="text-block">
+                <p class="language-text" data-i18n="step3_text7">> Система переходит в режим временной симуляции.</p>
+            </div>
+            <div class="text-block">
+                <p class="language-text" data-i18n="step3_text8">> Портрет существует как совокупность возможных состояний.</p>
             </div>
         </div>
     </section>
 
-    <section id="step-5">
-        <div class="step-container">
-            <div class="buttons">
-                <button class="back">назад</button>
-                <button class="continue">продолжить</button>
+    <section id="step-4" class="step">
+        <div class="step-content">
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step4_title">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</p>
             </div>
-            <div class="content-container">
-                <div class="text-container">
-                    <p class="language-text step-title">Шаг 5: РЕАКЦИЯ СИСТЕМЫ</p>
-                    <p class="language-text"><span class="highlight">Это не портрет.</span></p>
-                    <p class="language-text"><span class="highlight">Это — реакция системы на тебя.</span></p>
-                    <p class="language-text"><span class="highlight">Ты повлиял на исход.</span></p>
-                </div>
-                <div class="button-container">
-                    <a href="https://t.me/your_archive" class="action-btn" target="_blank">[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]</a>
-                </div>
+            <div class="text-block typewriter" data-i18n="step4_text1">Двигайте курсором по изображению.</div>
+            <div class="text-block typewriter" data-i18n="step4_text2">Каждый ваш жест запускает коллапс.</div>
+            <div class="text-block typewriter" data-i18n="step4_text3">Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</div>
+        </div>
+    </section>
+
+    <section id="step-5" class="step">
+        <div class="step-content">
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step5_title">Шаг 4: ФИКСАЦИЯ</p>
+            </div>
+            <div class="text-block typewriter" data-i18n="step5_text1">Портрет — это процесс.</div>
+            <div class="text-block typewriter" data-i18n="step5_text2">Но ты можешь зафиксировать один миг.</div>
+            <div class="text-block typewriter" data-i18n="step5_text3">Это будет один из возможных тебя.</div>
+            <div class="button-block">
+                <button class="action-btn" onclick="recordObservation()">[ЗАПИСАТЬ НАБЛЮДЕНИЕ]</button>
             </div>
         </div>
     </section>
 
-    <section id="step-6">
-        <div class="step-container">
-            <div class="buttons">
-                <button class="back">назад</button>
+    <section id="step-6" class="step">
+        <div class="step-content">
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step6_title">Шаг 5: РЕАКЦИЯ СИСТЕМЫ</p>
             </div>
-            <div class="content-container">
-                <div class="text-container">
-                    <p class="language-text step-title">Заключение:</p>
-                    <p class="language-text"><span class="highlight">Ты — не единственный наблюдатель.</span></p>
-                    <p class="language-text"><span class="highlight">Каждое наблюдение — это акт, формирующий образ. Здесь ты — одновременно субъект и объект.</span></p>
-                </div>
-                <div class="button-container">
-                    <button class="action-btn" onclick="restart()">[↻ НАЧАТЬ СНАЧАЛА]</button>
-                    <a href="https://t.me/your_archive" class="action-btn" target="_blank">[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]</a>
-                    <button class="action-btn" onclick="showAuthors()">[ОБ АВТОРАХ]</button>
-                </div>
+            <div class="text-block typewriter" data-i18n="step6_text1">Это не портрет.</div>
+            <div class="text-block typewriter" data-i18n="step6_text2">Это — реакция системы на тебя.</div>
+            <div class="text-block typewriter" data-i18n="step6_text3">Ты повлиял на исход.</div>
+            <div class="button-block">
+                <a href="https://t.me/your_archive" class="action-btn" target="_blank">[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]</a>
             </div>
         </div>
     </section>
