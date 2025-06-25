@@ -8,37 +8,35 @@ body {
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
 }
 
-/* Контейнер экрана, занимающий всю видимую область */
-.screen-container {
+/* Стили для секций шагов */
+section[id^="step-"] {
     width: 100vw;
     height: 100vh;
-    border: 1px dashed red; /* Красная пунктирная рамка для внешнего контейнера */
+    border: 1px dashed red; /* Красная пунктирная рамка */
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow-y: auto; /* Разрешаем вертикальную прокрутку для мобильных */
+    overflow-y: auto; /* Разрешаем вертикальную прокрутку */
 }
 
-/* Стили для секций шагов */
-section[id^="step-"] {
-    display: none; /* По умолчанию скрыты, кроме текущего шага */
-    width: 100%;
-    height: 100%;
-}
-
-/* Центральный контейнер с контентом шага */
+/* Центральный контейнер шага */
 .step-container {
-    border: 1px solid white; /* Белая сплошная рамка для внутреннего контейнера */
-    max-width: 800px; /* Ограничение ширины для читаемости */
-    width: 90%; /* Адаптивность для мобильных */
+    max-width: 800px;
+    width: 90%;
     padding: 20px;
-    box-sizing: border-box; /* Учитываем padding в ширину */
-    text-align: center;
+    box-sizing: border-box;
 }
 
-/* Скрытие всех шагов, кроме step-0 */
-section:not(#step-0) {
-    display: none;
+/* Контейнеры для контента */
+.content-container,
+.text-container,
+.button-container,
+.image-container,
+.animation-container {
+    border: 1px solid white; /* Белая сплошная рамка */
+    margin: 10px 0;
+    padding: 15px;
+    text-align: center;
 }
 
 /* Стили для кнопок навигации */
@@ -60,35 +58,9 @@ section:not(#step-0) {
     background-color: #555;
 }
 
-/* Стили для контента */
-.content {
-    text-align: left;
-}
-
-/* Цветовые классы */
-.status-label {
-    color: #d800ff;
-}
-
-.highlight {
-    color: #e7c2f4;
-}
-
-.green {
-    color: #00ff00;
-}
-
-.white {
-    color: #ffffff;
-}
-
-.dim {
-    color: #888888;
-}
-
-/* Стили для кнопок выбора языка */
-.language-buttons button {
-    margin: 10px;
+/* Стили для языковых кнопок */
+.language-btn {
+    margin: 0 10px;
     padding: 10px 20px;
     background-color: #333;
     color: #fff;
@@ -96,81 +68,46 @@ section:not(#step-0) {
     cursor: pointer;
 }
 
-.language-buttons button:hover {
+.language-btn:hover {
     background-color: #555;
 }
 
 /* Стили для кнопок действий */
-.action-buttons button {
-    margin: 10px;
-    padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-.action-buttons button:hover {
-    background-color: #555;
-}
-
-/* Стили для разделённого контейнера в шаге 4 */
-.split-container {
-    display: flex;
-    margin-top: 20px;
-}
-
-.animation-zone, .terminal-zone {
-    flex: 1;
-    border: 1px dashed red;
-    min-height: 200px;
+.action-btn {
     margin: 0 10px;
-}
-
-/* Стили для контейнера изображения */
-.image-container {
-    border: 1px dashed red;
-    min-height: 200px;
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Стили для поля ввода */
-input[type="text"] {
-    margin: 10px;
-    padding: 10px;
-    width: 80%;
-    max-width: 400px;
-}
-
-/* Стили для финальных кнопок */
-.final-buttons button, .final-buttons a {
-    display: block;
-    margin: 10px auto;
     padding: 10px 20px;
     background-color: #333;
     color: #fff;
-    text-decoration: none;
     border: none;
     cursor: pointer;
 }
 
-.final-buttons button:hover, .final-buttons a:hover {
+.action-btn:hover {
     background-color: #555;
+}
+
+/* Стили для canvas */
+#portrait-canvas {
+    width: 100%;
+    height: 200px;
+    background-color: #000;
 }
 
 /* Адаптивность для мобильных устройств */
 @media screen and (max-width: 600px) {
     .step-container {
-        width: 85%; /* Уменьшаем ширину для мобильных */
-        padding: 15px;
+        width: 85%;
+        padding: 10px;
     }
-    .split-container {
-        flex-direction: column; /* Столбец для мобильных */
-    }
-    .animation-zone, .terminal-zone {
+    .content-container,
+    .text-container,
+    .button-container,
+    .image-container,
+    .animation-container {
         margin: 5px 0;
+        padding: 10px;
+    }
+    #portrait-canvas {
+        height: 150px;
     }
 }
