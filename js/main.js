@@ -27,9 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (continueButton) {
             continueButton.addEventListener('click', () => {
-                if (index < steps.length - 1) {
-                    showStep(index + 1); // Исправлено: теперь работает для всех шагов, включая шаг 3
-                }
+                if (index < steps.length - 1) showStep(index + 1);
             });
         }
     });
