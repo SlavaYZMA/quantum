@@ -2,6 +2,44 @@
 function setLanguageAndNext(lang) {
     currentLanguage = lang;
     showStep(1); // Переход на шаг 1 после выбора языка
+    console.log('Language set to:', lang, 'Moving to step 1');
+}
+
+// Глобальная функция для показа конкретного шага
+function showStep(stepIndex) {
+    steps.forEach(step => {
+        step.style.display = 'none';
+        console.log('Hiding step:', step.id); // Отладка: скрываем шаг
+    });
+    if (stepIndex >= 0 && stepIndex < steps.length) {
+        steps[stepIndex].style.display = 'block';
+        console.log('Showing step:', stepIndex, 'ID:', steps[stepIndex].id); // Отладка: отображаем шаг
+        setLanguage(currentLanguage, steps[stepIndex]); // Обновляем только текущий шаг
+        // Инициализация typewriter-анимации для видимого шага
+        if (steps[stepIndex].querySelector('.typewriter')) {
+            initTypewriter(steps[stepIndex]);
+        }
+    } else {
+        console.log('Invalid step index:', stepIndex); // Отладка: ошибка индекса
+    }
+}
+
+// Глобальная функция для typewriter-анимации
+function initTypewriter(step) {
+    const typewriters = step.querySelectorAll('.typewriter');
+    typewriters.forEach((element, index) => {
+        let text = element.getAttribute('data-i18n') ? translations[currentLanguage][element.getAttribute('data-i18n')] : element.textContent;
+        element.textContent = '';
+        let i = 0;
+        function type() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+                setTimeout(type, 50);
+            }
+        }
+        setTimeout(type, index * 500); // Задержка между строками
+    });
 }
 
 // Обработчик загрузки DOM
@@ -11,25 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Получить все секции шагов
     const steps = document.querySelectorAll('.step');
     console.log('Steps found:', steps.length); // Отладка: проверяем количество шагов
-
-    // Функция для показа конкретного шага
-    function showStep(stepIndex) {
-        steps.forEach(step => {
-            step.style.display = 'none';
-            console.log('Hiding step:', step.id); // Отладка: скрываем шаг
-        });
-        if (stepIndex >= 0 && stepIndex < steps.length) {
-            steps[stepIndex].style.display = 'block';
-            console.log('Showing step:', stepIndex, 'ID:', steps[stepIndex].id); // Отладка: отображаем шаг
-            setLanguage(currentLanguage, steps[stepIndex]); // Обновляем только текущий шаг
-            // Инициализация typewriter-анимации для видимого шага
-            if (steps[stepIndex].querySelector('.typewriter')) {
-                initTypewriter(steps[stepIndex]);
-            }
-        } else {
-            console.log('Invalid step index:', stepIndex); // Отладка: ошибка индекса
-        }
-    }
 
     // Показать шаг 0 по умолчанию
     showStep(0);
@@ -98,22 +117,4 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Selected image:', img.alt);
         galleryModal.style.display = 'none';
     };
-
-    // Функция для typewriter-анимации
-    function initTypewriter(step) {
-        const typewriters = step.querySelectorAll('.typewriter');
-        typewriters.forEach((element, index) => {
-            let text = element.getAttribute('data-i18n') ? translations[currentLanguage][element.getAttribute('data-i18n')] : element.textContent;
-            element.textContent = '';
-            let i = 0;
-            function type() {
-                if (i < text.length) {
-                    element.textContent += text.charAt(i);
-                    i++;
-                    setTimeout(type, 50);
-                }
-            }
-            setTimeout(type, index * 500); // Задержка между строками
-        });
-    }
 });
