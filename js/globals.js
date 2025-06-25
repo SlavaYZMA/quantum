@@ -49,35 +49,45 @@ function setLanguage(lang) {
     const elements = document.querySelectorAll('.language-text');
     elements.forEach(element => {
         const stepId = element.parentElement.parentElement.parentElement.id;
+        const texts = element.textContent.split('\n').filter(t => t.trim());
+        element.innerHTML = ''; // Очистка текущего содержимого
         switch (stepId) {
             case 'step-0':
                 element.textContent = translations[lang].step0_text;
                 break;
             case 'step-2':
-                if (element.textContent.includes(translations['ru'].step2_text1)) element.textContent = translations[lang].step2_text1;
-                else if (element.textContent.includes(translations['ru'].step2_text2)) element.textContent = translations[lang].step2_text2;
+                texts.forEach((text, i) => {
+                    if (i === 0 && text.includes(translations['ru'].step2_text1)) element.textContent = translations[lang].step2_text1;
+                    else if (i === 1 && text.includes(translations['ru'].step2_text2)) element.textContent += '\n' + translations[lang].step2_text2;
+                });
                 break;
             case 'step-3':
-                if (element.textContent.includes(translations['ru'].step3_text1)) element.textContent = translations[lang].step3_text1;
-                else if (element.textContent.includes(translations['ru'].step3_text2)) element.textContent = translations[lang].step3_text2;
-                else if (element.textContent.includes(translations['ru'].step3_text3)) element.textContent = translations[lang].step3_text3;
-                else if (element.textContent.includes(translations['ru'].step3_text4)) element.textContent = translations[lang].step3_text4;
-                else if (element.textContent.includes(translations['ru'].step3_text5)) element.textContent = translations[lang].step3_text5;
-                else if (element.textContent.includes(translations['ru'].step3_text6)) element.textContent = translations[lang].step3_text6;
-                else if (element.textContent.includes(translations['ru'].step3_text7)) element.textContent = translations[lang].step3_text7;
-                else if (element.textContent.includes(translations['ru'].step3_text8)) element.textContent = translations[lang].step3_text8;
+                texts.forEach((text, i) => {
+                    if (i === 0 && text.includes(translations['ru'].step3_text1)) element.textContent = translations[lang].step3_text1;
+                    else if (i === 1 && text.includes(translations['ru'].step3_text2)) element.textContent += '\n' + translations[lang].step3_text2;
+                    else if (i === 2 && text.includes(translations['ru'].step3_text3)) element.textContent += '\n' + translations[lang].step3_text3;
+                    else if (i === 3 && text.includes(translations['ru'].step3_text4)) element.textContent += '\n' + translations[lang].step3_text4;
+                    else if (i === 4 && text.includes(translations['ru'].step3_text5)) element.textContent += '\n' + translations[lang].step3_text5;
+                    else if (i === 5 && text.includes(translations['ru'].step3_text6)) element.textContent += '\n' + translations[lang].step3_text6;
+                    else if (i === 6 && text.includes(translations['ru'].step3_text7)) element.textContent += '\n' + translations[lang].step3_text7;
+                    else if (i === 7 && text.includes(translations['ru'].step3_text8)) element.textContent += '\n' + translations[lang].step3_text8;
+                });
                 break;
             case 'step-4':
-                if (element.textContent.includes(translations['ru'].step4_text1)) element.textContent = translations[lang].step4_text1;
-                else if (element.textContent.includes(translations['ru'].step4_text2)) element.textContent = translations[lang].step4_text2;
-                else if (element.textContent.includes(translations['ru'].step4_text3)) element.textContent = translations[lang].step4_text3;
-                else if (element.textContent.includes(translations['ru'].step4_text4)) element.textContent = translations[lang].step4_text4;
+                texts.forEach((text, i) => {
+                    if (i === 0 && text.includes(translations['ru'].step4_text1)) element.textContent = translations[lang].step4_text1;
+                    else if (i === 1 && text.includes(translations['ru'].step4_text2)) element.textContent += '\n' + translations[lang].step4_text2;
+                    else if (i === 2 && text.includes(translations['ru'].step4_text3)) element.textContent += '\n' + translations[lang].step4_text3;
+                    else if (i === 3 && text.includes(translations['ru'].step4_text4)) element.textContent += '\n' + translations[lang].step4_text4;
+                });
                 break;
             case 'step-5':
-                if (element.textContent.includes(translations['ru'].step5_text1)) element.textContent = translations[lang].step5_text1;
-                else if (element.textContent.includes(translations['ru'].step5_text2)) element.textContent = translations[lang].step5_text2;
-                else if (element.textContent.includes(translations['ru'].step5_text3)) element.textContent = translations[lang].step5_text3;
-                else if (element.textContent.includes(translations['ru'].step5_text4)) element.textContent = translations[lang].step5_text4;
+                texts.forEach((text, i) => {
+                    if (i === 0 && text.includes(translations['ru'].step5_text1)) element.textContent = translations[lang].step5_text1;
+                    else if (i === 1 && text.includes(translations['ru'].step5_text2)) element.textContent += '\n' + translations[lang].step5_text2;
+                    else if (i === 2 && text.includes(translations['ru'].step5_text3)) element.textContent += '\n' + translations[lang].step5_text3;
+                    else if (i === 3 && text.includes(translations['ru'].step5_text4)) element.textContent += '\n' + translations[lang].step5_text4;
+                });
                 break;
         }
     });
