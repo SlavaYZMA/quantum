@@ -126,9 +126,13 @@ section[id^="step-"] {
 /* Стили для текста */
 .step-title {
     color: #d800ff; /* Цвет заголовков шагов */
-    background-color: #e7c2f4; /* Подсветка заголовков */
+    text-shadow: 0 0 5px #e7c2f4, 0 0 10px #e7c2f4; /* Подсветка текста */
     padding: 5px;
     display: inline-block;
+}
+
+.language-text:not(.step-title) {
+    color: #ffffff; /* Белый текст без подсветки для шага 0 */
 }
 
 .highlight {
