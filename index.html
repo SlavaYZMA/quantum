@@ -15,7 +15,7 @@
             </div>
             <div class="content-container">
                 <div class="text-container">
-                    <p class="language-text step-title">Пожалуйста, выберите язык RU / ENG</p>
+                    <p class="language-text">Пожалуйста, выберите язык RU / ENG</p>
                 </div>
                 <div class="button-container">
                     <button class="language-btn" onclick="setLanguage('ru')">RU</button>
@@ -33,8 +33,15 @@
             </div>
             <div class="content-container">
                 <div class="text-container">
-                    <p class="language-text step-title">Шаг 1: Сканируйте лицо суперпозиции.</p>
-                    <p class="language-text">Вы можете загрузить изображение или выбрать вариант из архива.</p>
+                    <p class="language-text step-title">Шаг 2: Инициализация</p>
+                    <p class="language-text"><span class="highlight">> Изображение преобразовано в пиксельную сетку.</span></p>
+                    <p class="language-text"><span class="highlight">> Каждому пикселю назначены параметры (x, y, brightness, color)<span class="green-text"> (x, y, brightness, color)</span>.</span></p>
+                    <p class="language-text"><span class="highlight">> На их основе построена волновая функция: ψ(x, y, t)<span class="green-text"> ψ(x, y, t)</span>.</span></p>
+                    <p class="language-text">Уравнение эволюции:</p>
+                    <p class="language-text green-text">iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
+                    <p class="language-text"><span class="highlight">> Потенциал V(x, y)<span class="green-text"> V(x, y)</span> формируется из визуальных характеристик изображения.</span></p>
+                    <p class="language-text"><span class="highlight">> Система переходит в режим временной симуляции.</span></p>
+                    <p class="language-text"><span class="highlight">> Портрет существует как совокупность возможных состояний.</span></p>
                 </div>
                 <div class="button-container">
                     <button class="action-btn" onclick="loadImage()">Загрузить фото</button>
@@ -45,28 +52,6 @@
     </section>
 
     <section id="step-3">
-        <div class="step-container">
-            <div class="buttons">
-                <button class="back">назад</button>
-                <button class="continue">продолжить</button>
-            </div>
-            <div class="content-container">
-                <div class="text-container">
-                    <p class="language-text step-title">Шаг 2: Инициализация</p>
-                    <p class="language-text"><span class="highlight">Изображение преобразовано в пиксельную сетку.</span></p>
-                    <p class="language-text"><span class="highlight">Каждому пикселю назначены параметры (x, y, brightness, color<span class="green-text"> (x, y, brightness, color)</span>).</span></p>
-                    <p class="language-text"><span class="highlight">На их основе построена волновая функция: ψ(x, y, t)<span class="green-text"> ψ(x, y, t)</span>.</span></p>
-                    <p class="language-text">Уравнение эволюции:</p>
-                    <p class="language-text green-text">iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
-                    <p class="language-text"><span class="highlight">Потенциал V(x, y)<span class="green-text"> V(x, y)</span> формируется из визуальных характеристик изображения.</span></p>
-                    <p class="language-text"><span class="highlight">Система переходит в режим временной симуляции.</span></p>
-                    <p class="language-text"><span class="highlight">Портрет существует как совокупность возможных состояний.</span></p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="step-4">
         <div class="step-container">
             <div class="buttons">
                 <button class="back">назад</button>
@@ -92,7 +77,7 @@
         </div>
     </section>
 
-    <section id="step-5">
+    <section id="step-4">
         <div class="step-container">
             <div class="buttons">
                 <button class="back">назад</button>
@@ -113,7 +98,7 @@
         </div>
     </section>
 
-    <section id="step-6">
+    <section id="step-5">
         <div class="step-container">
             <div class="buttons">
                 <button class="back">назад</button>
@@ -133,7 +118,7 @@
         </div>
     </section>
 
-    <section id="step-7">
+    <section id="step-6">
         <div class="step-container">
             <div class="buttons">
                 <button class="back">назад</button>
