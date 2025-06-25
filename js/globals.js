@@ -8,10 +8,11 @@ const translations = {
         step3_text2: "Изображение преобразовано в пиксельную сетку.",
         step3_text3: "Каждому пикселю назначены параметры (x, y, brightness, color).",
         step3_text4: "На их основе построена волновая функция: ψ(x, y, t).",
-        step3_text5: "Уравнение эволюции: iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)",
-        step3_text6: "Потенциал V(x, y) формируется из визуальных характеристик изображения.",
-        step3_text7: "Система переходит в режим временной симуляции.",
-        step3_text8: "Портрет существует как совокупность возможных состояний.",
+        step3_text5: "Уравнение эволюции:",
+        step3_text6: "iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)",
+        step3_text7: "Потенциал V(x, y) формируется из визуальных характеристик изображения.",
+        step3_text8: "Система переходит в режим временной симуляции.",
+        step3_text9: "Портрет существует как совокупность возможных состояний.",
         step4_text1: "Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ",
         step4_text2: "Двигайте курсором по изображению.",
         step4_text3: "Каждый ваш жест запускает коллапс.",
@@ -24,10 +25,9 @@ const translations = {
         step6_text2: "Это не портрет.",
         step6_text3: "Это — реакция системы на тебя.",
         step6_text4: "Ты повлиял на исход.",
-        step7_text1: "Шаг 6: Завершение + мета-обратная связь",
+        step7_text1: "Заключение:",
         step7_text2: "Ты — не единственный наблюдатель.",
-        step7_text3: "Каждое наблюдение — это акт, формирующий образ.",
-        step7_text4: "Здесь ты — одновременно субъект и объект."
+        step7_text3: "Каждое наблюдение — это акт, формирующий образ. Здесь ты — одновременно субъект и объект."
     },
     eng: {
         step0_text: "Please select language RU / ENG",
@@ -37,10 +37,11 @@ const translations = {
         step3_text2: "The image has been converted into a pixel grid.",
         step3_text3: "Each pixel is assigned parameters (x, y, brightness, color).",
         step3_text4: "Based on this, a wave function is built: ψ(x, y, t).",
-        step3_text5: "Evolution equation: iℏ ∂ψ/∂t = Ĥψ, where Ĥ = -½∇² + V(x, y)",
-        step3_text6: "The potential V(x, y) is formed from the image's visual characteristics.",
-        step3_text7: "The system switches to time simulation mode.",
-        step3_text8: "The portrait exists as a set of possible states.",
+        step3_text5: "Evolution equation:",
+        step3_text6: "iℏ ∂ψ/∂t = Ĥψ, where Ĥ = -½∇² + V(x, y)",
+        step3_text7: "The potential V(x, y) is formed from the image's visual characteristics.",
+        step3_text8: "The system switches to time simulation mode.",
+        step3_text9: "The portrait exists as a set of possible states.",
         step4_text1: "Step 3: START OBSERVATION",
         step4_text2: "Move the cursor over the image.",
         step4_text3: "Each gesture triggers a collapse.",
@@ -53,10 +54,9 @@ const translations = {
         step6_text2: "This is not a portrait.",
         step6_text3: "This is the system's reaction to you.",
         step6_text4: "You influenced the outcome.",
-        step7_text1: "Step 6: Completion + Meta-Feedback",
+        step7_text1: "Conclusion:",
         step7_text2: "You are not the only observer.",
-        step7_text3: "Each observation is an act that shapes the image.",
-        step7_text4: "Here, you are both subject and object."
+        step7_text3: "Each observation is an act that shapes the image. Here, you are both subject and object."
     }
 };
 
@@ -78,8 +78,9 @@ function setLanguage(lang) {
             translations[lang].step3_text1, translations[lang].step3_text2,
             translations[lang].step3_text3, translations[lang].step3_text4,
             translations[lang].step3_text5, translations[lang].step3_text6,
-            translations[lang].step3_text7, translations[lang].step3_text8
-        ], // step-3 (8 элементов)
+            translations[lang].step3_text7, translations[lang].step3_text8,
+            translations[lang].step3_text9
+        ], // step-3 (9 элементов)
         [
             translations[lang].step4_text1, translations[lang].step4_text2,
             translations[lang].step4_text3, translations[lang].step4_text4
@@ -94,8 +95,8 @@ function setLanguage(lang) {
         ], // step-6 (4 элемента)
         [
             translations[lang].step7_text1, translations[lang].step7_text2,
-            translations[lang].step7_text3, translations[lang].step7_text4
-        ] // step-7 (4 элемента)
+            translations[lang].step7_text3
+        ] // step-7 (3 элемента)
     ];
 
     let currentIndex = 0;
@@ -103,8 +104,12 @@ function setLanguage(lang) {
         const step = Math.floor(index / (elements.length / stepTexts.length));
         const localIndex = index % stepTexts[step].length;
         if (currentIndex < stepTexts[step].length) {
-            element.textContent = stepTexts[step][localIndex];
-            console.log(`Updated text at index ${index} (step ${step}, local ${localIndex}):`, element.textContent);
+            if (element.classList.contains('step-title')) {
+                element.innerHTML = `<span class="highlight">${stepTexts[step][localIndex]}</span>`;
+            } else {
+                element.textContent = stepTexts[step][localIndex];
+            }
+            console.log(`Updated text at index ${index} (step ${step}, local ${localIndex}):`, element.textContent || element.innerHTML);
             currentIndex++;
         }
     });
