@@ -15,7 +15,7 @@
             </div>
             <div class="content-container">
                 <div class="text-container">
-                    <p class="language-text">Пожалуйста, выберите язык RU / ENG</p>
+                    <p class="language-text step-title">Пожалуйста, выберите язык RU / ENG</p>
                 </div>
                 <div class="button-container">
                     <button class="language-btn" onclick="setLanguage('ru')">RU</button>
@@ -33,7 +33,7 @@
             </div>
             <div class="content-container">
                 <div class="text-container">
-                    <p class="language-text">Шаг 1: Сканируйте лицо суперпозиции.</p>
+                    <p class="language-text step-title">Шаг 1: Сканируйте лицо суперпозиции.</p>
                     <p class="language-text">Вы можете загрузить изображение или выбрать вариант из архива.</p>
                 </div>
                 <div class="button-container">
@@ -52,14 +52,15 @@
             </div>
             <div class="content-container">
                 <div class="text-container">
-                    <p class="language-text">Шаг 2: Инициализация</p>
-                    <p class="language-text">Изображение преобразовано в пиксельную сетку.</p>
-                    <p class="language-text">Каждому пикселю назначены параметры (x, y, brightness, color).</p>
-                    <p class="language-text">На их основе построена волновая функция: ψ(x, y, t).</p>
-                    <p class="language-text">Уравнение эволюции: iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
-                    <p class="language-text">Потенциал V(x, y) формируется из визуальных характеристик изображения.</p>
-                    <p class="language-text">Система переходит в режим временной симуляции.</p>
-                    <p class="language-text">Портрет существует как совокупность возможных состояний.</p>
+                    <p class="language-text step-title">Шаг 2: Инициализация</p>
+                    <p class="language-text"><span class="highlight">Изображение преобразовано в пиксельную сетку.</span></p>
+                    <p class="language-text"><span class="highlight">Каждому пикселю назначены параметры (x, y, brightness, color<span class="green-text"> (x, y, brightness, color)</span>).</span></p>
+                    <p class="language-text"><span class="highlight">На их основе построена волновая функция: ψ(x, y, t)<span class="green-text"> ψ(x, y, t)</span>.</span></p>
+                    <p class="language-text">Уравнение эволюции:</p>
+                    <p class="language-text green-text">iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
+                    <p class="language-text"><span class="highlight">Потенциал V(x, y)<span class="green-text"> V(x, y)</span> формируется из визуальных характеристик изображения.</span></p>
+                    <p class="language-text"><span class="highlight">Система переходит в режим временной симуляции.</span></p>
+                    <p class="language-text"><span class="highlight">Портрет существует как совокупность возможных состояний.</span></p>
                 </div>
             </div>
         </div>
@@ -73,10 +74,10 @@
             </div>
             <div class="content-container">
                 <div class="text-container">
-                    <p class="language-text">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</p>
-                    <p class="language-text">Двигайте курсором по изображению.</p>
-                    <p class="language-text">Каждый ваш жест запускает коллапс.</p>
-                    <p class="language-text">Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</p>
+                    <p class="language-text step-title">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</p>
+                    <p class="language-text"><span class="highlight">Двигайте курсором по изображению.</span></p>
+                    <p class="language-text"><span class="highlight">Каждый ваш жест запускает коллапс.</span></p>
+                    <p class="language-text"><span class="highlight">Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</span></p>
                 </div>
                 <div class="split-container">
                     <div class="animation-container">
@@ -99,14 +100,14 @@
             </div>
             <div class="content-container">
                 <div class="text-container">
-                    <p class="language-text">Шаг 4: ФИКСАЦИЯ</p>
-                    <p class="language-text">Портрет — это процесс.</p>
-                    <p class="language-text">Но ты можешь зафиксировать один миг.</p>
-                    <p class="language-text">Это будет один из возможных тебя.</p>
+                    <p class="language-text step-title">Шаг 4: ФИКСАЦИЯ</p>
+                    <p class="language-text"><span class="highlight">Портрет — это процесс.</span></p>
+                    <p class="language-text"><span class="highlight">Но ты можешь зафиксировать один миг.</span></p>
+                    <p class="language-text"><span class="highlight">Это будет один из возможных тебя.</span></p>
                 </div>
                 <div class="portrait-animation-container"></div>
                 <div class="button-container">
-                    <button class="action-btn" onclick="recordObservation()">Записать наблюдение</button>
+                    <button class="action-btn" onclick="recordObservation()">[ЗАПИСАТЬ НАБЛЮДЕНИЕ]</button>
                 </div>
             </div>
         </div>
@@ -120,10 +121,10 @@
             </div>
             <div class="content-container">
                 <div class="text-container">
-                    <p class="language-text">Шаг 5: РЕАКЦИЯ СИСТЕМЫ</p>
-                    <p class="language-text">Это не портрет.</p>
-                    <p class="language-text">Это — реакция системы на тебя.</p>
-                    <p class="language-text">Ты повлиял на исход.</p>
+                    <p class="language-text step-title">Шаг 5: РЕАКЦИЯ СИСТЕМЫ</p>
+                    <p class="language-text"><span class="highlight">Это не портрет.</span></p>
+                    <p class="language-text"><span class="highlight">Это — реакция системы на тебя.</span></p>
+                    <p class="language-text"><span class="highlight">Ты повлиял на исход.</span></p>
                 </div>
                 <div class="button-container">
                     <a href="https://t.me/your_archive" class="action-btn" target="_blank">[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]</a>
@@ -139,10 +140,9 @@
             </div>
             <div class="content-container">
                 <div class="text-container">
-                    <p class="language-text">Шаг 6: Завершение + мета-обратная связь</p>
-                    <p class="language-text">Ты — не единственный наблюдатель.</p>
-                    <p class="language-text">Каждое наблюдение — это акт, формирующий образ.</p>
-                    <p class="language-text">Здесь ты — одновременно субъект и объект.</p>
+                    <p class="language-text step-title">Заключение:</p>
+                    <p class="language-text"><span class="highlight">Ты — не единственный наблюдатель.</span></p>
+                    <p class="language-text"><span class="highlight">Каждое наблюдение — это акт, формирующий образ. Здесь ты — одновременно субъект и объект.</span></p>
                 </div>
                 <div class="button-container">
                     <button class="action-btn" onclick="restart()">[↻ НАЧАТЬ СНАЧАЛА]</button>
