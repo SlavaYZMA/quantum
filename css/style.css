@@ -33,7 +33,8 @@ section[id^="step-"] {
 .button-container,
 .image-container,
 .animation-container,
-.terminal-container {
+.terminal-container,
+.portrait-animation-container {
     border: 1px solid white; /* Белая сплошная рамка */
     margin: 10px 0;
     padding: 15px;
@@ -126,7 +127,8 @@ section[id^="step-"] {
     .button-container,
     .image-container,
     .animation-container,
-    .terminal-container {
+    .terminal-container,
+    .portrait-animation-container {
         margin: 5px 0;
         padding: 10px;
     }
