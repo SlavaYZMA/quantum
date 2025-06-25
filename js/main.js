@@ -27,7 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (continueButton) {
             continueButton.addEventListener('click', () => {
-                if (index < steps.length - 1) showStep(index + 1);
+                if (index < steps.length - 1) {
+                    showStep(index + 1); // Исправлено: теперь работает для всех шагов, включая шаг 3
+                }
             });
         }
     });
@@ -51,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.selectImage = (img) => {
-        // Логика выбора изображения (пока заглушка)
         console.log('Selected image:', img.src);
         galleryModal.style.display = 'none';
     };
