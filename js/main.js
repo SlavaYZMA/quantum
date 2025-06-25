@@ -32,15 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Модальное окно для галереи
+    // Модальное окно для галереи с локальными заглушками
     const galleryModal = document.createElement('div');
     galleryModal.className = 'modal';
     galleryModal.innerHTML = `
         <div class="modal-content">
             <div class="gallery">
-                <img src="https://via.placeholder.com/100?text=Portrait1" onclick="selectImage(this)">
-                <img src="https://via.placeholder.com/100?text=Portrait2" onclick="selectImage(this)">
-                <img src="https://via.placeholder.com/100?text=Portrait3" onclick="selectImage(this)">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" alt="Portrait1" onclick="selectImage(this)">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" alt="Portrait2" onclick="selectImage(this)">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" alt="Portrait3" onclick="selectImage(this)">
             </div>
         </div>
     `;
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.selectImage = (img) => {
-        console.log('Selected image:', img.src);
+        console.log('Selected image:', img.alt);
         galleryModal.style.display = 'none';
     };
 });
