@@ -8,75 +8,44 @@ body {
 }
 
 /* Стили для секций шагов */
-section[id^="step-"] {
+.step {
     width: 100vw;
     height: 100vh;
     display: none;
     justify-content: center;
     align-items: center;
     overflow-y: auto;
-    visibility: visible !important;
-    border: 1px dashed red; /* Временная рамка для отладки */
-}
-
-/* Центральный контейнер шага */
-.step-container {
-    max-width: 800px;
-    width: 90%;
-    padding: 20px;
+    border: 1px dashed red; /* Внешний красный контейнер */
     box-sizing: border-box;
-    border: 1px solid white; /* Белая сплошная рамка */
 }
 
-/* Контейнеры для контента */
-.content-container,
-.text-container,
-.button-container,
-.image-container,
-.animation-container,
-.terminal-container,
-.portrait-animation-container {
-    border: 1px solid white; /* Белая сплошная рамка */
+/* Контейнер контента шага */
+.step-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    max-width: 800px;
+}
+
+/* Блоки для текста и кнопок */
+.text-block, .button-block {
     margin: 10px 0;
     padding: 15px;
+    border: 1px solid white; /* Рамка для каждого блока */
+    width: 100%;
     text-align: center;
     color: #ffffff; /* Белый текст по умолчанию */
 }
 
-/* Контейнер с разделением на две части */
-.split-container {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
-}
-
-.animation-container,
-.terminal-container {
-    flex: 1;
-    min-height: 200px;
-}
-
-.animation-container {
-    margin-right: 10px;
-}
-
-.terminal-container {
-    margin-left: 10px;
-}
-
 /* Стили для кнопок навигации */
-.buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
 .back, .continue {
     background-color: #333;
     color: #fff;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    margin: 5px;
 }
 
 .back:hover, .continue:hover {
@@ -115,8 +84,8 @@ section[id^="step-"] {
     background-color: #555;
 }
 
-/* Специфичные стили для button-container в step-7 */
-#step-7 .button-container {
+/* Специфичные стили для button-block в step-6 */
+#step-6 .button-block {
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -131,16 +100,29 @@ section[id^="step-"] {
     display: inline-block;
 }
 
-.language-text:not(.step-title) {
-    color: #ffffff; /* Белый текст без подсветки для шага 0 */
-}
-
 .highlight {
     color: #ffffff; /* Белый текст для основного контента */
 }
 
 .green-text {
     color: #00ff00; /* Зелёный текст для математических символов */
+}
+
+/* Стили для typewriter-анимации */
+.typewriter {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid #ffffff;
+    animation: typing 2s steps(20, end), blink 0.5s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink {
+    50% { border-color: transparent }
 }
 
 /* Стили для canvas */
@@ -152,31 +134,14 @@ section[id^="step-"] {
 
 /* Адаптивность для мобильных устройств */
 @media screen and (max-width: 600px) {
-    .step-container {
-        width: 85%;
-        padding: 10px;
+    .step-content {
+        width: 90%;
     }
-    .content-container,
-    .text-container,
-    .button-container,
-    .image-container,
-    .animation-container,
-    .terminal-container,
-    .portrait-animation-container {
+    .text-block, .button-block {
         margin: 5px 0;
         padding: 10px;
     }
-    .split-container {
-        flex-direction: column;
-    }
-    .animation-container,
-    .terminal-container {
-        margin: 5px 0;
-    }
-    #portrait-canvas {
-        height: 150px;
-    }
-    #step-7 .button-container {
+    #step-6 .button-block {
         flex-direction: column;
         gap: 5px;
     }
