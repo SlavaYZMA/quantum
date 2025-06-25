@@ -32,11 +32,34 @@ section[id^="step-"] {
 .text-container,
 .button-container,
 .image-container,
-.animation-container {
+.animation-container,
+.terminal-container,
+.portrait-animation-container {
     border: 1px solid white; /* Белая сплошная рамка */
     margin: 10px 0;
     padding: 15px;
     text-align: center;
+}
+
+/* Контейнер с разделением на две части */
+.split-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.animation-container,
+.terminal-container {
+    flex: 1;
+    min-height: 200px;
+}
+
+.animation-container {
+    margin-right: 10px;
+}
+
+.terminal-container {
+    margin-left: 10px;
 }
 
 /* Стили для кнопок навигации */
@@ -103,11 +126,44 @@ section[id^="step-"] {
     .text-container,
     .button-container,
     .image-container,
-    .animation-container {
+    .animation-container,
+    .terminal-container,
+    .portrait-animation-container {
         margin: 5px 0;
         padding: 10px;
+    }
+    .split-container {
+        flex-direction: column;
+    }
+    .animation-container,
+    .terminal-container {
+        margin: 5px 0;
     }
     #portrait-canvas {
         height: 150px;
     }
+}
+
+/* Стили для модального окна (временные) */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    margin: 15% auto;
+    padding: 20px;
+    width: 70%;
+    max-width: 500px;
+}
+
+.gallery img {
+    margin: 5px;
+    cursor: pointer;
 }
