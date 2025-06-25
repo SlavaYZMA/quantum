@@ -49,9 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Обработчики для специфичных кнопок в step-6 (предполагается, что это последний шаг)
-    const step6Buttons = document.querySelectorAll('#step-6 .action-btn');
-    step6Buttons.forEach(button => {
+    // Обработчики для специфичных кнопок в step-7
+    const step7Buttons = document.querySelectorAll('#step-7 .action-btn');
+    step7Buttons.forEach(button => {
         if (button.textContent.includes('[↻ НАЧАТЬ СНАЧАЛА]')) {
             button.addEventListener('click', () => {
                 console.log('Restart button clicked');
@@ -70,13 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Обработчики для выбора языка
-    document.querySelectorAll('.language-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            currentLanguage = button.textContent.toLowerCase();
-            showStep(0); // Перезагружаем шаг 0 с новым языком
-        });
-    });
+    // Обработчики для выбора языка с переходом на следующий шаг
+    function setLanguageAndNext(lang) {
+        currentLanguage = lang;
+        showStep(1); // Переход на шаг 1 после выбора языка
+    }
 
     // Модальное окно для галереи
     const galleryModal = document.createElement('div');
