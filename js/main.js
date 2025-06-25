@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentLanguage = 'ru'; // Глобальная переменная для языка
 
     // Получить все секции шагов
-    const steps = document.querySelectorAll('section[id^="step-"]');
+    const steps = document.querySelectorAll('.step');
     console.log('Steps found:', steps.length); // Отладка: проверяем количество шагов
 
     // Функция для показа конкретного шага
@@ -15,7 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (stepIndex >= 0 && stepIndex < steps.length) {
             steps[stepIndex].style.display = 'block';
             console.log('Showing step:', stepIndex, 'ID:', steps[stepIndex].id); // Отладка: отображаем шаг
-            setLanguage(currentLanguage); // Устанавливаем язык при каждом отображении шага
+            setLanguage(currentLanguage, steps[stepIndex]); // Обновляем только текущий шаг
+            // Инициализация typewriter-анимации для видимого шага
+            if (steps[stepIndex].querySelector('.typewriter')) {
+                initTypewriter(steps[stepIndex]);
+            }
         } else {
             console.log('Invalid step index:', stepIndex); // Отладка: ошибка индекса
         }
@@ -45,9 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Обработчики для специфичных кнопок в step-7
-    const step7Buttons = document.querySelectorAll('#step-7 .action-btn');
-    step7Buttons.forEach(button => {
+    // Обработчики для специфичных кнопок в step-6 (предполагается, что это последний шаг)
+    const step6Buttons = document.querySelectorAll('#step-6 .action-btn');
+    step6Buttons.forEach(button => {
         if (button.textContent.includes('[↻ НАЧАТЬ СНАЧАЛА]')) {
             button.addEventListener('click', () => {
                 console.log('Restart button clicked');
@@ -96,4 +100,22 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Selected image:', img.alt);
         galleryModal.style.display = 'none';
     };
+
+    // Функция для typewriter-анимации
+    function initTypewriter(step) {
+        const typewriters = step.querySelectorAll('.typewriter');
+        typewriters.forEach((element, index) => {
+            let text = element.getAttribute('data-i18n') ? translations[currentLanguage][element.getAttribute('data-i18n')] : element.textContent;
+            element.textContent = '';
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, 50);
+                }
+            }
+            setTimeout(type, index * 500); // Задержка между строками
+        });
+    }
 });
