@@ -1,5 +1,7 @@
 // Обработчик загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
+    let currentLanguage = 'ru'; // Глобальная переменная для языка
+
     // Получить все секции шагов
     const steps = document.querySelectorAll('section[id^="step-"]');
     console.log('Steps found:', steps.length); // Отладка: проверяем количество шагов
@@ -13,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (stepIndex >= 0 && stepIndex < steps.length) {
             steps[stepIndex].style.display = 'block';
             console.log('Showing step:', stepIndex, 'ID:', steps[stepIndex].id); // Отладка: отображаем шаг
+            setLanguage(currentLanguage); // Устанавливаем язык при каждом отображении шага
         } else {
             console.log('Invalid step index:', stepIndex); // Отладка: ошибка индекса
         }
@@ -61,6 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Информация об авторах будет добавлена позже.');
             });
         }
+    });
+
+    // Обработчики для выбора языка
+    document.querySelectorAll('.language-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            currentLanguage = button.textContent.toLowerCase();
+            showStep(0); // Перезагружаем шаг 0 с новым языком
+        });
     });
 
     // Модальное окно для галереи
