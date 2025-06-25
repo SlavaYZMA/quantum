@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #1a1a1a;
-    color: #ffffff;
+    color: #000000; /* Чёрный текст */
     font-family: Arial, sans-serif;
     overflow-x: hidden;
 }
@@ -16,7 +16,7 @@ section[id^="step-"] {
     justify-content: center;
     align-items: center;
     overflow-y: auto;
-    visibility: visible !important; /* Убеждаемся, что секции видны */
+    visibility: visible !important;
     border: 1px dashed red; /* Временная рамка для отладки */
 }
 
@@ -26,6 +26,7 @@ section[id^="step-"] {
     width: 90%;
     padding: 20px;
     box-sizing: border-box;
+    border: 1px solid white; /* Белая сплошная рамка */
 }
 
 /* Контейнеры для контента */
@@ -36,9 +37,11 @@ section[id^="step-"] {
 .animation-container,
 .terminal-container,
 .portrait-animation-container {
+    border: 1px solid white; /* Белая сплошная рамка */
     margin: 10px 0;
     padding: 15px;
     text-align: center;
+    color: #000000; /* Чёрный текст */
 }
 
 /* Контейнер с разделением на две части */
@@ -103,10 +106,22 @@ section[id^="step-"] {
     color: #fff;
     border: none;
     cursor: pointer;
+    display: inline-block; /* Горизонтальное расположение */
+    width: 200px; /* Фиксированный размер */
+    text-align: center;
+    box-sizing: border-box;
 }
 
 .action-btn:hover {
     background-color: #555;
+}
+
+/* Специфичные стили для button-container в step-7 */
+#step-7 .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Расстояние между кнопками */
+    flex-wrap: nowrap; /* Запрет переноса */
 }
 
 /* Стили для canvas */
@@ -141,6 +156,13 @@ section[id^="step-"] {
     }
     #portrait-canvas {
         height: 150px;
+    }
+    #step-7 .button-container {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .action-btn {
+        width: 100%; /* Полная ширина на мобильных */
     }
 }
 
