@@ -13,15 +13,11 @@ body {
 .step {
     width: 100%;
     height: 100vh; /* Полная высота экрана */
-    display: grid;
-    grid-template-rows: 1fr auto 1fr; /* Верхний отступ, контент, нижний отступ */
-    grid-template-columns: 100%; /* Одна колонка */
-    place-items: center; /* Центрирование по вертикали и горизонтали */
+    position: relative; /* Базовый контейнер для абсолютного позиционирования */
     border: 1px dashed red; /* Внешний красный пунктирный контейнер */
     box-sizing: border-box;
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
     overflow-y: auto; /* Разрешаем вертикальную прокрутку */
-    position: relative;
 }
 
 /* Контейнер для первого центрированного блока (заголовок и текст) */
@@ -30,7 +26,10 @@ body {
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
-    grid-row: 2; /* Центрируем в средней строке */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Смещение на половину размеров */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,7 +45,10 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center; /* Центрирование элементов внутри */
-    grid-row: 2; /* Помещаем в ту же строку для совместного центрирования */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Смещение на половину размеров */
 }
 
 /* Блоки для текста и кнопок */
