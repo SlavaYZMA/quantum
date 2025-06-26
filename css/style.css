@@ -12,12 +12,15 @@ body {
 /* Стили для секций шагов */
 .step {
     width: 100%;
-    height: 100vh; /* Полная высота экрана */
-    position: relative; /* Базовый контейнер для абсолютного позиционирования */
+    min-height: 100vh; /* Минимальная высота экрана */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрирование по горизонтали */
     border: 1px dashed red; /* Внешний красный пунктирный контейнер */
     box-sizing: border-box;
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
     overflow-y: auto; /* Разрешаем вертикальную прокрутку */
+    padding: 20px 0; /* Внешние отступы сверху и снизу */
 }
 
 /* Контейнер для первого центрированного блока (заголовок и текст) */
@@ -26,10 +29,7 @@ body {
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Смещение на половину размеров */
+    margin: 20px 0; /* Отступ сверху и снизу */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -39,21 +39,17 @@ body {
 .scrollable-content {
     width: 100%;
     max-width: 600px; /* Совпадение с .step-centered для выравнивания */
-    margin: 20px 0; /* Отступ сверху и снизу для визуального разделения */
+    margin: 20px 0; /* Отступ сверху и снизу */
     overflow-y: auto;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center; /* Центрирование элементов внутри */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Смещение на половину размеров */
 }
 
 /* Блоки для текста и кнопок */
 .text-block, .button-block, .split-container, .portrait-animation-container, .image-container {
-    margin: 10px 0;
+    margin: 20px 0; /* Отступ сверху и снизу для каждого блока */
     padding: 15px;
     border: 1px solid white; /* Белая сплошная рамка для каждого блока */
     width: 100%;
@@ -293,7 +289,7 @@ body {
         width: 95%;
     }
     .text-block, .button-block, .split-container, .portrait-animation-container, .image-container {
-        margin: 5px 0;
+        margin: 15px 0; /* Уменьшенные отступы для мобильных */
         padding: 10px;
     }
     .split-container {
