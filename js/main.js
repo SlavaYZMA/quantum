@@ -1,8 +1,11 @@
-// Предполагаемое содержимое, если оно не предоставлено, основано на логах
 const steps = document.querySelectorAll('.step');
 let currentStep = 0;
 
 function showStep(stepIndex) {
+    if (!steps || steps.length === 0) {
+        console.error('No steps found');
+        return;
+    }
     steps.forEach((step, index) => {
         step.style.display = index === stepIndex ? 'block' : 'none';
         console.log(`Hiding step: ${step.id}`);
@@ -39,5 +42,9 @@ window.setLanguageAndNext = (lang) => {
     currentStep = 1;
 };
 
-console.log(`Steps found: ${steps.length}`);
-showStep(0);
+if (steps.length > 0) {
+    console.log(`Steps found: ${steps.length}`);
+    showStep(0);
+} else {
+    console.error('No steps found in document');
+}
