@@ -22,6 +22,7 @@ body {
     overflow-y: auto; /* Разрешаем вертикальную прокрутку */
     padding: 20px 0;
     position: relative;
+    flex: 1;
 }
 
 /* Контейнер для первого центрированного блока (заголовок и текст) */
@@ -37,7 +38,7 @@ body {
 .scrollable-content {
     width: 90%;
     max-width: 800px;
-    margin-top: 0; /* Отступ сверху не нужен, так как margin-bottom в .step-centered */
+    margin: 0 auto; /* Центрирование по горизонтали */
     overflow-y: auto;
     box-sizing: border-box;
 }
