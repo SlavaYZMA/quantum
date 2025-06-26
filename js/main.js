@@ -30,7 +30,7 @@ function showStep(stepIndex) {
             initTypewriter(steps[stepIndex]);
         }
         // Инициализация анимации на шагах 3 и 4
-        if ((stepIndex === 3 || stepIndex === 4) && window.img) {
+        if ((stepIndex === 3 || stepIndex === 4) && window.img && window.img.width > 0) {
             if (!window.isCanvasReady) {
                 setup();
                 loop();
