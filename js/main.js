@@ -4,6 +4,9 @@ let currentLanguage = 'ru';
 // Получить все секции шагов
 const steps = document.querySelectorAll('.step');
 
+// Глобальная переменная для текущего шага
+window.currentStep = 0;
+
 // Глобальная функция для выбора языка и перехода на следующий шаг
 function setLanguageAndNext(lang) {
     currentLanguage = lang;
@@ -21,9 +24,23 @@ function showStep(stepIndex) {
         steps[stepIndex].style.display = 'block';
         console.log('Showing step:', stepIndex, 'ID:', steps[stepIndex].id); // Отладка: отображаем шаг
         setLanguage(currentLanguage, steps[stepIndex]); // Обновляем только текущий шаг
+        window.currentStep = stepIndex; // Обновляем глобальную переменную
         // Инициализация typewriter-анимации для видимого шага
         if (steps[stepIndex].querySelector('.typewriter')) {
             initTypewriter(steps[stepIndex]);
+        }
+        // Инициализация анимации на шагах 3 и 4
+        if (stepIndex === 3 || stepIndex === 4) {
+            if (!window.isCanvasReady) {
+                setup();
+                loop();
+            } else if (window.isPaused) {
+                loop();
+            }
+        } else {
+            if (window.canvas) {
+                noLoop();
+            }
         }
     } else {
         console.log('Invalid step index:', stepIndex); // Отладка: ошибка индекса
@@ -104,19 +121,4 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="modal-content">
             <div class="gallery">
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" alt="Portrait1" onclick="selectImage(this)">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" alt="Portrait2" onclick="selectImage(this)">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" alt="Portrait3" onclick="selectImage(this)">
-            </div>
-        </div>
-    `;
-    document.body.appendChild(galleryModal);
-
-    window.openGallery = () => {
-        galleryModal.style.display = 'block';
-    };
-
-    window.selectImage = (img) => {
-        console.log('Selected image:', img.alt);
-        galleryModal.style.display = 'none';
-    };
-});
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8
