@@ -11,36 +11,42 @@ body {
 /* Стили для секций шагов */
 .step {
     width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    min-height: 100vh;
+    display: block;
+    position: relative;
     border: 1px dashed red; /* Внешний красный пунктирный контейнер */
     box-sizing: border-box;
-    position: relative; /* Для позиционирования кнопок */
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
     overflow-y: auto; /* Разрешаем вертикальную прокрутку */
     padding: 0;
 }
 
-/* Контейнер контента шага */
-.step-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    max-width: 90%;
+/* Контейнер для первого центрированного блока */
+.step-centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
     width: 100%;
-    padding: 20px;
+    max-width: 600px;
     box-sizing: border-box;
-    min-height: 0;
-    flex: 1;
+}
+
+/* Контейнер для прокручиваемого контента */
+.scrollable-content {
+    margin-top: 200px; /* Смещение для размещения ниже центрированного блока */
+    width: 90%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
 /* Блоки для текста и кнопок */
 .text-block, .button-block, .split-container, .portrait-animation-container, .image-container {
-    margin: 10px auto;
+    margin: 10px 0;
     padding: 15px;
     border: 1px solid white; /* Белая сплошная рамка для каждого блока */
     width: 100%;
@@ -304,5 +310,11 @@ body {
     .back, .continue {
         padding: 8px 15px;
         font-size: 0.9em;
+    }
+    .step-centered {
+        max-width: 90%;
+    }
+    .scrollable-content {
+        margin-top: 150px; /* Уменьшаем смещение для мобильных */
     }
 }
