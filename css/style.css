@@ -12,34 +12,32 @@ body {
 .step {
     width: 100vw;
     min-height: 100vh;
-    display: block;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     border: 1px dashed red; /* Внешний красный пунктирный контейнер */
     box-sizing: border-box;
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
     overflow-y: auto; /* Разрешаем вертикальную прокрутку */
-    padding: 0;
+    padding: 20px 0;
+    position: relative;
 }
 
 /* Контейнер для первого центрированного блока (заголовок и текст) */
 .step-centered {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     text-align: center;
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
+    margin-bottom: 20px; /* Отступ перед остальным контентом */
 }
 
 /* Контейнер для прокручиваемого контента ниже заголовка */
 .scrollable-content {
-    margin-top: 20px; /* Равномерный вертикальный отступ после заголовка */
     width: 90%;
     max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-top: 0; /* Отступ сверху не нужен, так как margin-bottom в .step-centered */
     overflow-y: auto;
     box-sizing: border-box;
 }
@@ -276,12 +274,14 @@ body {
 
 /* Адаптивность для мобильных устройств */
 @media screen and (max-width: 600px) {
+    .step {
+        padding: 10px 0;
+    }
     .step-centered {
         max-width: 90%;
     }
     .scrollable-content {
         width: 95%;
-        margin-top: 15px; /* Уменьшаем отступ для мобильных */
     }
     .text-block, .button-block, .split-container, .portrait-animation-container, .image-container {
         margin: 5px 0;
