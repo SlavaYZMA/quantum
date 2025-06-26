@@ -30,17 +30,18 @@ function showStep(stepIndex) {
             initTypewriter(steps[stepIndex]);
         }
         // Инициализация анимации на шагах 3 и 4
-        if (stepIndex === 3 || stepIndex === 4) {
+        if ((stepIndex === 3 || stepIndex === 4) && window.img) {
             if (!window.isCanvasReady) {
                 setup();
                 loop();
+                console.log('Canvas initialized and animation started');
             } else if (window.isPaused) {
                 loop();
+                console.log('Animation resumed');
             }
-        } else {
-            if (window.canvas) {
-                noLoop();
-            }
+        } else if (stepIndex !== 3 && stepIndex !== 4 && window.canvas) {
+            noLoop();
+            console.log('Animation paused');
         }
     } else {
         console.log('Invalid step index:', stepIndex); // Отладка: ошибка индекса
