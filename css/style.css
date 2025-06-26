@@ -6,22 +6,22 @@ body {
     font-family: Arial, sans-serif;
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
     box-sizing: border-box;
+    height: 100vh; /* Убедимся, что тело занимает всю высоту */
 }
 
 /* Стили для секций шагов */
 .step {
-    width: 100vw;
-    min-height: 100vh;
+    width: 100%;
+    height: 100vh; /* Полная высота экрана */
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     border: 1px dashed red; /* Внешний красный пунктирный контейнер */
     box-sizing: border-box;
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
     overflow-y: auto; /* Разрешаем вертикальную прокрутку */
-    padding: 0;
     position: relative;
+    flex-direction: column; /* Сохраняем вертикальный порядок */
 }
 
 /* Контейнер для первого центрированного блока (заголовок и текст) */
@@ -30,7 +30,9 @@ body {
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
-    flex: 0 0 auto; /* Фиксированная высота по содержимому */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 20px; /* Отступ перед остальным контентом */
 }
 
@@ -320,7 +322,7 @@ body {
     }
 }
 
-/* Логи для отладки центрирования (теперь видимые для проверки) */
+/* Логи для отладки центрирования (видимые для проверки) */
 .step::before {
     content: "Step container centered";
     color: #00ff00;
