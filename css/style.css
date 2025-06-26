@@ -6,22 +6,22 @@ body {
     font-family: Arial, sans-serif;
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
     box-sizing: border-box;
-    height: 100vh; /* Убедимся, что тело занимает всю высоту */
+    height: 100vh; /* Полная высота экрана */
 }
 
 /* Стили для секций шагов */
 .step {
     width: 100%;
     height: 100vh; /* Полная высота экрана */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    grid-template-rows: auto 1fr; /* Первая строка для текста, вторая для контента */
+    grid-template-columns: 100%; /* Одна колонка */
+    place-items: center; /* Центрирование по вертикали и горизонтали */
     border: 1px dashed red; /* Внешний красный пунктирный контейнер */
     box-sizing: border-box;
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
     overflow-y: auto; /* Разрешаем вертикальную прокрутку */
     position: relative;
-    flex-direction: column; /* Сохраняем вертикальный порядок */
 }
 
 /* Контейнер для первого центрированного блока (заголовок и текст) */
@@ -30,9 +30,7 @@ body {
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    grid-row: 1; /* Первая строка */
     margin-bottom: 20px; /* Отступ перед остальным контентом */
 }
 
@@ -46,6 +44,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center; /* Центрирование элементов внутри */
+    grid-row: 2; /* Вторая строка */
 }
 
 /* Блоки для текста и кнопок */
