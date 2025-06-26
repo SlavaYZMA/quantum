@@ -1,260 +1,88 @@
-/* Базовые стили для тела страницы */
+/* Стили для шрифтов и анимации */
 body {
     margin: 0;
     padding: 0;
-    background-color: #1a1a1a;
-    font-family: Arial, sans-serif;
-    overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
-    box-sizing: border-box;
-    height: 100vh; /* Полная высота экрана */
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden;
 }
 
-/* Стили для секций шагов */
 .step {
+    display: none;
     width: 100%;
-    min-height: 100vh; /* Минимальная высота экрана */
-    display: grid;
-    grid-template-rows: 1fr auto 1fr; /* Верхний отступ, контент, нижний отступ */
-    grid-template-columns: 100%; /* Одна колонка */
-    place-items: center; /* Центрирование по вертикали и горизонтали */
-    border: 1px dashed red; /* Внешний красный пунктирный контейнер */
-    box-sizing: border-box;
-    overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
-    overflow-y: auto; /* Разрешаем вертикальную прокрутку */
-    padding: 20px 0; /* Внешние отступы сверху и снизу */
+    height: 100vh;
+    position: relative;
 }
 
-/* Контейнер для первого центрированного блока (заголовок и текст) */
 .step-centered {
-    text-align: center;
-    width: 100%;
-    max-width: 600px;
-    box-sizing: border-box;
-    margin: 20px 0; /* Отступ сверху и снизу */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Контейнер для прокручиваемого контента ниже заголовка */
-.scrollable-content {
-    width: 100%;
-    max-width: 600px; /* Совпадение с .step-centered для выравнивания */
-    margin: 20px 0; /* Отступ сверху и снизу */
-    overflow-y: auto;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Центрирование элементов внутри */
-}
-
-/* Блоки для текста и кнопок */
-.text-block, .button-block, .split-container, .portrait-animation-container, .image-container {
-    margin: 20px 0; /* Отступ сверху и снизу для каждого блока */
-    padding: 15px;
-    border: 1px solid white; /* Белая сплошная рамка для каждого блока */
-    width: 100%;
-    max-width: 600px;
-    text-align: center;
-    color: #ffffff; /* Белый текст по умолчанию */
-    box-sizing: border-box;
-}
-
-/* Контейнер с разделением на две части */
-.split-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    max-width: 800px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.animation-container, .terminal-container {
-    flex: 1;
-    min-height: 150px;
-    border: 1px solid white; /* Белая рамка */
-    background-color: #2a2a2a;
-    padding: 10px;
-    text-align: center;
-    box-sizing: border-box;
-}
-
-/* Контейнер для квантовой анимации портрета */
-.portrait-animation-container {
-    min-height: 150px;
-    background-color: #2a2a2a;
-    border: 1px solid white;
-    width: 100%;
-    max-width: 400px;
-    box-sizing: border-box;
-    position: relative; /* Для позиционирования метки */
-}
-
-.portrait-animation-container::before {
-    content: "Окно квантового портрета";
-    color: #00ff00;
-    font-size: 12px;
-    text-align: center;
-    display: block;
-    margin-bottom: 10px;
     position: absolute;
-    top: 5px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-}
-
-/* Контейнер для изображения */
-.image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid white;
-    width: 100%;
-    max-width: 400px;
-    box-sizing: border-box;
-}
-
-#saved-portrait {
-    max-width: 300px;
-    border: 1px solid white;
-    background-color: #2a2a2a;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-/* Поле ввода названия портрета */
-#portrait-name {
-    padding: 10px;
-    font-size: 1em;
-    width: 100%;
-    max-width: 300px;
-    margin: 10px auto;
-    border: 1px solid white;
-    background-color: #2a2a2a;
-    color: #fff;
-    box-sizing: border-box;
-}
-
-/* Стили для кнопок навигации */
-.back, .continue {
-    position: absolute;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin: 0;
-    z-index: 10; /* Убедимся, что кнопки поверх контента */
-}
-
-.back {
-    top: 10px;
-    left: 10px; /* Верхний левый угол */
-}
-
-.continue {
-    top: 10px;
-    right: 10px; /* Верхний правый угол */
-}
-
-.back:hover, .continue:hover {
-    background-color: #555;
-}
-
-/* Стили для языковых кнопок */
-.language-btn {
-    margin: 0 10px;
-    padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-.language-btn:hover {
-    background-color: #555;
-}
-
-/* Стили для кнопок действий */
-.action-btn {
-    margin: 0 10px;
-    padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    display: inline-block;
-    width: 200px;
+    transform: translate(-50%, -50%);
     text-align: center;
-    box-sizing: border-box;
 }
 
-.action-btn:hover {
-    background-color: #555;
+.text-block {
+    margin: 10px 0;
 }
 
-/* Специфичные стили для button-block в step-7 */
-#step-7 .button-block {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: nowrap;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Стили для текста */
-.step-title {
-    color: #d800ff; /* Цвет заголовков шагов */
-    text-shadow: 0 0 5px #e7c2f4, 0 0 10px #e7c2f4; /* Подсветка текста */
-    padding: 5px;
-    display: inline-block;
-    box-sizing: border-box;
-}
-
-.language-text:not(.step-title) {
-    color: #ffffff; /* Белый текст без подсветки для шага 0 */
-}
-
-.highlight {
-    color: #ffffff; /* Белый текст для основного контента */
-}
-
-.green-text {
-    color: #00ff00; /* Зелёный текст для математических символов */
-}
-
-/* Стили для typewriter-анимации */
 .typewriter {
     overflow: hidden;
     white-space: nowrap;
-    border-right: 2px solid #ffffff;
-    animation: typing 2s steps(20, end), blink 0.5s step-end infinite;
-    box-sizing: border-box;
+    animation: none;
 }
 
-@keyframes typing {
-    from { width: 0 }
-    to { width: 100% }
+.green-text {
+    color: #00ff00;
 }
 
-@keyframes blink {
-    50% { border-color: transparent }
+.button-block {
+    margin-top: 20px;
 }
 
-/* Стили для canvas */
-#portrait-canvas {
+button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    background-color: #00ff00;
+    border: none;
+    color: #000;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #00cc00;
+}
+
+.scrollable-content {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-height: 30vh;
+    overflow-y: auto;
+}
+
+.split-container {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin: 20px auto;
+}
+
+.animation-container, .terminal-container {
+    width: 48%;
+    text-align: center;
+}
+
+.portrait-animation-container {
     width: 100%;
-    max-width: 400px;
-    height: 200px;
-    background-color: #000;
-    box-sizing: border-box;
+    height: 400px;
+    position: relative;
+    margin: 20px 0;
 }
 
-/* Стили для модального окна */
 .modal {
     display: none;
     position: fixed;
@@ -263,103 +91,25 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
 }
 
 .modal-content {
-    background-color: #1a1a1a;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #000;
     padding: 20px;
-    border: 1px solid white;
-    border-radius: 5px;
-    text-align: center;
-    box-sizing: border-box;
+    border: 1px solid #00ff00;
 }
 
 .gallery {
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    box-sizing: border-box;
+    justify-content: space-around;
 }
 
 .gallery img {
     width: 100px;
     height: 100px;
     cursor: pointer;
-    border: 1px solid white;
-    box-sizing: border-box;
-}
-
-/* Адаптивность для мобильных устройств */
-@media screen and (max-width: 600px) {
-    .step {
-        padding: 10px 0;
-    }
-    .step-centered {
-        max-width: 90%;
-    }
-    .scrollable-content {
-        width: 95%;
-    }
-    .text-block, .button-block, .split-container, .portrait-animation-container, .image-container {
-        margin: 15px 0; /* Уменьшенные отступы для мобильных */
-        padding: 10px;
-    }
-    .split-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .animation-container, .terminal-container {
-        min-height: 100px;
-    }
-    .portrait-animation-container {
-        min-height: 100px;
-    }
-    #saved-portrait {
-        max-width: 200px;
-    }
-    #portrait-name {
-        max-width: 250px;
-    }
-    #step-7 .button-block {
-        flex-direction: column;
-        gap: 5px;
-    }
-    .action-btn {
-        width: 100%;
-    }
-    .back, .continue {
-        padding: 8px 15px;
-        font-size: 0.9em;
-    }
-}
-
-/* Логи для отладки центрирования (видимые для проверки) */
-.step::before {
-    content: "Step container centered";
-    color: #00ff00;
-    font-size: 12px;
-    position: absolute;
-    top: 5px;
-    left: 5px;
-}
-
-.step-centered::before {
-    content: "Centered content";
-    color: #00ff00;
-    font-size: 12px;
-    position: absolute;
-    top: 5px;
-    left: 5px;
-}
-
-.scrollable-content::before {
-    content: "Scrollable content centered";
-    color: #00ff00;
-    font-size: 12px;
-    position: absolute;
-    top: 5px;
-    left: 5px;
 }
