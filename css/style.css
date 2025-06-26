@@ -5,13 +5,14 @@ body {
     background-color: #1a1a1a;
     font-family: Arial, sans-serif;
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
+    box-sizing: border-box;
 }
 
 /* Стили для секций шагов */
 .step {
     width: 100vw;
     height: 100vh;
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -20,6 +21,7 @@ body {
     position: relative; /* Для позиционирования кнопок */
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
     overflow-y: auto; /* Разрешаем вертикальную прокрутку */
+    padding: 0;
 }
 
 /* Контейнер контента шага */
@@ -28,28 +30,35 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 90%;
-    max-width: 800px;
+    max-width: 90%;
+    width: 100%;
     padding: 20px;
+    box-sizing: border-box;
+    min-height: 0;
+    flex: 1;
 }
 
 /* Блоки для текста и кнопок */
 .text-block, .button-block, .split-container, .portrait-animation-container, .image-container {
-    margin: 10px 0;
+    margin: 10px auto;
     padding: 15px;
     border: 1px solid white; /* Белая сплошная рамка для каждого блока */
     width: 100%;
     max-width: 600px;
     text-align: center;
     color: #ffffff; /* Белый текст по умолчанию */
+    box-sizing: border-box;
 }
 
 /* Контейнер с разделением на две части */
 .split-container {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 20px;
     max-width: 800px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .animation-container, .terminal-container {
@@ -67,6 +76,9 @@ body {
     min-height: 150px;
     background-color: #2a2a2a;
     border: 1px solid white;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
 }
 
 /* Контейнер для изображения */
@@ -75,6 +87,9 @@ body {
     justify-content: center;
     align-items: center;
     border: 1px solid white;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
 }
 
 #saved-portrait {
@@ -82,6 +97,7 @@ body {
     border: 1px solid white;
     background-color: #2a2a2a;
     padding: 10px;
+    box-sizing: border-box;
 }
 
 /* Поле ввода названия портрета */
@@ -90,10 +106,11 @@ body {
     font-size: 1em;
     width: 100%;
     max-width: 300px;
-    margin: 10px 0;
+    margin: 10px auto;
     border: 1px solid white;
     background-color: #2a2a2a;
     color: #fff;
+    box-sizing: border-box;
 }
 
 /* Стили для кнопок навигации */
@@ -104,7 +121,8 @@ body {
     border: none;
     padding: 10px 20px;
     cursor: pointer;
-    margin: 10px;
+    margin: 0;
+    z-index: 10; /* Убедимся, что кнопки поверх контента */
 }
 
 .back {
@@ -129,6 +147,7 @@ body {
     color: #fff;
     border: none;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .language-btn:hover {
@@ -159,6 +178,8 @@ body {
     justify-content: center;
     gap: 10px;
     flex-wrap: nowrap;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Стили для текста */
@@ -167,6 +188,7 @@ body {
     text-shadow: 0 0 5px #e7c2f4, 0 0 10px #e7c2f4; /* Подсветка текста */
     padding: 5px;
     display: inline-block;
+    box-sizing: border-box;
 }
 
 .language-text:not(.step-title) {
@@ -187,6 +209,7 @@ body {
     white-space: nowrap;
     border-right: 2px solid #ffffff;
     animation: typing 2s steps(20, end), blink 0.5s step-end infinite;
+    box-sizing: border-box;
 }
 
 @keyframes typing {
@@ -204,6 +227,7 @@ body {
     max-width: 400px;
     height: 200px;
     background-color: #000;
+    box-sizing: border-box;
 }
 
 /* Стили для модального окна */
@@ -217,6 +241,7 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
 }
 
 .modal-content {
@@ -225,12 +250,14 @@ body {
     border: 1px solid white;
     border-radius: 5px;
     text-align: center;
+    box-sizing: border-box;
 }
 
 .gallery {
     display: flex;
     justify-content: center;
     gap: 10px;
+    box-sizing: border-box;
 }
 
 .gallery img {
@@ -238,6 +265,7 @@ body {
     height: 100px;
     cursor: pointer;
     border: 1px solid white;
+    box-sizing: border-box;
 }
 
 /* Адаптивность для мобильных устройств */
