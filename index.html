@@ -42,6 +42,19 @@
             <div class="text-block">
                 <p class="language-text" data-i18n="step2_text1">Вы можете загрузить изображение или выбрать вариант из архива.</p>
             </div>
+            <div class="button-block">
+                <button class="action-btn" onclick="loadImage()">Загрузить портрет</button>
+                <button class="action-btn" onclick="openGallery()">Выбрать из архива</button>
+            </div>
+            <div class="button-block">
+                <button class="back">Назад</button>
+                <button class="continue">Продолжить</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="step-2-1" class="step">
+        <div class="step-content">
             <div class="text-block typewriter" data-i18n="step2_text2">> Изображение принято.</div>
             <div class="text-block typewriter" data-i18n="step2_text3">> Запускается волновая функция.</div>
             <div class="text-block typewriter" data-i18n="step2_text4">> Система готова к инициализации.</div>
@@ -82,6 +95,15 @@
             <div class="text-block typewriter" data-i18n="step4_text1">Двигайте курсором по изображению.</div>
             <div class="text-block typewriter" data-i18n="step4_text2">Каждый ваш жест запускает коллапс.</div>
             <div class="text-block typewriter" data-i18n="step4_text3">Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</div>
+            <div class="split-container">
+                <div class="animation-container">
+                    <p>Контейнер для визуализации квантовых процессов (зарезервировано)</p>
+                </div>
+                <div class="terminal-container">
+                    <p>Терминал: Квантовая анимация обновляется...</p>
+                </div>
+            </div>
+            <div class="portrait-animation-container"></div>
             <div class="button-block">
                 <button class="back">Назад</button>
                 <button class="continue">Продолжить</button>
@@ -97,7 +119,17 @@
             <div class="text-block typewriter" data-i18n="step5_text1">Портрет — это процесс.</div>
             <div class="text-block typewriter" data-i18n="step5_text2">Но ты можешь зафиксировать один миг.</div>
             <div class="text-block typewriter" data-i18n="step5_text3">Это будет один из возможных тебя.</div>
+            <div class="split-container">
+                <div class="animation-container">
+                    <p>Контейнер для визуализации квантовых процессов (зарезервировано)</p>
+                </div>
+                <div class="terminal-container">
+                    <p>Терминал: Квантовая анимация обновляется...</p>
+                </div>
+            </div>
+            <div class="portrait-animation-container"></div>
             <div class="button-block">
+                <button class="action-btn" onclick="recordObservation()">Запустить коллапс</button>
                 <button class="back">Назад</button>
                 <button class="continue">Продолжить</button>
             </div>
@@ -112,6 +144,12 @@
             <div class="text-block typewriter" data-i18n="step6_text1">Это не портрет.</div>
             <div class="text-block typewriter" data-i18n="step6_text2">Это — реакция системы на тебя.</div>
             <div class="text-block typewriter" data-i18n="step6_text3">Ты повлиял на исход.</div>
+            <div class="image-container">
+                <img id="saved-portrait" src="" alt="Saved Portrait" style="display: none;">
+            </div>
+            <div class="text-block">
+                <input type="text" id="portrait-name" placeholder="Введите название портрета">
+            </div>
             <div class="button-block">
                 <button class="back">Назад</button>
                 <button class="continue">Продолжить</button>
@@ -125,13 +163,13 @@
                 <p class="language-text step-title" data-i18n="step7_title">Заключение</p>
             </div>
             <div class="text-block typewriter" data-i18n="step7_text1">Ты — не единственный наблюдатель</div>
-            <div class="text-block typewriter" data-i18n="step7_text2">Каждое наблюдение — это акт, формирующий образ.</div>
+            <div class="text-block typewriter" data-i18n="step7_text2">Каждое наблюдение —
+
+ это акт, формирующий образ.</div>
             <div class="text-block typewriter" data-i18n="step7_text3">Здесь ты — одновременно субъект и объект.</div>
             <div class="button-block">
+                <button class="action-btn" onclick="shareToArchive()">Поделиться изображением в архив</button>
                 <button class="back">Назад</button>
-                <button class="action-btn" onclick="restart()">[↻ НАЧАТЬ СНАЧАЛА]</button>
-                <a href="https://t.me/your_archive" class="action-btn" target="_blank">[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]</a>
-                <button class="action-btn" onclick="showAuthors()">[ОБ АВТОРАХ]</button>
             </div>
         </div>
     </section>
@@ -143,5 +181,3 @@
     <script src="js/textSteps.js"></script>
     <script src="js/audio.js"></script>
     <script src="js/main.js"></script>
-</body>
-</html>
