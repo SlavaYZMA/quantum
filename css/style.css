@@ -13,10 +13,10 @@ body {
 .step {
     width: 100%;
     min-height: 100vh; /* Минимальная высота экрана */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Центрирование всего стека по вертикали */
-    align-items: center; /* Центрирование по горизонтали */
+    display: grid;
+    grid-template-rows: 1fr auto 1fr; /* Верхний отступ, контент, нижний отступ */
+    grid-template-columns: 100%; /* Одна колонка */
+    place-items: center; /* Центрирование по вертикали и горизонтали */
     border: 1px dashed red; /* Внешний красный пунктирный контейнер */
     box-sizing: border-box;
     overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
