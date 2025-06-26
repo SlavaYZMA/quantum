@@ -21,7 +21,7 @@ body {
     padding: 0;
 }
 
-/* Контейнер для первого центрированного блока */
+/* Контейнер для первого центрированного блока (заголовок и текст) */
 .step-centered {
     position: absolute;
     top: 50%;
@@ -33,9 +33,9 @@ body {
     box-sizing: border-box;
 }
 
-/* Контейнер для прокручиваемого контента */
+/* Контейнер для прокручиваемого контента ниже заголовка */
 .scrollable-content {
-    margin-top: 200px; /* Смещение для размещения ниже центрированного блока */
+    margin-top: 20px; /* Равномерный вертикальный отступ после заголовка */
     width: 90%;
     max-width: 800px;
     margin-left: auto;
@@ -276,9 +276,12 @@ body {
 
 /* Адаптивность для мобильных устройств */
 @media screen and (max-width: 600px) {
-    .step-content {
+    .step-centered {
+        max-width: 90%;
+    }
+    .scrollable-content {
         width: 95%;
-        padding: 10px;
+        margin-top: 15px; /* Уменьшаем отступ для мобильных */
     }
     .text-block, .button-block, .split-container, .portrait-animation-container, .image-container {
         margin: 5px 0;
@@ -310,11 +313,5 @@ body {
     .back, .continue {
         padding: 8px 15px;
         font-size: 0.9em;
-    }
-    .step-centered {
-        max-width: 90%;
-    }
-    .scrollable-content {
-        margin-top: 150px; /* Уменьшаем смещение для мобильных */
     }
 }
