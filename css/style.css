@@ -20,8 +20,8 @@ body {
     overflow-y: auto; /* Разрешаем вертикальную прокрутку */
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Центрирование по вертикали */
-    align-items: center; /* Центрирование по горизонтали */
+    justify-content: center; /* Вертикальное центрирование */
+    align-items: center; /* Горизонтальное центрирование */
 }
 
 /* Контейнер для первого центрированного блока (заголовок и текст) */
@@ -30,13 +30,10 @@ body {
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px; /* Отступ перед кнопками */
+    margin-bottom: 20px; /* Отступ перед остальным контентом */
 }
 
-/* Контейнер для прокручиваемого контента (кнопки и анимации) */
+/* Контейнер для прокручиваемого контента ниже заголовка */
 .scrollable-content {
     width: 100%;
     max-width: 600px; /* Совпадение с .step-centered для выравнивания */
