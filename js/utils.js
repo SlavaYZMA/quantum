@@ -12,9 +12,12 @@ window.loadImage = () => {
                 img.src = event.target.result;
                 img.onload = () => {
                     window.img = createImage(img.width, img.height); // Создаём p5.Image
-                    window.img.loadPixels();
-                    loadPixels(img, window.img);
+                    window.img.drawingContext.drawImage(img, 0, 0); // Рисуем изображение
+                    window.img.updatePixels(); // Обновляем пиксели
                     console.log('Image loaded and converted to p5.Image:', img.src);
+                    if (window.currentStep === 2) {
+                        showStep(3); // Автоматический переход к шагу 3 после загрузки
+                    }
                 };
             };
             reader.readAsDataURL(file);
@@ -23,7 +26,7 @@ window.loadImage = () => {
     input.click();
 };
 
-// Вспомогательная функция для загрузки пикселей
+// Вспомогательная функция для загрузки пикселей (оставлена как есть)
 function loadPixels(imgElement, p5Image) {
     p5Image.drawingContext.drawImage(imgElement, 0, 0);
     p5Image.updatePixels();
