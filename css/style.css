@@ -15,6 +15,7 @@ body {
     min-height: 100vh; /* Минимальная высота экрана */
     display: flex;
     flex-direction: column;
+    justify-content: center; /* Центрирование всего стека по вертикали */
     align-items: center; /* Центрирование по горизонтали */
     border: 1px dashed red; /* Внешний красный пунктирный контейнер */
     box-sizing: border-box;
