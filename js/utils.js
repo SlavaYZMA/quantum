@@ -18,5 +18,3 @@ window.loadImage = () => {
     };
     input.click();
 };
-
-// Удаляем устаревшую функцию loadPixels, так как она не нужна с p5.loadImage
