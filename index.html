@@ -49,7 +49,7 @@
         </div>
         <div class="scrollable-content">
             <div class="button-block">
-                <button class="action-btn" id="loadImageButton" onclick="loadImage()">Загрузить портрет</button>
+                <button class="action-btn" id="loadImageButton" onclick="window.quantumSketch.loadImage()">Загрузить портрет</button>
                 <button class="action-btn" onclick="openGallery()">Выбрать из архива</button>
             </div>
             <div class="button-block">
@@ -59,6 +59,7 @@
         </div>
     </section>
 
+    <!-- Остальные секции остаются без изменений -->
     <section id="step-2-1" class="step">
         <div class="step-centered">
             <div class="text-block typewriter" data-i18n="step2_text2">> Изображение принято.</div>
@@ -191,12 +192,56 @@
         </div>
     </section>
 
-    <!-- Исправленный URL для p5.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <script>
         // Проверка инициализации p5.js
         if (typeof p5 !== 'undefined') {
             console.log('p5.js loaded successfully at', new Date().toLocaleTimeString());
+            window.quantumSketch = new p5((sketch) => {
+                window.sketch = sketch;
+                sketch.setup = () => {
+                    sketch.createCanvas(400, 400).parent('portrait-animation-container');
+                    sketch.noLoop();
+                };
+                sketch.loadImage = () => {
+                    console.log('loadImage function called');
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = (e) => {
+                        console.log('File input changed, processing file...');
+                        const file = e.target.files[0];
+                        if (file) {
+                            sketch.loadImage(URL.createObjectURL(file), (img) => {
+                                console.log('Image loaded successfully:', img.width, 'x', img.height);
+                                window.img = img;
+                                if (typeof showStep === 'function' && window.currentStep === 2) {
+                                    showStep(3);
+                                }
+                            }, (err) => {
+                                console.error('Error loading image:', err);
+                            });
+                        } else {
+                            console.log('No file selected');
+                        }
+                    };
+                    try {
+                        input.click();
+                        console.log('File input triggered');
+                    } catch (error) {
+                        console.error('Failed to trigger file input:', error);
+                    }
+                };
+                sketch.recordObservation = () => {
+                    if (window.img && !sketch.isLooping()) {
+                        console.log('Observation recorded');
+                        let dataURL = sketch.get().canvas.toDataURL();
+                        document.getElementById('saved-portrait').src = dataURL;
+                        document.getElementById('saved-portrait').style.display = 'block';
+                        if (typeof showStep === 'function') showStep(6);
+                    }
+                };
+            }, 'portrait-animation-container');
         } else {
             console.error('p5.js failed to load - please check your internet connection or URL');
         }
@@ -209,12 +254,11 @@
     <script src="js/audio.js"></script>
     <script src="js/main.js"></script>
     <script>
-        // Проверка доступности ключевых функций
         console.log('All scripts loaded, checking functions:', {
             setLanguageAndNext: typeof setLanguageAndNext === 'function',
-            loadImage: typeof loadImage === 'function',
+            loadImage: typeof window.quantumSketch?.loadImage === 'function',
             openGallery: typeof openGallery === 'function',
-            recordObservation: typeof recordObservation === 'function',
+            recordObservation: typeof window.quantumSketch?.recordObservation === 'function',
             shareToArchive: typeof shareToArchive === 'function'
         });
     </script>
