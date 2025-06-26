@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (button.textContent.includes('[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]')) {
             button.addEventListener('click', () => {
                 console.log('Archive button clicked');
-                window.open('[invalid url, do not cite] '_blank');
+                window.open('https://t.me/your_archive', '_blank');
             });
         } else if (button.textContent.includes('[ОБ АВТОРАХ]')) {
             button.addEventListener('click', () => {
