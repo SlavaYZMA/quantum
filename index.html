@@ -1,127 +1,199 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Portraits</title>
+    <title>Квантовые портреты</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="step" id="step-0">
+    <section id="step-0" class="step">
         <div class="step-centered">
-            <h1 class="step-title">Quantum Portraits</h1>
-            <p class="language-text">Welcome! This is an art & science project exploring quantum mechanics through portraits.</p>
+            <div class="text-block">
+                <p class="language-text" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</p>
+            </div>
+        </div>
+        <div class="scrollable-content">
             <div class="button-block">
-                <button class="continue language-btn">Continue</button>
+                <button class="language-btn" onclick="setLanguageAndNext('ru')">RU</button>
+                <button class="language-btn" onclick="setLanguageAndNext('eng')">ENG</button>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="step" id="step-1">
+    <section id="step-1" class="step">
         <div class="step-centered">
-            <h1 class="step-title">Step 1: Scan the superposition face.</h1>
-            <p class="language-text">Upload your portrait or select from the archive to begin the quantum journey.</p>
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step1_title">СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН</p>
+            </div>
+            <div class="text-block typewriter" data-i18n="step1_text1">> Чему Шредингер может научить нас в области цифровой идентификации?</div>
+            <div class="text-block typewriter" data-i18n="step1_text2">> Добро пожаловать в экспериментальную зону.</div>
+            <div class="text-block typewriter" data-i18n="step1_text3">> Здесь наблюдение = вмешательство</div>
+        </div>
+        <div class="scrollable-content">
             <div class="button-block">
-                <button class="action-btn">Upload Portrait</button>
-                <button class="action-btn">Select from Archive</button>
+                <button class="back">Назад</button>
+                <button class="continue">Продолжить</button>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="step" id="step-2">
+    <section id="step-2" class="step">
         <div class="step-centered">
-            <h1 class="step-title">Step 2: Initialize the quantum state.</h1>
-            <p class="language-text">The system is preparing your portrait for quantum transformation.</p>
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step2_title">Шаг 1: Сканируйте лицо суперпозиции.</p>
+            </div>
+            <div class="text-block">
+                <p class="language-text" data-i18n="step2_text1">Вы можете загрузить изображение или выбрать вариант из архива.</p>
+            </div>
+        </div>
+        <div class="scrollable-content">
             <div class="button-block">
-                <button class="continue language-btn">Continue</button>
+                <button class="action-btn" onclick="loadImage()">Загрузить портрет</button>
+                <button class="action-btn" onclick="openGallery()">Выбрать из архива</button>
+            </div>
+            <div class="button-block">
+                <button class="back">Назад</button>
+                <button class="continue">Продолжить</button>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="step" id="step-3">
+    <section id="step-2-1" class="step">
         <div class="step-centered">
-            <h1 class="step-title">Step 3: НАЧНИТЕ НАБЛЮДЕНИЕ</h1>
-            <p class="language-text">Observe the quantum superposition of your portrait. Click to pause and save.</p>
-            <div class="scrollable-content">
-                <div class="text-block">Watch the particles evolve in multiple states.</div>
-                <div class="portrait-animation-container" id="portrait-animation-container">
-                    <!-- Canvas will be injected here by p5.js -->
-                </div>
-                <div class="button-block" id="saveButton" style="display: none;">
-                    <button class="action-btn">Save Portrait</button>
-                </div>
+            <div class="text-block typewriter" data-i18n="step2_text2">> Изображение принято.</div>
+        </div>
+        <div class="scrollable-content">
+            <div class="text-block typewriter" data-i18n="step2_text3">> Запускается волновая функция.</div>
+            <div class="text-block typewriter" data-i18n="step2_text4">> Система готова к инициализации.</div>
+            <div class="button-block">
+                <button class="back">Назад</button>
+                <button class="continue">Продолжить</button>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="step" id="step-4">
+    <section id="step-3" class="step">
         <div class="step-centered">
-            <h1 class="step-title">Step 4: ФИКСАЦИЯ</h1>
-            <p class="language-text">Fix the quantum state by observing. Click to pause and save the final portrait.</p>
-            <div class="scrollable-content">
-                <div class="text-block">The wave function is collapsing into a single state.</div>
-                <div class="portrait-animation-container" id="portrait-animation-container">
-                    <!-- Canvas will be injected here by p5.js -->
-                </div>
-                <div class="button-block" id="saveButton" style="display: none;">
-                    <button class="action-btn">Save Portrait</button>
-                </div>
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step3_title">Шаг 2: Инициализация</p>
             </div>
         </div>
-    </div>
+        <div class="scrollable-content">
+            <div class="text-block typewriter" data-i18n="step3_text1">> Изображение преобразовано в пиксельную сетку.</div>
+            <div class="text-block typewriter" data-i18n="step3_text2">> Каждому пикселю назначены параметры (x, y, brightness, color)<span class="green-text"> (x, y, brightness, color)</span>.</div>
+            <div class="text-block typewriter" data-i18n="step3_text3">> На их основе построена волновая функция: ψ(x, y, t)<span class="green-text"> ψ(x, y, t)</span>.</div>
+            <div class="text-block typewriter" data-i18n="step3_text4">Уравнение эволюции:</div>
+            <div class="text-block typewriter">
+                <p class="language-text green-text" data-i18n="step3_text5">iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
+            </div>
+            <div class="text-block typewriter" data-i18n="step3_text6">> Потенциал V(x, y)<span class="green-text"> V(x, y)</span> формируется из визуальных характеристик изображения.</div>
+            <div class="text-block typewriter" data-i18n="step3_text7">> Система переходит в режим временной симуляции.</div>
+            <div class="text-block typewriter" data-i18n="step3_text8">> Портрет существует как совокупность возможных состояний.</div>
+            <div class="button-block">
+                <button class="back">Назад</button>
+                <button class="continue">Продолжить</button>
+            </div>
+        </div>
+    </section>
 
-    <div class="step" id="step-5">
+    <section id="step-4" class="step">
         <div class="step-centered">
-            <h1 class="step-title">Step 5: Save and Share</h1>
-            <p class="language-text">Enter a name for your quantum portrait and save it.</p>
-            <div class="scrollable-content">
-                <div class="text-block">
-                    <input type="text" id="portrait-name" placeholder="Enter portrait name">
-                </div>
-                <div class="button-block">
-                    <button class="action-btn">Save</button>
-                    <button class="action-btn">Share</button>
-                </div>
-                <div class="image-container">
-                    <img id="saved-portrait" src="" alt="Saved Quantum Portrait">
-                </div>
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step4_title">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</p>
             </div>
         </div>
-    </div>
+        <div class="scrollable-content">
+            <div class="text-block typewriter" data-i18n="step4_text1">Двигайте курсором по изображению.</div>
+            <div class="text-block typewriter" data-i18n="step4_text2">Каждый ваш жест запускает коллапс.</div>
+            <div class="text-block typewriter" data-i18n="step4_text3">Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</div>
+            <div class="split-container">
+                <div class="animation-container">
+                    <p>Контейнер для визуализации квантовых процессов (зарезервировано)</p>
+                </div>
+                <div class="terminal-container">
+                    <p>Терминал: Квантовая анимация обновляется...</p>
+                </div>
+            </div>
+            <div class="portrait-animation-container"></div>
+            <div class="button-block">
+                <button class="back">Назад</button>
+                <button class="continue">Продолжить</button>
+            </div>
+        </div>
+    </section>
 
-    <div class="step" id="step-6">
+    <section id="step-5" class="step">
         <div class="step-centered">
-            <h1 class="step-title">Step 6: Explore the Gallery</h1>
-            <p class="language-text">View and select from previously saved quantum portraits.</p>
-            <div class="scrollable-content">
-                <div class="gallery" id="gallery"></div>
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step5_title">Шаг 4: ФИКСАЦИЯ</p>
             </div>
         </div>
-    </div>
-
-    <div class="step" id="step-7">
-        <div class="step-centered">
-            <h1 class="step-title">Step 7: Finalize and Exit</h1>
-            <p class="language-text">Thank you for exploring quantum portraits. Finalize or start over.</p>
-            <div class="scrollable-content">
-                <div class="button-block">
-                    <button class="action-btn">Finalize</button>
-                    <button class="action-btn">Start Over</button>
+        <div class="scrollable-content">
+            <div class="text-block typewriter" data-i18n="step5_text1">Портрет — это процесс.</div>
+            <div class="text-block typewriter" data-i18n="step5_text2">Но ты можешь зафиксировать один миг.</div>
+            <div class="text-block typewriter" data-i18n="step5_text3">Это будет один из возможных тебя.</div>
+            <div class="split-container">
+                <div class="animation-container">
+                    <p>Контейнер для визуализации квантовых процессов (зарезервировано)</p>
+                </div>
+                <div class="terminal-container">
+                    <p>Терминал: Квантовая анимация обновляется...</p>
                 </div>
             </div>
+            <div class="portrait-animation-container"></div>
+            <div class="button-block">
+                <button class="action-btn" onclick="recordObservation()">Запустить коллапс</button>
+                <button class="back">Назад</button>
+                <button class="continue">Продолжить</button>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <button class="back">Back</button>
-    <button class="continue">Continue</button>
+    <section id="step-6" class="step">
+        <div class="step-centered">
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step6_title">Шаг 5: РЕАКЦИЯ СИСТЕМЫ</p>
+            </div>
+        </div>
+        <div class="scrollable-content">
+            <div class="text-block typewriter" data-i18n="step6_text1">Это не портрет.</div>
+            <div class="text-block typewriter" data-i18n="step6_text2">Это — реакция системы на тебя.</div>
+            <div class="text-block typewriter" data-i18n="step6_text3">Ты повлиял на исход.</div>
+            <div class="image-container">
+                <img id="saved-portrait" src="" alt="Saved Portrait" style="display: none;">
+            </div>
+            <div class="text-block">
+                <input type="text" id="portrait-name" placeholder="Введите название портрета">
+            </div>
+            <div class="button-block">
+                <button class="back">Назад</button>
+                <button class="continue">Продолжить</button>
+            </div>
+        </div>
+    </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+    <section id="step-7" class="step">
+        <div class="step-centered">
+            <div class="text-block">
+                <p class="language-text step-title" data-i18n="step7_title">Заключение</p>
+            </div>
+        </div>
+        <div class="scrollable-content">
+            <div class="text-block typewriter" data-i18n="step7_text1">Ты — не единственный наблюдатель</div>
+            <div class="text-block typewriter" data-i18n="step7_text2">Каждое наблюдение — это акт, формирующий образ.</div>
+            <div class="text-block typewriter" data-i18n="step7_text3">Здесь ты — одновременно субъект и объект.</div>
+            <div class="button-block">
+                <button class="action-btn" onclick="shareToArchive()">Поделиться изображением в архив</button>
+                <button class="back">Назад</button>
+            </div>
+        </div>
+    </section>
+
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/particles.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/textSteps.js"></script>
     <script src="js/observer.js"></script>
+    <script src="js/textSteps.js"></script>
     <script src="js/audio.js"></script>
-</body>
-</html>
+    <script src="js/main.js"></script>
