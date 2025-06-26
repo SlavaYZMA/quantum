@@ -89,6 +89,20 @@ body {
     width: 100%;
     max-width: 400px;
     box-sizing: border-box;
+    position: relative; /* Для позиционирования метки */
+}
+
+.portrait-animation-container::before {
+    content: "Окно квантового портрета";
+    color: #00ff00;
+    font-size: 12px;
+    text-align: center;
+    display: block;
+    margin-bottom: 10px;
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 /* Контейнер для изображения */
