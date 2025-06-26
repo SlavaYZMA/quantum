@@ -7,193 +7,130 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <section id="step-0" class="step">
+    <div class="step" id="step-0">
         <div class="step-centered">
             <div class="text-block">
-                <p class="language-text" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</p>
+                <h1 class="step-title">Добро пожаловать в Квантовые портреты</h1>
+                <p class="language-text">Выберите язык / Select language:</p>
+                <button class="language-btn" onclick="changeLanguage('ru')">Русский</button>
+                <button class="language-btn" onclick="changeLanguage('en')">English</button>
             </div>
-        </div>
-        <div class="scrollable-content">
             <div class="button-block">
-                <button class="language-btn" onclick="setLanguageAndNext('ru')">RU</button>
-                <button class="language-btn" onclick="setLanguageAndNext('eng')">ENG</button>
+                <button class="continue" onclick="nextStep()">Continue</button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section id="step-1" class="step">
+    <div class="step" id="step-1" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
-                <p class="language-text step-title" data-i18n="step1_title">СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН</p>
+                <h1 class="step-title">Шаг 1: Загрузите портрет</h1>
+                <p class="language-text">Загрузите изображение лица для квантового анализа / Upload a face image for quantum analysis:</p>
+                <input type="file" id="portraitUpload" accept="image/*">
             </div>
-            <div class="text-block typewriter" data-i18n="step1_text1">> Чему Шредингер может научить нас в области цифровой идентификации?</div>
-            <div class="text-block typewriter" data-i18n="step1_text2">> Добро пожаловать в экспериментальную зону.</div>
-            <div class="text-block typewriter" data-i18n="step1_text3">> Здесь наблюдение = вмешательство</div>
-        </div>
-        <div class="scrollable-content">
             <div class="button-block">
-                <button class="back">Назад</button>
-                <button class="continue">Продолжить</button>
+                <button class="back" onclick="prevStep()">Back</button>
+                <button class="continue" onclick="nextStep()">Continue</button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section id="step-2" class="step">
+    <div class="step" id="step-2" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
-                <p class="language-text step-title" data-i18n="step2_title">Шаг 1: Сканируйте лицо суперпозиции.</p>
-            </div>
-            <div class="text-block">
-                <p class="language-text" data-i18n="step2_text1">Вы можете загрузить изображение или выбрать вариант из архива.</p>
-            </div>
-        </div>
-        <div class="scrollable-content">
-            <div class="button-block">
-                <button class="action-btn" onclick="loadImage()">Загрузить портрет</button>
-                <button class="action-btn" onclick="openGallery()">Выбрать из архива</button>
+                <h1 class="step-title">Шаг 2: Выбор портрета</h1>
+                <p class="language-text">Выберите портрет из архива или используйте загруженный / Select from archive or use uploaded:</p>
+                <button class="action-btn" onclick="selectFromArchive()">Select from Archive</button>
+                <button class="action-btn" onclick="useUploadedPortrait()">Upload Portrait</button>
             </div>
             <div class="button-block">
-                <button class="back">Назад</button>
-                <button class="continue">Продолжить</button>
+                <button class="back" onclick="prevStep()">Back</button>
+                <button class="continue" onclick="nextStep()">Continue</button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section id="step-2-1" class="step">
-        <div class="step-centered">
-            <div class="text-block typewriter" data-i18n="step2_text2">> Изображение принято.</div>
-        </div>
-        <div class="scrollable-content">
-            <div class="text-block typewriter" data-i18n="step2_text3">> Запускается волновая функция.</div>
-            <div class="text-block typewriter" data-i18n="step2_text4">> Система готова к инициализации.</div>
-            <div class="button-block">
-                <button class="back">Назад</button>
-                <button class="continue">Продолжить</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="step-3" class="step">
+    <div class="step" id="step-3" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
-                <p class="language-text step-title" data-i18n="step3_title">Шаг 2: Инициализация</p>
+                <h1 class="step-title">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</h1>
+                <p class="language-text">Наблюдайте за квантовыми состояниями портрета / Observe the quantum states of the portrait:</p>
             </div>
-        </div>
-        <div class="scrollable-content">
-            <div class="text-block typewriter" data-i18n="step3_text1">> Изображение преобразовано в пиксельную сетку.</div>
-            <div class="text-block typewriter" data-i18n="step3_text2">> Каждому пикселю назначены параметры (x, y, brightness, color)<span class="green-text"> (x, y, brightness, color)</span>.</div>
-            <div class="text-block typewriter" data-i18n="step3_text3">> На их основе построена волновая функция: ψ(x, y, t)<span class="green-text"> ψ(x, y, t)</span>.</div>
-            <div class="text-block typewriter" data-i18n="step3_text4">Уравнение эволюции:</div>
-            <div class="text-block typewriter">
-                <p class="language-text green-text" data-i18n="step3_text5">iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
-            </div>
-            <div class="text-block typewriter" data-i18n="step3_text6">> Потенциал V(x, y)<span class="green-text"> V(x, y)</span> формируется из визуальных характеристик изображения.</div>
-            <div class="text-block typewriter" data-i18n="step3_text7">> Система переходит в режим временной симуляции.</div>
-            <div class="text-block typewriter" data-i18n="step3_text8">> Портрет существует как совокупность возможных состояний.</div>
-            <div class="button-block">
-                <button class="back">Назад</button>
-                <button class="continue">Продолжить</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="step-4" class="step">
-        <div class="step-centered">
-            <div class="text-block">
-                <p class="language-text step-title" data-i18n="step4_title">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</p>
-            </div>
-        </div>
-        <div class="scrollable-content">
-            <div class="text-block typewriter" data-i18n="step4_text1">Двигайте курсором по изображению.</div>
-            <div class="text-block typewriter" data-i18n="step4_text2">Каждый ваш жест запускает коллапс.</div>
-            <div class="text-block typewriter" data-i18n="step4_text3">Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</div>
-            <div class="split-container">
-                <div class="animation-container">
-                    <p>Контейнер для визуализации квантовых процессов (зарезервировано)</p>
-                </div>
-                <div class="terminal-container">
-                    <p>Терминал: Квантовая анимация обновляется...</p>
+            <div class="scrollable-content">
+                <div class="portrait-animation-container" id="portrait-animation-container"></div>
+                <div class="button-block">
+                    <button class="back" onclick="prevStep()">Back</button>
+                    <button class="continue" onclick="nextStep()">Continue</button>
                 </div>
             </div>
-            <div class="portrait-animation-container"></div>
-            <div class="button-block">
-                <button class="back">Назад</button>
-                <button class="continue">Продолжить</button>
-            </div>
         </div>
-    </section>
+    </div>
 
-    <section id="step-5" class="step">
+    <div class="step" id="step-4" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
-                <p class="language-text step-title" data-i18n="step5_title">Шаг 4: ФИКСАЦИЯ</p>
+                <h1 class="step-title">Шаг 4: ФИКСАЦИЯ</h1>
+                <p class="language-text">Зафиксируйте квантовое состояние портрета / Fix the quantum state of the portrait:</p>
             </div>
-        </div>
-        <div class="scrollable-content">
-            <div class="text-block typewriter" data-i18n="step5_text1">Портрет — это процесс.</div>
-            <div class="text-block typewriter" data-i18n="step5_text2">Но ты можешь зафиксировать один миг.</div>
-            <div class="text-block typewriter" data-i18n="step5_text3">Это будет один из возможных тебя.</div>
-            <div class="split-container">
-                <div class="animation-container">
-                    <p>Контейнер для визуализации квантовых процессов (зарезервировано)</p>
-                </div>
-                <div class="terminal-container">
-                    <p>Терминал: Квантовая анимация обновляется...</p>
+            <div class="scrollable-content">
+                <div class="portrait-animation-container" id="portrait-animation-container"></div>
+                <div class="button-block">
+                    <button class="back" onclick="prevStep()">Back</button>
+                    <button class="continue" onclick="nextStep()">Continue</button>
+                    <button id="saveButton" style="display: none;" onclick="savePortrait()">Save Portrait</button>
                 </div>
             </div>
-            <div class="portrait-animation-container"></div>
-            <div class="button-block">
-                <button class="action-btn" onclick="recordObservation()">Запустить коллапс</button>
-                <button class="back">Назад</button>
-                <button class="continue">Продолжить</button>
-            </div>
         </div>
-    </section>
+    </div>
 
-    <section id="step-6" class="step">
+    <div class="step" id="step-5" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
-                <p class="language-text step-title" data-i18n="step6_title">Шаг 5: РЕАКЦИЯ СИСТЕМЫ</p>
-            </div>
-        </div>
-        <div class="scrollable-content">
-            <div class="text-block typewriter" data-i18n="step6_text1">Это не портрет.</div>
-            <div class="text-block typewriter" data-i18n="step6_text2">Это — реакция системы на тебя.</div>
-            <div class="text-block typewriter" data-i18n="step6_text3">Ты повлиял на исход.</div>
-            <div class="image-container">
-                <img id="saved-portrait" src="" alt="Saved Portrait" style="display: none;">
-            </div>
-            <div class="text-block">
-                <input type="text" id="portrait-name" placeholder="Введите название портрета">
+                <h1 class="step-title">Шаг 5: Назови свой портрет</h1>
+                <p class="language-text">Введите имя для сохранения / Enter a name to save:</p>
+                <input type="text" id="portrait-name" placeholder="Название портрета">
             </div>
             <div class="button-block">
-                <button class="back">Назад</button>
-                <button class="continue">Продолжить</button>
+                <button class="back" onclick="prevStep()">Back</button>
+                <button class="continue" onclick="nextStep()">Continue</button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section id="step-7" class="step">
+    <div class="step" id="step-6" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
-                <p class="language-text step-title" data-i18n="step7_title">Заключение</p>
+                <h1 class="step-title">Шаг 6: Сохранённые портреты</h1>
+                <p class="language-text">Просмотрите и выберите сохранённые портреты / View and select saved portraits:</p>
+                <div class="image-container" id="saved-portraits"></div>
             </div>
-        </div>
-        <div class="scrollable-content">
-            <div class="text-block typewriter" data-i18n="step7_text1">Ты — не единственный наблюдатель</div>
-            <div class="text-block typewriter" data-i18n="step7_text2">Каждое наблюдение — это акт, формирующий образ.</div>
-            <div class="text-block typewriter" data-i18n="step7_text3">Здесь ты — одновременно субъект и объект.</div>
             <div class="button-block">
-                <button class="action-btn" onclick="shareToArchive()">Поделиться изображением в архив</button>
-                <button class="back">Назад</button>
+                <button class="back" onclick="prevStep()">Back</button>
+                <button class="continue" onclick="nextStep()">Continue</button>
             </div>
         </div>
-    </section>
+    </div>
 
+    <div class="step" id="step-7" style="display: none;">
+        <div class="step-centered">
+            <div class="text-block">
+                <h1 class="step-title">Шаг 7: Делитесь своим искусством</h1>
+                <p class="language-text">Поделитесь своим квантовым портретом с миром / Share your quantum portrait with the world:</p>
+            </div>
+            <div class="button-block">
+                <button class="action-btn" onclick="shareOnX()">Share on X</button>
+                <button class="action-btn" onclick="downloadPortrait()">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
-    <script src="js/particles.js"></script>
-    <script src="js/observer.js"></script>
-    <script src="js/textSteps.js"></script>
     <script src="js/audio.js"></script>
+    <script src="js/textSteps.js"></script>
+    <script src="js/observer.js"></script>
+    <script src="js/particles.js"></script>
     <script src="js/main.js"></script>
+</body>
+</html>
