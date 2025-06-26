@@ -49,7 +49,7 @@
         </div>
         <div class="scrollable-content">
             <div class="button-block">
-                <button class="action-btn" id="loadImageButton" onclick="loadImage()">Загрузить портрет</button>
+                <button class="action-btn" id="loadImageButton" onclick="window.quantumSketch.loadImage()">Загрузить портрет</button>
                 <button class="action-btn" onclick="openGallery()">Выбрать из архива</button>
             </div>
             <div class="button-block">
@@ -74,7 +74,7 @@
     </section>
 
     <section id="step-3" class="step">
-        <div class="step-centered">
+        <div class=" step-centered">
             <div class="text-block">
                 <p class="language-text step-title" data-i18n="step3_title">Шаг 2: Инициализация</p>
             </div>
@@ -85,7 +85,9 @@
             <div class="text-block typewriter" data-i18n="step3_text3">> На их основе построена волновая функция: ψ(x, y, t)<span class="green-text"> ψ(x, y, t)</span>.</div>
             <div class="text-block typewriter" data-i18n="step3_text4">Уравнение эволюции:</div>
             <div class="text-block typewriter">
-                <p class="language-text green-text" data-i18n="step3_text5">iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
+                <p class="language-text green-text" data-i18n="step3_text5">iℏ ∂ψ/∂tწ
+
+t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
             </div>
             <div class="text-block typewriter" data-i18n="step3_text6">> Потенциал V(x, y)<span class="green-text"> V(x, y)</span> формируется из визуальных характеристик изображения.</div>
             <div class="text-block typewriter" data-i18n="step3_text7">> Система переходит в режим временной симуляции.</div>
@@ -104,7 +106,7 @@
             </div>
         </div>
         <div class="scrollable-content">
-            <div class="text-block typewriter" data-i18n="step4_text1">Двигайте курсором по изображению.</div>
+            <div class=" text-block typewriter" data-i18n="step4_text1">Двигайте курсором по изображению.</div>
             <div class="text-block typewriter" data-i18n="step4_text2">Каждый ваш жест запускает коллапс.</div>
             <div class="text-block typewriter" data-i18n="step4_text3">Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</div>
             <div class="split-container">
@@ -143,10 +145,11 @@
             </div>
             <div class="portrait-animation-container" id="portrait-animation-container"></div>
             <div class="button-block">
-                <button class="action-btn" onclick="recordObservation()">Запустить коллапс</button>
+                <button class="action-btn" onclick="window.quantumSketch.recordObservation()">Запустить коллапс</button>
                 <button class="back">Назад</button>
                 <button class="continue">Продолжить</button>
             </div>
+            <button id="saveButton" style="display: none;">Сохранить портрет</button>
         </div>
     </section>
 
@@ -190,16 +193,7 @@
         </div>
     </section>
 
-    <!-- Перемещаем p5.js в начало скриптов для гарантированной инициализации -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-    <script>
-        // Проверка инициализации p5.js
-        if (typeof p5 !== 'undefined') {
-            console.log('p5.js loaded successfully at', new Date().toLocaleTimeString());
-        } else {
-            console.error('p5.js failed to load');
-        }
-    </script>
+    <script src="[invalid url, do not cite]
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/particles.js"></script>
@@ -208,12 +202,53 @@
     <script src="js/audio.js"></script>
     <script src="js/main.js"></script>
     <script>
-        // Проверка доступности ключевых функций
+        // Проверка инициализации p5.js
+        if (typeof p5 !== 'undefined') {
+            console.log('p5.js loaded successfully at', new Date().toLocaleTimeString());
+        } else {
+            console.error('p5.js failed to load');
+        }
+        // Создание p5.js экземпляра
+        window.quantumSketch = new p5(function(sketch) {
+            window.sketch = sketch; // Сохраняем sketch для доступа
+            sketch.setup = window.setup;
+            sketch.draw = window.draw;
+            sketch.loadImage = function() {
+                console.log('loadImage function called');
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (e) => {
+                    console.log('File input changed, processing file...');
+                    const file = e.target.files[0];
+                    if (file) {
+                        sketch.loadImage(URL.createObjectURL(file), (img) => {
+                            console.log('Image loaded successfully:', img.width, 'x', img.height);
+                            window.img = img;
+                            if (window.currentStep === 2) {
+                                showStep(3);
+                            }
+                        }, (err) => {
+                            console.error('Error loading image:', err);
+                        });
+                    } else {
+                        console.log('No file selected');
+                    }
+                };
+                try {
+                    input.click();
+                    console.log('File input triggered');
+                } catch (error) {
+                    console.error('Failed to trigger file input:', error);
+                }
+            };
+            sketch.recordObservation = window.recordObservation;
+        });
         console.log('All scripts loaded, checking functions:', {
             setLanguageAndNext: typeof setLanguageAndNext === 'function',
-            loadImage: typeof loadImage === 'function',
+            loadImage: typeof window.quantumSketch.loadImage === 'function',
             openGallery: typeof openGallery === 'function',
-            recordObservation: typeof recordObservation === 'function',
+            recordObservation: typeof window.quantumSketch.recordObservation === 'function',
             shareToArchive: typeof shareToArchive === 'function'
         });
     </script>
