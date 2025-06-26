@@ -1,1 +1,259 @@
-ии
+/* Базовые стили для тела страницы */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a1a;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Отключаем прокрутку */
+}
+
+/* Стили для секций шагов */
+.step {
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 1px dashed red; /* Внешний красный пунктирный контейнер */
+    box-sizing: border-box;
+}
+
+/* Контейнер контента шага */
+.step-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    max-width: 800px;
+}
+
+/* Блоки для текста и кнопок */
+.text-block, .button-block, .split-container, .portrait-animation-container, .image-container {
+    margin: 10px 0;
+    padding: 15px;
+    border: 1px solid white; /* Белая сплошная рамка для каждого блока */
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    color: #ffffff; /* Белый текст по умолчанию */
+}
+
+/* Контейнер с разделением на две части */
+.split-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    max-width: 800px;
+}
+
+.animation-container, .terminal-container {
+    flex: 1;
+    min-height: 150px;
+    border: 1px solid white; /* Белая рамка */
+    background-color: #2a2a2a;
+    padding: 10px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Контейнер для квантовой анимации портрета */
+.portrait-animation-container {
+    min-height: 150px;
+    background-color: #2a2a2a;
+}
+
+/* Контейнер для изображения */
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#saved-portrait {
+    max-width: 300px;
+    border: 1px solid white;
+    background-color: #2a2a2a;
+    padding: 10px;
+}
+
+/* Поле ввода названия портрета */
+#portrait-name {
+    padding: 10px;
+    font-size: 1em;
+    width: 100%;
+    max-width: 300px;
+    margin: 10px 0;
+    border: 1px solid white;
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+/* Стили для кнопок навигации */
+.back, .continue {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.back:hover, .continue:hover {
+    background-color: #555;
+}
+
+/* Стили для языковых кнопок */
+.language-btn {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.language-btn:hover {
+    background-color: #555;
+}
+
+/* Стили для кнопок действий */
+.action-btn {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    width: 200px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.action-btn:hover {
+    background-color: #555;
+}
+
+/* Специфичные стили для button-block в step-7 */
+#step-7 .button-block {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+/* Стили для текста */
+.step-title {
+    color: #d800ff; /* Цвет заголовков шагов */
+    text-shadow: 0 0 5px #e7c2f4, 0 0 10px #e7c2f4; /* Подсветка текста */
+    padding: 5px;
+    display: inline-block;
+}
+
+.language-text:not(.step-title) {
+    color: #ffffff; /* Белый текст без подсветки для шага 0 */
+}
+
+.highlight {
+    color: #ffffff; /* Белый текст для основного контента */
+}
+
+.green-text {
+    color: #00ff00; /* Зелёный текст для математических символов */
+}
+
+/* Стили для typewriter-анимации */
+.typewriter {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid #ffffff;
+    animation: typing 2s steps(20, end), blink 0.5s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink {
+    50% { border-color: transparent }
+}
+
+/* Стили для canvas */
+#portrait-canvas {
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    background-color: #000;
+}
+
+/* Стили для модального окна */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    padding: 20px;
+    border: 1px solid white;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.gallery {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.gallery img {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    border: 1px solid white;
+}
+
+/* Адаптивность для мобильных устройств */
+@media screen and (max-width: 600px) {
+    .step-content {
+        width: 95%;
+        padding: 10px;
+    }
+    .text-block, .button-block, .split-container, .portrait-animation-container, .image-container {
+        margin: 5px 0;
+        padding: 10px;
+    }
+    .split-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .animation-container, .terminal-container {
+        min-height: 100px;
+    }
+    .portrait-animation-container {
+        min-height: 100px;
+    }
+    #saved-portrait {
+        max-width: 200px;
+    }
+    #portrait-name {
+        max-width: 250px;
+    }
+    #step-7 .button-block {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .action-btn {
+        width: 100%;
+    }
+}
