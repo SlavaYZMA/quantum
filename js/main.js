@@ -1,3 +1,9 @@
+// Глобальная переменная для языка
+let currentLanguage = 'ru';
+
+// Получить все секции шагов
+const steps = document.querySelectorAll('.step');
+
 // Глобальная функция для выбора языка и перехода на следующий шаг
 function setLanguageAndNext(lang) {
     currentLanguage = lang;
@@ -44,10 +50,6 @@ function initTypewriter(step) {
 
 // Обработчик загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
-    let currentLanguage = 'ru'; // Глобальная переменная для языка
-
-    // Получить все секции шагов
-    const steps = document.querySelectorAll('.step');
     console.log('Steps found:', steps.length); // Отладка: проверяем количество шагов
 
     // Показать шаг 0 по умолчанию
@@ -85,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (button.textContent.includes('[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]')) {
             button.addEventListener('click', () => {
                 console.log('Archive button clicked');
-                window.open('https://t.me/your_archive', '_blank');
+                window.open('[invalid url, do not cite] '_blank');
             });
         } else if (button.textContent.includes('[ОБ АВТОРАХ]')) {
             button.addEventListener('click', () => {
