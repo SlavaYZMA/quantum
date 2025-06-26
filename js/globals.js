@@ -77,18 +77,24 @@ window.translations = {
 };
 
 // Функция для установки языка
-window.setLanguage = function(lang, step) {
-    console.log('setLanguage called with:', lang);
-    const languageElements = step.querySelectorAll('.language-text');
-    console.log('Language elements found:', languageElements.length);
-    languageElements.forEach((element, index) => {
-        const key = element.getAttribute('data-i18n');
-        if (key && window.translations[lang][key]) {
-            element.innerHTML = window.translations[lang][key];
-            console.log('Updated text at index', index, '(', key, '):', window.translations[lang][key]);
-        }
-    });
-    if (languageElements.length === 0) {
+window.setLanguage = (lang) => {
+    console.log(`setLanguage called with: ${lang}`);
+    if (typeof document === 'undefined') {
+        console.error('Document is not available');
+        return;
+    }
+    const elements = document.querySelectorAll('.language-text');
+    console.log(`Language elements found: ${elements.length}`);
+    if (elements.length > 0) {
+        elements.forEach((el, index) => {
+            const key = el.getAttribute('data-i18n');
+            if (key) {
+                const translation = translations[lang] && translations[lang][key] ? translations[lang][key] : el.textContent;
+                el.textContent = translation;
+                console.log(`Updated text at index ${index} (${key}): ${translation}`);
+            }
+        });
+    } else {
         console.log('No elements with class .language-text found');
     }
 };
