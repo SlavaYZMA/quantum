@@ -10,116 +10,119 @@
     <div class="step" id="step-0">
         <div class="step-centered">
             <div class="text-block">
-                <h1 class="step-title">Добро пожаловать в Квантовые портреты</h1>
-                <p class="language-text">Выберите язык / Select language:</p>
-                <button class="language-btn" onclick="changeLanguage('ru')">Русский</button>
-                <button class="language-btn" onclick="changeLanguage('en')">English</button>
+                <h1 class="step-title">Квантовые портреты</h1>
+                <p class="language-text">Добро пожаловать в эксперимент по созданию квантовых портретов! Это путешествие через мир квантовой физики и искусства.</p>
             </div>
             <div class="button-block">
-                <button class="continue" onclick="nextStep()">Continue</button>
+                <button class="continue language-btn">Продолжить</button>
             </div>
         </div>
     </div>
-
     <div class="step" id="step-1" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
                 <h1 class="step-title">Шаг 1: Загрузите портрет</h1>
-                <p class="language-text">Загрузите изображение лица для квантового анализа / Upload a face image for quantum analysis:</p>
-                <input type="file" id="portraitUpload" accept="image/*">
+                <p class="language-text">Выберите изображение лица для квантового преобразования.</p>
             </div>
             <div class="button-block">
-                <button class="back" onclick="prevStep()">Back</button>
-                <button class="continue" onclick="nextStep()">Continue</button>
+                <button class="back language-btn">Назад</button>
+                <button class="continue language-btn">Загрузить портрет</button>
+                <button class="continue language-btn">Выбрать из архива</button>
             </div>
         </div>
     </div>
-
     <div class="step" id="step-2" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
-                <h1 class="step-title">Шаг 2: Выбор портрета</h1>
-                <p class="language-text">Выберите портрет из архива или используйте загруженный / Select from archive or use uploaded:</p>
-                <button class="action-btn" onclick="selectFromArchive()">Select from Archive</button>
-                <button class="action-btn" onclick="useUploadedPortrait()">Upload Portrait</button>
+                <h1 class="step-title">Шаг 2: Подготовка</h1>
+                <p class="language-text">Изображение загружается и анализируется. Пожалуйста, подождите...</p>
             </div>
-            <div class="button-block">
-                <button class="back" onclick="prevStep()">Back</button>
-                <button class="continue" onclick="nextStep()">Continue</button>
+            <div class="scrollable-content">
+                <div class="image-container">
+                    <img id="preview-portrait" src="" alt="Preview Portrait" style="display: none; max-width: 300px;">
+                </div>
+                <div class="button-block">
+                    <button class="back language-btn">Назад</button>
+                    <button class="continue language-btn">Продолжить</button>
+                </div>
             </div>
         </div>
     </div>
-
     <div class="step" id="step-3" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
                 <h1 class="step-title">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</h1>
-                <p class="language-text">Наблюдайте за квантовыми состояниями портрета / Observe the quantum states of the portrait:</p>
+                <p class="language-text">Наблюдайте, как портрет вступает в состояние суперпозиции. Используйте мышь для взаимодействия.</p>
             </div>
             <div class="scrollable-content">
                 <div class="portrait-animation-container" id="portrait-animation-container"></div>
                 <div class="button-block">
-                    <button class="back" onclick="prevStep()">Back</button>
-                    <button class="continue" onclick="nextStep()">Continue</button>
+                    <button class="back language-btn">Назад</button>
+                    <button class="continue language-btn">Продолжить</button>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="step" id="step-4" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
                 <h1 class="step-title">Шаг 4: ФИКСАЦИЯ</h1>
-                <p class="language-text">Зафиксируйте квантовое состояние портрета / Fix the quantum state of the portrait:</p>
+                <p class="language-text">Измерьте и зафиксируйте состояние портрета. Кликните для сохранения результата.</p>
             </div>
             <div class="scrollable-content">
                 <div class="portrait-animation-container" id="portrait-animation-container"></div>
                 <div class="button-block">
-                    <button class="back" onclick="prevStep()">Back</button>
-                    <button class="continue" onclick="nextStep()">Continue</button>
-                    <button id="saveButton" style="display: none;" onclick="savePortrait()">Save Portrait</button>
+                    <button class="back language-btn">Назад</button>
+                    <button id="saveButton" style="display: none;">Сохранить</button>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="step" id="step-5" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
-                <h1 class="step-title">Шаг 5: Назови свой портрет</h1>
-                <p class="language-text">Введите имя для сохранения / Enter a name to save:</p>
-                <input type="text" id="portrait-name" placeholder="Название портрета">
+                <h1 class="step-title">Шаг 5: Архив</h1>
+                <p class="language-text">Ваши сохранённые портреты доступны здесь.</p>
             </div>
-            <div class="button-block">
-                <button class="back" onclick="prevStep()">Back</button>
-                <button class="continue" onclick="nextStep()">Continue</button>
+            <div class="scrollable-content">
+                <div class="gallery" id="gallery"></div>
+                <div class="button-block">
+                    <button class="back language-btn">Назад</button>
+                    <button class="continue language-btn">Новый портрет</button>
+                </div>
             </div>
         </div>
     </div>
-
     <div class="step" id="step-6" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
-                <h1 class="step-title">Шаг 6: Сохранённые портреты</h1>
-                <p class="language-text">Просмотрите и выберите сохранённые портреты / View and select saved portraits:</p>
-                <div class="image-container" id="saved-portraits"></div>
+                <h1 class="step-title">Шаг 6: Назови свой портрет</h1>
+                <p class="language-text">Введите название для сохранения.</p>
             </div>
-            <div class="button-block">
-                <button class="back" onclick="prevStep()">Back</button>
-                <button class="continue" onclick="nextStep()">Continue</button>
+            <div class="scrollable-content">
+                <input type="text" id="portrait-name" placeholder="Название портрета">
+                <div class="button-block">
+                    <button class="back language-btn">Назад</button>
+                    <button class="continue language-btn">Сохранить</button>
+                </div>
             </div>
         </div>
     </div>
-
     <div class="step" id="step-7" style="display: none;">
         <div class="step-centered">
             <div class="text-block">
-                <h1 class="step-title">Шаг 7: Делитесь своим искусством</h1>
-                <p class="language-text">Поделитесь своим квантовым портретом с миром / Share your quantum portrait with the world:</p>
+                <h1 class="step-title">Шаг 7: Завершение</h1>
+                <p class="language-text">Поздравляем! Ваш квантовый портрет сохранён.</p>
             </div>
-            <div class="button-block">
-                <button class="action-btn" onclick="shareOnX()">Share on X</button>
-                <button class="action-btn" onclick="downloadPortrait()">Download</button>
+            <div class="scrollable-content">
+                <div class="image-container">
+                    <img id="saved-portrait" src="" alt="Saved Portrait">
+                </div>
+                <div class="button-block">
+                    <button class="back language-btn">Назад</button>
+                    <button class="continue language-btn">Новый портрет</button>
+                    <button class="continue language-btn">Поделиться</button>
+                </div>
             </div>
         </div>
     </div>
@@ -128,9 +131,9 @@
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/audio.js"></script>
-    <script src="js/textSteps.js"></script>
     <script src="js/observer.js"></script>
     <script src="js/particles.js"></script>
+    <script src="js/textSteps.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
