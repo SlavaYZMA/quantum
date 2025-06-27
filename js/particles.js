@@ -18,6 +18,7 @@ window.lastFrameTime = 0;
 window.maxParticles = 0;
 window.textMessages = { active: null, queue: [] };
 window.entangledPairs = [];
+window.terminalLog = []; // Новый массив для логов терминала
 
 function easeOutQuad(t) {
   return t * (2 - t);
@@ -177,7 +178,7 @@ if (window.quantumSketch) {
     }
 
     window.quantumSketch.image(window.trailBuffer, 0, 0);
-    renderQuantumMessages();
+    renderQuantumMessages(); // Оставляем вызов, но вывод идёт в терминал
     window.lastFrameTime = frameTime;
 
     // Минимальная проверка анимации
@@ -242,8 +243,6 @@ function cachedNoise(x, y, z) {
 function addQuantumMessage(message, eventType) {
   let newMessage = {
     text: message,
-    x: window.quantumSketch.random(100, window.quantumSketch.windowWidth - 300),
-    y: window.quantumSketch.random(150, (document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - 50),
     alpha: 0,
     fadeIn: true,
     startFrame: window.frame,
@@ -253,12 +252,11 @@ function addQuantumMessage(message, eventType) {
     window.textMessages.queue.push(newMessage);
   } else {
     window.textMessages.active = newMessage;
+    updateTerminal(); // Обновляем терминал сразу
   }
 }
 
 function renderQuantumMessages() {
-  window.quantumSketch.textAlign(window.quantumSketch.LEFT, window.quantumSketch.TOP);
-  window.quantumSketch.textSize(16);
   if (window.textMessages.active) {
     let msg = window.textMessages.active;
     let t = (window.frame - msg.startFrame) / 300;
@@ -272,17 +270,28 @@ function renderQuantumMessages() {
         msg.alpha = window.quantumSketch.lerp(255, 0, easeOutQuad((t - 0.8) / 0.2));
       }
     }
-    window.quantumSketch.fill(255, 255, 255, msg.alpha);
-    window.quantumSketch.noStroke();
-    window.quantumSketch.text(msg.text, msg.x, msg.y);
+    updateTerminal(); // Обновляем терминал на каждом кадре
 
     if (t > 1) {
       window.textMessages.active = null;
       if (window.textMessages.queue.length > 0) {
         window.textMessages.active = window.textMessages.queue.shift();
         window.textMessages.active.startFrame = window.frame;
+        updateTerminal(); // Обновляем при смене сообщения
       }
     }
+  }
+}
+
+function updateTerminal() {
+  const terminal = document.querySelector('.terminal-container');
+  if (terminal) {
+    window.terminalLog = []; // Очищаем лог перед обновлением
+    if (window.textMessages.active) {
+      window.terminalLog.push(`> ${window.textMessages.active.text} (alpha: ${Math.round(window.textMessages.active.alpha)})`);
+    }
+    terminal.innerHTML = `<p>Терминал: Квантовая анимация обновляется...</p>` + 
+                        window.terminalLog.map(msg => `<p style="margin: 5px 0;">${msg}</p>`).join('');
   }
 }
 
@@ -788,59 +797,28 @@ function renderParticle(particle, state) {
     } else if (particle.shapeType === 2) {
       window.quantumSketch.beginShape();
       for (let a = 0; a < window.quantumSketch.TWO_PI; a += window.quantumSketch.TWO_PI / particle.sides) {
-        let r = size * (0.8 + 0.3 * cachedNoise(a * 3 + particle.chaosSeed, window.frame * 0.02, 13));
+        let r = size * (1 + waveDistort * window.quantumSketch.cos(a * particle.sides));
         window.quantumSketch.vertex(r * window.quantumSketch.cos(a), r * window.quantumSketch.sin(a));
       }
       window.quantumSketch.endShape(window.quantumSketch.CLOSE);
     } else if (particle.shapeType === 3) {
-      window.quantumSketch.beginShape();
-      let noiseVal = cachedNoise(particle.chaosSeed, window.frame * 0.01, 14);
-      for (let a = 0; a < window.quantumSketch.TWO_PI; a += window.quantumSketch.TWO_PI / 30) {
-        let r = size * (0.5 + 0.5 * noiseVal + waveDistort + 0.3 * cachedNoise(a * 0.5, window.frame * 0.05, 15));
-        window.quantumSketch.vertex(r * window.quantumSketch.cos(a), r * window.quantumSketch.sin(a));
-      }
-      window.quantumSketch.endShape(window.quantumSketch.CLOSE);
-    } else {
-      window.quantumSketch.beginShape();
-      for (let a = 0; a < window.quantumSketch.TWO_PI; a += window.quantumSketch.TWO_PI / 40) {
-        let r = size * (0.6 + 0.4 * cachedNoise(a * 2 + particle.chaosSeed, window.frame * 0.03, 16));
-        r *= (1 + 0.2 * cachedNoise(a * 5, window.frame * 0.01, 17));
-        window.quantumSketch.vertex(r * window.quantumSketch.cos(a), r * window.quantumSketch.sin(a));
-      }
-      window.quantumSketch.endShape(window.quantumSketch.CLOSE);
+      window.quantumSketch.rect(-size / 2, -size / 2, size, size);
+    } else if (particle.shapeType === 4) {
+      window.quantumSketch.triangle(-size / 2, size / 2, 0, -size / 2, size / 2, size / 2);
     }
   }
-
-  if (particle.barrier) {
-    window.quantumSketch.fill(255, 255, 255, 50);
-    window.quantumSketch.noStroke();
-    window.quantumSketch.rect(particle.barrier.x - particle.x, particle.barrier.y - particle.y, particle.barrier.width, particle.barrier.height);
-    if (particle.tunneled) {
-      window.quantumSketch.fill(state.r + colorShift, state.g + colorShift, state.b + colorShift, 30);
-      window.quantumSketch.ellipse(particle.tunnelTargetX - particle.x, particle.tunnelTargetY - particle.y, size / 2);
-    }
-  }
-
   window.quantumSketch.pop();
 }
 
 function renderInterference() {
-  let gridSize = 50;
-  let maxY = document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100;
-  for (let x = 0; x < window.quantumSketch.windowWidth; x += gridSize) {
-    for (let y = 0; y < maxY; y += gridSize) {
-      let amplitude = 0;
-      for (let particle of window.particles.filter(p => p.layer === 'main' && p.superposition)) {
-        let d = window.quantumSketch.dist(x, y, particle.x + particle.offsetX, particle.y + particle.offsetY);
-        if (d < 100) {
-          let wave = window.quantumSketch.cos(d * 0.05 + window.frame * 0.02) * particle.probAmplitude;
-          amplitude += wave;
-        }
-      }
-      let intensity = window.quantumSketch.constrain(window.quantumSketch.map(amplitude, -1, 1, 0, 50), 0, 50);
-      window.trailBuffer.fill(255, 255, 255, intensity);
-      window.trailBuffer.noStroke();
-      window.trailBuffer.ellipse(x, y, gridSize / 5);
-    }
+  for (let i = 0; i < 5; i++) {
+    let x1 = window.quantumSketch.random(window.quantumSketch.windowWidth);
+    let y1 = window.quantumSketch.random(document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100);
+    let x2 = x1 + window.quantumSketch.random(-100, 100);
+    let y2 = y1 + window.quantumSketch.random(-100, 100);
+    let interference = cachedNoise(x1 * 0.01, y1 * 0.01, window.frame * 0.01);
+    window.trailBuffer.stroke(255, 255 * interference);
+    window.trailBuffer.strokeWeight(1);
+    window.trailBuffer.line(x1, y1, x2, y2);
   }
 }
