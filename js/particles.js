@@ -106,9 +106,6 @@ if (window.quantumSketch) {
       updateBoundary();
       window.mouseInfluenceRadius = window.quantumSketch.random(150, 250);
       window.noiseScale = window.quantumSketch.random(0.02, 0.04);
-      if (window.quantumSketch.random() < 0.1) {
-        addQuantumMessage("Декогеренция: система теряет квантовую когерентность.", "decoherence");
-      }
     }
 
     window.quantumSketch.background(0);
@@ -174,7 +171,6 @@ if (window.quantumSketch) {
 
     if (window.frame % 60 === 0) {
       renderInterference();
-      addQuantumMessage("Интерференция: волновые узоры усиливают или подавляют друг друга.", "interference");
     }
 
     window.quantumSketch.image(window.trailBuffer, 0, 0);
@@ -248,29 +244,11 @@ function addQuantumMessage(message, eventType) {
     startFrame: window.frame,
     eventType: eventType
   };
-  if (window.textMessages.active) {
-    window.textMessages.queue.push(newMessage);
-  } else {
+  if (!window.textMessages.active && !window.textMessages.queue.some(m => m.eventType === eventType)) {
     window.textMessages.active = newMessage;
     updateTerminal();
-  }
-
-  // Дополнительные триггеры сообщений
-  if (window.quantumSketch.random() < 0.05 || window.mouseHoverTime > 1) {
-    let randomEvent = window.quantumSketch.random();
-    if (randomEvent < 0.2 && !window.textMessages.queue.some(m => m.eventType === "superposition")) {
-      addQuantumMessage("Суперпозиция: частица существует в нескольких состояниях одновременно.", "superposition");
-    } else if (randomEvent < 0.4 && !window.textMessages.queue.some(m => m.eventType === "interference")) {
-      addQuantumMessage("Интерференция: волны частиц пересекаются, создавая узоры.", "interference");
-    } else if (randomEvent < 0.6 && !window.textMessages.queue.some(m => m.eventType === "tunneling")) {
-      addQuantumMessage("Туннелирование: частица прошла через потенциальный барьер.", "tunneling");
-    } else if (randomEvent < 0.8 && !window.textMessages.queue.some(m => m.eventType === "anomaly")) {
-      addQuantumMessage("Квантовая аномалия: система обнаружила временную петлю!", "anomaly");
-    }
-  }
-
-  if (window.frame % 120 === 0 && !window.textMessages.queue.some(m => m.eventType === "decoherence")) {
-    addQuantumMessage("Декогеренция: квантовое состояние начинает разрушаться.", "decoherence");
+  } else if (!window.textMessages.queue.some(m => m.eventType === eventType)) {
+    window.textMessages.queue.push(newMessage);
   }
 }
 
@@ -307,10 +285,6 @@ function updateTerminal() {
     window.terminalLog = []; // Очищаем лог перед обновлением
     if (window.textMessages.active) {
       window.terminalLog.push(`> ${window.textMessages.active.text} (alpha: ${Math.round(window.textMessages.active.alpha)})`);
-    }
-    // Добавляем последние 3 сообщения из очереди для истории
-    for (let i = 0; i < Math.min(3, window.textMessages.queue.length); i++) {
-      window.terminalLog.push(`> ${window.textMessages.queue[i].text} (alpha: ${Math.round(window.textMessages.queue[i].alpha)})`);
     }
     terminal.innerHTML = `<p>Терминал: Квантовая анимация обновляется...</p>` + 
                         window.terminalLog.map(msg => `<p style="margin: 5px 0;">${msg}</p>`).join('');
@@ -371,9 +345,6 @@ function renderTransformingPortrait(img, currentFrame) {
         offsetX += waveOffset * window.quantumSketch.cos(block.wavePhase);
         offsetY += waveOffset * window.quantumSketch.sin(block.wavePhase);
         rotation += noiseVal * 0.1;
-        if (window.quantumSketch.random() < 0.05 && currentFrame === block.startFrame) {
-          addQuantumMessage("Суперпозиция: частица в нескольких состояниях одновременно.", "superposition");
-        }
       }
       let canvasX = x + (window.quantumSketch.windowWidth - img.width) / 2 + offsetX;
       let canvasY = y + ((document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - img.height) / 2 + offsetY;
@@ -493,7 +464,6 @@ function initializeParticles(blockList) {
         window.particles.push(entangled);
         window.entangledPairs.push([particleCount - 1, particleCount]);
         particleCount++;
-        addQuantumMessage("Запутанность: две частицы связаны, их состояния синхронизированы.", "entanglement");
       }
     }
   }
@@ -530,6 +500,9 @@ function updateParticle(particle, state) {
 
   if (window.frame >= particle.startFrame - 25 && window.frame <= particle.startFrame) {
     particle.superpositionT = window.quantumSketch.map(window.frame, particle.startFrame - 25, particle.startFrame, 0, 1);
+    if (window.frame === particle.startFrame - 25) {
+      addQuantumMessage("Суперпозиция: частица входит в несколько состояний.", "superposition");
+    }
   } else if (window.frame > particle.startFrame) {
     particle.superpositionT = 1;
   }
@@ -554,20 +527,14 @@ function updateParticle(particle, state) {
     if (particle.decoherence > 1) {
       particle.alpha *= 0.95;
       particle.probAmplitude *= 0.98;
-      if (window.quantumSketch.random() < 0.01) {
-        particle.alpha = 0;
-        addQuantumMessage("Декогеренция: частица потеряла квантовую когерентность.", "decoherence");
+      if (window.quantumSketch.random() < 0.01 && !window.textMessages.queue.some(m => m.eventType === "decoherence")) {
+        addQuantumMessage("Декогеренция: частица теряет квантовую когерентность.", "decoherence");
       }
     }
 
     if (particle.superposition) {
       particle.offsetX += cachedNoise(particle.chaosSeed, window.frame * 0.02, 3) * 10;
       particle.offsetY += cachedNoise(particle.chaosSeed + 200, window.frame * 0.02, 3) * 10;
-    }
-
-    if (window.quantumSketch.random() < 0.02) {
-      particle.alpha = 255;
-      setTimeout(() => particle.alpha *= 0.9, 200);
     }
 
     if (particle.barrier && window.quantumSketch.random() < 0.1 && !particle.tunneled) {
@@ -586,7 +553,7 @@ function updateParticle(particle, state) {
           particle.tunneled = false;
           particle.x = particle.tunnelTargetX;
           particle.y = particle.tunnelTargetY;
-          addQuantumMessage("Туннелирование: частица преодолела барьер.", "tunneling");
+          addQuantumMessage("Туннелирование: частица прошла через барьер.", "tunneling");
         }, 500);
       }
     }
@@ -625,6 +592,9 @@ function updateParticle(particle, state) {
         particle.offsetY += dy;
         other.offsetX -= dx;
         other.offsetY -= dy;
+        if (window.frame % 120 === 0 && !window.textMessages.queue.some(m => m.eventType === "entanglement")) {
+          addQuantumMessage("Запутанность: частицы синхронизируют свои состояния.", "entanglement");
+        }
       }
     }
   }
@@ -655,7 +625,7 @@ function updateParticle(particle, state) {
         window.trailBuffer.stroke(255, 255, 255, 100);
         window.trailBuffer.line(particle.x + particle.offsetX, particle.y + particle.offsetY, window.quantumSketch.mouseX, window.quantumSketch.mouseY);
       }
-      addQuantumMessage("Коллапс: измерение вызвало выбор одного состояния.", "collapse");
+      addQuantumMessage("Коллапс: измерение зафиксировало состояние частицы.", "collapse");
     }
   }
   if (influence > 0 && !window.isPaused) {
@@ -842,5 +812,8 @@ function renderInterference() {
     window.trailBuffer.stroke(255, 255 * interference);
     window.trailBuffer.strokeWeight(1);
     window.trailBuffer.line(x1, y1, x2, y2);
+    if (i === 0 && !window.textMessages.queue.some(m => m.eventType === "interference")) {
+      addQuantumMessage("Интерференция: волны частиц создают узоры.", "interference");
+    }
   }
 }
