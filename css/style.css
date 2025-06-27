@@ -80,10 +80,9 @@ button:hover {
 
 .portrait-animation-container {
     width: 100%;
-    min-height: 50vh;
     position: relative;
     margin: 20px 0;
-    overflow-y: auto; /* Поддержка прокрутки */
+    flex-grow: 1; /* Растягивается на всё доступное пространство */
 }
 
 .modal {
