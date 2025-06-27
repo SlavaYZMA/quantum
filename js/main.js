@@ -11,8 +11,12 @@ function showStep(stepIndex) {
         console.log(`Hiding step: ${step.id}`);
     });
     console.log(`Showing step: ${stepIndex} ID: ${steps[stepIndex].id}`);
-    if (stepIndex === 4 && window.quantumSketch) { // Шаг 4 (индекс 4)
-        window.quantumSketch.startAnimation();
+    if (stepIndex === 4 && window.quantumSketch) { // Шаг 4
+        if (!window.img) {
+            console.warn('No image available. Please go back to Step 2 and upload an image.');
+        } else {
+            window.quantumSketch.startAnimation();
+        }
     }
 }
 
