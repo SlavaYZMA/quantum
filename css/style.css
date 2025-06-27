@@ -72,6 +72,17 @@ button:hover {
     margin-bottom: 20px; /* Отступ для мобильной версии */
 }
 
+.terminal-container {
+    background-color: #1a1a1a;
+    padding: 10px;
+    border: 1px solid #00ff00;
+    height: 200px; /* Фиксированная высота для терминала */
+    overflow-y: auto; /* Прокрутка для длинных логов */
+    font-size: 14px;
+    color: #00ff00;
+    white-space: pre-wrap; /* Сохранение форматирования текста */
+}
+
 @media (max-width: 768px) {
     .quantum-visualization-container, .terminal-container {
         width: 100%; /* Полная ширина на мобильных */
