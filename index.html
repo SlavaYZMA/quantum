@@ -258,13 +258,13 @@
                             // Суперпозиция: случайные точки
                             for (let i = 0; i < 50; i++) {
                                 sketch.stroke(0, 255, 0);
-                                sketch.point(random(sketch.width), random(sketch.height));
+                                sketch.point(sketch.random(sketch.width), sketch.random(sketch.height));
                             }
                         } else if (window.currentQuantumState === 'wave') {
                             // Волновая функция: интерференция
                             let t = (sketch.frameCount * 0.05) % sketch.width;
                             for (let x = 0; x < sketch.width; x++) {
-                                let y = sketch.height / 2 + sin(x * 0.1 + t) * 50;
+                                let y = sketch.height / 2 + sketch.sin(x * 0.1 + t) * 50;
                                 sketch.stroke(0, 0, 255);
                                 sketch.line(x, y, x, y + 10);
                             }
