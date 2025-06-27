@@ -1,5 +1,4 @@
 const steps = document.querySelectorAll('.step');
-let currentStep = 0;
 
 function showStep(stepIndex) {
     if (!steps || steps.length === 0) {
@@ -11,30 +10,38 @@ function showStep(stepIndex) {
         console.log(`Hiding step: ${step.id}`);
     });
     console.log(`Showing step: ${stepIndex} ID: ${steps[stepIndex].id}`);
-    if (stepIndex === 4 && window.quantumSketch) { // Шаг 4
-        if (!window.img) {
-            console.warn('No image available. Please go back to Step 2 and upload an image.');
-        } else {
-            window.quantumSketch.startAnimation();
+    window.currentStep = stepIndex; // Синхронизация с window.currentStep
+    if (stepIndex === 4 || stepIndex === 5) {
+        if (window.quantumSketch) {
+            if (!window.img) {
+                console.warn('No image available. Please go back to Step 2 and upload an image.');
+            } else {
+                window.quantumSketch.startAnimation();
+            }
+            if (typeof startDynamicUpdates === 'function') {
+                startDynamicUpdates(); // Вызов динамических обновлений
+                console.log('Dynamic updates started for step', stepIndex);
+            }
         }
+    } else if (typeof stopDynamicUpdates === 'function') {
+        stopDynamicUpdates();
+        console.log('Dynamic updates stopped for step', stepIndex);
     }
 }
 
 document.querySelectorAll('.continue').forEach(button => {
     button.addEventListener('click', () => {
-        console.log(`Continue button clicked on step: ${currentStep}`);
-        if (currentStep < steps.length - 1) {
-            showStep(currentStep + 1);
-            currentStep++;
+        console.log(`Continue button clicked on step: ${window.currentStep}`);
+        if (window.currentStep < steps.length - 1) {
+            showStep(window.currentStep + 1);
         }
     });
 });
 
 document.querySelectorAll('.back').forEach(button => {
     button.addEventListener('click', () => {
-        if (currentStep > 0) {
-            showStep(currentStep - 1);
-            currentStep--;
+        if (window.currentStep > 0) {
+            showStep(window.currentStep - 1);
         }
     });
 });
@@ -43,7 +50,7 @@ window.setLanguageAndNext = (lang) => {
     console.log(`Language set to: ${lang} Moving to step 1`);
     setLanguage(lang);
     showStep(1);
-    currentStep = 1;
+    window.currentStep = 1;
 };
 
 if (steps.length > 0) {
