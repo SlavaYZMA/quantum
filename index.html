@@ -241,11 +241,10 @@
                         console.warn('No image available for animation. Please upload an image on Step 2.');
                         return;
                     }
+                    console.log('Starting animation with image:', window.img.width, 'x', window.img.height);
                     sketch.image(window.img, 0, 0, sketch.width, sketch.height);
                     sketch.loop();
-                    if (window.quantumSketch && window.quantumSketch.startAnimation) {
-                        window.quantumSketch.startAnimation();
-                    }
+                    // Убрано рекурсивное вызов window.quantumSketch.startAnimation
                 };
                 sketch.mouseMoved = () => {
                     if (window.particles) {
