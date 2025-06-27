@@ -200,6 +200,16 @@
                 sketch.setup = () => {
                     sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     sketch.noLoop();
+                    window.animationTest = () => {
+                        console.log('Animation test triggered');
+                        sketch.loop(); // Запускаем цикл для теста
+                        sketch.draw = () => {
+                            sketch.background(0);
+                            sketch.fill(255);
+                            sketch.text('Animation Active', 10, 20);
+                            sketch.noLoop(); // Останавливаем после теста
+                        };
+                    };
                 };
                 window.loadImageOnce = () => {
                     console.log('loadImageOnce function called');
@@ -252,6 +262,12 @@
                     sketch.image(window.img, 0, 0, sketch.width, sketch.height);
                     sketch.loop();
                 };
+                sketch.mouseMoved = () => {
+                    if (window.particles) {
+                        window.particles.mouseX = sketch.mouseX;
+                        window.particles.mouseY = sketch.mouseY;
+                    }
+                };
             }, 'portrait-animation-container');
         } else {
             console.error('p5.js failed to load - please check your internet connection or URL');
@@ -270,6 +286,11 @@
             loadImageOnce: typeof window.loadImageOnce === 'function',
             startAnimation: typeof window.quantumSketch?.startAnimation === 'function',
             recordObservation: typeof window.quantumSketch?.recordObservation === 'function',
-            shareToArchive: typeof shareToArchive === 'function'
+            shareToArchive: typeof shareToArchive === 'function',
+            animationTest: typeof window.animationTest === 'function'
         });
+        // Запуск теста анимации при загрузке
+        if (typeof window.animationTest === 'function') {
+            window.animationTest();
+        }
     </script>
