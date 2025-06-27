@@ -194,18 +194,15 @@
                 sketch.setup = () => {
                     sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     sketch.noLoop();
-                    if (window.quantumSketch && window.quantumSketch.setup) {
-                        window.quantumSketch.setup();
-                    }
                 };
                 sketch.draw = () => {
-                    if (window.quantumSketch && window.quantumSketch.draw) {
-                        window.quantumSketch.draw();
-                    } else {
-                        sketch.background(0);
-                        sketch.fill(255);
-                        sketch.text('Анимация не инициализирована', 10, 20);
+                    sketch.background(0); // Очистка фона
+                    if (window.currentAnimationState) {
+                        if (window.currentAnimationState === 'init') sketch.background(0, 100, 0);
+                        else if (window.currentAnimationState === 'wave') sketch.background(0, 0, 255);
+                        else if (window.currentAnimationState === 'collapse') sketch.background(255, 0, 0);
                     }
+                    if (window.img) sketch.image(window.img, 0, 0, sketch.width, sketch.height);
                 };
                 window.loadImageOnce = () => {
                     if (window.img) {
@@ -241,8 +238,7 @@
                         console.warn('No image available for animation. Please upload an image on Step 2.');
                         return;
                     }
-                    console.log('Starting animation with image:', window.img.width, 'x', window.img.height);
-                    sketch.image(window.img, 0, 0, sketch.width, sketch.height);
+                    console.log('Starting animation');
                     sketch.loop();
                 };
                 sketch.mouseMoved = () => {
@@ -250,12 +246,6 @@
                         window.particles.mouseX = sketch.mouseX;
                         window.particles.mouseY = sketch.mouseY;
                     }
-                };
-                sketch.updateAnimation = (state) => {
-                    if (state === 'init') sketch.background(0, 100, 0);
-                    else if (state === 'wave') sketch.background(0, 0, 255);
-                    else if (state === 'collapse') sketch.background(255, 0, 0);
-                    if (window.img) sketch.image(window.img, 0, 0, sketch.width, sketch.height);
                 };
             }, 'portrait-animation-container');
         } else {
@@ -277,6 +267,8 @@
                     window.quantumSketch.startAnimation();
                     startDynamicUpdates();
                 }
+            } else {
+                stopDynamicUpdates();
             }
         };
         window.openGallery = () => console.log('Gallery opened');
@@ -303,36 +295,37 @@
             'Терминал: Обновление спектра...'
         ];
         let messageIndex = 0;
-        const animationStates = ['init', 'wave', 'collapse', 'init']; // Цикл состояний
+        const animationStates = ['init', 'wave', 'collapse', 'init'];
+        window.currentAnimationState = 'init';
 
         function startDynamicUpdates() {
+            console.log('Starting dynamic updates');
             if (window.updateInterval) clearInterval(window.updateInterval);
             window.updateInterval = setInterval(() => {
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     const terminal = document.getElementById('terminal-message');
                     if (terminal) {
+                        console.log('Updating terminal to:', terminalMessages[messageIndex]);
                         terminal.textContent = terminalMessages[messageIndex];
+                        window.currentAnimationState = animationStates[messageIndex];
                         if (window.quantumSketch) {
-                            window.quantumSketch.updateAnimation(animationStates[messageIndex]);
+                            window.quantumSketch.draw(); // Обновляем анимацию
                         }
                         messageIndex = (messageIndex + 1) % terminalMessages.length;
+                    } else {
+                        console.error('Terminal element not found');
                     }
                 }
             }, 15000); // 15 секунд
         }
 
-        // Остановить обновления при выходе из шага
         function stopDynamicUpdates() {
-            if (window.updateInterval) clearInterval(window.updateInterval);
+            console.log('Stopping dynamic updates');
+            if (window.updateInterval) {
+                clearInterval(window.updateInterval);
+                window.updateInterval = null;
+            }
         }
-
-        document.querySelectorAll('.step').forEach(step => {
-            step.addEventListener('transitionend', () => {
-                if (window.currentStep !== 4 && window.currentStep !== 5) {
-                    stopDynamicUpdates();
-                }
-            });
-        });
     </script>
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
