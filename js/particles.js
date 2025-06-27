@@ -20,6 +20,15 @@ window.textMessages = { active: null, queue: [] };
 window.entangledPairs = [];
 window.terminalLog = []; // Массив для логов терминала
 
+// Добавляем переменные для визуализации контейнера
+let vizCanvas = null;
+let vizWidth = 300;
+let vizHeight = 200;
+let currentEffect = null;
+let vizParticle = { x: vizWidth / 2, y: vizHeight / 2, size: 10, r: 255, g: 0, b: 0, alpha: 255 };
+let vizSecondParticle = null;
+let vizFrameCount = 0;
+
 function easeOutQuad(t) {
   return t * (2 - t);
 }
@@ -55,6 +64,15 @@ if (window.quantumSketch) {
 
     window.trailBuffer = window.quantumSketch.createGraphics(window.quantumSketch.windowWidth, window.quantumSketch.windowHeight - 100);
     window.trailBuffer.pixelDensity(1);
+
+    // Настройка визуализационного контейнера
+    vizCanvas = window.quantumSketch.createGraphics(vizWidth, vizHeight);
+    vizCanvas.parent('quantum-visualization-container');
+    vizCanvas.elt.style.display = 'block';
+    vizCanvas.elt.style.position = 'absolute';
+    vizCanvas.elt.style.top = '0';
+    vizCanvas.elt.style.left = '0';
+    vizCanvas.elt.style.zIndex = '1';
 
     window.canvas.elt.addEventListener('click', function() {
       if (window.currentStep === 5) {
@@ -175,6 +193,7 @@ if (window.quantumSketch) {
 
     window.quantumSketch.image(window.trailBuffer, 0, 0);
     renderQuantumMessages();
+    renderVisualization(); // Добавляем визуализацию контейнера
     window.lastFrameTime = frameTime;
 
     // Минимальная проверка анимации
@@ -829,5 +848,119 @@ function renderInterference() {
     if (i === 0 && !window.textMessages.queue.some(m => m.eventType === "interference")) {
       addQuantumMessage("Интерференция: волны частиц формируют узоры.", "interference");
     }
+  }
+}
+
+// Новая функция для рендера визуализации в контейнере
+function renderVisualization() {
+  const terminal = document.querySelector('.terminal-container');
+  if (terminal && vizCanvas) {
+    vizFrameCount++;
+    vizCanvas.clear();
+
+    if (window.terminalLog.length > 0) {
+      const activeMessage = window.terminalLog[0];
+      const effectMatch = activeMessage.match(/>([^()]+)(?: \(alpha: \d+\))?/);
+      if (effectMatch) {
+        currentEffect = effectMatch[1].trim();
+      } else {
+        currentEffect = null;
+      }
+    }
+
+    vizCanvas.noStroke();
+    if (currentEffect) {
+      switch (currentEffect) {
+        case "Суперпозиция: частица входит в несколько состояний.":
+          vizParticle.alpha = window.quantumSketch.sin(vizFrameCount * 0.1) * 255;
+          vizCanvas.fill(vizParticle.r, vizParticle.g, vizParticle.b, vizParticle.alpha);
+          vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+          break;
+
+        case "Смена цвета: частица изменяет спектр.":
+          vizParticle.r = window.quantumSketch.map(window.quantumSketch.sin(vizFrameCount * 0.05), -1, 1, 0, 255);
+          vizParticle.g = window.quantumSketch.map(window.quantumSketch.cos(vizFrameCount * 0.05), -1, 1, 0, 255);
+          vizParticle.b = 128;
+          vizCanvas.fill(vizParticle.r, vizParticle.g, vizParticle.b);
+          vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+          break;
+
+        case "Туннелирование: частица преодолела барьер.":
+          if (vizFrameCount % 60 < 30) {
+            vizCanvas.fill(255, 0, 0);
+            vizCanvas.ellipse(vizParticle.x - 50, vizParticle.y, vizParticle.size);
+          } else {
+            vizCanvas.fill(0, 255, 0);
+            vizCanvas.ellipse(vizParticle.x + 50, vizParticle.y, vizParticle.size);
+          }
+          break;
+
+        case "Движение: частица смещается в квантовом поле.":
+          vizParticle.x = window.quantumSketch.constrain(vizParticle.x + window.quantumSketch.cos(vizFrameCount * 0.05) * 2, 0, vizWidth);
+          vizCanvas.fill(255);
+          vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+          break;
+
+        case "Запутанность: частицы синхронизируют свои состояния.":
+          if (!vizSecondParticle) vizSecondParticle = { x: vizWidth / 4, y: vizHeight / 2, size: 10 };
+          vizSecondParticle.x = vizParticle.x + window.quantumSketch.cos(vizFrameCount * 0.05) * 50;
+          vizParticle.x = window.quantumSketch.constrain(vizSecondParticle.x - window.quantumSketch.cos(vizFrameCount * 0.05) * 50, 0, vizWidth);
+          vizCanvas.fill(255, 0, 0);
+          vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+          vizCanvas.fill(0, 0, 255);
+          vizCanvas.ellipse(vizSecondParticle.x, vizSecondParticle.y, vizParticle.size);
+          break;
+
+        case "Коллапс: измерение зафиксировало состояние частицы.":
+          if (vizFrameCount % 60 === 0) vizParticle.size = window.quantumSketch.max(5, vizParticle.size - 1);
+          vizCanvas.fill(255);
+          vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+          break;
+
+        case "Декогеренция: частица теряет квантовую когерентность.":
+          vizParticle.alpha = window.quantumSketch.max(0, vizParticle.alpha - 5);
+          vizCanvas.fill(vizParticle.r, vizParticle.g, vizParticle.b, vizParticle.alpha);
+          vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+          break;
+
+        case "Интерференция: волны частиц формируют узоры.":
+          let x1 = vizWidth / 4;
+          let y1 = vizHeight / 2;
+          let x2 = vizWidth * 3 / 4;
+          let y2 = vizHeight / 2;
+          let interference = window.quantumSketch.sin(vizFrameCount * 0.1) * 50;
+          vizCanvas.stroke(255, 128);
+          vizCanvas.line(x1, y1 + interference, x2, y2 - interference);
+          vizCanvas.line(x1, y1 - interference, x2, y2 + interference);
+          break;
+
+        case "Аномалия времени: частица изменяет временной поток.":
+          vizParticle.x = window.quantumSketch.constrain(vizParticle.x - window.quantumSketch.cos(vizFrameCount * 0.05) * 2, 0, vizWidth);
+          vizCanvas.fill(255, 255, 0);
+          vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+          break;
+
+        case "Граница: частица отражена от края поля.":
+          if (vizFrameCount % 60 < 30) {
+            vizParticle.x = window.quantumSketch.constrain(vizParticle.x + 2, 0, vizWidth);
+          } else {
+            vizParticle.x = window.quantumSketch.constrain(vizParticle.x - 2, 0, vizWidth);
+          }
+          vizCanvas.fill(0, 255, 255);
+          vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+          break;
+
+        default:
+          vizCanvas.fill(128);
+          vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+          break;
+      }
+    } else {
+      vizCanvas.fill(64);
+      vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+    }
+
+    // Отображение визуализации в контейнере
+    window.quantumSketch.image(vizCanvas, 0, window.quantumSketch.height - vizHeight, vizWidth, vizHeight);
   }
 }
