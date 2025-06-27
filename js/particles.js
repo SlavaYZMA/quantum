@@ -20,7 +20,7 @@ window.textMessages = { active: null, queue: [] };
 window.entangledPairs = [];
 window.terminalLog = []; // Массив для логов терминала
 
-// Добавляем переменные для визуализации контейнера
+// Переменные для визуализации контейнера
 let vizCanvas = null;
 let vizWidth = 300;
 let vizHeight = 200;
@@ -65,14 +65,25 @@ if (window.quantumSketch) {
     window.trailBuffer = window.quantumSketch.createGraphics(window.quantumSketch.windowWidth, window.quantumSketch.windowHeight - 100);
     window.trailBuffer.pixelDensity(1);
 
-    // Настройка визуализационного контейнера
+    // Проверка и создание визуализационного контейнера
+    let vizContainer = document.getElementById('quantum-visualization-container');
+    if (!vizContainer) {
+      vizContainer = document.createElement('div');
+      vizContainer.id = 'quantum-visualization-container';
+      vizContainer.style.position = 'absolute';
+      vizContainer.style.top = '0';
+      vizContainer.style.left = '0';
+      vizContainer.style.width = `${vizWidth}px`;
+      vizContainer.style.height = `${vizHeight}px`;
+      document.body.appendChild(vizContainer);
+    }
     vizCanvas = window.quantumSketch.createGraphics(vizWidth, vizHeight);
-    vizCanvas.parent('quantum-visualization-container');
     vizCanvas.elt.style.display = 'block';
     vizCanvas.elt.style.position = 'absolute';
     vizCanvas.elt.style.top = '0';
     vizCanvas.elt.style.left = '0';
     vizCanvas.elt.style.zIndex = '1';
+    vizContainer.appendChild(vizCanvas.elt);
 
     window.canvas.elt.addEventListener('click', function() {
       if (window.currentStep === 5) {
@@ -193,7 +204,7 @@ if (window.quantumSketch) {
 
     window.quantumSketch.image(window.trailBuffer, 0, 0);
     renderQuantumMessages();
-    renderVisualization(); // Добавляем визуализацию контейнера
+    renderVisualization(); // Рендер визуализации контейнера
     window.lastFrameTime = frameTime;
 
     // Минимальная проверка анимации
@@ -851,7 +862,7 @@ function renderInterference() {
   }
 }
 
-// Новая функция для рендера визуализации в контейнере
+// Функция для рендера визуализации в контейнере
 function renderVisualization() {
   const terminal = document.querySelector('.terminal-container');
   if (terminal && vizCanvas) {
@@ -961,6 +972,10 @@ function renderVisualization() {
     }
 
     // Отображение визуализации в контейнере
-    window.quantumSketch.image(vizCanvas, 0, window.quantumSketch.height - vizHeight, vizWidth, vizHeight);
+    let vizContainer = document.getElementById('quantum-visualization-container');
+    if (vizContainer) {
+      vizContainer.innerHTML = ''; // Очищаем, чтобы избежать дублирования
+      vizContainer.appendChild(vizCanvas.elt);
+    }
   }
 }
