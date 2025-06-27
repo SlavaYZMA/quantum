@@ -18,7 +18,7 @@ window.lastFrameTime = 0;
 window.maxParticles = 0;
 window.textMessages = { active: null, queue: [] };
 window.entangledPairs = [];
-window.terminalLog = []; // Новый массив для логов терминала
+window.terminalLog = []; // Массив для логов терминала
 
 function easeOutQuad(t) {
   return t * (2 - t);
@@ -178,7 +178,7 @@ if (window.quantumSketch) {
     }
 
     window.quantumSketch.image(window.trailBuffer, 0, 0);
-    renderQuantumMessages(); // Оставляем вызов, но вывод идёт в терминал
+    renderQuantumMessages();
     window.lastFrameTime = frameTime;
 
     // Минимальная проверка анимации
@@ -252,7 +252,25 @@ function addQuantumMessage(message, eventType) {
     window.textMessages.queue.push(newMessage);
   } else {
     window.textMessages.active = newMessage;
-    updateTerminal(); // Обновляем терминал сразу
+    updateTerminal();
+  }
+
+  // Дополнительные триггеры сообщений
+  if (window.quantumSketch.random() < 0.05 || window.mouseHoverTime > 1) {
+    let randomEvent = window.quantumSketch.random();
+    if (randomEvent < 0.2 && !window.textMessages.queue.some(m => m.eventType === "superposition")) {
+      addQuantumMessage("Суперпозиция: частица существует в нескольких состояниях одновременно.", "superposition");
+    } else if (randomEvent < 0.4 && !window.textMessages.queue.some(m => m.eventType === "interference")) {
+      addQuantumMessage("Интерференция: волны частиц пересекаются, создавая узоры.", "interference");
+    } else if (randomEvent < 0.6 && !window.textMessages.queue.some(m => m.eventType === "tunneling")) {
+      addQuantumMessage("Туннелирование: частица прошла через потенциальный барьер.", "tunneling");
+    } else if (randomEvent < 0.8 && !window.textMessages.queue.some(m => m.eventType === "anomaly")) {
+      addQuantumMessage("Квантовая аномалия: система обнаружила временную петлю!", "anomaly");
+    }
+  }
+
+  if (window.frame % 120 === 0 && !window.textMessages.queue.some(m => m.eventType === "decoherence")) {
+    addQuantumMessage("Декогеренция: квантовое состояние начинает разрушаться.", "decoherence");
   }
 }
 
@@ -270,14 +288,14 @@ function renderQuantumMessages() {
         msg.alpha = window.quantumSketch.lerp(255, 0, easeOutQuad((t - 0.8) / 0.2));
       }
     }
-    updateTerminal(); // Обновляем терминал на каждом кадре
+    updateTerminal();
 
     if (t > 1) {
       window.textMessages.active = null;
       if (window.textMessages.queue.length > 0) {
         window.textMessages.active = window.textMessages.queue.shift();
         window.textMessages.active.startFrame = window.frame;
-        updateTerminal(); // Обновляем при смене сообщения
+        updateTerminal();
       }
     }
   }
@@ -289,6 +307,10 @@ function updateTerminal() {
     window.terminalLog = []; // Очищаем лог перед обновлением
     if (window.textMessages.active) {
       window.terminalLog.push(`> ${window.textMessages.active.text} (alpha: ${Math.round(window.textMessages.active.alpha)})`);
+    }
+    // Добавляем последние 3 сообщения из очереди для истории
+    for (let i = 0; i < Math.min(3, window.textMessages.queue.length); i++) {
+      window.terminalLog.push(`> ${window.textMessages.queue[i].text} (alpha: ${Math.round(window.textMessages.queue[i].alpha)})`);
     }
     terminal.innerHTML = `<p>Терминал: Квантовая анимация обновляется...</p>` + 
                         window.terminalLog.map(msg => `<p style="margin: 5px 0;">${msg}</p>`).join('');
@@ -393,7 +415,7 @@ function initializeParticles(blockList) {
   window.quantumStates = [];
   window.entangledPairs = [];
   const maxBlockSize = 16;
-  window.maxParticles = window.quantumSketch.windowWidth < 768 ? 1000 : 2000; // Уменьшено для производительности
+  window.maxParticles = window.quantumSketch.windowWidth < 768 ? 1000 : 2000;
   let particleCount = 0;
 
   window.img.loadPixels();
