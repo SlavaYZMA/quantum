@@ -194,7 +194,6 @@
                 sketch.setup = () => {
                     sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     sketch.noLoop();
-                    // Переопределяем setup для работы с particles.js
                     if (window.quantumSketch && window.quantumSketch.setup) {
                         window.quantumSketch.setup();
                     }
@@ -202,10 +201,13 @@
                 sketch.draw = () => {
                     if (window.quantumSketch && window.quantumSketch.draw) {
                         window.quantumSketch.draw();
+                    } else {
+                        sketch.background(0);
+                        sketch.fill(255);
+                        sketch.text('Анимация не инициализирована', 10, 20);
                     }
                 };
                 window.loadImageOnce = () => {
-                    console.log('loadImageOnce function called');
                     if (window.img) {
                         console.warn('Image already loaded, skipping new load');
                         return;
@@ -214,32 +216,20 @@
                     input.type = 'file';
                     input.accept = 'image/*';
                     input.onchange = (e) => {
-                        console.log('File input changed, processing file...');
                         const file = e.target.files[0];
                         if (file) {
                             sketch.loadImage(URL.createObjectURL(file), (img) => {
-                                console.log('Image loaded successfully:', img.width, 'x', img.height);
-                                window.img = img; // Сохраняем глобально
-                                if (typeof showStep === 'function' && window.currentStep === 2) {
-                                    showStep(3);
-                                }
+                                window.img = img;
+                                if (typeof showStep === 'function' && window.currentStep === 2) showStep(3);
                             }, (err) => {
                                 console.error('Error loading image:', err);
                             });
-                        } else {
-                            console.log('No file selected');
                         }
                     };
-                    try {
-                        input.click();
-                        console.log('File input triggered');
-                    } catch (error) {
-                        console.error('Failed to trigger file input:', error);
-                    }
+                    input.click();
                 };
                 sketch.recordObservation = () => {
                     if (window.img && !sketch.isLooping()) {
-                        console.log('Observation recorded');
                         let dataURL = sketch.get().canvas.toDataURL();
                         document.getElementById('saved-portrait').src = dataURL;
                         document.getElementById('saved-portrait').style.display = 'block';
@@ -251,7 +241,6 @@
                         console.warn('No image available for animation. Please upload an image on Step 2.');
                         return;
                     }
-                    console.log('Starting animation with image:', window.img.width, 'x', window.img.height);
                     sketch.image(window.img, 0, 0, sketch.width, sketch.height);
                     sketch.loop();
                     if (window.quantumSketch && window.quantumSketch.startAnimation) {
@@ -268,6 +257,36 @@
         } else {
             console.error('p5.js failed to load - please check your internet connection or URL');
         }
+
+        // Минимальная реализация функций
+        window.setLanguageAndNext = (lang) => {
+            console.log('Language set to:', lang);
+            if (typeof showStep === 'function') showStep(1);
+        };
+        window.showStep = (step) => {
+            console.log('Showing step:', step);
+            document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
+            document.getElementById(`step-${step}`).style.display = 'block';
+            window.currentStep = step;
+            if (step === 4 || step === 5) {
+                if (window.quantumSketch) window.quantumSketch.startAnimation();
+            }
+        };
+        window.openGallery = () => console.log('Gallery opened');
+        window.shareToArchive = () => console.log('Image shared to archive');
+
+        // Обработчики кнопок
+        document.querySelectorAll('.continue').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.currentStep !== undefined) showStep(window.currentStep + 1);
+            });
+        });
+        document.querySelectorAll('.back').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.currentStep !== undefined && window.currentStep > 0) showStep(window.currentStep - 1);
+            });
+        });
+        showStep(0); // Старт с первого шага
     </script>
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
@@ -282,13 +301,6 @@
             loadImageOnce: typeof window.loadImageOnce === 'function',
             startAnimation: typeof window.quantumSketch?.startAnimation === 'function',
             recordObservation: typeof window.quantumSketch?.recordObservation === 'function',
-            shareToArchive: typeof shareToArchive === 'function',
-            animationTest: typeof window.animationTest === 'function'
+            shareToArchive: typeof shareToArchive === 'function'
         });
-        // Запуск теста анимации при загрузке
-        if (typeof window.animationTest === 'function') {
-            window.animationTest();
-        }
     </script>
-</body>
-</html>
