@@ -284,85 +284,12 @@
             console.error('p5.js failed to load - please check your internet connection or URL');
         }
 
-        // Минимальная реализация функций
-        window.setLanguageAndNext = (lang) => {
-            console.log('Language set to:', lang, 'Moving to step 1');
-            if (typeof showStep === 'function') showStep(1);
-        };
-        window.showStep = (step) => {
-            console.log('Showing step:', step);
-            document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
-            document.getElementById(`step-${step}`).style.display = 'block';
-            window.currentStep = step;
-            if (step === 4 || step === 5) {
-                if (window.quantumSketch) {
-                    window.quantumSketch.startAnimation();
-                    startDynamicUpdates(); // Явный вызов
-                    console.log('Dynamic updates started for step', step);
-                }
-            } else {
-                stopDynamicUpdates();
-                console.log('Dynamic updates stopped for step', step);
-            }
-        };
-        window.openGallery = () => console.log('Gallery opened');
-        window.shareToArchive = () => console.log('Image shared to archive');
-
-        // Обработчики кнопок
-        document.querySelectorAll('.continue').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (window.currentStep !== undefined) {
-                    console.log('Continue button clicked on step:', window.currentStep);
-                    showStep(window.currentStep + 1);
-                }
-            });
-        });
-        document.querySelectorAll('.back').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (window.currentStep !== undefined && window.currentStep > 0) {
-                    console.log('Back button clicked on step:', window.currentStep);
-                    showStep(window.currentStep - 1);
-                }
-            });
-        });
-        showStep(0); // Старт с первого шага
-
-        // Динамические обновления терминала и анимации
-        const terminalMessages = [
-            'Терминал: Инициализация...',
-            'Терминал: Волновая функция запущена...',
-            'Терминал: Коллапс волны начат...',
-            'Терминал: Обновление спектра...'
-        ];
-        let messageIndex = 0;
-        const quantumStates = ['init', 'wave', 'collapse', 'init'];
-        window.currentQuantumState = 'init';
-
-        function startDynamicUpdates() {
-            console.log('Starting dynamic updates at', new Date().toLocaleTimeString());
-            if (window.updateInterval) clearInterval(window.updateInterval);
-            window.updateInterval = setInterval(() => {
-                if (window.currentStep === 4 || window.currentStep === 5) {
-                    const terminal = document.getElementById('terminal-message');
-                    if (terminal) {
-                        console.log('Updating terminal to:', terminalMessages[messageIndex], 'at', new Date().toLocaleTimeString());
-                        terminal.textContent = terminalMessages[messageIndex];
-                        window.currentQuantumState = quantumStates[messageIndex];
-                        messageIndex = (messageIndex + 1) % terminalMessages.length;
-                    } else {
-                        console.error('Terminal element not found at', new Date().toLocaleTimeString());
-                    }
-                }
-            }, 5000); // 5 секунд
-        }
-
-        function stopDynamicUpdates() {
-            console.log('Stopping dynamic updates at', new Date().toLocaleTimeString());
-            if (window.updateInterval) {
-                clearInterval(window.updateInterval);
-                window.updateInterval = null;
-            }
-        }
+        // Загрузка глобальных функций (оставляем как есть)
+        window.loadImageOnce = window.loadImageOnce || function() {};
+        window.setLanguageAndNext = window.setLanguageAndNext || function() {};
+        window.showStep = window.showStep || function() {};
+        window.openGallery = window.openGallery || function() {};
+        window.shareToArchive = window.shareToArchive || function() {};
     </script>
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
