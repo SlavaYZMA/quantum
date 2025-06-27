@@ -1,4 +1,5 @@
 window.particles = {
+    particles: [],
     init: function(sketch) {
         this.particles = [];
         this.img = window.img;
@@ -7,8 +8,11 @@ window.particles = {
             return;
         }
 
-        // Создаём частицы на основе пикселей изображения
+        // Инициализация холста с изображением
+        sketch.image(this.img, 0, 0, sketch.width, sketch.height);
         sketch.loadPixels();
+
+        // Создание частиц на основе пикселей
         for (let i = 0; i < this.img.width; i += 10) {
             for (let j = 0; j < this.img.height; j += 10) {
                 let index = (i + j * this.img.width) * 4;
@@ -17,8 +21,8 @@ window.particles = {
                 let b = sketch.pixels[index + 2];
                 if (r + g + b > 100) { // Порог яркости
                     this.particles.push({
-                        x: i,
-                        y: j,
+                        x: i * (sketch.width / this.img.width),
+                        y: j * (sketch.height / this.img.height),
                         vx: sketch.random(-1, 1),
                         vy: sketch.random(-1, 1),
                         color: [r, g, b]
@@ -37,7 +41,8 @@ window.particles = {
         });
     },
     draw: function(sketch) {
-        sketch.background(0);
+        sketch.background(0); // Очистка фона
+        sketch.image(window.img, 0, 0, sketch.width, sketch.height); // Базовое изображение
         this.particles.forEach(p => {
             sketch.stroke(p.color);
             sketch.point(p.x, p.y);
@@ -47,15 +52,15 @@ window.particles = {
 
 if (window.quantumSketch) {
     window.quantumSketch.draw = () => {
-        if (window.particles && window.particles.img) {
-            if (!window.particles.particles || window.particles.particles.length === 0) {
-                window.particles.init(window.quantumSketch);
-            }
+        if (!window.particles.particles || window.particles.particles.length === 0) {
+            window.particles.init(window.quantumSketch);
+        }
+        if (window.img) {
             window.particles.update(window.quantumSketch);
             window.particles.draw(window.quantumSketch);
         } else {
-            console.warn('Particles or image not initialized');
-            window.quantumSketch.background(0); // Очистка экрана
+            console.warn('Image not available for animation');
+            window.quantumSketch.background(0); // Очистка при отсутствии изображения
         }
     };
 }
