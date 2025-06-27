@@ -25,7 +25,7 @@ function easeOutQuad(t) {
 
 if (window.quantumSketch) {
   window.quantumSketch.setup = () => {
-    window.canvas = window.quantumSketch.createCanvas(windowWidth, windowHeight - 100);
+    window.canvas = window.quantumSketch.createCanvas(window.quantumSketch.windowWidth, window.quantumSketch.windowHeight - 100);
     window.canvas.parent('portrait-animation-container');
     window.quantumSketch.pixelDensity(1);
     window.quantumSketch.frameRate(navigator.hardwareConcurrency < 4 ? 20 : 25);
@@ -37,22 +37,22 @@ if (window.quantumSketch) {
     window.canvas.elt.style.zIndex = '0';
 
     let fsButton = window.quantumSketch.createButton('Full Screen');
-    fsButton.position(windowWidth - 100, 10);
+    fsButton.position(window.quantumSketch.windowWidth - 100, 10);
     fsButton.mousePressed(() => {
       if (!document.fullscreenElement) {
         document.getElementById('portrait-animation-container').requestFullscreen().then(() => {
-          window.quantumSketch.resizeCanvas(windowWidth, windowHeight);
+          window.quantumSketch.resizeCanvas(window.quantumSketch.windowWidth, window.quantumSketch.windowHeight);
           updateBoundary();
         });
       } else {
         document.exitFullscreen().then(() => {
-          window.quantumSketch.resizeCanvas(windowWidth, windowHeight - 100);
+          window.quantumSketch.resizeCanvas(window.quantumSketch.windowWidth, window.quantumSketch.windowHeight - 100);
           updateBoundary();
         });
       }
     });
 
-    window.trailBuffer = window.quantumSketch.createGraphics(windowWidth, windowHeight - 100);
+    window.trailBuffer = window.quantumSketch.createGraphics(window.quantumSketch.windowWidth, window.quantumSketch.windowHeight - 100);
     window.trailBuffer.pixelDensity(1);
 
     window.canvas.elt.addEventListener('click', function() {
@@ -77,8 +77,8 @@ if (window.quantumSketch) {
     }, { passive: false });
 
     window.addEventListener('resize', () => {
-      window.quantumSketch.resizeCanvas(windowWidth, document.fullscreenElement ? windowHeight : windowHeight - 100);
-      window.trailBuffer = window.quantumSketch.createGraphics(windowWidth, document.fullscreenElement ? windowHeight : windowHeight - 100);
+      window.quantumSketch.resizeCanvas(window.quantumSketch.windowWidth, document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100);
+      window.trailBuffer = window.quantumSketch.createGraphics(window.quantumSketch.windowWidth, document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100);
       window.trailBuffer.pixelDensity(1);
       updateBoundary();
     });
@@ -191,8 +191,8 @@ function updateBoundary() {
   window.boundaryPoints = [];
   let numPoints = 40;
   let margin = 10;
-  let maxX = windowWidth - margin;
-  let maxY = (document.fullscreenElement ? windowHeight : windowHeight - 100) - margin;
+  let maxX = window.quantumSketch.windowWidth - margin;
+  let maxY = (document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - margin;
   for (let i = 0; i < numPoints / 4; i++) {
     let x = window.quantumSketch.lerp(margin, maxX, i / (numPoints / 4));
     window.boundaryPoints.push({ x, y: margin });
@@ -213,8 +213,8 @@ function updateBoundary() {
 
 function isPointInBoundary(x, y) {
   let margin = 10;
-  let maxY = document.fullscreenElement ? windowHeight : windowHeight - 100;
-  if (x < margin || x > windowWidth - margin || y < margin || y > maxY - margin) return false;
+  let maxY = document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100;
+  if (x < margin || x > window.quantumSketch.windowWidth - margin || y < margin || y > maxY - margin) return false;
   let inside = false;
   for (let i = 0, j = window.boundaryPoints.length - 1; i < window.boundaryPoints.length; j = i++) {
     let xi = window.boundaryPoints[i].x, yi = window.boundaryPoints[i].y;
@@ -242,8 +242,8 @@ function cachedNoise(x, y, z) {
 function addQuantumMessage(message, eventType) {
   let newMessage = {
     text: message,
-    x: window.quantumSketch.random(100, windowWidth - 300),
-    y: window.quantumSketch.random(150, (document.fullscreenElement ? windowHeight : windowHeight - 100) - 50),
+    x: window.quantumSketch.random(100, window.quantumSketch.windowWidth - 300),
+    y: window.quantumSketch.random(150, (document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - 50),
     alpha: 0,
     fadeIn: true,
     startFrame: window.frame,
@@ -344,8 +344,8 @@ function renderTransformingPortrait(img, currentFrame) {
           addQuantumMessage("Суперпозиция: частица в нескольких состояниях одновременно.", "superposition");
         }
       }
-      let canvasX = x + (windowWidth - img.width) / 2 + offsetX;
-      let canvasY = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - img.height) / 2 + offsetY;
+      let canvasX = x + (window.quantumSketch.windowWidth - img.width) / 2 + offsetX;
+      let canvasY = y + ((document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - img.height) / 2 + offsetY;
 
       if (currentFrame >= block.startFrame) {
         let probDensity = block.probAmplitude * 100;
@@ -384,7 +384,7 @@ function initializeParticles(blockList) {
   window.quantumStates = [];
   window.entangledPairs = [];
   const maxBlockSize = 16;
-  window.maxParticles = windowWidth < 768 ? 1000 : 2000; // Уменьшено для производительности
+  window.maxParticles = window.quantumSketch.windowWidth < 768 ? 1000 : 2000; // Уменьшено для производительности
   let particleCount = 0;
 
   window.img.loadPixels();
@@ -400,8 +400,8 @@ function initializeParticles(blockList) {
     let col = window.img.get(pixelX, pixelY);
     let brightnessVal = window.quantumSketch.brightness(col);
     if (brightnessVal > 10 && particleCount < window.maxParticles) {
-      let blockCenterX_canvas = x + (windowWidth - window.img.width) / 2 + maxBlockSize / 2;
-      let blockCenterY_canvas = y + ((document.fullscreenElement ? windowHeight : windowHeight - 100) - window.img.height) / 2 + maxBlockSize / 2;
+      let blockCenterX_canvas = x + (window.quantumSketch.windowWidth - window.img.width) / 2 + maxBlockSize / 2;
+      let blockCenterY_canvas = y + ((document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - window.img.height) / 2 + maxBlockSize / 2;
       let layer = window.quantumSketch.random() < 0.1 ? 'vacuum' : window.quantumSketch.random() < 0.2 ? 'background' : 'main';
       let shapeType = window.quantumSketch.floor(window.quantumSketch.random(5));
       let targetSize = window.quantumSketch.random(5, 30);
@@ -440,7 +440,7 @@ function initializeParticles(blockList) {
         targetRadialDistance: window.quantumSketch.random(100, 300),
         superpositionT: 0,
         probAmplitude: window.quantumSketch.random(0.5, 1.5),
-        barrier: window.quantumSketch.random() < 0.1 ? { x: window.quantumSketch.random(windowWidth), y: window.quantumSketch.random(windowHeight), width: 20, height: 100 } : null,
+        barrier: window.quantumSketch.random() < 0.1 ? { x: window.quantumSketch.random(window.quantumSketch.windowWidth), y: window.quantumSketch.random(window.quantumSketch.windowHeight), width: 20, height: 100 } : null,
         speed: window.quantumSketch.random(0.8, 1.5),
         rotation: 0,
         individualPeriod: window.quantumSketch.random(0.5, 3),
@@ -452,8 +452,8 @@ function initializeParticles(blockList) {
 
       if (window.quantumSketch.random() < 0.05 && particle.layer === 'main') {
         let entangled = { ...particle };
-        entangled.x = window.quantumSketch.random(windowWidth);
-        entangled.y = window.quantumSketch.random(document.fullscreenElement ? windowHeight : windowHeight - 100);
+        entangled.x = window.quantumSketch.random(window.quantumSketch.windowWidth);
+        entangled.y = window.quantumSketch.random(document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100);
         entangled.baseX = entangled.x;
         entangled.baseY = entangled.y;
         entangled.chaosSeed = window.quantumSketch.random(1000);
@@ -490,7 +490,7 @@ function initializeParticles(blockList) {
 function updateParticle(particle, state) {
   let px = particle.x + particle.offsetX;
   let py = particle.y + particle.offsetY;
-  if (px < 0 || px > windowWidth || py < 0 || py > (document.fullscreenElement ? windowHeight : windowHeight - 100) || particle.alpha < 20) {
+  if (px < 0 || px > window.quantumSketch.windowWidth || py < 0 || py > (document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) || particle.alpha < 20) {
     return;
   }
 
@@ -730,7 +730,7 @@ function updateParticle(particle, state) {
 function renderParticle(particle, state) {
   let px = particle.x + particle.offsetX;
   let py = particle.y + particle.offsetY;
-  if (px < 0 || px > windowWidth || py < 0 || py > (document.fullscreenElement ? windowHeight : windowHeight - 100)) return;
+  if (px < 0 || px > window.quantumSketch.windowWidth || py < 0 || py > (document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100)) return;
 
   window.quantumSketch.push();
   window.quantumSketch.translate(px, py);
@@ -826,8 +826,8 @@ function renderParticle(particle, state) {
 
 function renderInterference() {
   let gridSize = 50;
-  let maxY = document.fullscreenElement ? windowHeight : windowHeight - 100;
-  for (let x = 0; x < windowWidth; x += gridSize) {
+  let maxY = document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100;
+  for (let x = 0; x < window.quantumSketch.windowWidth; x += gridSize) {
     for (let y = 0; y < maxY; y += gridSize) {
       let amplitude = 0;
       for (let particle of window.particles.filter(p => p.layer === 'main' && p.superposition)) {
