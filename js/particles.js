@@ -2,7 +2,10 @@ window.particles = {
     init: function(sketch) {
         this.particles = [];
         this.img = window.img;
-        if (!this.img) return;
+        if (!this.img) {
+            console.error('No image available for particle initialization');
+            return;
+        }
 
         // Создаём частицы на основе пикселей изображения
         sketch.loadPixels();
@@ -23,6 +26,7 @@ window.particles = {
                 }
             }
         }
+        console.log(`Initialized ${this.particles.length} particles`);
     },
     update: function(sketch) {
         this.particles.forEach(p => {
@@ -43,9 +47,15 @@ window.particles = {
 
 if (window.quantumSketch) {
     window.quantumSketch.draw = () => {
-        if (window.particles.img) {
+        if (window.particles && window.particles.img) {
+            if (!window.particles.particles || window.particles.particles.length === 0) {
+                window.particles.init(window.quantumSketch);
+            }
             window.particles.update(window.quantumSketch);
             window.particles.draw(window.quantumSketch);
+        } else {
+            console.warn('Particles or image not initialized');
+            window.quantumSketch.background(0); // Очистка экрана
         }
     };
 }
