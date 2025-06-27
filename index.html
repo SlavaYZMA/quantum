@@ -212,7 +212,7 @@
                         if (file) {
                             sketch.loadImage(URL.createObjectURL(file), (img) => {
                                 console.log('Image loaded successfully:', img.width, 'x', img.height);
-                                window.img = img;
+                                window.img = img; // Сохраняем глобально
                                 if (typeof showStep === 'function' && window.currentStep === 2) {
                                     showStep(3);
                                 }
@@ -240,13 +240,13 @@
                     }
                 };
                 sketch.startAnimation = () => {
-                    if (window.img) {
-                        console.log('Starting animation');
-                        sketch.image(window.img, 0, 0, sketch.width, sketch.height);
-                        sketch.loop();
-                    } else {
-                        console.error('No image available for animation');
+                    if (!window.img) {
+                        console.warn('No image available for animation. Please upload an image on Step 2.');
+                        return; // Выход без ошибки, с предупреждением
                     }
+                    console.log('Starting animation with image:', window.img.width, 'x', window.img.height);
+                    sketch.image(window.img, 0, 0, sketch.width, sketch.height);
+                    sketch.loop();
                 };
             }, 'portrait-animation-container');
         } else {
