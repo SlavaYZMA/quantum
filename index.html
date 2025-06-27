@@ -286,7 +286,7 @@
 
         // Минимальная реализация функций
         window.setLanguageAndNext = (lang) => {
-            console.log('Language set to:', lang);
+            console.log('Language set to:', lang, 'Moving to step 1');
             if (typeof showStep === 'function') showStep(1);
         };
         window.showStep = (step) => {
@@ -297,10 +297,12 @@
             if (step === 4 || step === 5) {
                 if (window.quantumSketch) {
                     window.quantumSketch.startAnimation();
-                    startDynamicUpdates();
+                    startDynamicUpdates(); // Явный вызов
+                    console.log('Dynamic updates started for step', step);
                 }
             } else {
                 stopDynamicUpdates();
+                console.log('Dynamic updates stopped for step', step);
             }
         };
         window.openGallery = () => console.log('Gallery opened');
@@ -309,12 +311,18 @@
         // Обработчики кнопок
         document.querySelectorAll('.continue').forEach(btn => {
             btn.addEventListener('click', () => {
-                if (window.currentStep !== undefined) showStep(window.currentStep + 1);
+                if (window.currentStep !== undefined) {
+                    console.log('Continue button clicked on step:', window.currentStep);
+                    showStep(window.currentStep + 1);
+                }
             });
         });
         document.querySelectorAll('.back').forEach(btn => {
             btn.addEventListener('click', () => {
-                if (window.currentStep !== undefined && window.currentStep > 0) showStep(window.currentStep - 1);
+                if (window.currentStep !== undefined && window.currentStep > 0) {
+                    console.log('Back button clicked on step:', window.currentStep);
+                    showStep(window.currentStep - 1);
+                }
             });
         });
         showStep(0); // Старт с первого шага
@@ -331,25 +339,25 @@
         window.currentQuantumState = 'init';
 
         function startDynamicUpdates() {
-            console.log('Starting dynamic updates');
+            console.log('Starting dynamic updates at', new Date().toLocaleTimeString());
             if (window.updateInterval) clearInterval(window.updateInterval);
             window.updateInterval = setInterval(() => {
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     const terminal = document.getElementById('terminal-message');
                     if (terminal) {
-                        console.log('Updating terminal to:', terminalMessages[messageIndex]);
+                        console.log('Updating terminal to:', terminalMessages[messageIndex], 'at', new Date().toLocaleTimeString());
                         terminal.textContent = terminalMessages[messageIndex];
                         window.currentQuantumState = quantumStates[messageIndex];
                         messageIndex = (messageIndex + 1) % terminalMessages.length;
                     } else {
-                        console.error('Terminal element not found');
+                        console.error('Terminal element not found at', new Date().toLocaleTimeString());
                     }
                 }
             }, 5000); // 5 секунд
         }
 
         function stopDynamicUpdates() {
-            console.log('Stopping dynamic updates');
+            console.log('Stopping dynamic updates at', new Date().toLocaleTimeString());
             if (window.updateInterval) {
                 clearInterval(window.updateInterval);
                 window.updateInterval = null;
