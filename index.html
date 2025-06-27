@@ -189,6 +189,7 @@
     <script>
         if (typeof p5 !== 'undefined') {
             console.log('p5.js loaded successfully at', new Date().toLocaleTimeString());
+            // Инициализация для portrait-animation-container
             window.quantumSketch = new p5((sketch) => {
                 window.sketch = sketch;
                 sketch.setup = () => {
@@ -196,12 +197,7 @@
                     sketch.noLoop();
                 };
                 sketch.draw = () => {
-                    sketch.background(0); // Очистка фона
-                    if (window.currentAnimationState) {
-                        if (window.currentAnimationState === 'init') sketch.background(0, 100, 0);
-                        else if (window.currentAnimationState === 'wave') sketch.background(0, 0, 255);
-                        else if (window.currentAnimationState === 'collapse') sketch.background(255, 0, 0);
-                    }
+                    sketch.background(0);
                     if (window.img) sketch.image(window.img, 0, 0, sketch.width, sketch.height);
                 };
                 window.loadImageOnce = () => {
@@ -248,6 +244,42 @@
                     }
                 };
             }, 'portrait-animation-container');
+
+            // Инициализация для quantum-visualization-container
+            window.quantumVisualization = new p5((sketch) => {
+                window.visualSketch = sketch;
+                sketch.setup = () => {
+                    sketch.createCanvas(200, 200).parent('quantum-visualization-container');
+                };
+                sketch.draw = () => {
+                    sketch.background(0);
+                    if (window.currentQuantumState) {
+                        if (window.currentQuantumState === 'init') {
+                            // Суперпозиция: случайные точки
+                            for (let i = 0; i < 50; i++) {
+                                sketch.stroke(0, 255, 0);
+                                sketch.point(random(sketch.width), random(sketch.height));
+                            }
+                        } else if (window.currentQuantumState === 'wave') {
+                            // Волновая функция: интерференция
+                            let t = (sketch.frameCount * 0.05) % sketch.width;
+                            for (let x = 0; x < sketch.width; x++) {
+                                let y = sketch.height / 2 + sin(x * 0.1 + t) * 50;
+                                sketch.stroke(0, 0, 255);
+                                sketch.line(x, y, x, y + 10);
+                            }
+                        } else if (window.currentQuantumState === 'collapse') {
+                            // Коллапс: сужение к центру
+                            let centerX = sketch.width / 2;
+                            let centerY = sketch.height / 2;
+                            sketch.noStroke();
+                            sketch.fill(255, 0, 0);
+                            let r = sketch.map(sketch.frameCount % 60, 0, 60, 0, centerX);
+                            sketch.ellipse(centerX, centerY, r, r);
+                        }
+                    }
+                };
+            }, 'quantum-visualization-container');
         } else {
             console.error('p5.js failed to load - please check your internet connection or URL');
         }
@@ -295,8 +327,8 @@
             'Терминал: Обновление спектра...'
         ];
         let messageIndex = 0;
-        const animationStates = ['init', 'wave', 'collapse', 'init'];
-        window.currentAnimationState = 'init';
+        const quantumStates = ['init', 'wave', 'collapse', 'init'];
+        window.currentQuantumState = 'init';
 
         function startDynamicUpdates() {
             console.log('Starting dynamic updates');
@@ -307,16 +339,13 @@
                     if (terminal) {
                         console.log('Updating terminal to:', terminalMessages[messageIndex]);
                         terminal.textContent = terminalMessages[messageIndex];
-                        window.currentAnimationState = animationStates[messageIndex];
-                        if (window.quantumSketch) {
-                            window.quantumSketch.draw(); // Обновляем анимацию
-                        }
+                        window.currentQuantumState = quantumStates[messageIndex];
                         messageIndex = (messageIndex + 1) % terminalMessages.length;
                     } else {
                         console.error('Terminal element not found');
                     }
                 }
-            }, 15000); // 15 секунд
+            }, 5000); // 5 секунд
         }
 
         function stopDynamicUpdates() {
