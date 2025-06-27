@@ -109,7 +109,7 @@
         <div class="split-container">
             <div id="quantum-visualization-container" class="quantum-visualization-container"></div>
             <div class="terminal-container">
-                <p>Терминал: Квантовая анимация обновляется...</p>
+                <p id="terminal-message">Терминал: Инициализация...</p>
             </div>
         </div>
         <div class="portrait-animation-container" id="portrait-animation-container" style="width: 100%; margin: 20px 0;"></div>
@@ -132,7 +132,7 @@
             <div class="split-container">
                 <div id="quantum-visualization-container" class="quantum-visualization-container"></div>
                 <div class="terminal-container">
-                    <p>Терминал: Квантовая анимация обновляется...</p>
+                    <p id="terminal-message">Терминал: Квантовая анимация обновляется...</p>
                 </div>
             </div>
             <div class="portrait-animation-container" id="portrait-animation-container"></div>
@@ -244,13 +244,18 @@
                     console.log('Starting animation with image:', window.img.width, 'x', window.img.height);
                     sketch.image(window.img, 0, 0, sketch.width, sketch.height);
                     sketch.loop();
-                    // Убрано рекурсивное вызов window.quantumSketch.startAnimation
                 };
                 sketch.mouseMoved = () => {
                     if (window.particles) {
                         window.particles.mouseX = sketch.mouseX;
                         window.particles.mouseY = sketch.mouseY;
                     }
+                };
+                sketch.updateAnimation = (state) => {
+                    if (state === 'init') sketch.background(0, 100, 0);
+                    else if (state === 'wave') sketch.background(0, 0, 255);
+                    else if (state === 'collapse') sketch.background(255, 0, 0);
+                    if (window.img) sketch.image(window.img, 0, 0, sketch.width, sketch.height);
                 };
             }, 'portrait-animation-container');
         } else {
@@ -268,7 +273,10 @@
             document.getElementById(`step-${step}`).style.display = 'block';
             window.currentStep = step;
             if (step === 4 || step === 5) {
-                if (window.quantumSketch) window.quantumSketch.startAnimation();
+                if (window.quantumSketch) {
+                    window.quantumSketch.startAnimation();
+                    startDynamicUpdates();
+                }
             }
         };
         window.openGallery = () => console.log('Gallery opened');
@@ -286,6 +294,45 @@
             });
         });
         showStep(0); // Старт с первого шага
+
+        // Динамические обновления терминала и анимации
+        const terminalMessages = [
+            'Терминал: Инициализация...',
+            'Терминал: Волновая функция запущена...',
+            'Терминал: Коллапс волны начат...',
+            'Терминал: Обновление спектра...'
+        ];
+        let messageIndex = 0;
+        const animationStates = ['init', 'wave', 'collapse', 'init']; // Цикл состояний
+
+        function startDynamicUpdates() {
+            if (window.updateInterval) clearInterval(window.updateInterval);
+            window.updateInterval = setInterval(() => {
+                if (window.currentStep === 4 || window.currentStep === 5) {
+                    const terminal = document.getElementById('terminal-message');
+                    if (terminal) {
+                        terminal.textContent = terminalMessages[messageIndex];
+                        if (window.quantumSketch) {
+                            window.quantumSketch.updateAnimation(animationStates[messageIndex]);
+                        }
+                        messageIndex = (messageIndex + 1) % terminalMessages.length;
+                    }
+                }
+            }, 15000); // 15 секунд
+        }
+
+        // Остановить обновления при выходе из шага
+        function stopDynamicUpdates() {
+            if (window.updateInterval) clearInterval(window.updateInterval);
+        }
+
+        document.querySelectorAll('.step').forEach(step => {
+            step.addEventListener('transitionend', () => {
+                if (window.currentStep !== 4 && window.currentStep !== 5) {
+                    stopDynamicUpdates();
+                }
+            });
+        });
     </script>
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
