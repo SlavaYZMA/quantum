@@ -107,9 +107,7 @@
         <div class="text-block typewriter" data-i18n="step4_text2">Каждый ваш жест запускает коллапс.</div>
         <div class="text-block typewriter" data-i18n="step4_text3">Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</div>
         <div class="split-container">
-            <div class="quantum-visualization-container">
-                <p>Контейнер для визуализации квантовых процессов (зарезервировано)</p>
-            </div>
+            <div id="quantum-visualization-container" class="quantum-visualization-container"></div>
             <div class="terminal-container">
                 <p>Терминал: Квантовая анимация обновляется...</p>
             </div>
@@ -132,9 +130,7 @@
             <div class="text-block typewriter" data-i18n="step5_text2">Но ты можешь зафиксировать один миг.</div>
             <div class="text-block typewriter" data-i18n="step5_text3">Это будет один из возможных тебя.</div>
             <div class="split-container">
-                <div class="animation-container">
-                    <p>Контейнер для визуализации квантовых процессов (зарезервировано)</p>
-                </div>
+                <div id="quantum-visualization-container" class="quantum-visualization-container"></div>
                 <div class="terminal-container">
                     <p>Терминал: Квантовая анимация обновляется...</p>
                 </div>
@@ -198,16 +194,15 @@
                 sketch.setup = () => {
                     sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     sketch.noLoop();
-                    window.animationTest = () => {
-                        console.log('Animation test triggered');
-                        sketch.loop(); // Запускаем цикл для теста
-                        sketch.draw = () => {
-                            sketch.background(0);
-                            sketch.fill(255);
-                            sketch.text('Animation Active', 10, 20);
-                            sketch.noLoop(); // Останавливаем после теста
-                        };
-                    };
+                    // Переопределяем setup для работы с particles.js
+                    if (window.quantumSketch && window.quantumSketch.setup) {
+                        window.quantumSketch.setup();
+                    }
+                };
+                sketch.draw = () => {
+                    if (window.quantumSketch && window.quantumSketch.draw) {
+                        window.quantumSketch.draw();
+                    }
                 };
                 window.loadImageOnce = () => {
                     console.log('loadImageOnce function called');
@@ -259,6 +254,9 @@
                     console.log('Starting animation with image:', window.img.width, 'x', window.img.height);
                     sketch.image(window.img, 0, 0, sketch.width, sketch.height);
                     sketch.loop();
+                    if (window.quantumSketch && window.quantumSketch.startAnimation) {
+                        window.quantumSketch.startAnimation();
+                    }
                 };
                 sketch.mouseMoved = () => {
                     if (window.particles) {
@@ -292,3 +290,5 @@
             window.animationTest();
         }
     </script>
+</body>
+</html>
