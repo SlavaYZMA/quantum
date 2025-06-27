@@ -49,7 +49,7 @@
         </div>
         <div class="scrollable-content">
             <div class="button-block">
-                <button class="action-btn" id="loadImageButton" onclick="window.quantumSketch.loadImage()">Загрузить портрет</button>
+                <button class="action-btn" id="loadImageButton" onclick="loadImageOnce()">Загрузить портрет</button>
                 <button class="action-btn" onclick="openGallery()">Выбрать из архива</button>
             </div>
             <div class="button-block">
@@ -201,8 +201,12 @@
                     sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     sketch.noLoop();
                 };
-                sketch.loadImage = () => {
-                    console.log('loadImage function called');
+                window.loadImageOnce = () => {
+                    console.log('loadImageOnce function called');
+                    if (window.img) {
+                        console.warn('Image already loaded, skipping new load');
+                        return;
+                    }
                     const input = document.createElement('input');
                     input.type = 'file';
                     input.accept = 'image/*';
@@ -242,7 +246,7 @@
                 sketch.startAnimation = () => {
                     if (!window.img) {
                         console.warn('No image available for animation. Please upload an image on Step 2.');
-                        return; // Выход без ошибки, с предупреждением
+                        return;
                     }
                     console.log('Starting animation with image:', window.img.width, 'x', window.img.height);
                     sketch.image(window.img, 0, 0, sketch.width, sketch.height);
@@ -263,7 +267,7 @@
     <script>
         console.log('All scripts loaded, checking functions:', {
             setLanguageAndNext: typeof setLanguageAndNext === 'function',
-            loadImage: typeof window.quantumSketch?.loadImage === 'function',
+            loadImageOnce: typeof window.loadImageOnce === 'function',
             startAnimation: typeof window.quantumSketch?.startAnimation === 'function',
             recordObservation: typeof window.quantumSketch?.recordObservation === 'function',
             shareToArchive: typeof shareToArchive === 'function'
