@@ -25,7 +25,7 @@ body {
 
 .text-block {
     margin: 10px 0;
-    text-align: center; /* Центрирование текста вне контейнера */
+    text-align: center;
 }
 
 .typewriter {
@@ -40,7 +40,7 @@ body {
 
 .button-block {
     margin-top: 20px;
-    text-align: center; /* Центрирование кнопок */
+    text-align: center;
 }
 
 button {
@@ -63,13 +63,13 @@ button:hover {
     justify-content: space-between;
     width: 80%;
     margin: 20px auto;
-    flex-wrap: wrap; /* Адаптивность для мобильных */
+    flex-wrap: wrap;
 }
 
 #quantum-visualization-container {
     width: 48%;
     text-align: center;
-    margin-bottom: 20px; /* Отступ для мобильной версии */
+    margin-bottom: 20px;
     position: relative;
     overflow: hidden;
     background-color: #000;
@@ -81,19 +81,19 @@ button:hover {
     background-color: #1a1a1a;
     padding: 10px;
     border: 1px solid #00ff00;
-    height: 200px; /* Фиксированная высота для терминала */
-    overflow-y: auto; /* Прокрутка для длинных логов */
+    height: 200px;
+    overflow-y: auto;
     font-size: 14px;
     color: #00ff00;
-    white-space: pre-wrap; /* Сохранение форматирования текста */
-    margin-bottom: 20px; /* Отступ для мобильной версии */
+    white-space: pre-wrap;
+    margin-bottom: 20px;
 }
 
 .portrait-animation-container {
     width: 100%;
     position: relative;
     margin: 20px 0;
-    flex-grow: 1; /* Растягивается на всё доступное пространство */
+    flex-grow: 1;
 }
 
 .modal {
@@ -134,6 +134,6 @@ button:hover {
 
 @media (max-width: 768px) {
     #quantum-visualization-container, .terminal-container {
-        width: 100%; /* Полная ширина на мобильных */
+        width: 100%;
     }
 }
