@@ -6,10 +6,18 @@ function showStep(stepIndex) {
         return;
     }
     steps.forEach((step, index) => {
-        step.style.display = index === stepIndex ? 'block' : 'none';
+        step.style.display = 'none';
         console.log(`Hiding step: ${step.id}`);
     });
-    console.log(`Showing step: ${stepIndex} ID: ${steps[stepIndex].id}`);
+    let targetStepId = `step-${stepIndex}`;
+    let targetStep = document.getElementById(targetStepId);
+    if (targetStep) {
+        targetStep.style.display = 'block';
+        console.log(`Showing step: ${stepIndex} ID: ${targetStepId}`);
+    } else {
+        console.warn(`Step ${stepIndex} (ID: ${targetStepId}) not found, defaulting to step 0`);
+        document.getElementById('step-0').style.display = 'block';
+    }
     window.currentStep = stepIndex; // Синхронизация с window.currentStep
     if (stepIndex === 4 || stepIndex === 5) {
         if (window.quantumSketch) {
