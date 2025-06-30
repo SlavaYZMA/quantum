@@ -57,7 +57,6 @@
                 <button class="continue" onclick="continueStep2()">Продолжить</button>
             </div>
         </div>
-        <div class="portrait-animation-container" id="portrait-animation-container" style="width: 100%; margin: 20px 0;"></div>
     </section>
 
     <section id="step-2-1" class="step">
@@ -190,12 +189,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <script>
         let quantumSketch = null;
+        window.img = null; // Инициализируем глобальную переменную
 
         // Глобальная функция для загрузки изображения
         window.loadImageOnce = () => {
-            if (!quantumSketch) {
-                initializeQuantumSketch();
-            }
             if (window.img) {
                 console.warn('Image already loaded, skipping new load');
                 return;
@@ -212,15 +209,14 @@
                             window.img = img;
                             console.log('Image loaded successfully, size:', img.width, 'x', img.height);
                             if (window.currentStep === 2) {
-                                quantumSketch.startAnimation();
-                                startDynamicUpdates();
+                                showStep(2.1); // Автоматический переход после загрузки
                             }
-                            quantumSketch.redraw();
                         }, (err) => {
                             console.error('Error loading image:', err);
                         });
                     } else {
-                        console.error('quantumSketch still not initialized after attempt');
+                        console.error('quantumSketch not initialized, delaying image load');
+                        window.pendingImage = file; // Сохраняем для загрузки позже
                     }
                 }
             };
@@ -228,57 +224,65 @@
         };
 
         function initializeQuantumSketch() {
-            if (quantumSketch) return; // Избегаем повторной инициализации
+            if (quantumSketch) return;
             quantumSketch = new p5((sketch) => {
                 window.sketch = sketch;
                 let isPaused = false;
                 sketch.setup = () => {
                     let container = document.getElementById('portrait-animation-container');
                     if (!container || container.offsetParent === null) {
-                        console.error('Container not visible or not in DOM');
+                        console.error('Container not visible or not in DOM, retrying in 500ms');
+                        setTimeout(initializeQuantumSketch, 500); // Повторная попытка
                         return;
                     }
                     let canvas = sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     canvas.canvas.getContext('2d').willReadFrequently = true;
                     console.log('Canvas created, size:', sketch.width, 'x', sketch.height);
+                    if (window.pendingImage) {
+                        sketch.loadImage(URL.createObjectURL(window.pendingImage), (img) => {
+                            window.img = img;
+                            console.log('Pending image loaded, size:', img.width, 'x', img.height);
+                            delete window.pendingImage;
+                            sketch.redraw();
+                        });
+                    }
                 };
                 sketch.draw = () => {
                     console.log('Drawing frame, currentStep:', window.currentStep, 'state:', window.currentQuantumState, 'isPaused:', isPaused);
                     sketch.background(0);
-                    if (window.img) {
-                        // Масштабирование изображения с сохранением пропорций
+                    if (window.img && (window.currentStep === 4 || window.currentStep === 5)) {
                         let scale = Math.min(sketch.width / window.img.width, sketch.height / window.img.height);
                         let displayWidth = window.img.width * scale;
                         let displayHeight = window.img.height * scale;
                         let x = (sketch.width - displayWidth) / 2;
                         let y = (sketch.height - displayHeight) / 2;
                         sketch.image(window.img, x, y, displayWidth, displayHeight);
-                    } else {
-                        console.log('No image available for drawing');
-                    }
-                    if (!isPaused && (window.currentStep === 2 || window.currentStep === 4 || window.currentStep === 5)) {
-                        if (window.currentQuantumState === 'superposition' || window.currentQuantumState === 'init') {
-                            for (let i = 0; i < 30; i++) {
-                                let x = sketch.random(sketch.width);
-                                let y = sketch.random(sketch.height);
-                                let prob = sketch.noise(x * 0.01, y * 0.01);
-                                if (prob > 0.3) {
-                                    sketch.stroke(0, 255 * prob, 100);
+                        if (!isPaused && window.currentQuantumState) {
+                            if (window.currentQuantumState === 'superposition') {
+                                for (let i = 0; i < 30; i++) {
+                                    let x = sketch.random(sketch.width);
+                                    let y = sketch.random(sketch.height);
+                                    let prob = sketch.noise(x * 0.01, y * 0.01);
+                                    if (prob > 0.3) {
+                                        sketch.stroke(0, 255 * prob, 100);
+                                        sketch.point(x, y);
+                                    }
+                                }
+                            } else if (window.currentQuantumState === 'collapse') {
+                                let centerX = sketch.width / 2;
+                                let centerY = sketch.height / 2;
+                                for (let i = 0; i < 30; i++) {
+                                    let angle = sketch.random(TWO_PI);
+                                    let r = sketch.map(sketch.sin(sketch.frameCount * 0.01 + i), -1, 1, 0, 150);
+                                    let x = centerX + r * sketch.cos(angle);
+                                    let y = centerY + r * sketch.sin(angle);
+                                    sketch.stroke(255, 50, 0, 255 - r * 1.5);
                                     sketch.point(x, y);
                                 }
                             }
-                        } else if (window.currentQuantumState === 'collapse') {
-                            let centerX = sketch.width / 2;
-                            let centerY = sketch.height / 2;
-                            for (let i = 0; i < 30; i++) {
-                                let angle = sketch.random(TWO_PI);
-                                let r = sketch.map(sketch.sin(sketch.frameCount * 0.01 + i), -1, 1, 0, 150);
-                                let x = centerX + r * sketch.cos(angle);
-                                let y = centerY + r * sketch.sin(angle);
-                                sketch.stroke(255, 50, 0, 255 - r * 1.5);
-                                sketch.point(x, y);
-                            }
                         }
+                    } else if (!window.img) {
+                        console.log('No image available for drawing');
                     }
                 };
                 sketch.mousePressed = () => {
@@ -324,13 +328,10 @@
             if (targetStep) {
                 targetStep.style.display = 'block';
                 console.log(`Step ${step} displayed successfully`);
-                if (step === 2 && !quantumSketch) {
-                    initializeQuantumSketch();
-                }
-                if (step === 2 || step === 4 || step === 5) {
+                if (step === 4 || step === 5) {
                     if (!quantumSketch) initializeQuantumSketch();
-                    if (window.img) {
-                        window.currentQuantumState = 'superposition';
+                    window.currentQuantumState = 'superposition';
+                    if (quantumSketch) {
                         quantumSketch.startAnimation();
                         startDynamicUpdates();
                     }
@@ -341,7 +342,7 @@
             }
             window.currentStep = step;
             console.log('Updated currentStep to:', window.currentStep);
-            if (step === 2 || step === 4 || step === 5) {
+            if (step === 4 || step === 5) {
                 console.log('Dynamic updates started for step', step);
             } else {
                 stopDynamicUpdates();
@@ -412,7 +413,7 @@
             console.log('Starting dynamic updates at', new Date().toLocaleTimeString());
             if (window.updateInterval) clearInterval(window.updateInterval);
             window.updateInterval = setInterval(() => {
-                if (window.currentStep === 2 || window.currentStep === 4 || window.currentStep === 5) {
+                if (window.currentStep === 4 || window.currentStep === 5) {
                     const terminal = document.getElementById('terminal-message');
                     if (terminal) {
                         console.log('Updating terminal to:', terminalMessages[messageIndex], 'at', new Date().toLocaleTimeString());
