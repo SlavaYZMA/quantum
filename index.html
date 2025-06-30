@@ -234,9 +234,11 @@
                     if (window.currentStep === 5 && sketch.contains(sketch.mouseX, sketch.mouseY)) {
                         isPaused = !isPaused;
                         if (isPaused) {
+                            console.log('Animation paused at step 5');
                             document.getElementById('recordButton').style.display = 'none';
                             document.getElementById('saveInput').style.display = 'block';
                         } else {
+                            console.log('Animation resumed at step 5');
                             document.getElementById('recordButton').style.display = 'inline-block';
                             document.getElementById('saveInput').style.display = 'none';
                         }
@@ -271,14 +273,6 @@
                     }
                     console.log('Starting animation');
                     sketch.loop();
-                };
-                sketch.recordObservation = () => {
-                    if (window.img && !sketch.isLooping()) {
-                        let dataURL = sketch.get().canvas.toDataURL();
-                        document.getElementById('saved-portrait').src = dataURL;
-                        document.getElementById('saved-portrait').style.display = 'block';
-                        if (typeof showStep === 'function') showStep(6);
-                    }
                 };
             }, 'portrait-animation-container');
 
@@ -332,10 +326,11 @@
         };
 
         window.showStep = (step) => {
-            console.log('Showing step:', step);
+            console.log('Showing step:', step, 'Current steps length:', document.querySelectorAll('.step').length);
             document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
             document.getElementById(`step-${step}`).style.display = 'block';
             window.currentStep = step;
+            console.log('Updated currentStep to:', window.currentStep);
             if (step === 4 || step === 5) {
                 if (window.quantumSketch) {
                     window.quantumSketch.startAnimation();
@@ -353,9 +348,11 @@
         document.querySelectorAll('.continue').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 if (window.currentStep !== undefined) {
-                    console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target);
+                    console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target, 'Expected next step:', window.currentStep === 5 ? 4 : window.currentStep + 1);
                     if (window.currentStep === 2.1) {
                         showStep(3);
+                    } else if (window.currentStep === 5) {
+                        showStep(4); // Возвращаемся к наблюдению
                     } else if (window.currentStep !== 2) {
                         showStep(window.currentStep + 1);
                     }
@@ -365,7 +362,7 @@
         document.querySelectorAll('.back').forEach(btn => {
             btn.addEventListener('click', () => {
                 if (window.currentStep !== undefined && window.currentStep > 0) {
-                    console.log('Back button clicked on step:', window.currentStep);
+                    console.log('Back button clicked on step:', window.currentStep, 'Going to:', window.currentStep === 2.1 ? 2 : window.currentStep - 1);
                     if (window.currentStep === 2.1) showStep(2);
                     else showStep(window.currentStep - 1);
                 }
@@ -408,7 +405,8 @@
 
         document.getElementById('recordButton').addEventListener('click', () => {
             if (window.quantumSketch) {
-                window.quantumSketch.startAnimation(); // Убедимся, что анимация запущена
+                window.quantumSketch.startAnimation();
+                console.log('Record button clicked, preparing to pause');
                 document.getElementById('recordButton').style.display = 'none';
                 document.getElementById('saveInput').style.display = 'block';
             }
@@ -422,6 +420,7 @@
                 link.download = `${name}.png`;
                 link.href = dataURL;
                 link.click();
+                console.log(`Portrait saved as: ${name}.png, resuming step 5`);
                 document.getElementById('saveInput').style.display = 'none';
                 document.getElementById('recordButton').style.display = 'inline-block';
             } else {
