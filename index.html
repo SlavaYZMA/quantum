@@ -241,7 +241,13 @@
                     console.log('Drawing frame, currentStep:', window.currentStep, 'state:', window.currentQuantumState, 'isPaused:', isPaused);
                     sketch.background(0);
                     if (window.img) {
-                        sketch.image(window.img, 0, 0, sketch.width, sketch.height);
+                        // Масштабирование изображения с сохранением пропорций
+                        let scale = Math.min(sketch.width / window.img.width, sketch.height / window.img.height);
+                        let displayWidth = window.img.width * scale;
+                        let displayHeight = window.img.height * scale;
+                        let x = (sketch.width - displayWidth) / 2;
+                        let y = (sketch.height - displayHeight) / 2;
+                        sketch.image(window.img, x, y, displayWidth, displayHeight);
                     } else {
                         console.log('No image available for drawing');
                     }
@@ -318,7 +324,7 @@
                 }
                 if (step === 4 || step === 5) {
                     if (!quantumSketch) initializeQuantumSketch();
-                    window.currentQuantumState = 'superposition';
+                    window.currentQuantumState = 'superposition'; // Устанавливаем начальное состояние
                     if (quantumSketch) {
                         quantumSketch.startAnimation();
                         startDynamicUpdates();
@@ -415,7 +421,7 @@
                         }
                     }
                 }
-            }, 5000);
+            }, 2000); // Ускоряем интервал до 2 секунд для тестирования
         }
 
         function stopDynamicUpdates() {
