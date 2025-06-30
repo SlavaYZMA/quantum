@@ -352,7 +352,8 @@
         window.openGallery = () => console.log('Gallery opened');
         window.shareToArchive = () => console.log('Image shared to archive');
 
-        // Добавим проверку всех кнопок при загрузке
+        // Добавим счетчик фиксаций
+        window.fixationCount = 0;
         console.log('Initial step setup, all continue buttons:', document.querySelectorAll('.continue'));
 
         document.querySelectorAll('.continue').forEach(btn => {
@@ -364,6 +365,12 @@
                         showStep(3);
                     } else if (window.currentStep === 5) {
                         showStep(4); // Возвращаемся к наблюдению
+                        window.fixationCount++; // Увеличиваем счетчик
+                        console.log('Fixation count increased to:', window.fixationCount);
+                        if (window.fixationCount >= 1) { // Переход на 6 после одной фиксации
+                            showStep(6);
+                            window.fixationCount = 0; // Сброс счетчика
+                        }
                     } else if (window.currentStep !== 2) {
                         showStep(window.currentStep + 1);
                     }
