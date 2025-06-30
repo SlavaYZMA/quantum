@@ -49,16 +49,24 @@ document.querySelectorAll('.back').forEach(button => {
     });
 });
 
-// Обновленный обработчик .continue с дополнительной проверкой
+// Обновленный обработчик .continue
 document.querySelectorAll('.continue').forEach(button => {
     button.addEventListener('click', (e) => {
         console.log('Event listener triggered for continue button, target:', e.target);
         if (window.currentStep !== undefined) {
-            console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target, 'Expected next step:', window.currentStep === 5 ? 4 : window.currentStep + 1);
+            console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target, 'Expected next step:', window.currentStep === 5 ? (window.fixationCount >= 1 ? 6 : 4) : window.currentStep + 1);
             if (window.currentStep === 2.1) {
                 showStep(3);
             } else if (window.currentStep === 5) {
-                showStep(4); // Возвращаемся к наблюдению
+                window.fixationCount = window.fixationCount || 0; // Инициализация
+                window.fixationCount++; // Увеличиваем при клике
+                console.log('Fixation count increased to:', window.fixationCount);
+                if (window.fixationCount >= 1) {
+                    showStep(6); // Переход на 6 после фиксации
+                    window.fixationCount = 0; // Сброс
+                } else {
+                    showStep(4); // Возврат к наблюдению
+                }
             } else if (window.currentStep !== 2) {
                 showStep(window.currentStep + 1);
             }
