@@ -326,7 +326,7 @@
                         if (file) {
                             sketch.loadImage(URL.createObjectURL(file), (img) => {
                                 window.img = img;
-                                if (typeof showStep === 'function' && window.currentStep === 2) showStep(2.1); // Переход к 2-1 после загрузки
+                                console.log('Image loaded successfully');
                             }, (err) => {
                                 console.error('Error loading image:', err);
                             });
@@ -528,14 +528,12 @@
 
         // Обработчики кнопок
         document.querySelectorAll('.continue').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
                 if (window.currentStep !== undefined) {
                     console.log('Continue button clicked on step:', window.currentStep);
-                    if (window.currentStep === 2) {
-                        continueStep2(); // Вызов отдельной функции для шага 2
-                    } else if (window.currentStep === 2.1) {
+                    if (window.currentStep === 2.1) {
                         showStep(3);
-                    } else {
+                    } else if (window.currentStep !== 2) { // Исключаем шаг 2 из общего обработчика
                         showStep(window.currentStep + 1);
                     }
                 }
