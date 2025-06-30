@@ -134,7 +134,7 @@
                 <p id="terminal-message">Терминал: Квантовая анимация обновляется...</p>
             </div>
         </div>
-        <div class="portrait-animation-container" id="portrait-animation-container" style="width: 100%; margin: 20px 0;"></div>
+        <div class="portrait-animation-container" id="portrait-animation-container" style="width: 100%; margin: 20px 0; position: relative; z-index: 1;"></div>
         <div class="button-block">
             <button class="action-btn" id="recordButton" onclick="recordObservation()">ЗАПИСАТЬ НАБЛЮДЕНИЕ</button>
             <button class="back">Назад</button>
@@ -199,6 +199,7 @@
                     sketch.noLoop();
                 };
                 sketch.draw = () => {
+                    console.log('Drawing frame, currentStep:', window.currentStep, 'state:', window.currentQuantumState);
                     sketch.background(0);
                     if (window.img) {
                         sketch.image(window.img, 0, 0, sketch.width, sketch.height);
@@ -206,7 +207,7 @@
                         console.log('No image available for drawing');
                     }
                     if (!isPaused && (window.currentStep === 4 || window.currentStep === 5)) {
-                        if (window.currentQuantumState === 'superposition') {
+                        if (window.currentQuantumState === 'superposition' || window.currentQuantumState === 'init') {
                             for (let i = 0; i < 30; i++) {
                                 let x = sketch.random(sketch.width);
                                 let y = sketch.random(sketch.height);
@@ -271,7 +272,8 @@
                         console.warn('No image available for animation. Please upload an image on Step 2.');
                         return;
                     }
-                    console.log('Starting animation');
+                    console.log('Starting animation, setting initial state to superposition');
+                    window.currentQuantumState = 'superposition'; // Устанавливаем начальное состояние
                     sketch.loop();
                 };
             }, 'portrait-animation-container');
@@ -332,6 +334,10 @@
             if (targetStep) {
                 targetStep.style.display = 'block';
                 console.log(`Step ${step} displayed successfully`);
+                if (step === 5) {
+                    window.currentQuantumState = 'superposition'; // Сбрасываем состояние на шаге 5
+                    if (window.quantumSketch) window.quantumSketch.startAnimation();
+                }
             } else {
                 console.error(`Step ${step} not found, defaulting to step 0`);
                 document.getElementById('step-0').style.display = 'block';
@@ -419,7 +425,9 @@
                         console.log('Updating terminal to:', terminalMessages[messageIndex], 'at', new Date().toLocaleTimeString());
                         terminal.textContent = terminalMessages[messageIndex];
                         window.currentQuantumState = quantumStates[messageIndex];
+                        console.log('Setting quantum state to:', window.currentQuantumState);
                         messageIndex = (messageIndex + 1) % terminalMessages.length;
+                        if (window.quantumSketch) window.quantumSketch.startAnimation(); // Перезапуск анимации при смене состояния
                     }
                 }
             }, 5000);
