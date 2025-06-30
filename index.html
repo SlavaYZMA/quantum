@@ -192,6 +192,9 @@
 
         // Глобальная функция для загрузки изображения
         window.loadImageOnce = () => {
+            if (!quantumSketch) {
+                initializeQuantumSketch();
+            }
             if (window.img) {
                 console.warn('Image already loaded, skipping new load');
                 return;
@@ -212,7 +215,7 @@
                             console.error('Error loading image:', err);
                         });
                     } else {
-                        console.error('quantumSketch not initialized');
+                        console.error('quantumSketch still not initialized after attempt');
                     }
                 }
             };
@@ -310,6 +313,9 @@
             if (targetStep) {
                 targetStep.style.display = 'block';
                 console.log(`Step ${step} displayed successfully`);
+                if (step === 2 && !quantumSketch) {
+                    initializeQuantumSketch();
+                }
                 if (step === 4 || step === 5) {
                     if (!quantumSketch) initializeQuantumSketch();
                     window.currentQuantumState = 'superposition';
