@@ -189,9 +189,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <script>
         let quantumSketch = null;
-        window.img = null; // Инициализируем глобальную переменную
+        window.img = null;
 
-        // Глобальная функция для загрузки изображения
         window.loadImageOnce = () => {
             if (window.img) {
                 console.warn('Image already loaded, skipping new load');
@@ -204,20 +203,16 @@
                 const file = e.target.files[0];
                 if (file) {
                     console.log('Loading image:', file.name);
-                    if (quantumSketch) {
-                        quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
-                            window.img = img;
-                            console.log('Image loaded successfully, size:', img.width, 'x', img.height);
-                            if (window.currentStep === 2) {
-                                showStep(2.1); // Автоматический переход после загрузки
-                            }
-                        }, (err) => {
-                            console.error('Error loading image:', err);
-                        });
-                    } else {
-                        console.error('quantumSketch not initialized, delaying image load');
-                        window.pendingImage = file; // Сохраняем для загрузки позже
-                    }
+                    if (!quantumSketch) initializeQuantumSketch(); // Инициализация перед загрузкой
+                    quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
+                        window.img = img;
+                        console.log('Image loaded successfully, size:', img.width, 'x', img.height);
+                        if (window.currentStep === 2) {
+                            showStep(2.1); // Автоматический переход
+                        }
+                    }, (err) => {
+                        console.error('Error loading image:', err);
+                    });
                 }
             };
             input.click();
@@ -232,20 +227,12 @@
                     let container = document.getElementById('portrait-animation-container');
                     if (!container || container.offsetParent === null) {
                         console.error('Container not visible or not in DOM, retrying in 500ms');
-                        setTimeout(initializeQuantumSketch, 500); // Повторная попытка
+                        setTimeout(initializeQuantumSketch, 500);
                         return;
                     }
                     let canvas = sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     canvas.canvas.getContext('2d').willReadFrequently = true;
                     console.log('Canvas created, size:', sketch.width, 'x', sketch.height);
-                    if (window.pendingImage) {
-                        sketch.loadImage(URL.createObjectURL(window.pendingImage), (img) => {
-                            window.img = img;
-                            console.log('Pending image loaded, size:', img.width, 'x', img.height);
-                            delete window.pendingImage;
-                            sketch.redraw();
-                        });
-                    }
                 };
                 sketch.draw = () => {
                     console.log('Drawing frame, currentStep:', window.currentStep, 'state:', window.currentQuantumState, 'isPaused:', isPaused);
