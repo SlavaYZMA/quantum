@@ -29,19 +29,26 @@ function showStep(stepIndex) {
     }
 }
 
-document.querySelectorAll('.continue').forEach(button => {
+document.querySelectorAll('.back').forEach(button => {
     button.addEventListener('click', () => {
-        console.log(`Continue button clicked on step: ${window.currentStep}`);
-        if (window.currentStep < steps.length - 1) {
-            showStep(window.currentStep + 1);
+        if (window.currentStep > 0) {
+            console.log('Back button clicked on step:', window.currentStep);
+            if (window.currentStep === 2.1) showStep(2);
+            else showStep(window.currentStep - 1);
         }
     });
 });
 
-document.querySelectorAll('.back').forEach(button => {
-    button.addEventListener('click', () => {
-        if (window.currentStep > 0) {
-            showStep(window.currentStep - 1);
+// Обновленный обработчик .continue, исключающий шаг 2
+document.querySelectorAll('.continue').forEach(button => {
+    button.addEventListener('click', (e) => {
+        if (window.currentStep !== undefined) {
+            console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target);
+            if (window.currentStep === 2.1) {
+                showStep(3);
+            } else if (window.currentStep !== 2) {
+                showStep(window.currentStep + 1);
+            }
         }
     });
 });
