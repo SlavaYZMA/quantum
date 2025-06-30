@@ -198,7 +198,12 @@
                 };
                 sketch.draw = () => {
                     sketch.background(0);
-                    if (window.img) sketch.image(window.img, 0, 0, sketch.width, sketch.height);
+                    if (window.img) {
+                        sketch.image(window.img, 0, 0, sketch.width, sketch.height);
+                        console.log('Image drawn in sketch:', window.img);
+                    } else {
+                        console.log('No image available for drawing');
+                    }
                     // Суперпозиция в портрете
                     if (window.currentQuantumState === 'superposition') {
                         for (let i = 0; i < 100; i++) {
@@ -324,9 +329,10 @@
                     input.onchange = (e) => {
                         const file = e.target.files[0];
                         if (file) {
+                            console.log('Loading image:', file.name);
                             sketch.loadImage(URL.createObjectURL(file), (img) => {
                                 window.img = img;
-                                console.log('Image loaded successfully');
+                                console.log('Image loaded successfully, size:', img.width, 'x', img.height);
                             }, (err) => {
                                 console.error('Error loading image:', err);
                             });
@@ -500,6 +506,7 @@
         };
 
         window.continueStep2 = () => {
+            console.log('Checking image status:', window.img ? 'Image available' : 'No image available');
             if (window.img) {
                 if (typeof showStep === 'function') showStep(2.1);
             } else {
@@ -530,10 +537,10 @@
         document.querySelectorAll('.continue').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 if (window.currentStep !== undefined) {
-                    console.log('Continue button clicked on step:', window.currentStep);
+                    console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target);
                     if (window.currentStep === 2.1) {
                         showStep(3);
-                    } else if (window.currentStep !== 2) { // Исключаем шаг 2 из общего обработчика
+                    } else if (window.currentStep !== 2) {
                         showStep(window.currentStep + 1);
                     }
                 }
