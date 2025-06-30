@@ -57,6 +57,7 @@
                 <button class="continue" onclick="continueStep2()">Продолжить</button>
             </div>
         </div>
+        <div class="portrait-animation-container" id="portrait-animation-container" style="width: 100%; margin: 20px 0;"></div>
     </section>
 
     <section id="step-2-1" class="step">
@@ -210,6 +211,10 @@
                         quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
                             window.img = img;
                             console.log('Image loaded successfully, size:', img.width, 'x', img.height);
+                            if (window.currentStep === 2) {
+                                quantumSketch.startAnimation();
+                                startDynamicUpdates();
+                            }
                             quantumSketch.redraw();
                         }, (err) => {
                             console.error('Error loading image:', err);
@@ -251,7 +256,7 @@
                     } else {
                         console.log('No image available for drawing');
                     }
-                    if (!isPaused && (window.currentStep === 4 || window.currentStep === 5)) {
+                    if (!isPaused && (window.currentStep === 2 || window.currentStep === 4 || window.currentStep === 5)) {
                         if (window.currentQuantumState === 'superposition' || window.currentQuantumState === 'init') {
                             for (let i = 0; i < 30; i++) {
                                 let x = sketch.random(sketch.width);
@@ -322,10 +327,10 @@
                 if (step === 2 && !quantumSketch) {
                     initializeQuantumSketch();
                 }
-                if (step === 4 || step === 5) {
+                if (step === 2 || step === 4 || step === 5) {
                     if (!quantumSketch) initializeQuantumSketch();
-                    window.currentQuantumState = 'superposition'; // Устанавливаем начальное состояние
-                    if (quantumSketch) {
+                    if (window.img) {
+                        window.currentQuantumState = 'superposition';
                         quantumSketch.startAnimation();
                         startDynamicUpdates();
                     }
@@ -336,7 +341,7 @@
             }
             window.currentStep = step;
             console.log('Updated currentStep to:', window.currentStep);
-            if (step === 4 || step === 5) {
+            if (step === 2 || step === 4 || step === 5) {
                 console.log('Dynamic updates started for step', step);
             } else {
                 stopDynamicUpdates();
@@ -407,7 +412,7 @@
             console.log('Starting dynamic updates at', new Date().toLocaleTimeString());
             if (window.updateInterval) clearInterval(window.updateInterval);
             window.updateInterval = setInterval(() => {
-                if (window.currentStep === 4 || window.currentStep === 5) {
+                if (window.currentStep === 2 || window.currentStep === 4 || window.currentStep === 5) {
                     const terminal = document.getElementById('terminal-message');
                     if (terminal) {
                         console.log('Updating terminal to:', terminalMessages[messageIndex], 'at', new Date().toLocaleTimeString());
@@ -421,7 +426,7 @@
                         }
                     }
                 }
-            }, 2000); // Ускоряем интервал до 2 секунд для тестирования
+            }, 2000);
         }
 
         function stopDynamicUpdates() {
