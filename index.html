@@ -136,7 +136,7 @@
         </div>
         <div class="portrait-animation-container" id="portrait-animation-container" style="width: 100%; margin: 20px 0;"></div>
         <div class="button-block">
-            <button class="action-btn" id="recordButton">ЗАПИСАТЬ НАБЛЮДЕНИЕ</button>
+            <button class="action-btn" id="recordButton" onclick="recordObservation()">ЗАПИСАТЬ НАБЛЮДЕНИЕ</button>
             <button class="back">Назад</button>
             <button class="continue">Продолжить</button>
         </div>
@@ -207,7 +207,7 @@
                     }
                     if (!isPaused && (window.currentStep === 4 || window.currentStep === 5)) {
                         if (window.currentQuantumState === 'superposition') {
-                            for (let i = 0; i < 30; i++) { // Уменьшено с 50 до 30 для оптимизации
+                            for (let i = 0; i < 30; i++) {
                                 let x = sketch.random(sketch.width);
                                 let y = sketch.random(sketch.height);
                                 let prob = sketch.noise(x * 0.01, y * 0.01);
@@ -219,7 +219,7 @@
                         } else if (window.currentQuantumState === 'collapse') {
                             let centerX = sketch.width / 2;
                             let centerY = sketch.height / 2;
-                            for (let i = 0; i < 30; i++) { // Уменьшено с 50 до 30
+                            for (let i = 0; i < 30; i++) {
                                 let angle = sketch.random(TWO_PI);
                                 let r = sketch.map(sketch.sin(sketch.frameCount * 0.01 + i), -1, 1, 0, 150);
                                 let x = centerX + r * sketch.cos(angle);
@@ -229,13 +229,9 @@
                             }
                         }
                     }
-                    if (performance.now() - sketch.lastFrameTime > 100) {
-                        console.warn('Animation lag detected:', performance.now() - sketch.lastFrameTime, 'ms');
-                    }
-                    sketch.lastFrameTime = performance.now();
                 };
                 sketch.mousePressed = () => {
-                    if (window.currentStep === 5 && sketch.contains(sketch.mouseX, sketch.mouseY)) {
+                    if (window.currentStep === 5 && sketch.mouseX >= 0 && sketch.mouseX <= sketch.width && sketch.mouseY >= 0 && sketch.mouseY <= sketch.height) {
                         isPaused = !isPaused;
                         if (isPaused) {
                             console.log('Animation paused at step 5');
@@ -294,12 +290,12 @@
                     let state = window.currentQuantumState || 'init';
                     switch (state) {
                         case 'superposition':
-                            for (let i = 0; i < 70; i++) { // Уменьшено с 100 до 70
+                            for (let i = 0; i < 70; i++) {
                                 let x = sketch.random(sketch.width);
                                 let y = sketch.random(sketch.height);
                                 let fade = sketch.sin(sketch.frameCount * 0.03 + i) * 255;
                                 sketch.stroke(0, 255, 150, fade);
-                                sketch.strokeWeight(1.5); // Уменьшено с 2
+                                sketch.strokeWeight(1.5);
                                 sketch.point(x, y);
                             }
                             break;
@@ -363,21 +359,30 @@
             btn.addEventListener('click', (e) => {
                 console.log('Continue button event triggered, target:', e.target, 'Parent step:', e.target.closest('.step')?.id, 'Time:', new Date().toLocaleTimeString());
                 if (window.currentStep !== undefined) {
-                    console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target, 'Expected next step:', window.currentStep === 5 ? 6 : window.currentStep + 1);
-                    if (window.currentStep === 2.1) {
-                        showStep(3);
-                    } else if (window.currentStep === 5) {
-                        window.fixationCount++; // Увеличиваем при каждом клике
-                        console.log('Fixation count increased to:', window.fixationCount);
-                        if (window.fixationCount >= 1) {
-                            showStep(6); // Переход на 6 после первого клика
-                            window.fixationCount = 0; // Сброс
-                        } else {
-                            showStep(4); // Возврат к 4, если фиксация не завершена
+                    console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target);
+                    let nextStep = window.currentStep + 1;
+                    if (window.currentStep === 2) {
+                        if (!window.img) {
+                            console.warn('Image not loaded, staying on step 2');
+                            return;
                         }
-                    } else if (window.currentStep !== 2) {
-                        showStep(window.currentStep + 1);
+                        nextStep = 2.1;
+                    } else if (window.currentStep === 2.1) {
+                        nextStep = 3;
+                    } else if (window.currentStep === 5) {
+                        window.fixationCount = window.fixationCount || 0;
+                        if (window.fixationCount === 0) {
+                            console.log('Fixation not yet recorded, staying on step 5');
+                            return;
+                        } else {
+                            nextStep = 6;
+                            window.fixationCount = 0;
+                        }
+                    } else if (window.currentStep === 6) {
+                        nextStep = 7;
                     }
+                    console.log('Moving to next step:', nextStep);
+                    showStep(nextStep);
                 } else {
                     console.warn('window.currentStep is undefined, cannot proceed');
                 }
@@ -388,6 +393,7 @@
                 if (window.currentStep !== undefined && window.currentStep > 0) {
                     console.log('Back button clicked on step:', window.currentStep, 'Going to:', window.currentStep === 2.1 ? 2 : window.currentStep - 1);
                     if (window.currentStep === 2.1) showStep(2);
+                    else if (window.currentStep === 6) showStep(5);
                     else showStep(window.currentStep - 1);
                 }
             });
