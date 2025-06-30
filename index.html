@@ -188,15 +188,22 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <script>
-        if (typeof p5 !== 'undefined') {
-            console.log('p5.js loaded successfully at', new Date().toLocaleTimeString());
-            window.quantumSketch = new p5((sketch) => {
+        let quantumSketch = null;
+
+        function initializeQuantumSketch() {
+            if (quantumSketch) return; // Избегаем повторной инициализации
+            quantumSketch = new p5((sketch) => {
                 window.sketch = sketch;
                 let isPaused = false;
                 sketch.setup = () => {
+                    let container = document.getElementById('portrait-animation-container');
+                    if (!container || container.offsetParent === null) {
+                        console.error('Container not visible or not in DOM');
+                        return;
+                    }
                     let canvas = sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     canvas.canvas.getContext('2d').willReadFrequently = true;
-                    // Убираем noLoop(), управление через isPaused
+                    console.log('Canvas created, size:', sketch.width, 'x', sketch.height);
                 };
                 sketch.draw = () => {
                     console.log('Drawing frame, currentStep:', window.currentStep, 'state:', window.currentQuantumState, 'isPaused:', isPaused);
@@ -260,6 +267,7 @@
                             sketch.loadImage(URL.createObjectURL(file), (img) => {
                                 window.img = img;
                                 console.log('Image loaded successfully, size:', img.width, 'x', img.height);
+                                if (quantumSketch) quantumSketch.redraw();
                             }, (err) => {
                                 console.error('Error loading image:', err);
                             });
@@ -274,49 +282,10 @@
                     }
                     console.log('Starting animation, setting initial state to superposition');
                     window.currentQuantumState = 'superposition';
-                    isPaused = false; // Убеждаемся, что анимация не на паузе
-                    sketch.redraw(); // Принудительный перерисунок
+                    isPaused = false;
+                    sketch.redraw();
                 };
             }, 'portrait-animation-container');
-
-            window.quantumVisualization = new p5((sketch) => {
-                window.visualSketch = sketch;
-                sketch.setup = () => {
-                    let canvas = sketch.createCanvas(window.innerWidth, window.innerHeight).parent('quantum-visualization-container');
-                    canvas.canvas.getContext('2d').willReadFrequently = true;
-                    sketch.windowResized = () => {
-                        sketch.resizeCanvas(window.innerWidth, window.innerHeight);
-                    };
-                };
-                sketch.draw = () => {
-                    sketch.background(20);
-                    let state = window.currentQuantumState || 'init';
-                    switch (state) {
-                        case 'superposition':
-                            for (let i = 0; i < 70; i++) {
-                                let x = sketch.random(sketch.width);
-                                let y = sketch.random(sketch.height);
-                                let fade = sketch.sin(sketch.frameCount * 0.03 + i) * 255;
-                                sketch.stroke(0, 255, 150, fade);
-                                sketch.strokeWeight(1.5);
-                                sketch.point(x, y);
-                            }
-                            break;
-                        case 'collapse':
-                            let centerX = sketch.width / 2;
-                            let centerY = sketch.height / 2;
-                            let r = sketch.map(sketch.sin(sketch.frameCount * 0.03), -1, 1, 0, sketch.height / 3);
-                            sketch.noStroke();
-                            sketch.fill(255, 100, 0, 255 - r * 1.5);
-                            sketch.ellipse(centerX, centerY, r * 2, r * 2);
-                            sketch.fill(255, 200, 0, 100);
-                            sketch.ellipse(centerX, centerY, r, r);
-                            break;
-                    }
-                };
-            }, 'quantum-visualization-container');
-        } else {
-            console.error('p5.js failed to load - please check your internet connection or URL');
         }
 
         window.continueStep2 = () => {
@@ -335,9 +304,13 @@
             if (targetStep) {
                 targetStep.style.display = 'block';
                 console.log(`Step ${step} displayed successfully`);
-                if (step === 5) {
+                if (step === 4 || step === 5) {
+                    if (!quantumSketch) initializeQuantumSketch();
                     window.currentQuantumState = 'superposition';
-                    if (window.quantumSketch) window.quantumSketch.startAnimation();
+                    if (quantumSketch) {
+                        quantumSketch.startAnimation();
+                        startDynamicUpdates();
+                    }
                 }
             } else {
                 console.error(`Step ${step} not found, defaulting to step 0`);
@@ -346,11 +319,7 @@
             window.currentStep = step;
             console.log('Updated currentStep to:', window.currentStep);
             if (step === 4 || step === 5) {
-                if (window.quantumSketch) {
-                    window.quantumSketch.startAnimation();
-                    startDynamicUpdates();
-                    console.log('Dynamic updates started for step', step);
-                }
+                console.log('Dynamic updates started for step', step);
             } else {
                 stopDynamicUpdates();
                 console.log('Dynamic updates stopped for step', step);
@@ -428,9 +397,9 @@
                         window.currentQuantumState = quantumStates[messageIndex];
                         console.log('Setting quantum state to:', window.currentQuantumState);
                         messageIndex = (messageIndex + 1) % terminalMessages.length;
-                        if (window.quantumSketch) {
-                            window.quantumSketch.startAnimation();
-                            window.quantumSketch.redraw(); // Принудительный перерисунок
+                        if (quantumSketch) {
+                            quantumSketch.startAnimation();
+                            quantumSketch.redraw();
                         }
                     }
                 }
@@ -446,8 +415,8 @@
         }
 
         document.getElementById('recordButton').addEventListener('click', () => {
-            if (window.quantumSketch) {
-                window.quantumSketch.startAnimation();
+            if (quantumSketch) {
+                quantumSketch.startAnimation();
                 console.log('Record button clicked, preparing to pause');
                 document.getElementById('recordButton').style.display = 'none';
                 document.getElementById('saveInput').style.display = 'block';
@@ -456,8 +425,8 @@
 
         document.getElementById('saveButton').addEventListener('click', () => {
             const name = document.getElementById('portraitName').value;
-            if (name && window.quantumSketch) {
-                const dataURL = window.quantumSketch.get().canvas.toDataURL('image/png');
+            if (name && quantumSketch) {
+                const dataURL = quantumSketch.get().canvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.download = `${name}.png`;
                 link.href = dataURL;
@@ -465,7 +434,7 @@
                 console.log(`Portrait saved as: ${name}.png, resuming step 5`);
                 document.getElementById('saveInput').style.display = 'none';
                 document.getElementById('recordButton').style.display = 'inline-block';
-                window.fixationCount = 1; // Устанавливаем фиксацию после сохранения
+                window.fixationCount = 1;
             } else {
                 alert('Пожалуйста, введите имя портрета!');
             }
