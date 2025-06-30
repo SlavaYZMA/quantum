@@ -54,7 +54,7 @@
             </div>
             <div class="button-block">
                 <button class="back">Назад</button>
-                <button class="continue">Продолжить</button>
+                <button class="continue" onclick="continueStep2()">Продолжить</button>
             </div>
         </div>
     </section>
@@ -326,7 +326,7 @@
                         if (file) {
                             sketch.loadImage(URL.createObjectURL(file), (img) => {
                                 window.img = img;
-                                if (typeof showStep === 'function' && window.currentStep === 2) showStep(2.1); // Переход к 2-1
+                                if (typeof showStep === 'function' && window.currentStep === 2) showStep(2.1); // Переход к 2-1 после загрузки
                             }, (err) => {
                                 console.error('Error loading image:', err);
                             });
@@ -498,6 +498,15 @@
             console.log('Language set to:', lang, 'Moving to step 1');
             if (typeof showStep === 'function') showStep(1);
         };
+
+        window.continueStep2 = () => {
+            if (window.img) {
+                if (typeof showStep === 'function') showStep(2.1);
+            } else {
+                alert('Пожалуйста, загрузите изображение перед продолжением!');
+            }
+        };
+
         window.showStep = (step) => {
             console.log('Showing step:', step);
             document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
@@ -522,8 +531,8 @@
             btn.addEventListener('click', () => {
                 if (window.currentStep !== undefined) {
                     console.log('Continue button clicked on step:', window.currentStep);
-                    if (window.currentStep === 2 && !window.img) {
-                        alert('Пожалуйста, загрузите изображение перед продолжением!');
+                    if (window.currentStep === 2) {
+                        continueStep2(); // Вызов отдельной функции для шага 2
                     } else if (window.currentStep === 2.1) {
                         showStep(3);
                     } else {
