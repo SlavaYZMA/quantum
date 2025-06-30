@@ -205,9 +205,9 @@
                     } else {
                         console.log('No image available for drawing');
                     }
-                    if (!isPaused && window.currentStep === 4) {
+                    if (!isPaused && (window.currentStep === 4 || window.currentStep === 5)) {
                         if (window.currentQuantumState === 'superposition') {
-                            for (let i = 0; i < 50; i++) {
+                            for (let i = 0; i < 30; i++) { // Уменьшено с 50 до 30 для оптимизации
                                 let x = sketch.random(sketch.width);
                                 let y = sketch.random(sketch.height);
                                 let prob = sketch.noise(x * 0.01, y * 0.01);
@@ -219,7 +219,7 @@
                         } else if (window.currentQuantumState === 'collapse') {
                             let centerX = sketch.width / 2;
                             let centerY = sketch.height / 2;
-                            for (let i = 0; i < 50; i++) {
+                            for (let i = 0; i < 30; i++) { // Уменьшено с 50 до 30
                                 let angle = sketch.random(TWO_PI);
                                 let r = sketch.map(sketch.sin(sketch.frameCount * 0.01 + i), -1, 1, 0, 150);
                                 let x = centerX + r * sketch.cos(angle);
@@ -229,6 +229,10 @@
                             }
                         }
                     }
+                    if (performance.now() - sketch.lastFrameTime > 100) {
+                        console.warn('Animation lag detected:', performance.now() - sketch.lastFrameTime, 'ms');
+                    }
+                    sketch.lastFrameTime = performance.now();
                 };
                 sketch.mousePressed = () => {
                     if (window.currentStep === 5 && sketch.contains(sketch.mouseX, sketch.mouseY)) {
@@ -290,12 +294,12 @@
                     let state = window.currentQuantumState || 'init';
                     switch (state) {
                         case 'superposition':
-                            for (let i = 0; i < 100; i++) {
+                            for (let i = 0; i < 70; i++) { // Уменьшено с 100 до 70
                                 let x = sketch.random(sketch.width);
                                 let y = sketch.random(sketch.height);
                                 let fade = sketch.sin(sketch.frameCount * 0.03 + i) * 255;
                                 sketch.stroke(0, 255, 150, fade);
-                                sketch.strokeWeight(2);
+                                sketch.strokeWeight(1.5); // Уменьшено с 2
                                 sketch.point(x, y);
                             }
                             break;
@@ -359,17 +363,17 @@
             btn.addEventListener('click', (e) => {
                 console.log('Continue button event triggered, target:', e.target, 'Parent step:', e.target.closest('.step')?.id, 'Time:', new Date().toLocaleTimeString());
                 if (window.currentStep !== undefined) {
-                    console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target, 'Expected next step:', window.currentStep === 5 ? 4 : window.currentStep + 1);
+                    console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target, 'Expected next step:', window.currentStep === 5 ? 6 : window.currentStep + 1);
                     if (window.currentStep === 2.1) {
                         showStep(3);
                     } else if (window.currentStep === 5) {
-                        window.fixationCount++; // Увеличиваем счетчик при каждом клике на 5
+                        window.fixationCount++; // Увеличиваем при каждом клике
                         console.log('Fixation count increased to:', window.fixationCount);
                         if (window.fixationCount >= 1) {
                             showStep(6); // Переход на 6 после первого клика
-                            window.fixationCount = 0; // Сброс счетчика
+                            window.fixationCount = 0; // Сброс
                         } else {
-                            showStep(4); // Возвращаемся к 4, если фиксация еще не завершена
+                            showStep(4); // Возврат к 4, если фиксация не завершена
                         }
                     } else if (window.currentStep !== 2) {
                         showStep(window.currentStep + 1);
@@ -443,6 +447,7 @@
                 console.log(`Portrait saved as: ${name}.png, resuming step 5`);
                 document.getElementById('saveInput').style.display = 'none';
                 document.getElementById('recordButton').style.display = 'inline-block';
+                window.fixationCount = 1; // Устанавливаем фиксацию после сохранения
             } else {
                 alert('Пожалуйста, введите имя портрета!');
             }
