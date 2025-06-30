@@ -337,6 +337,7 @@
         window.setLanguageAndNext = (lang) => {
             console.log(`Language set to: ${lang} Moving to step 1`);
             setLanguage(lang);
+            if (window.currentStep !== 0) return; // Предотвращаем повторный переход
             showStep(1);
             window.currentStep = 1;
         };
