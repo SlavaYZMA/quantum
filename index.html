@@ -207,7 +207,14 @@
                     quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
                         window.img = img;
                         console.log('Image loaded successfully, size:', img.width, 'x', img.height);
-                        if (window.currentStep === 2) showStep(2.1);
+                        if (window.currentStep === 2) {
+                            const targetStep = document.getElementById('step-2-1');
+                            if (targetStep) {
+                                showStep(2.1);
+                            } else {
+                                console.error('Step 2.1 not found, staying on step 2');
+                            }
+                        }
                     }, (err) => {
                         console.error('Error loading image:', err);
                     });
@@ -321,8 +328,8 @@
                     }
                 }
             } else {
-                console.error(`Step ${step} not found, defaulting to step 0`);
-                document.getElementById('step-0').style.display = 'block';
+                console.error(`Step ${step} not found, defaulting to step 2`); // Изменен дефолтный шаг
+                document.getElementById('step-2').style.display = 'block';
             }
             window.currentStep = step;
             console.log('Updated currentStep to:', window.currentStep);
@@ -337,7 +344,7 @@
         window.setLanguageAndNext = (lang) => {
             console.log(`Language set to: ${lang} Moving to step 1`);
             setLanguage(lang);
-            if (window.currentStep !== 0) return; // Предотвращаем повторный переход
+            if (window.currentStep !== 0) return;
             showStep(1);
             window.currentStep = 1;
         };
