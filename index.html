@@ -107,7 +107,7 @@
         <div class="text-block typewriter" data-i18n="step4_text2">Каждый ваш жест запускает коллапс.</div>
         <div class="text-block typewriter" data-i18n="step4_text3">Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</div>
         <div class="split-container">
-            <div id="quantum-visualization-container" class="quantum-visualization-container"></div>
+            <div id="quantum-visualization-container" class="quantum-visualization-container" style="width: 100%; height: 300px;"></div>
             <div class="terminal-container">
                 <p id="terminal-message">Терминал: Инициализация...</p>
             </div>
@@ -130,7 +130,7 @@
             <div class="text-block typewriter" data-i18n="step5_text2">Но ты можешь зафиксировать один миг.</div>
             <div class="text-block typewriter" data-i18n="step5_text3">Это будет один из возможных тебя.</div>
             <div class="split-container">
-                <div id="quantum-visualization-container" class="quantum-visualization-container"></div>
+                <div id="quantum-visualization-container" class="quantum-visualization-container" style="width: 100%; height: 300px;"></div>
                 <div class="terminal-container">
                     <p id="terminal-message">Терминал: Квантовая анимация обновляется...</p>
                 </div>
@@ -199,6 +199,119 @@
                 sketch.draw = () => {
                     sketch.background(0);
                     if (window.img) sketch.image(window.img, 0, 0, sketch.width, sketch.height);
+                    // Суперпозиция в портрете
+                    if (window.currentQuantumState === 'superposition') {
+                        for (let i = 0; i < 100; i++) {
+                            let x = sketch.random(sketch.width);
+                            let y = sketch.random(sketch.height);
+                            let prob = sketch.noise(x * 0.01, y * 0.01);
+                            if (prob > 0.3) {
+                                sketch.stroke(0, 255 * prob, 100);
+                                sketch.point(x, y);
+                            }
+                        }
+                    }
+                    // Коллапс в портрете
+                    if (window.currentQuantumState === 'collapse') {
+                        let centerX = sketch.width / 2;
+                        let centerY = sketch.height / 2;
+                        for (let i = 0; i < 100; i++) {
+                            let angle = sketch.random(TWO_PI);
+                            let r = sketch.map(sketch.sin(sketch.frameCount * 0.01 + i), -1, 1, 0, 150);
+                            let x = centerX + r * sketch.cos(angle);
+                            let y = centerY + r * sketch.sin(angle);
+                            sketch.stroke(255, 50, 0, 255 - r * 1.5);
+                            sketch.point(x, y);
+                        }
+                    }
+                    // Туннелирование в портрете
+                    if (window.currentQuantumState === 'tunneling') {
+                        let barrierX = sketch.width / 2;
+                        sketch.stroke(150);
+                        sketch.line(barrierX, 0, barrierX, sketch.height);
+                        for (let i = 0; i < 20; i++) {
+                            let x = sketch.random(sketch.width);
+                            let y = sketch.random(sketch.height);
+                            if (x < barrierX && sketch.random() < 0.4) {
+                                sketch.stroke(255, 100, 0);
+                                sketch.point(x, y);
+                            } else if (x > barrierX) {
+                                sketch.stroke(255, 150, 0, 200);
+                                sketch.point(x, y);
+                            }
+                        }
+                    }
+                    // Запутанность в портрете
+                    if (window.currentQuantumState === 'entanglement') {
+                        let t = sketch.frameCount * 0.01;
+                        let x1 = sketch.width * 0.3 + sketch.sin(t) * 100;
+                        let y1 = sketch.height * 0.3 + sketch.cos(t) * 100;
+                        let x2 = sketch.width * 0.7 + sketch.sin(t) * 100;
+                        let y2 = sketch.height * 0.7 + sketch.cos(t) * 100;
+                        sketch.stroke(255, 0, 150);
+                        sketch.point(x1, y1);
+                        sketch.stroke(0, 150, 255);
+                        sketch.point(x2, y2);
+                        sketch.stroke(100, 200, 100);
+                        sketch.line(x1, y1, x2, y2);
+                    }
+                    // Интерференция в портрете
+                    if (window.currentQuantumState === 'interference') {
+                        let t = sketch.frameCount * 0.05;
+                        for (let x = 0; x < sketch.width; x += 5) {
+                            let y1 = sketch.height / 2 + sketch.sin(x * 0.05 + t) * 100;
+                            let y2 = sketch.height / 2 + sketch.sin(x * 0.05 - t) * 100;
+                            sketch.stroke(0, 150, 255, 150);
+                            sketch.line(x, y1, x, y1 + 20);
+                            sketch.stroke(255, 100, 0, 150);
+                            sketch.line(x, y2, x, y2 + 20);
+                            let interference = (sketch.sin(x * 0.05 + t) + sketch.sin(x * 0.05 - t)) / 2;
+                            sketch.stroke(255 * abs(interference), 255 * abs(interference), 0);
+                            sketch.point(x, sketch.height / 2);
+                        }
+                    }
+                    // Квантовое стирание в портрете
+                    if (window.currentQuantumState === 'quantumErasure') {
+                        for (let i = 0; i < 100; i++) {
+                            let x = sketch.random(sketch.width);
+                            let y = sketch.random(sketch.height);
+                            let fade = sketch.sin(sketch.frameCount * 0.05 + i) * 255;
+                            sketch.stroke(200, 200, 255, fade);
+                            sketch.point(x, y);
+                        }
+                    }
+                    // Декогеренция в портрете
+                    if (window.currentQuantumState === 'decoherence') {
+                        for (let i = 0; i < 100; i++) {
+                            let x = sketch.random(sketch.width);
+                            let y = sketch.random(sketch.height);
+                            let fade = sketch.exp(-sketch.frameCount * 0.01);
+                            sketch.stroke(200, 200, 200, fade * 255);
+                            sketch.point(x, y);
+                        }
+                    }
+                    // Эффект Зенона в портрете
+                    if (window.currentQuantumState === 'zeno') {
+                        let t = sketch.frameCount * 0.01;
+                        for (let i = 0; i < 20; i++) {
+                            let x = sketch.width / 2 + sketch.sin(t + i) * 10;
+                            let y = sketch.height / 2 + sketch.cos(t + i) * 10;
+                            sketch.stroke(255, 200, 0);
+                            sketch.point(x, y);
+                        }
+                    }
+                    // Принцип Паули в портрете
+                    if (window.currentQuantumState === 'pauli') {
+                        let t = sketch.frameCount * 0.01;
+                        let x1 = sketch.width * 0.4 + sketch.sin(t) * 100;
+                        let y1 = sketch.height / 2;
+                        let x2 = sketch.width * 0.6 - sketch.sin(t) * 100;
+                        let y2 = sketch.height / 2;
+                        sketch.stroke(255, 0, 150);
+                        sketch.point(x1, y1);
+                        sketch.stroke(0, 150, 255);
+                        sketch.point(x2, y2);
+                    }
                 };
                 window.loadImageOnce = () => {
                     if (window.img) {
@@ -249,34 +362,131 @@
             window.quantumVisualization = new p5((sketch) => {
                 window.visualSketch = sketch;
                 sketch.setup = () => {
-                    sketch.createCanvas(200, 200).parent('quantum-visualization-container');
+                    // Устанавливаем размер холста на весь экран внутри контейнера
+                    sketch.createCanvas(window.innerWidth, window.innerHeight).parent('quantum-visualization-container');
+                    sketch.windowResized = () => {
+                        sketch.resizeCanvas(window.innerWidth, window.innerHeight);
+                    };
                 };
                 sketch.draw = () => {
-                    sketch.background(0);
-                    if (window.currentQuantumState) {
-                        if (window.currentQuantumState === 'init') {
-                            // Суперпозиция: случайные точки
-                            for (let i = 0; i < 50; i++) {
-                                sketch.stroke(0, 255, 0);
-                                sketch.point(sketch.random(sketch.width), sketch.random(sketch.height));
+                    sketch.background(20); // Темно-серый фон для контраста
+                    let state = window.currentQuantumState || 'init';
+                    switch (state) {
+                        case 'superposition':
+                            for (let i = 0; i < 200; i++) {
+                                let x = sketch.random(sketch.width);
+                                let y = sketch.random(sketch.height);
+                                let fade = sketch.sin(sketch.frameCount * 0.03 + i) * 255;
+                                sketch.stroke(0, 255, 150, fade); // Яркий зеленый
+                                sketch.strokeWeight(3);
+                                sketch.point(x, y);
                             }
-                        } else if (window.currentQuantumState === 'wave') {
-                            // Волновая функция: интерференция
-                            let t = (sketch.frameCount * 0.05) % sketch.width;
-                            for (let x = 0; x < sketch.width; x++) {
-                                let y = sketch.height / 2 + sketch.sin(x * 0.1 + t) * 50;
-                                sketch.stroke(0, 0, 255);
-                                sketch.line(x, y, x, y + 10);
-                            }
-                        } else if (window.currentQuantumState === 'collapse') {
-                            // Коллапс: сужение к центру
+                            break;
+                        case 'collapse':
                             let centerX = sketch.width / 2;
                             let centerY = sketch.height / 2;
+                            let r = sketch.map(sketch.sin(sketch.frameCount * 0.03), -1, 1, 0, sketch.height / 3);
                             sketch.noStroke();
-                            sketch.fill(255, 0, 0);
-                            let r = sketch.map(sketch.frameCount % 60, 0, 60, 0, centerX);
+                            sketch.fill(255, 100, 0, 255 - r * 1.5); // Теплый оранжевый
+                            sketch.ellipse(centerX, centerY, r * 2, r * 2);
+                            sketch.fill(255, 200, 0, 100); // Внутренний акцент
                             sketch.ellipse(centerX, centerY, r, r);
-                        }
+                            break;
+                        case 'tunneling':
+                            let barrierX = sketch.width / 2;
+                            sketch.stroke(200);
+                            sketch.strokeWeight(4);
+                            sketch.line(barrierX, 0, barrierX, sketch.height);
+                            let t = (sketch.frameCount % 200) / 200;
+                            let x = t < 0.5 ? sketch.map(t, 0, 0.5, 0, barrierX) : sketch.map(t, 0.5, 1, barrierX, sketch.width);
+                            let alpha = t < 0.5 ? 255 : 0;
+                            sketch.stroke(255, 150, 50, alpha);
+                            sketch.strokeWeight(5);
+                            sketch.point(x, sketch.height / 2);
+                            if (t > 0.5) {
+                                sketch.stroke(255, 150, 50, 255);
+                                sketch.point(x, sketch.height / 2);
+                                sketch.line(barrierX, sketch.height / 2 - 20, barrierX, sketch.height / 2 + 20);
+                            }
+                            break;
+                        case 'entanglement':
+                            let tEnt = sketch.frameCount * 0.01;
+                            let x1 = sketch.width * 0.3 + sketch.sin(tEnt) * sketch.width / 4;
+                            let y1 = sketch.height / 2 + sketch.cos(tEnt) * sketch.height / 4;
+                            let x2 = sketch.width * 0.7 + sketch.sin(tEnt) * sketch.width / 4;
+                            let y2 = sketch.height / 2 + sketch.cos(tEnt) * sketch.height / 4;
+                            sketch.stroke(255, 0, 200);
+                            sketch.strokeWeight(4);
+                            sketch.point(x1, y1);
+                            sketch.stroke(0, 200, 255);
+                            sketch.point(x2, y2);
+                            sketch.stroke(100, 255, 100, 150);
+                            sketch.strokeWeight(3);
+                            sketch.line(x1, y1, x2, y2);
+                            break;
+                        case 'interference':
+                            let tInt = sketch.frameCount * 0.03;
+                            for (let x = 0; x < sketch.width; x += 15) {
+                                let y1 = sketch.height / 2 + sketch.sin(x * 0.01 + tInt) * sketch.height / 3;
+                                let y2 = sketch.height / 2 + sketch.sin(x * 0.01 - tInt) * sketch.height / 3;
+                                sketch.stroke(0, 200, 255, 200);
+                                sketch.strokeWeight(4);
+                                sketch.line(x, y1, x, y1 + 40);
+                                sketch.stroke(255, 150, 0, 200);
+                                sketch.line(x, y2, x, y2 + 40);
+                                let interference = (sketch.sin(x * 0.01 + tInt) + sketch.sin(x * 0.01 - tInt)) / 2;
+                                sketch.stroke(255, 255 * abs(interference), 0, 200);
+                                sketch.strokeWeight(3);
+                                sketch.point(x, sketch.height / 2);
+                            }
+                            break;
+                        case 'quantumErasure':
+                            for (let i = 0; i < 300; i++) {
+                                let x = sketch.random(sketch.width);
+                                let y = sketch.random(sketch.height);
+                                let fade = sketch.sin(sketch.frameCount * 0.03 + i) * 255;
+                                sketch.stroke(150, 150, 255, fade);
+                                sketch.strokeWeight(3);
+                                sketch.point(x, y);
+                            }
+                            break;
+                        case 'decoherence':
+                            let fadeDec = sketch.exp(-sketch.frameCount * 0.01);
+                            for (let i = 0; i < 300; i++) {
+                                let x = sketch.random(sketch.width);
+                                let y = sketch.random(sketch.height);
+                                sketch.stroke(200, 200, 200, fadeDec * 255);
+                                sketch.strokeWeight(3);
+                                sketch.point(x, y);
+                            }
+                            sketch.fill(200, 200, 200, fadeDec * 100);
+                            sketch.noStroke();
+                            sketch.ellipse(sketch.width / 2, sketch.height / 2, 200, 200);
+                            break;
+                        case 'zeno':
+                            let tZeno = sketch.frameCount * 0.01;
+                            for (let i = 0; i < 50; i++) {
+                                let x = sketch.width / 2 + sketch.sin(tZeno + i * 0.1) * 40;
+                                let y = sketch.height / 2 + sketch.cos(tZeno + i * 0.1) * 40;
+                                sketch.stroke(255, 200, 50, 200);
+                                sketch.strokeWeight(4);
+                                sketch.point(x, y);
+                            }
+                            break;
+                        case 'pauli':
+                            let tPauli = sketch.frameCount * 0.01;
+                            let x1Pauli = sketch.width * 0.4 + sketch.sin(tPauli) * sketch.width / 3;
+                            let y1Pauli = sketch.height / 2;
+                            let x2Pauli = sketch.width * 0.6 - sketch.sin(tPauli) * sketch.width / 3;
+                            let y2Pauli = sketch.height / 2;
+                            sketch.stroke(255, 0, 200);
+                            sketch.strokeWeight(5);
+                            sketch.point(x1Pauli, y1Pauli);
+                            sketch.stroke(0, 200, 255);
+                            sketch.point(x2Pauli, y2Pauli);
+                            sketch.stroke(150, 255, 150, 150);
+                            sketch.line(x1Pauli, y1Pauli, x2Pauli, y2Pauli);
+                            break;
                     }
                 };
             }, 'quantum-visualization-container');
@@ -284,12 +494,91 @@
             console.error('p5.js failed to load - please check your internet connection or URL');
         }
 
-        // Загрузка глобальных функций (оставляем как есть)
-        window.loadImageOnce = window.loadImageOnce || function() {};
-        window.setLanguageAndNext = window.setLanguageAndNext || function() {};
-        window.showStep = window.showStep || function() {};
-        window.openGallery = window.openGallery || function() {};
-        window.shareToArchive = window.shareToArchive || function() {};
+        // Минимальная реализация функций
+        window.setLanguageAndNext = (lang) => {
+            console.log('Language set to:', lang, 'Moving to step 1');
+            if (typeof showStep === 'function') showStep(1);
+        };
+        window.showStep = (step) => {
+            console.log('Showing step:', step);
+            document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
+            document.getElementById(`step-${step}`).style.display = 'block';
+            window.currentStep = step;
+            if (step === 4 || step === 5) {
+                if (window.quantumSketch) {
+                    window.quantumSketch.startAnimation();
+                    startDynamicUpdates();
+                    console.log('Dynamic updates started for step', step);
+                }
+            } else {
+                stopDynamicUpdates();
+                console.log('Dynamic updates stopped for step', step);
+            }
+        };
+        window.openGallery = () => console.log('Gallery opened');
+        window.shareToArchive = () => console.log('Image shared to archive');
+
+        // Обработчики кнопок
+        document.querySelectorAll('.continue').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.currentStep !== undefined) {
+                    console.log('Continue button clicked on step:', window.currentStep);
+                    showStep(window.currentStep + 1);
+                }
+            });
+        });
+        document.querySelectorAll('.back').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.currentStep !== undefined && window.currentStep > 0) {
+                    console.log('Back button clicked on step:', window.currentStep);
+                    showStep(window.currentStep - 1);
+                }
+            });
+        });
+        showStep(0); // Старт с первого шага
+
+        // Динамические обновления терминала и анимации
+        const terminalMessages = [
+            'Терминал: Инициализация...',
+            'Суперпозиция: Частица в множественных состояниях, зеленые точки показывают вероятности.',
+            'Коллапс: Измерение фиксирует состояние, оранжевый круг сжимается.',
+            'Туннелирование: Частица проходит барьер, оранжевая точка движется.',
+            'Запутанность: Синхронизированные частицы, розовая и голубая точки.',
+            'Интерференция: Волны создают яркие узоры.',
+            'Квантовое стирание: Состояние восстанавливается, фиолетовые точки.',
+            'Декогеренция: Когерентность теряется, серый фон тускнеет.',
+            'Эффект Зенона: Движение заморожено, золотые точки.',
+            'Принцип Паули: Фермионы отталкиваются, розовая и голубая точки.'
+        ];
+        let messageIndex = 0;
+        const quantumStates = ['init', 'superposition', 'collapse', 'tunneling', 'entanglement', 'interference', 'quantumErasure', 'decoherence', 'zeno', 'pauli'];
+        window.currentQuantumState = 'init';
+
+        function startDynamicUpdates() {
+            console.log('Starting dynamic updates at', new Date().toLocaleTimeString());
+            if (window.updateInterval) clearInterval(window.updateInterval);
+            window.updateInterval = setInterval(() => {
+                if (window.currentStep === 4 || window.currentStep === 5) {
+                    const terminal = document.getElementById('terminal-message');
+                    if (terminal) {
+                        console.log('Updating terminal to:', terminalMessages[messageIndex], 'at', new Date().toLocaleTimeString());
+                        terminal.textContent = terminalMessages[messageIndex];
+                        window.currentQuantumState = quantumStates[messageIndex];
+                        messageIndex = (messageIndex + 1) % terminalMessages.length;
+                    } else {
+                        console.error('Terminal element not found at', new Date().toLocaleTimeString());
+                    }
+                }
+            }, 5000); // 5 секунд
+        }
+
+        function stopDynamicUpdates() {
+            console.log('Stopping dynamic updates at', new Date().toLocaleTimeString());
+            if (window.updateInterval) {
+                clearInterval(window.updateInterval);
+                window.updateInterval = null;
+            }
+        }
     </script>
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
