@@ -328,7 +328,14 @@
         window.showStep = (step) => {
             console.log('Showing step:', step, 'Current steps length:', document.querySelectorAll('.step').length);
             document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
-            document.getElementById(`step-${step}`).style.display = 'block';
+            const targetStep = document.getElementById(`step-${step}`);
+            if (targetStep) {
+                targetStep.style.display = 'block';
+                console.log(`Step ${step} displayed successfully`);
+            } else {
+                console.error(`Step ${step} not found, defaulting to step 0`);
+                document.getElementById('step-0').style.display = 'block';
+            }
             window.currentStep = step;
             console.log('Updated currentStep to:', window.currentStep);
             if (step === 4 || step === 5) {
@@ -345,8 +352,12 @@
         window.openGallery = () => console.log('Gallery opened');
         window.shareToArchive = () => console.log('Image shared to archive');
 
+        // Добавим проверку всех кнопок при загрузке
+        console.log('Initial step setup, all continue buttons:', document.querySelectorAll('.continue'));
+
         document.querySelectorAll('.continue').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                console.log('Continue button event triggered, target:', e.target, 'Parent step:', e.target.closest('.step')?.id);
                 if (window.currentStep !== undefined) {
                     console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target, 'Expected next step:', window.currentStep === 5 ? 4 : window.currentStep + 1);
                     if (window.currentStep === 2.1) {
@@ -356,6 +367,8 @@
                     } else if (window.currentStep !== 2) {
                         showStep(window.currentStep + 1);
                     }
+                } else {
+                    console.warn('window.currentStep is undefined, cannot proceed');
                 }
             });
         });
