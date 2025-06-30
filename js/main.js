@@ -49,11 +49,12 @@ document.querySelectorAll('.back').forEach(button => {
     });
 });
 
-// Обновленный обработчик .continue с логикой для шага 5
+// Обновленный обработчик .continue с дополнительной проверкой
 document.querySelectorAll('.continue').forEach(button => {
     button.addEventListener('click', (e) => {
+        console.log('Event listener triggered for continue button, target:', e.target);
         if (window.currentStep !== undefined) {
-            console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target);
+            console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target, 'Expected next step:', window.currentStep === 5 ? 4 : window.currentStep + 1);
             if (window.currentStep === 2.1) {
                 showStep(3);
             } else if (window.currentStep === 5) {
@@ -61,6 +62,8 @@ document.querySelectorAll('.continue').forEach(button => {
             } else if (window.currentStep !== 2) {
                 showStep(window.currentStep + 1);
             }
+        } else {
+            console.warn('window.currentStep is undefined, cannot proceed');
         }
     });
 });
