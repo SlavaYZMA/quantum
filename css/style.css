@@ -1,8 +1,8 @@
-/* Стили для шрифтов и анимации */
+/* Общие стили */
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Courier New', Courier, monospace; /* Машинописный шрифт для квантового вайба */
     background-color: #000;
     color: #fff;
     overflow-x: hidden;
@@ -10,130 +10,167 @@ body {
 
 .step {
     display: none;
-    width: 100%;
-    height: 100vh;
-    position: relative;
+    padding: 20px;
+    text-align: center;
 }
 
 .step-centered {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Полная высота экрана для каждого шага */
 }
 
 .text-block {
     margin: 10px 0;
-    text-align: center;
 }
 
 .typewriter {
-    overflow: hidden;
-    white-space: nowrap;
-    animation: none;
+    overflow: hidden; /* Обеспечивает эффект печатной машины */
+    border-right: .15em solid #fff; /* Курсор */
+    white-space: nowrap; /* Нет переносов */
+    margin: 0 auto; /* Центрирование */
+    letter-spacing: .15em; /* Расстояние между буквами */
+    animation: 
+        typing 2s steps(40, end),
+        blink-caret .75s step-end infinite;
 }
 
-.green-text {
-    color: #00ff00;
+/* Эффект печатной машины */
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
 }
 
+/* Мерцание курсора */
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: #fff }
+}
+
+/* Кнопки */
 .button-block {
-    margin-top: 20px;
-    text-align: center;
+    margin: 20px 0;
 }
 
 button {
     padding: 10px 20px;
     margin: 0 10px;
-    background-color: #00ff00;
-    border: none;
-    color: #000;
+    background-color: #1a1a1a;
+    color: #fff;
+    border: 2px solid #00ffcc;
+    border-radius: 5px;
     cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 button:hover {
-    background-color: #00cc00;
+    background-color: #00ffcc;
+    color: #000;
 }
 
-/* Убрали .scrollable-content, так как он больше не нужен */
+.action-btn {
+    background-color: #00cc66;
+}
 
+.action-btn:hover {
+    background-color: #00ff99;
+    color: #000;
+}
+
+/* Контейнеры */
 .split-container {
     display: flex;
     justify-content: space-between;
-    width: 80%;
-    margin: 20px auto;
-    flex-wrap: wrap;
+    width: 100%;
+    margin: 20px 0;
 }
 
-#quantum-visualization-container {
-    width: 48%;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-    background-color: #000;
-    border: 1px solid #333;
-}
-
-.terminal-container {
-    width: 48%;
-    background-color: #1a1a1a;
-    padding: 10px;
-    border: 1px solid #00ff00;
-    height: 200px;
-    overflow-y: auto;
-    font-size: 14px;
-    color: #00ff00;
-    white-space: pre-wrap;
-    margin-bottom: 20px;
+.quantum-visualization-container {
+    width: 100%;
+    height: 300px;
+    overflow: hidden; /* Скрываем лишнее за пределами контейнера */
+    position: relative; /* Для правильного позиционирования анимации */
+    background-color: #0a0a0a; /* Темный фон для контраста */
 }
 
 .portrait-animation-container {
     width: 100%;
-    position: relative;
-    margin: 20px 0;
-    flex-grow: 1;
+    height: 400px; /* Фиксированная высота для портрета */
+    overflow: hidden;
+    background-color: #0a0a0a;
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+.terminal-container {
+    width: 40%; /* Терминал занимает часть пространства */
+    padding: 10px;
+    background-color: #1a1a1a;
+    border: 1px solid #00ffcc;
+    border-radius: 5px;
+    height: 300px;
+    overflow-y: auto; /* Прокрутка для длинных текстов */
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-.modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #000;
-    padding: 20px;
-    border: 1px solid #00ff00;
+#terminal-message {
+    margin: 0;
+    white-space: pre-wrap; /* Поддержка переносов текста */
+    color: #00ffcc;
 }
 
-.gallery {
-    display: flex;
-    justify-content: space-around;
-}
-
-.gallery img {
-    width: 100px;
-    height: 100px;
-    cursor: pointer;
-}
-
+/* Изображение */
 .image-container {
-    text-align: center;
     margin: 20px 0;
 }
 
+#saved-portrait {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Типографика */
+.step-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #00ffcc;
+}
+
+.green-text {
+    color: #00ff99;
+}
+
+.language-text {
+    font-size: 18px;
+}
+
+/* Адаптивность */
 @media (max-width: 768px) {
-    #quantum-visualization-container, .terminal-container {
+    .split-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .terminal-container {
         width: 100%;
+        height: 200px;
+        margin-top: 20px;
+    }
+    .quantum-visualization-container {
+        height: 200px;
+    }
+    .portrait-animation-container {
+        height: 300px;
+    }
+    button {
+        width: 100%;
+        margin: 5px 0;
+    }
+    .step-title {
+        font-size: 20px;
+    }
+    .language-text {
+        font-size: 16px;
     }
 }
