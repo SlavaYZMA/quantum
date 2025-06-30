@@ -62,10 +62,10 @@
     <section id="step-2-1" class="step">
         <div class="step-centered">
             <div class="text-block typewriter" data-i18n="step2_text2">> Изображение принято.</div>
-        </div>
-        <div class="text-block">
             <div class="text-block typewriter" data-i18n="step2_text3">> Запускается волновая функция.</div>
             <div class="text-block typewriter" data-i18n="step2_text4">> Система готова к инициализации.</div>
+        </div>
+        <div class="text-block">
             <div class="button-block">
                 <button class="back">Назад</button>
                 <button class="continue">Продолжить</button>
@@ -203,13 +203,11 @@
                 const file = e.target.files[0];
                 if (file) {
                     console.log('Loading image:', file.name);
-                    if (!quantumSketch) initializeQuantumSketch(); // Инициализация перед загрузкой
+                    if (!quantumSketch) initializeQuantumSketch();
                     quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
                         window.img = img;
                         console.log('Image loaded successfully, size:', img.width, 'x', img.height);
-                        if (window.currentStep === 2) {
-                            showStep(2.1); // Автоматический переход
-                        }
+                        if (window.currentStep === 2) showStep(2.1);
                     }, (err) => {
                         console.error('Error loading image:', err);
                     });
@@ -235,7 +233,6 @@
                     console.log('Canvas created, size:', sketch.width, 'x', sketch.height);
                 };
                 sketch.draw = () => {
-                    console.log('Drawing frame, currentStep:', window.currentStep, 'state:', window.currentQuantumState, 'isPaused:', isPaused);
                     sketch.background(0);
                     if (window.img && (window.currentStep === 4 || window.currentStep === 5)) {
                         let scale = Math.min(sketch.width / window.img.width, sketch.height / window.img.height);
@@ -302,7 +299,7 @@
         window.continueStep2 = () => {
             console.log('Checking image status:', window.img ? 'Image available' : 'No image available');
             if (window.img) {
-                if (typeof showStep === 'function') showStep(2.1);
+                showStep(2.1);
             } else {
                 alert('Пожалуйста, загрузите изображение перед продолжением!');
             }
@@ -336,6 +333,14 @@
                 console.log('Dynamic updates stopped for step', step);
             }
         };
+
+        window.setLanguageAndNext = (lang) => {
+            console.log(`Language set to: ${lang} Moving to step 1`);
+            setLanguage(lang);
+            showStep(1);
+            window.currentStep = 1;
+        };
+
         window.openGallery = () => console.log('Gallery opened');
         window.shareToArchive = () => console.log('Image shared to archive');
 
@@ -375,6 +380,7 @@
                 }
             }, { passive: true });
         });
+
         document.querySelectorAll('.back').forEach(btn => {
             btn.addEventListener('click', () => {
                 if (window.currentStep !== undefined && window.currentStep > 0) {
@@ -385,6 +391,7 @@
                 }
             });
         });
+
         showStep(0);
 
         const terminalMessages = [
