@@ -190,13 +190,12 @@
     <script>
         if (typeof p5 !== 'undefined') {
             console.log('p5.js loaded successfully at', new Date().toLocaleTimeString());
-            // Оптимизация канваса
             window.quantumSketch = new p5((sketch) => {
                 window.sketch = sketch;
                 let isPaused = false;
                 sketch.setup = () => {
                     let canvas = sketch.createCanvas(400, 400).parent('portrait-animation-container');
-                    canvas.canvas.getContext('2d').willReadFrequently = true; // Оптимизация для getImageData
+                    canvas.canvas.getContext('2d').willReadFrequently = true;
                     sketch.noLoop();
                 };
                 sketch.draw = () => {
@@ -208,7 +207,7 @@
                     }
                     if (!isPaused && window.currentStep === 4) {
                         if (window.currentQuantumState === 'superposition') {
-                            for (let i = 0; i < 50; i++) { // Уменьшаем количество частиц с 100 до 50
+                            for (let i = 0; i < 50; i++) {
                                 let x = sketch.random(sketch.width);
                                 let y = sketch.random(sketch.height);
                                 let prob = sketch.noise(x * 0.01, y * 0.01);
@@ -220,7 +219,7 @@
                         } else if (window.currentQuantumState === 'collapse') {
                             let centerX = sketch.width / 2;
                             let centerY = sketch.height / 2;
-                            for (let i = 0; i < 50; i++) { // Уменьшаем с 100 до 50
+                            for (let i = 0; i < 50; i++) {
                                 let angle = sketch.random(TWO_PI);
                                 let r = sketch.map(sketch.sin(sketch.frameCount * 0.01 + i), -1, 1, 0, 150);
                                 let x = centerX + r * sketch.cos(angle);
@@ -291,12 +290,12 @@
                     let state = window.currentQuantumState || 'init';
                     switch (state) {
                         case 'superposition':
-                            for (let i = 0; i < 100; i++) { // Оставим как есть, но можно оптимизировать
+                            for (let i = 0; i < 100; i++) {
                                 let x = sketch.random(sketch.width);
                                 let y = sketch.random(sketch.height);
                                 let fade = sketch.sin(sketch.frameCount * 0.03 + i) * 255;
                                 sketch.stroke(0, 255, 150, fade);
-                                sketch.strokeWeight(2); // Уменьшаем вес для производительности
+                                sketch.strokeWeight(2);
                                 sketch.point(x, y);
                             }
                             break;
@@ -364,12 +363,13 @@
                     if (window.currentStep === 2.1) {
                         showStep(3);
                     } else if (window.currentStep === 5) {
-                        showStep(4);
-                        window.fixationCount++;
+                        window.fixationCount++; // Увеличиваем счетчик при каждом клике на 5
                         console.log('Fixation count increased to:', window.fixationCount);
                         if (window.fixationCount >= 1) {
-                            showStep(6);
-                            window.fixationCount = 0;
+                            showStep(6); // Переход на 6 после первого клика
+                            window.fixationCount = 0; // Сброс счетчика
+                        } else {
+                            showStep(4); // Возвращаемся к 4, если фиксация еще не завершена
                         }
                     } else if (window.currentStep !== 2) {
                         showStep(window.currentStep + 1);
@@ -377,7 +377,7 @@
                 } else {
                     console.warn('window.currentStep is undefined, cannot proceed');
                 }
-            }, { passive: true }); // Добавляем passive для улучшения обработки событий
+            }, { passive: true });
         });
         document.querySelectorAll('.back').forEach(btn => {
             btn.addEventListener('click', () => {
