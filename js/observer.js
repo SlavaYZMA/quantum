@@ -6,6 +6,7 @@ window.recordObservation = () => {
         let dataURL = window.canvas.elt.toDataURL();
         document.getElementById('saved-portrait').src = dataURL;
         document.getElementById('saved-portrait').style.display = 'block';
+        window.fixationCount = 1; // Устанавливаем фиксацию
         showStep(6); // Переход к шагу 6 после фиксации
         console.log('Observation recorded and saved to step 6');
     }
