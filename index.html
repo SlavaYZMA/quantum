@@ -196,10 +196,10 @@
                 sketch.setup = () => {
                     let canvas = sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     canvas.canvas.getContext('2d').willReadFrequently = true;
-                    sketch.noLoop();
+                    // Убираем noLoop(), управление через isPaused
                 };
                 sketch.draw = () => {
-                    console.log('Drawing frame, currentStep:', window.currentStep, 'state:', window.currentQuantumState);
+                    console.log('Drawing frame, currentStep:', window.currentStep, 'state:', window.currentQuantumState, 'isPaused:', isPaused);
                     sketch.background(0);
                     if (window.img) {
                         sketch.image(window.img, 0, 0, sketch.width, sketch.height);
@@ -273,8 +273,9 @@
                         return;
                     }
                     console.log('Starting animation, setting initial state to superposition');
-                    window.currentQuantumState = 'superposition'; // Устанавливаем начальное состояние
-                    sketch.loop();
+                    window.currentQuantumState = 'superposition';
+                    isPaused = false; // Убеждаемся, что анимация не на паузе
+                    sketch.redraw(); // Принудительный перерисунок
                 };
             }, 'portrait-animation-container');
 
@@ -335,7 +336,7 @@
                 targetStep.style.display = 'block';
                 console.log(`Step ${step} displayed successfully`);
                 if (step === 5) {
-                    window.currentQuantumState = 'superposition'; // Сбрасываем состояние на шаге 5
+                    window.currentQuantumState = 'superposition';
                     if (window.quantumSketch) window.quantumSketch.startAnimation();
                 }
             } else {
@@ -427,7 +428,10 @@
                         window.currentQuantumState = quantumStates[messageIndex];
                         console.log('Setting quantum state to:', window.currentQuantumState);
                         messageIndex = (messageIndex + 1) % terminalMessages.length;
-                        if (window.quantumSketch) window.quantumSketch.startAnimation(); // Перезапуск анимации при смене состояния
+                        if (window.quantumSketch) {
+                            window.quantumSketch.startAnimation();
+                            window.quantumSketch.redraw(); // Принудительный перерисунок
+                        }
                     }
                 }
             }, 5000);
