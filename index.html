@@ -190,6 +190,35 @@
     <script>
         let quantumSketch = null;
 
+        // Глобальная функция для загрузки изображения
+        window.loadImageOnce = () => {
+            if (window.img) {
+                console.warn('Image already loaded, skipping new load');
+                return;
+            }
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    console.log('Loading image:', file.name);
+                    if (quantumSketch) {
+                        quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
+                            window.img = img;
+                            console.log('Image loaded successfully, size:', img.width, 'x', img.height);
+                            quantumSketch.redraw();
+                        }, (err) => {
+                            console.error('Error loading image:', err);
+                        });
+                    } else {
+                        console.error('quantumSketch not initialized');
+                    }
+                }
+            };
+            input.click();
+        };
+
         function initializeQuantumSketch() {
             if (quantumSketch) return; // Избегаем повторной инициализации
             quantumSketch = new p5((sketch) => {
@@ -251,29 +280,6 @@
                             document.getElementById('saveInput').style.display = 'none';
                         }
                     }
-                };
-                window.loadImageOnce = () => {
-                    if (window.img) {
-                        console.warn('Image already loaded, skipping new load');
-                        return;
-                    }
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.onchange = (e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                            console.log('Loading image:', file.name);
-                            sketch.loadImage(URL.createObjectURL(file), (img) => {
-                                window.img = img;
-                                console.log('Image loaded successfully, size:', img.width, 'x', img.height);
-                                if (quantumSketch) quantumSketch.redraw();
-                            }, (err) => {
-                                console.error('Error loading image:', err);
-                            });
-                        }
-                    };
-                    input.click();
                 };
                 sketch.startAnimation = () => {
                     if (!window.img) {
