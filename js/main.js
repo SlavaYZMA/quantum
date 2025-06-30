@@ -44,32 +44,41 @@ document.querySelectorAll('.back').forEach(button => {
         if (window.currentStep > 0) {
             console.log('Back button clicked on step:', window.currentStep);
             if (window.currentStep === 2.1) showStep(2);
+            else if (window.currentStep === 6) showStep(5);
             else showStep(window.currentStep - 1);
         }
     });
 });
 
-// Обновленный обработчик .continue
+// Обновленный обработчик .continue с четкой логикой переходов
 document.querySelectorAll('.continue').forEach(button => {
     button.addEventListener('click', (e) => {
         console.log('Event listener triggered for continue button, target:', e.target);
         if (window.currentStep !== undefined) {
-            console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target, 'Expected next step:', window.currentStep === 5 ? (window.fixationCount >= 1 ? 6 : 4) : window.currentStep + 1);
-            if (window.currentStep === 2.1) {
-                showStep(3);
-            } else if (window.currentStep === 5) {
-                window.fixationCount = window.fixationCount || 0; // Инициализация
-                window.fixationCount++; // Увеличиваем при клике
-                console.log('Fixation count increased to:', window.fixationCount);
-                if (window.fixationCount >= 1) {
-                    showStep(6); // Переход на 6 после фиксации
-                    window.fixationCount = 0; // Сброс
-                } else {
-                    showStep(4); // Возврат к наблюдению
+            console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target);
+            let nextStep = window.currentStep + 1;
+            if (window.currentStep === 2) {
+                if (!window.img) {
+                    console.warn('Image not loaded, staying on step 2');
+                    return;
                 }
-            } else if (window.currentStep !== 2) {
-                showStep(window.currentStep + 1);
+                nextStep = 2.1; // Переход к подтверждению загрузки
+            } else if (window.currentStep === 2.1) {
+                nextStep = 3; // Переход к инициализации
+            } else if (window.currentStep === 5) {
+                window.fixationCount = window.fixationCount || 0;
+                if (window.fixationCount === 0) {
+                    console.log('Fixation not yet recorded, staying on step 5');
+                    return; // Остаемся на 5 до фиксации
+                } else {
+                    nextStep = 6; // Переход к реакции системы
+                    window.fixationCount = 0; // Сброс после перехода
+                }
+            } else if (window.currentStep === 6) {
+                nextStep = 7; // Переход к заключению
             }
+            console.log('Moving to next step:', nextStep);
+            showStep(nextStep);
         } else {
             console.warn('window.currentStep is undefined, cannot proceed');
         }
