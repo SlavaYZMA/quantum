@@ -326,7 +326,7 @@
                         if (file) {
                             sketch.loadImage(URL.createObjectURL(file), (img) => {
                                 window.img = img;
-                                if (typeof showStep === 'function' && window.currentStep === 2) showStep(3);
+                                if (typeof showStep === 'function' && window.currentStep === 2) showStep(2.1); // Переход к 2-1
                             }, (err) => {
                                 console.error('Error loading image:', err);
                             });
@@ -362,14 +362,13 @@
             window.quantumVisualization = new p5((sketch) => {
                 window.visualSketch = sketch;
                 sketch.setup = () => {
-                    // Устанавливаем размер холста на весь экран внутри контейнера
                     sketch.createCanvas(window.innerWidth, window.innerHeight).parent('quantum-visualization-container');
                     sketch.windowResized = () => {
                         sketch.resizeCanvas(window.innerWidth, window.innerHeight);
                     };
                 };
                 sketch.draw = () => {
-                    sketch.background(20); // Темно-серый фон для контраста
+                    sketch.background(20);
                     let state = window.currentQuantumState || 'init';
                     switch (state) {
                         case 'superposition':
@@ -377,7 +376,7 @@
                                 let x = sketch.random(sketch.width);
                                 let y = sketch.random(sketch.height);
                                 let fade = sketch.sin(sketch.frameCount * 0.03 + i) * 255;
-                                sketch.stroke(0, 255, 150, fade); // Яркий зеленый
+                                sketch.stroke(0, 255, 150, fade);
                                 sketch.strokeWeight(3);
                                 sketch.point(x, y);
                             }
@@ -387,9 +386,9 @@
                             let centerY = sketch.height / 2;
                             let r = sketch.map(sketch.sin(sketch.frameCount * 0.03), -1, 1, 0, sketch.height / 3);
                             sketch.noStroke();
-                            sketch.fill(255, 100, 0, 255 - r * 1.5); // Теплый оранжевый
+                            sketch.fill(255, 100, 0, 255 - r * 1.5);
                             sketch.ellipse(centerX, centerY, r * 2, r * 2);
-                            sketch.fill(255, 200, 0, 100); // Внутренний акцент
+                            sketch.fill(255, 200, 0, 100);
                             sketch.ellipse(centerX, centerY, r, r);
                             break;
                         case 'tunneling':
@@ -523,7 +522,13 @@
             btn.addEventListener('click', () => {
                 if (window.currentStep !== undefined) {
                     console.log('Continue button clicked on step:', window.currentStep);
-                    showStep(window.currentStep + 1);
+                    if (window.currentStep === 2 && !window.img) {
+                        alert('Пожалуйста, загрузите изображение перед продолжением!');
+                    } else if (window.currentStep === 2.1) {
+                        showStep(3);
+                    } else {
+                        showStep(window.currentStep + 1);
+                    }
                 }
             });
         });
@@ -531,7 +536,8 @@
             btn.addEventListener('click', () => {
                 if (window.currentStep !== undefined && window.currentStep > 0) {
                     console.log('Back button clicked on step:', window.currentStep);
-                    showStep(window.currentStep - 1);
+                    if (window.currentStep === 2.1) showStep(2);
+                    else showStep(window.currentStep - 1);
                 }
             });
         });
