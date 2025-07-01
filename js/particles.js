@@ -1,5 +1,13 @@
-function initializeParticles(img) {
-    console.log('Initializing particles');
+console.log('particles.js loaded');
+window.particles = [];
+window.quantumStates = [];
+
+window.initializeParticles = (img) => {
+    console.log('initializeParticles called, img:', !!img, 'img dimensions:', img?.width, img?.height);
+    if (!img) {
+        console.error('Error: window.img is not defined');
+        return;
+    }
     window.particles = [];
     window.quantumStates = [];
     img.loadPixels();
@@ -9,6 +17,7 @@ function initializeParticles(img) {
     const maxRadius = Math.min(img.width, img.height) / 2;
     const numParticles = 314;
 
+    let validParticles = 0;
     for (let i = 0; i < numParticles; i++) {
         let angle = Math.random() * Math.PI * 2;
         let radius = Math.random() * maxRadius;
@@ -23,10 +32,10 @@ function initializeParticles(img) {
             let a = img.pixels[index + 3] || 255;
 
             window.particles.push({
-                x: x,
-                y: y,
-                baseX: x,
-                baseY: y,
+                x: x * 400 / img.width, // Масштабирование для canvas 400x400
+                y: y * 400 / img.height,
+                baseX: x * 400 / img.width,
+                baseY: y * 400 / img.height,
                 offsetX: 0,
                 offsetY: 0,
                 size: 5 + Math.random() * 10,
@@ -41,25 +50,32 @@ function initializeParticles(img) {
                 a: a,
                 probability: 1.0
             });
+            validParticles++;
         }
     }
-    console.log(`Initialized ${window.particles.length} particles`);
-}
+    console.log(`Initialized ${window.particles.length} particles, valid: ${validParticles}`);
+    if (validParticles === 0) {
+        console.error('No valid particles created. Check image dimensions or pixel data.');
+    }
+};
 
-function updateParticles() {
+window.updateParticles = (sketch) => {
     if (!window.quantumSketch || !window.particles || window.particles.length === 0) {
-        console.error('Cannot update particles: quantumSketch or particles not initialized');
+        console.error('Cannot update particles: quantumSketch or particles not initialized', {
+            quantumSketch: !!window.quantumSketch,
+            particlesLength: window.particles?.length
+        });
         return;
     }
     console.log('updateParticles called, particles:', window.particles.length, 'quantumSketch:', !!window.quantumSketch);
     window.particles.forEach((p, i) => {
-        let n = window.quantumSketch.noise(p.x * window.noiseScale, p.y * window.noiseScale, window.frame * 0.01);
+        let n = sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale, window.frame * 0.01);
         p.phase += p.frequency;
         p.offsetX = Math.cos(p.phase) * 20 * n * window.chaosFactor;
         p.offsetY = Math.sin(p.phase) * 20 * n * window.chaosFactor;
 
-        let mouseX = window.quantumSketch.mouseX;
-        let mouseY = window.quantumSketch.mouseY;
+        let mouseX = sketch.mouseX;
+        let mouseY = sketch.mouseY;
         if (mouseX > 0 && mouseX < 400 && mouseY > 0 && mouseY < 400) {
             let dx = mouseX - (p.x + p.offsetX);
             let dy = mouseY - (p.y + p.offsetY);
@@ -75,8 +91,14 @@ function updateParticles() {
             }
         }
 
-        p.x = Math.max(0, Math.min(400, p.x + p.offsetX));
-        p.y = Math.max(0, Math.min(400, p.y + p.offsetY));
-        console.log(`Particle ${i} at x: ${p.x}, y: ${p.y}`);
+        p.x = Math.max(0, Math.min(400, p.baseX + p.offsetX));
+        p.y = Math.max(0, Math.min(400, p.baseY + p.offsetY));
+
+        // Рендеринг частицы
+        let state = window.quantumStates[i];
+        sketch.fill(state.r, state.g, state.b, state.a);
+        sketch.noStroke();
+        sketch.ellipse(p.x, p.y, p.size, p.size);
+        console.log(`Particle ${i} at x: ${p.x}, y: ${p.y}, color: rgb(${state.r}, ${state.g}, ${state.b}, ${state.a})`);
     });
-}
+};
