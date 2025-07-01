@@ -62,7 +62,7 @@
         <div class="button-block">
             <button class="continue">Продолжить</button>
         </div>
-        <div id=" portrait-animation-container"></div>
+        <div id="portrait-animation-container"></div>
         <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
     </section>
 
@@ -114,7 +114,7 @@
         <div class="text-block typewriter" data-i18n="step7_text3">Здесь ты — одновременно субъект и объект.</div>
         <div class="button-block">
             <button onclick="window.restart()">Начать заново</button>
-            <button onclick="window.openArchive()">Перейти в архив</button>
+            <button onclick="window.shareToArchive()">Поделиться в архив</button>
             <button onclick="window.aboutAuthors()">Об авторах</button>
         </div>
         <div id="portrait-animation-container"></div>
@@ -231,22 +231,15 @@
                 };
                 sketch.draw = () => {
                     console.log('draw called, currentStep:', window.currentStep, 'frame:', window.frame, 'particles:', window.particles.length, 'trailBuffer:', !!window.trailBuffer, 'canvasVisible:', document.querySelector('#portrait-animation-container canvas')?.style.display !== 'none');
-                    // Устанавливаем белый фон для заметности
-                    sketch.background(255);
-                    // Тестовый красный квадрат
-                    sketch.fill(255, 0, 0, 255);
-                    sketch.rect(100, 100, 200, 200);
-                    // Отображаем текст
-                    sketch.fill(0);
-                    sketch.textSize(16);
-                    sketch.text(`Frame: ${window.frame}`, 10, 20);
+                    sketch.background(0); // Черный фон для видимости частиц
                     if (window.currentStep < 2 || !window.img) {
+                        sketch.fill(255);
+                        sketch.textSize(16);
                         sketch.text('Пожалуйста, загрузите изображение', 10, 40);
                         window.frame++;
                         return;
                     }
                     window.frame++;
-                    // Отображаем изображение
                     let scale = Math.min(sketch.width / window.img.width, sketch.height / window.img.height);
                     let displayWidth = window.img.width * scale;
                     let displayHeight = window.img.height * scale;
@@ -301,5 +294,3 @@
     <script src="js/globals.js"></script>
     <script src="js/main.js"></script>
     <script src="js/particles.js"></script>
-</body>
-</html>
