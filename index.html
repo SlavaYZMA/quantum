@@ -118,6 +118,16 @@
         window.img = null;
         window.currentStep = 0;
         window.currentQuantumState = 'init';
+        window.frame = 0;
+        window.isPaused = false;
+        window.particles = [];
+        window.quantumStates = [];
+        window.isCanvasReady = false;
+        window.noiseScale = 0.03;
+        window.mouseInfluenceRadius = 200;
+        window.chaosFactor = 0.5;
+        window.boundaryPoints = [];
+        window.trailBuffer = null;
 
         window.loadImageOnce = () => {
             if (window.img) {
@@ -131,7 +141,9 @@
                 const file = e.target.files[0];
                 if (file) {
                     console.log('Loading image:', file.name);
-                    initializeQuantumSketch();
+                    if (!window.quantumSketch) {
+                        initializeQuantumSketch();
+                    }
                     window.quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
                         window.img = img;
                         console.log('Image loaded successfully, size:', img.width, 'x', img.height);
@@ -163,6 +175,7 @@
             window.currentQuantumState = 'init';
             window.particles = [];
             window.quantumStates = [];
+            window.frame = 0;
             showStep(0);
         };
 
@@ -185,8 +198,43 @@
             }
             window.quantumSketch = new p5((sketch) => {
                 window.sketch = sketch;
-                sketch.setup = window.quantumSketch.setup;
-                sketch.draw = window.quantumSketch.draw;
+                sketch.setup = () => {
+                    sketch.createCanvas(400, 400).parent('portrait-animation-container');
+                    sketch.pixelDensity(1);
+                    window.trailBuffer = sketch.createGraphics(400, 400);
+                    window.trailBuffer.pixelDensity(1);
+                    updateBoundary();
+                    window.isCanvasReady = true;
+                    console.log('Canvas setup completed');
+                    sketch.loop();
+                };
+                sketch.draw = () => {
+                    sketch.background(0);
+                    window.trailBuffer.clear();
+                    if (window.currentStep < 2 || !window.img) {
+                        sketch.fill(255);
+                        sketch.textSize(16);
+                        sketch.text('Пожалуйста, загрузите изображение', 10, 30);
+                        return;
+                    }
+                    window.frame++;
+                    let scale = Math.min(sketch.width / window.img.width, sketch.height / window.img.height);
+                    let displayWidth = window.img.width * scale;
+                    let displayHeight = window.img.height * scale;
+                    let x = (sketch.width - displayWidth) / 2;
+                    let y = (sketch.height - displayHeight) / 2;
+                    sketch.image(window.img, x, y, displayWidth, displayHeight);
+                    if (window.currentStep >= 3) {
+                        if (window.particles.length === 0) {
+                            initializeParticles(window.img);
+                        }
+                        updateParticles();
+                        sketch.image(window.trailBuffer, 0, 0);
+                    }
+                    sketch.fill(255);
+                    sketch.textSize(16);
+                    sketch.text(`Frame: ${window.frame}`, 10, 20);
+                };
                 sketch.startAnimation = () => {
                     console.log('Starting animation');
                     window.currentQuantumState = 'superposition';
