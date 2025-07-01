@@ -9,13 +9,16 @@ function initializeParticles(img) {
     window.maxParticles = window.quantumSketch.width < 768 ? 500 : 1000;
     img.loadPixels();
     let step = Math.floor(img.width / 20);
+    let scale = Math.min(400 / img.width, 400 / img.height);
+    let offsetX = (400 - img.width * scale) / 2;
+    let offsetY = (400 - img.height * scale) / 2;
     for (let y = 0; y < img.height; y += step) {
         for (let x = 0; x < img.width; x += step) {
             let col = img.get(x, y);
             let brightness = window.quantumSketch.brightness(col);
             if (brightness > 10 && window.particles.length < window.maxParticles) {
-                let canvasX = x + (400 - img.width) / 2; // Смещение для центрирования
-                let canvasY = y + (400 - img.height) / 2;
+                let canvasX = offsetX + x * scale; // Корректное смещение и масштабирование
+                let canvasY = offsetY + y * scale;
                 let particle = {
                     x: canvasX,
                     y: canvasY,
@@ -93,12 +96,11 @@ function updateParticles() {
             particle.offsetX += window.quantumSketch.cos(angle) * 10 * influence;
             particle.offsetY += window.quantumSketch.sin(angle) * 10 * influence;
         }
-        if (particle.x + particle.offsetX < 10 || particle.x + particle.offsetX > 390 || particle.y + particle.offsetY < 10 || particle.y + particle.offsetY > 390) {
-            particle.offsetX = window.quantumSketch.random(-5, 5);
-            particle.offsetY = window.quantumSketch.random(-5, 5);
-        }
-        // Дебажный яркий цвет для видимости
-        window.quantumSketch.fill(255, 0, 0, state.a); // Красный цвет вместо оригинального
+        // Ограничение координат внутри канваса
+        particle.offsetX = Math.max(-particle.x, Math.min(400 - particle.x, particle.offsetX));
+        particle.offsetY = Math.max(-particle.y, Math.min(400 - particle.y, particle.offsetY));
+        // Дебажный яркий цвет
+        window.quantumSketch.fill(255, 0, 0, state.a); // Красный цвет для видимости
         window.quantumSketch.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size);
         console.log(`Particle ${i} at x: ${particle.x + particle.offsetX}, y: ${particle.y + particle.offsetY}`);
     }
