@@ -148,13 +148,12 @@
             input.onchange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    console.log('Loading image:', file.name);
                     if (!window.quantumSketch) {
                         initializeQuantumSketch();
                     }
                     window.quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
                         window.img = img;
-                        console.log('Image loaded successfully, size:', img.width, 'x', img.height);
+                        console.log('Image loaded, size:', img.width, 'x', img.height);
                         if (window.currentStep === 2) {
                             showStep(2.1);
                             if (typeof initializeParticles === 'function') {
@@ -227,14 +226,13 @@
                     window.trailBuffer = sketch.createGraphics(400, 400);
                     window.trailBuffer.pixelDensity(1);
                     window.isCanvasReady = true;
-                    console.log('Canvas setup completed, trailBuffer:', !!window.trailBuffer);
                     if (window.img && typeof initializeParticles === 'function') {
                         initializeParticles(window.img);
                     }
                     sketch.loop();
                 };
                 sketch.draw = () => {
-                    console.log('draw called, currentStep:', window.currentStep, 'frame:', window.frame, 'particles:', window.particles.length, 'trailBuffer:', !!window.trailBuffer, 'canvasVisible:', document.querySelector('#portrait-animation-container canvas')?.style.display !== 'none');
+                    console.log('draw called, currentStep:', window.currentStep, 'canvasVisible:', document.querySelector('#portrait-animation-container canvas')?.style.display !== 'none');
                     sketch.background(255); // Белый фон для заметности
                     sketch.fill(255, 0, 0); // Красный квадрат для теста
                     sketch.rect(100, 100, 200, 200);
@@ -242,7 +240,6 @@
                     sketch.textSize(16);
                     sketch.text(`Frame: ${window.frame}`, 10, 20);
                     if (window.currentStep < 2 || !window.img) {
-                        sketch.fill(255);
                         sketch.text('Пожалуйста, загрузите изображение', 10, 40);
                         window.frame++;
                         return;
@@ -266,7 +263,6 @@
                             sketch.fill(state.r, state.g, state.b, state.a);
                             sketch.ellipse(p.x + p.offsetX, p.y + p.offsetY, p.size || 10);
                         });
-                        console.log('Particles drawn:', window.particles.length);
                     }
                 };
                 sketch.startAnimation = () => {
@@ -284,15 +280,13 @@
                 if (stepId === stepIndex) {
                     step.classList.add('active');
                     step.style.display = 'flex';
-                    console.log(`Showing step: step-${stepId}`);
                 } else {
                     step.classList.remove('active');
                     step.style.display = 'none';
-                    console.log(`Hiding step: step-${stepId}`);
                 }
             });
             window.currentStep = stepIndex;
-            console.log(`Updated currentStep to: ${window.currentStep}`);
+            console.log('Updated currentStep to:', window.currentStep);
             if (stepIndex >= 2 && !window.quantumSketch) {
                 initializeQuantumSketch();
             }
@@ -302,12 +296,12 @@
         }
 
         window.setLanguageAndNext = (lang) => {
-            console.log(`Language set to: ${lang}, moving to step 1`);
+            console.log('Language set to:', lang);
             showStep(1);
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM fully loaded, initializing event listeners');
+            console.log('DOM fully loaded');
             const uploadButton = document.getElementById('uploadImage');
             if (uploadButton) {
                 uploadButton.addEventListener('click', window.loadImageOnce);
@@ -324,7 +318,7 @@
                 button.addEventListener('click', (e) => {
                     const stepElement = e.target.closest('.step');
                     const current = parseFloat(stepElement.id.replace('step-', '')) || window.currentStep;
-                    let nextStep = current + (current === 2 ? 0.1 : 1); // Переход 2 → 2.1
+                    let nextStep = current + (current === 2 ? 0.1 : 1);
                     if (nextStep <= 7) {
                         showStep(nextStep);
                     }
