@@ -23,6 +23,9 @@ function showStep(stepIndex) {
             if (stepId === 4 || stepId === 5) {
                 startDynamicUpdates();
             }
+            if (stepId === 2) {
+                initializeQuantumSketch(); // Инициализация холста на шаге 2
+            }
         } else {
             step.style.display = 'none';
             console.log(`Hiding step: ${step.id}`);
@@ -58,12 +61,12 @@ document.querySelectorAll('.continue').forEach(button => {
 
 function moveToNextStep(current) {
     let nextStep = current + 1;
-    if (current === 2 && window.img) {
-        nextStep = 2.1;
-    }
     if (current === 2 && !window.img) {
         alert('Пожалуйста, загрузите изображение перед продолжением!');
         return;
+    }
+    if (current === 2 && window.img) {
+        nextStep = 2.1;
     }
     if (nextStep <= 7) {
         showStep(nextStep);
