@@ -16,7 +16,7 @@ function showStep(stepIndex) {
         const stepId = parseFloat(step.id.replace('step-', ''));
         if (stepId === stepIndex) {
             step.style.display = 'block';
-            console.log(`Showing step: ${step.id}, currentStep: ${currentStep}`);
+            console.log(`Showing step: ${step.id}, currentStep: ${currentStep}, canvasVisible:`, document.querySelector('#portrait-animation-container canvas')?.style.display !== 'none');
             if (stepId === 5) {
                 initializeStep5EventListeners();
             }
