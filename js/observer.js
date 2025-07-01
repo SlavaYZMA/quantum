@@ -1,5 +1,6 @@
 window.recordObservation = () => {
     if (window.quantumSketch && !window.isPaused) {
+        console.log('Recording observation');
         window.isPaused = true;
         window.quantumSketch.noLoop();
         let canvas = window.quantumSketch.canvas;
@@ -21,6 +22,7 @@ window.shareToArchive = () => {
     const portraitName = document.getElementById('portraitName');
     const savedPortrait = document.getElementById('saved-portrait');
     if (portraitName && portraitName.value && savedPortrait && savedPortrait.src) {
+        console.log('Portrait shared to archive');
         alert('Изображение сохранено в архиве под названием: ' + portraitName.value);
         showStep(7);
     } else {
