@@ -123,7 +123,7 @@
         window.particles = [];
         window.quantumStates = [];
         window.isCanvasReady = false;
-        window.noiseScale = 0.03;
+        window.noiseScale = 0.05;
         window.mouseInfluenceRadius = 200;
         window.chaosFactor = 0.5;
         window.boundaryPoints = [];
@@ -196,7 +196,10 @@
         };
 
         function initializeQuantumSketch() {
-            if (window.quantumSketch) return;
+            if (window.quantumSketch) {
+                console.log('quantumSketch already initialized');
+                return;
+            }
             const container = document.getElementById('portrait-animation-container');
             if (!container) {
                 console.error('Container portrait-animation-container not found');
@@ -205,17 +208,19 @@
             window.quantumSketch = new p5((sketch) => {
                 window.sketch = sketch;
                 sketch.setup = () => {
-                    sketch.createCanvas(400, 400).parent('portrait-animation-container');
+                    console.log('p5 setup called');
+                    let canvas = sketch.createCanvas(400, 400);
+                    canvas.parent('portrait-animation-container');
                     sketch.pixelDensity(1);
                     window.trailBuffer = sketch.createGraphics(400, 400);
                     window.trailBuffer.pixelDensity(1);
                     updateBoundary();
                     window.isCanvasReady = true;
-                    console.log('Canvas setup completed');
+                    console.log('Canvas setup completed, trailBuffer:', !!window.trailBuffer);
                     sketch.loop();
                 };
                 sketch.draw = () => {
-                    console.log('draw called, currentStep:', window.currentStep, 'frame:', window.frame, 'particles:', window.particles.length);
+                    console.log('draw called, currentStep:', window.currentStep, 'frame:', window.frame, 'particles:', window.particles.length, 'trailBuffer:', !!window.trailBuffer);
                     sketch.background(0);
                     if (window.currentStep < 2 || !window.img) {
                         sketch.fill(255);
@@ -232,11 +237,13 @@
                     sketch.image(window.img, x, y, displayWidth, displayHeight);
                     if (window.currentStep >= 3 && window.isCanvasReady) {
                         if (window.particles.length === 0) {
+                            console.log('Initializing particles in draw');
                             initializeParticles(window.img);
                         }
                         updateParticles();
                         if (window.trailBuffer) {
                             sketch.image(window.trailBuffer, 0, 0);
+                            console.log('trailBuffer rendered on canvas');
                         } else {
                             console.warn('trailBuffer not available in draw');
                         }
@@ -246,7 +253,7 @@
                     sketch.text(`Frame: ${window.frame}`, 10, 20);
                 };
                 sketch.startAnimation = () => {
-                    console.log('Starting animation');
+                    console.log('Starting animation, currentStep:', window.currentStep);
                     window.currentQuantumState = 'superposition';
                     sketch.loop();
                 };
@@ -254,6 +261,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded, initializing event listeners');
             const languageButtons = document.querySelectorAll('.language-btn');
             languageButtons.forEach(button => {
                 button.addEventListener('click', () => {
