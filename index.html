@@ -157,6 +157,7 @@
                         console.log('Image loaded successfully, size:', img.width, 'x', img.height);
                         if (window.currentStep === 2) {
                             showStep(2.1);
+                            initializeParticles(img); // Инициализация сразу после загрузки
                         }
                     }, (err) => {
                         console.error('Error loading image:', err);
@@ -224,8 +225,8 @@
                     window.trailBuffer.pixelDensity(1);
                     window.isCanvasReady = true;
                     console.log('Canvas setup completed, trailBuffer:', !!window.trailBuffer);
-                    if (window.quantumSketch) {
-                        updateBoundary();
+                    if (window.quantumSketch && window.img) {
+                        initializeParticles(window.img);
                     }
                     sketch.loop();
                 };
@@ -247,11 +248,7 @@
                     let y = (sketch.height - displayHeight) / 2;
                     sketch.image(window.img, x, y, displayWidth, displayHeight);
                     console.log('Image rendered at x:', x, 'y:', y, 'width:', displayWidth, 'height:', displayHeight);
-                    if (window.currentStep >= 3 && window.isCanvasReady) {
-                        if (window.particles.length === 0) {
-                            console.log('Initializing particles in draw');
-                            initializeParticles(window.img);
-                        }
+                    if (window.currentStep >= 3 && window.isCanvasReady && window.particles.length > 0) {
                         updateParticles();
                     }
                 };
