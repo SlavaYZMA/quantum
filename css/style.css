@@ -1,3 +1,4 @@
+/* Общие стили для страницы */
 body {
     margin: 0;
     padding: 0;
@@ -8,6 +9,7 @@ body {
     overflow-y: auto;
 }
 
+/* Стили для секций (шагов) */
 .step {
     display: none;
     text-align: center;
@@ -21,6 +23,7 @@ body {
     z-index: 0;
 }
 
+/* Стили для активной секции */
 .step.active {
     display: flex;
     flex-direction: column;
@@ -28,6 +31,7 @@ body {
     align-items: center;
 }
 
+/* Стили для центрированных секций */
 .step-centered {
     display: flex;
     flex-direction: column;
@@ -35,60 +39,14 @@ body {
     align-items: center;
 }
 
-.step-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    z-index: 1;
-}
-
-.text-block {
-    font-size: 16px;
-    margin: 10px 0;
-    line-height: 1.5;
-    z-index: 1;
-}
-
-.typewriter {
-    overflow: hidden;
-    white-space: nowrap;
-    animation: typing 2s steps(40, end);
-}
-
-@keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-}
-
-.button-block {
-    margin: 20px 0;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    z-index: 1;
-}
-
-button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-family: 'Courier New', Courier, monospace;
-    cursor: pointer;
-    background-color: #333;
-    color: white;
-    border: 1px solid white;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    z-index: 1;
-}
-
-button:hover {
-    background-color: #555;
-}
-
-#portrait-animation-container {
+/* Стили для контейнеров анимации */
+#portrait-animation-container-step-2,
+#portrait-animation-container-step-2.1,
+#portrait-animation-container-step-3,
+#portrait-animation-container-step-4,
+#portrait-animation-container-step-5,
+#portrait-animation-container-step-6,
+#portrait-animation-container-step-7 {
     width: 400px;
     height: 400px;
     margin: 20px auto;
@@ -99,7 +57,14 @@ button:hover {
     overflow: visible;
 }
 
-#portrait-animation-container canvas.quantum-canvas {
+/* Стили для canvas внутри контейнеров */
+#portrait-animation-container-step-2 canvas.quantum-canvas,
+#portrait-animation-container-step-2.1 canvas.quantum-canvas,
+#portrait-animation-container-step-3 canvas.quantum-canvas,
+#portrait-animation-container-step-4 canvas.quantum-canvas,
+#portrait-animation-container-step-5 canvas.quantum-canvas,
+#portrait-animation-container-step-6 canvas.quantum-canvas,
+#portrait-animation-container-step-7 canvas.quantum-canvas {
     display: block !important;
     width: 400px !important;
     height: 400px !important;
@@ -113,33 +78,67 @@ button:hover {
     opacity: 1 !important;
 }
 
+/* Стили для текстовых блоков */
+.text-block {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+/* Стили для блока кнопок */
+.button-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Стили для кнопок */
+button {
+    background-color: #333;
+    color: white;
+    border: 2px solid #0f0;
+    padding: 10px 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0f0;
+    color: black;
+}
+
+/* Стили для сохраненного портрета */
 #saved-portrait {
     display: none;
     max-width: 400px;
     margin: 20px auto;
-    z-index: 1;
 }
 
-@media (max-width: 768px) {
-    .step-title {
-        font-size: 20px;
-    }
-    .text-block {
-        font-size: 14px;
-    }
-    #portrait-animation-container {
-        width: 300px;
-        height: 300px;
-    }
-    #portrait-animation-container canvas.quantum-canvas {
-        width: 300px !important;
-        height: 300px !important;
-    }
-    #saved-portrait {
-        max-width: 300px;
-    }
-    button {
-        padding: 8px 16px;
-        font-size: 14px;
-    }
+/* Стили для поля ввода имени портрета */
+#saveInput {
+    display: none;
+    margin: 10px 0;
+}
+
+#portraitName {
+    background-color: #333;
+    color: white;
+    border: 2px solid #0f0;
+    padding: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+}
+
+/* Эффект пишущей машинки */
+.typewriter {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 2s steps(40, end);
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
 }
