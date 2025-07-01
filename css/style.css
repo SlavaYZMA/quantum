@@ -109,6 +109,7 @@ button:hover {
     opacity: 1 !important;
     top: 0 !important;
     left: 0 !important;
+    border: 2px dashed #0f0; /* Дебажный стиль */
 }
 
 #portrait-animation-container canvas {
@@ -120,6 +121,7 @@ button:hover {
     visibility: visible !important;
     opacity: 1 !important;
     position: relative !important;
+    z-index: 1001 !important; /* Убеждаемся, что канвас сверху */
 }
 
 #saved-portrait {
