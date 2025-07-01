@@ -15,17 +15,17 @@ function showStep(stepIndex) {
     steps.forEach((step) => {
         const stepId = parseFloat(step.id.replace('step-', ''));
         if (stepId === stepIndex) {
-            step.style.display = 'block';
+            step.classList.add('active');
             console.log(`Showing step: ${step.id}, currentStep: ${currentStep}, canvasVisible:`, document.querySelector('#portrait-animation-container canvas')?.style.display !== 'none');
             if (stepId === 5) {
                 initializeStep5EventListeners();
             }
-            if (stepId >= 3 && window.quantumSketch) {
+            if (stepId >= 4 && window.quantumSketch) {
                 console.log('Starting animation for step:', stepId, 'quantumSketch available:', !!window.quantumSketch);
                 window.quantumSketch.startAnimation();
             }
         } else {
-            step.style.display = 'none';
+            step.classList.remove('active');
             console.log(`Hiding step: ${step.id}`);
         }
     });
@@ -37,7 +37,7 @@ function showStep(stepIndex) {
 function hideStep(stepIndex) {
     const step = document.getElementById(`step-${stepIndex}`);
     if (step) {
-        step.style.display = 'none';
+        step.classList.remove('active');
         console.log(`Hiding step: step-${stepIndex}`);
     }
 }
@@ -48,7 +48,7 @@ document.querySelectorAll('.continue').forEach(button => {
     button.addEventListener('click', (e) => {
         console.log('Event listener triggered for continue button, target:', e.target);
         const stepElement = e.target.closest('.step');
-        const current = parseFloat(stepElement.id.replace('step-', ''));
+        const current = parseFloat(stepElement.id.replace('step-', '')) || currentStep;
         console.log(`Continue button clicked on step: ${current} Button:`, e.target);
         moveToNextStep(current);
     });
@@ -88,9 +88,11 @@ function initializeStep5EventListeners() {
             if (window.quantumSketch) {
                 console.log('Record button clicked, pausing animation');
                 window.currentQuantumState = 'collapse';
+                window.isPaused = true;
                 window.quantumSketch.noLoop();
                 recordButton.style.display = 'none';
                 document.getElementById('saveInput').style.display = 'block';
+                window.recordObservation(); // Вызываем наблюдение
             } else {
                 console.error('quantumSketch not initialized');
             }
@@ -106,7 +108,9 @@ function initializeStep5EventListeners() {
                 console.log(`Saved canvas as ${name}.png`);
                 document.getElementById('saveInput').style.display = 'none';
                 recordButton.style.display = 'inline-block';
+                window.isPaused = false;
                 window.quantumSketch.loop();
+                showStep(6); // Переход к следующему шагу
             } else {
                 alert('Ошибка: холст не доступен для сохранения.');
             }
