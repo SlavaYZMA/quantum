@@ -12,8 +12,8 @@ const translations = {
         step2_text4: "> Система готова к инициализации.",
         step3_title: "Шаг 2: Инициализация",
         step3_text1: "> Изображение преобразовано в пиксельную сетку.",
-        step3_text2: "> Каждому пикселю назначены параметры (x, y, brightness, color) ",
-        step3_text3: "> На их основе построена волновая функция: ψ(x, y, t) ",
+        step3_text2: "> Каждому пикселю назначены параметры (x, y, brightness, color)",
+        step3_text3: "> На их основе построена волновая функция: ψ(x, y, t)",
         step3_text4: "Уравнение эволюции:",
         step3_text5: "iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)",
         step3_text6: "> Потенциал V(x, y) формируется из визуальных характеристик изображения.",
@@ -42,40 +42,40 @@ const translations = {
         step1_text1: "> What can Schrödinger teach us about digital identity?",
         step1_text2: "> Welcome to the experimental zone.",
         step1_text3: "> Here observation = interference",
-        step2_title: "Step 1: Scan the superposition face.",
+        step2_title: "Step 1: Scan the face of superposition.",
         step2_text1: "You can upload an image or select one from the archive.",
-        step2_text2: "> Image accepted.",
+        step2_text2: "> Image received.",
         step2_text3: "> Wave function initiated.",
         step2_text4: "> System ready for initialization.",
         step3_title: "Step 2: Initialization",
-        step3_text1: "> Image converted to pixel grid.",
-        step3_text2: "> Each pixel assigned parameters (x, y, brightness, color) ",
-        step3_text3: "> Wave function built: ψ(x, y, t) ",
+        step3_text1: "> Image converted into a pixel grid.",
+        step3_text2: "> Each pixel assigned parameters (x, y, brightness, color).",
+        step3_text3: "> Wave function constructed: ψ(x, y, t).",
         step3_text4: "Evolution equation:",
         step3_text5: "iℏ ∂ψ/∂t = Ĥψ, where Ĥ = -½∇² + V(x, y)",
-        step3_text6: "> Potential V(x, y) formed from image visual characteristics.",
-        step3_text7: "> System enters temporal simulation mode.",
-        step3_text8: "> Portrait exists as a set of possible states.",
-        step4_title: "Step 3: START OBSERVATION",
-        step4_text1: "Move the cursor over the image.",
+        step3_text6: "> Potential V(x, y) derived from image visual characteristics.",
+        step3_text7: "> System enters time simulation mode.",
+        step3_text8: "> Portrait exists as a superposition of possible states.",
+        step4_title: "Step 3: BEGIN OBSERVATION",
+        step4_text1: "Move your cursor over the image.",
         step4_text2: "Each gesture triggers a collapse.",
         step4_text3: "The system reacts. The observed image forms here and now.",
         step5_title: "Step 4: FIXATION",
-        step5_text1: "> Portrait is a process.",
-        step5_text2: "> But you can fix one moment.",
-        step5_text3: "> This will be one of possible you.",
-        step6_title: "Step 5: SYSTEM RESPONSE",
+        step5_text1: "> The portrait is a process.",
+        step5_text2: "> But you can fix a single moment.",
+        step5_text3: "> This will be one of the possible yous.",
+        step6_title: "Step 5: SYSTEM REACTION",
         step6_text1: "This is not a portrait.",
-        step6_text2: "This is the system's response to you.",
+        step6_text2: "This is the system’s reaction to you.",
         step6_text3: "You influenced the outcome.",
         step7_title: "Conclusion",
-        step7_text1: "You are not the only observer",
+        step7_text1: "You are not the only observer.",
         step7_text2: "Each observation is an act that shapes the image.",
-        step7_text3: "Here you are both subject and object."
+        step7_text3: "Here, you are both subject and object."
     }
 };
 
-function setLanguage(lang) {
+window.setLanguage = (lang) => {
     console.log(`setLanguage called with: ${lang}`);
     const elements = document.querySelectorAll('[data-i18n]');
     console.log(`Language elements found: ${elements.length}`);
@@ -84,12 +84,14 @@ function setLanguage(lang) {
         if (translations[lang] && translations[lang][key]) {
             element.textContent = translations[lang][key];
             console.log(`Updated text at index ${index} (${key}): ${translations[lang][key]}`);
+        } else {
+            console.warn(`Translation missing for key: ${key} in language: ${lang}`);
         }
     });
-}
+};
 
 window.setLanguageAndNext = (lang) => {
-    console.log(`Language set to: ${lang} Moving to step 1`);
-    setLanguage(lang);
-    showStep(1);
+    console.log(`setLanguageAndNext called with: ${lang}`);
+    window.setLanguage(lang);
+    // Note: The actual step navigation is handled in main.js
 };
