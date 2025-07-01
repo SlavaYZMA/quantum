@@ -181,18 +181,26 @@
                     sketch.pixelDensity(1);
                     window.trailBuffer = sketch.createGraphics(400, 400);
                     window.isCanvasReady = true;
-                    sketch.noLoop(); // Не рендерим до шага 2.1
+                    sketch.noLoop(); // Не рендерим до шага 3
                 };
                 sketch.draw = () => {
                     const canvas = document.querySelector('#portrait-animation-container canvas');
                     console.error('draw called, currentStep:', window.currentStep, 'canvasVisible:', canvas?.style.display !== 'none');
+                    if (window.currentStep < 3 || !window.isCanvasReady) {
+                        sketch.background(255);
+                        sketch.fill(0);
+                        sketch.textSize(16);
+                        sketch.text('Ожидание шага 3...', 10, 20);
+                        window.frame++;
+                        return;
+                    }
                     sketch.background(255); // Белый фон
                     sketch.fill(255, 0, 0); // Красный квадрат
                     sketch.rect(100, 100, 200, 200);
                     sketch.fill(0);
                     sketch.textSize(16);
                     sketch.text(`Frame: ${window.frame}`, 10, 20);
-                    if (window.currentStep < 2 || !window.img) {
+                    if (!window.img) {
                         sketch.text('Пожалуйста, загрузите изображение', 10, 40);
                         window.frame++;
                         return;
@@ -220,6 +228,7 @@
                 };
                 sketch.startAnimation = () => {
                     window.currentQuantumState = 'superposition';
+                    console.error('startAnimation called, currentStep:', window.currentStep);
                     sketch.loop();
                 };
             }, 'portrait-animation-container');
