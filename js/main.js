@@ -16,7 +16,8 @@ function showStep(stepIndex) {
         const stepId = parseFloat(step.id.replace('step-', ''));
         if (stepId === stepIndex) {
             step.classList.add('active');
-            console.log(`Showing step: ${step.id}, currentStep: ${currentStep}, canvasVisible:`, document.querySelector('#portrait-animation-container canvas')?.style.display !== 'none');
+            step.style.display = 'flex'; // Явно устанавливаем display
+            console.log(`Showing step: ${step.id}, currentStep: ${currentStep}, display: ${step.style.display}, classList: ${Array.from(step.classList)}`);
             if (stepId === 5) {
                 initializeStep5EventListeners();
             }
@@ -26,7 +27,8 @@ function showStep(stepIndex) {
             }
         } else {
             step.classList.remove('active');
-            console.log(`Hiding step: ${step.id}`);
+            step.style.display = 'none'; // Явно скрываем
+            console.log(`Hiding step: ${step.id}, display: ${step.style.display}, classList: ${Array.from(step.classList)}`);
         }
     });
     currentStep = stepIndex;
@@ -38,7 +40,8 @@ function hideStep(stepIndex) {
     const step = document.getElementById(`step-${stepIndex}`);
     if (step) {
         step.classList.remove('active');
-        console.log(`Hiding step: step-${stepIndex}`);
+        step.style.display = 'none';
+        console.log(`Hiding step: step-${stepIndex}, display: ${step.style.display}`);
     }
 }
 
@@ -76,12 +79,12 @@ function moveToNextStep(current) {
 
 window.setLanguageAndNext = (lang) => {
     console.log(`Language set to: ${lang} Moving to step 1`);
-    if (window.setLanguage) { // Проверяем, определена ли функция
+    if (window.setLanguage) {
         window.setLanguage(lang);
     } else {
         console.error('setLanguage function not available');
     }
-    showStep(1); // Переход к step-1 один раз
+    showStep(1);
 };
 
 function initializeStep5EventListeners() {
