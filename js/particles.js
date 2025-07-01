@@ -201,6 +201,7 @@ if (window.quantumSketch) {
 }
 
 function updateBoundary() {
+    if (!window.quantumSketch) return;
     window.boundaryPoints = [];
     let numPoints = 40;
     let margin = 10;
@@ -225,6 +226,7 @@ function updateBoundary() {
 }
 
 function isPointInBoundary(x, y) {
+    if (!window.quantumSketch) return false;
     let margin = 10;
     let maxY = document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100;
     if (x < margin || x > window.quantumSketch.windowWidth - margin || y < margin || y > maxY - margin) return false;
@@ -240,6 +242,7 @@ function isPointInBoundary(x, y) {
 }
 
 function cachedNoise(x, y, z) {
+    if (!window.quantumSketch) return 0;
     let key = `${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)}`;
     if (window.noiseCache.has(key)) {
         return window.noiseCache.get(key);
@@ -308,6 +311,7 @@ function updateTerminal() {
 }
 
 function renderTransformingPortrait(img, currentFrame) {
+    if (!window.quantumSketch || !img) return [];
     img.loadPixels();
     let blockList = [];
     let maxBlockSize = 16;
@@ -398,6 +402,7 @@ function renderTransformingPortrait(img, currentFrame) {
 }
 
 function initializeParticles(blockList) {
+    if (!window.quantumSketch) return;
     window.particles = [];
     window.quantumStates = [];
     window.entangledPairs = [];
@@ -505,6 +510,7 @@ function initializeParticles(blockList) {
 }
 
 function updateParticle(particle, state) {
+    if (!window.quantumSketch) return;
     let px = particle.x + particle.offsetX;
     let py = particle.y + particle.offsetY;
     if (px < 0 || px > window.quantumSketch.windowWidth || py < 0 || py > (document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) || particle.alpha < 20) {
@@ -615,7 +621,7 @@ function updateParticle(particle, state) {
                 particle.offsetY += dy;
                 other.offsetX -= dx;
                 other.offsetY -= dy;
-               目的是:                if (window.quantumSketch.random() < 0.02 && !window.textMessages.queue.some(m => m.eventType === "entanglement")) {
+                if (window.quantumSketch.random() < 0.02 && !window.textMessages.queue.some(m => m.eventType === "entanglement")) {
                     addQuantumMessage("Запутанность: частицы синхронизируют свои состояния.", "entanglement");
                 }
             }
@@ -698,7 +704,7 @@ function updateParticle(particle, state) {
                 timeDirection: window.quantumSketch.random([-1, 1]),
                 uncertainty: window.quantumSketch.random(0.5, 3),
                 wavePhase: window.quantumSketch.random(window.quantumSketch.TWO_PI),
-                radialAngle: window quantumSketch.random(window.quantumSketch.TWO_PI),
+                radialAngle: window.quantumSketch.random(window.quantumSketch.TWO_PI),
                 radialDistance: 0,
                 targetRadialDistance: window.quantumSketch.random(100, 300),
                 superpositionT: 1,
@@ -726,7 +732,7 @@ function updateParticle(particle, state) {
 
     if (!isPointInBoundary(particle.x + particle.offsetX, particle.y + particle.offsetY)) {
         let nearestPoint = window.boundaryPoints.reduce((closest, p) => {
-            let distToP = window .quantumSketch.dist(particle.x + particle.offsetX, particle.y + particle.offsetY, p.x, p.y);
+            let distToP = window.quantumSketch.dist(particle.x + particle.offsetX, particle.y + particle.offsetY, p.x, p.y);
             return distToP < closest.dist ? { x: p.x, y: p.y, dist: distToP } : closest;
         }, { x: 0, y: 0, dist: Infinity });
         particle.offsetX = nearestPoint.x - particle.x;
@@ -740,4 +746,94 @@ function updateParticle(particle, state) {
         let probDensity = particle.probAmplitude * 100;
         window.trailBuffer.fill(state.r, state.g, state.b, probDensity);
         window.trailBuffer.noStroke();
-        window.trailBuffer.ellipse
+        window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size);
+    }
+}
+
+function renderParticle(particle, state) {
+    if (!window.quantumSketch) return;
+    window.trailBuffer.fill(state.r, state.g, state.b, state.a);
+    window.trailBuffer.noStroke();
+    window.trailBuffer.push();
+    window.trailBuffer.translate(particle.x + particle.offsetX, particle.y + particle.offsetY);
+    window.trailBuffer.rotate(particle.rotation);
+    if (particle.shapeType === 0) {
+        window.trailBuffer.ellipse(0, 0, particle.size);
+    } else if (particle.shapeType === 1) {
+        window.trailBuffer.rect(0, 0, particle.size, particle.size);
+    } else if (particle.shapeType === 2) {
+        window.trailBuffer.beginShape();
+        for (let i = 0; i < particle.sides; i++) {
+            let angle = window.quantumSketch.TWO_PI / particle.sides * i;
+            let x = particle.size * window.quantumSketch.cos(angle);
+            let y = particle.size * window.quantumSketch.sin(angle);
+            window.trailBuffer.vertex(x, y);
+        }
+        window.trailBuffer.endShape(window.quantumSketch.CLOSE);
+    } else if (particle.shapeType === 3) {
+        window.trailBuffer.triangle(
+            0, -particle.size,
+            -particle.size * 0.866, particle.size * 0.5,
+            particle.size * 0.866, particle.size * 0.5
+        );
+    } else if (particle.shapeType === 4) {
+        let pulse = cachedNoise(particle.chaosSeed, window.frame * 0.1, 0) * 5;
+        window.trailBuffer.ellipse(0, 0, particle.size + pulse);
+    }
+    window.trailBuffer.pop();
+}
+
+function renderInterference() {
+    if (!window.quantumSketch) return;
+    for (let pair of window.entangledPairs) {
+        let p1 = window.particles[pair[0]];
+        let p2 = window.particles[pair[1]];
+        if (p1.alpha >= 20 && p2.alpha >= 20) {
+            let state1 = window.quantumStates[pair[0]];
+            let state2 = window.quantumStates[pair[1]];
+            window.trailBuffer.stroke(state1.r, state1.g, state1.b, 100);
+            window.trailBuffer.strokeWeight(1);
+            window.trailBuffer.line(
+                p1.x + p1.offsetX, p1.y + p1.offsetY,
+                p2.x + p2.offsetX, p2.y + p2.offsetY
+            );
+        }
+    }
+}
+
+function renderVisualization() {
+    if (!window.quantumSketch || !vizCanvas) return;
+    vizCanvas.background(0);
+    vizFrameCount++;
+    if (window.currentQuantumState === 'superposition') {
+        currentEffect = 'superposition';
+        vizParticle.x += window.quantumSketch.random(-2, 2);
+        vizParticle.y += window.quantumSketch.random(-2, 2);
+        vizParticle.x = window.quantumSketch.constrain(vizParticle.x, 0, vizWidth);
+        vizParticle.y = window.quantumSketch.constrain(vizParticle.y, 0, vizHeight);
+        vizParticle.alpha = window.quantumSketch.map(cachedNoise(vizFrameCount * 0.01, 0, 0), 0, 1, 100, 255);
+        vizCanvas.fill(vizParticle.r, vizParticle.g, vizParticle.b, vizParticle.alpha);
+        vizCanvas.noStroke();
+        vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+        if (window.quantumSketch.random() < 0.05) {
+            vizSecondParticle = {
+                x: window.quantumSketch.random(vizWidth),
+                y: window.quantumSketch.random(vizHeight),
+                size: window.quantumSketch.random(5, 15),
+                r: 255, g: 255, b: 255,
+                alpha: 100
+            };
+        }
+        if (vizSecondParticle) {
+            vizCanvas.fill(vizSecondParticle.r, vizSecondParticle.g, vizSecondParticle.b, vizSecondParticle.alpha);
+            vizCanvas.ellipse(vizSecondParticle.x, vizSecondParticle.y, vizSecondParticle.size);
+        }
+    } else if (window.currentQuantumState === 'collapse') {
+        currentEffect = 'collapse';
+        vizParticle.size = window.quantumSketch.map(vizFrameCount % 60, 0, 60, 10, 20);
+        vizCanvas.fill(vizParticle.r, vizParticle.g, vizParticle.b, vizParticle.alpha);
+        vizCanvas.noStroke();
+        vizCanvas.ellipse(vizParticle.x, vizParticle.y, vizParticle.size);
+        vizSecondParticle = null;
+    }
+}
