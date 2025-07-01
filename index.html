@@ -156,7 +156,7 @@
                         window.img = img;
                         console.log('Image loaded successfully, size:', img.width, 'x', img.height);
                         if (window.currentStep === 2) {
-                            showStep(2.1);
+                            showStep(2.1); // Автоматический переход после загрузки
                         }
                     }, (err) => {
                         console.error('Error loading image:', err);
@@ -265,7 +265,18 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM fully loaded, initializing event listeners');
-            // Обработчики уже определены в HTML через onclick
+            const uploadButton = document.getElementById('uploadImage');
+            if (uploadButton) {
+                uploadButton.addEventListener('click', window.loadImageOnce);
+            }
+            const galleryButton = document.getElementById('openGallery');
+            if (galleryButton) {
+                galleryButton.addEventListener('click', window.openGallery);
+            }
+            const cameraButton = document.getElementById('activateCamera');
+            if (cameraButton) {
+                cameraButton.addEventListener('click', window.activateCamera);
+            }
         });
     </script>
     <script src="js/utils.js"></script>
