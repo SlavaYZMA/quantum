@@ -100,7 +100,6 @@ function stopDynamicUpdates() {
 }
 
 function initializeStep5EventListeners() {
-    const recordButton = document.getElementiniziStep5EventListeners() {
     const recordButton = document.getElementById('recordButton');
     const saveButton = document.getElementById('saveButton');
     if (recordButton) {
