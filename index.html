@@ -190,6 +190,7 @@
     <script>
         let quantumSketch = null;
         window.img = null;
+        window.currentStep = 0;
 
         window.loadImageOnce = () => {
             if (window.img) {
@@ -209,8 +210,8 @@
                         console.log('Image loaded successfully, size:', img.width, 'x', img.height);
                         console.log('Checking step-2-1 existence:', !!document.getElementById('step-2-1'));
                         if (window.currentStep === 2 && document.getElementById('step-2-1')) {
-                            requestAnimationFrame(() => {
-                                console.log('Attempting transition to step 2.1 with requestAnimationFrame');
+                            waitForStep('step-2-1', () => {
+                                console.log('Step 2.1 is ready, transitioning');
                                 showStep(2.1);
                             });
                         } else {
@@ -224,6 +225,20 @@
             input.click();
         };
 
+        function waitForStep(stepId, callback) {
+            const checkStep = () => {
+                const step = document.getElementById(stepId);
+                if (step && step.offsetParent !== null) {
+                    console.log(`${stepId} is now visible and ready`);
+                    callback();
+                } else {
+                    console.log(`Waiting for ${stepId} to be ready...`);
+                    requestAnimationFrame(checkStep);
+                }
+            };
+            requestAnimationFrame(checkStep);
+        }
+
         function initializeQuantumSketch() {
             if (quantumSketch) return;
             quantumSketch = new p5((sketch) => {
@@ -235,7 +250,7 @@
                     if (!container || container.offsetParent === null || container.style.display === 'none' || container.style.visibility === 'hidden') {
                         console.error('Container not visible or not in DOM, retrying in 500ms');
                         setTimeout(() => {
-                            container.style.display = 'block'; // Временное отображение для теста
+                            container.style.display = 'block'; // Временное отображение
                             initializeQuantumSketch();
                         }, 500);
                         return;
@@ -317,96 +332,10 @@
             }
         };
 
-        window.showStep = (step) => {
-            console.log('Attempting to show step:', step, 'Current steps length:', document.querySelectorAll('.step').length);
-            console.log('All steps in DOM:', Array.from(document.querySelectorAll('.step')).map(s => s.id));
-            document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
-            const targetStep = document.getElementById(`step-${step}`);
-            if (targetStep) {
-                targetStep.style.display = 'block';
-                console.log(`Step ${step} displayed successfully, offsetParent:`, targetStep.offsetParent);
-                if (step === 4 || step === 5) {
-                    if (!quantumSketch) initializeQuantumSketch();
-                    window.currentQuantumState = 'superposition';
-                    if (quantumSketch) {
-                        quantumSketch.startAnimation();
-                        startDynamicUpdates();
-                    }
-                }
-            } else {
-                console.error(`Step ${step} not found, defaulting to step 2`);
-                document.getElementById('step-2').style.display = 'block';
-            }
-            window.currentStep = step;
-            console.log('Updated currentStep to:', window.currentStep);
-            if (step === 4 || step === 5) {
-                console.log('Dynamic updates started for step', step);
-            } else {
-                stopDynamicUpdates();
-                console.log('Dynamic updates stopped for step', step);
-            }
-        };
-
-        window.setLanguageAndNext = (lang) => {
-            console.log(`Language set to: ${lang} Moving to step 1`);
-            setLanguage(lang);
-            if (window.currentStep !== 0) return;
-            showStep(1);
-            window.currentStep = 1;
-        };
-
         window.openGallery = () => console.log('Gallery opened');
         window.shareToArchive = () => console.log('Image shared to archive');
 
         window.fixationCount = 0;
-        console.log('Initial step setup, all continue buttons:', document.querySelectorAll('.continue'));
-
-        document.querySelectorAll('.continue').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                console.log('Continue button event triggered, target:', e.target, 'Parent step:', e.target.closest('.step')?.id, 'Time:', new Date().toLocaleTimeString());
-                if (window.currentStep !== undefined) {
-                    console.log('Continue button clicked on step:', window.currentStep, 'Button:', e.target);
-                    let nextStep = window.currentStep + 1;
-                    if (window.currentStep === 2) {
-                        if (!window.img) {
-                            console.warn('Image not loaded, staying on step 2');
-                            return;
-                        }
-                        nextStep = 2.1;
-                    } else if (window.currentStep === 2.1) {
-                        nextStep = 3;
-                    } else if (window.currentStep === 5) {
-                        window.fixationCount = window.fixationCount || 0;
-                        if (window.fixationCount === 0) {
-                            console.log('Fixation not yet recorded, staying on step 5');
-                            return;
-                        } else {
-                            nextStep = 6;
-                            window.fixationCount = 0;
-                        }
-                    } else if (window.currentStep === 6) {
-                        nextStep = 7;
-                    }
-                    console.log('Moving to next step:', nextStep);
-                    showStep(nextStep);
-                } else {
-                    console.warn('window.currentStep is undefined, cannot proceed');
-                }
-            }, { passive: true });
-        });
-
-        document.querySelectorAll('.back').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (window.currentStep !== undefined && window.currentStep > 0) {
-                    console.log('Back button clicked on step:', window.currentStep, 'Going to:', window.currentStep === 2.1 ? 2 : window.currentStep - 1);
-                    if (window.currentStep === 2.1) showStep(2);
-                    else if (window.currentStep === 6) showStep(5);
-                    else showStep(window.currentStep - 1);
-                }
-            });
-        });
-
-        showStep(0);
 
         const terminalMessages = [
             'Терминал: Инициализация...',
@@ -471,6 +400,15 @@
                 alert('Пожалуйста, введите имя портрета!');
             }
         });
+
+        // Инициализация первого шага
+        console.log('Initial step setup, all continue buttons:', document.querySelectorAll('.continue'));
+        if (steps && steps.length > 0) {
+            console.log(`Steps found: ${steps.length}`);
+            showStep(0);
+        } else {
+            console.error('No steps found in document');
+        }
     </script>
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
