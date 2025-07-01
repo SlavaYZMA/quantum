@@ -1,8 +1,10 @@
 window.recordObservation = () => {
-    if (window.canvas && !window.isPaused && window.quantumSketch) {
+    if (window.quantumSketch && !window.isPaused) {
+        console.log('Recording observation');
         window.isPaused = true;
         window.quantumSketch.noLoop();
-        let dataURL = window.canvas.elt.toDataURL();
+        let canvas = window.quantumSketch.canvas;
+        let dataURL = canvas.toDataURL();
         const savedPortrait = document.getElementById('saved-portrait');
         if (savedPortrait) {
             savedPortrait.src = dataURL;
@@ -13,7 +15,7 @@ window.recordObservation = () => {
             console.error('Saved portrait element not found');
         }
     } else {
-        console.error('Canvas or quantumSketch not available for recording observation');
+        console.error('quantumSketch not available or animation is paused');
     }
 };
 
