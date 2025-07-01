@@ -43,15 +43,16 @@ document.addEventListener('DOMContentLoaded', initializeSteps);
 document.querySelectorAll('.continue').forEach(button => {
     button.addEventListener('click', (e) => {
         console.log('Event listener triggered for continue button, target:', e.target);
-        const step = parseFloat(e.target.closest('.step').id.replace('step-', '')) || currentStep;
-        console.log(`Continue button clicked on step: ${step} Button:`, e.target);
-        moveToNextStep(step);
+        const stepElement = e.target.closest('.step');
+        const current = parseFloat(stepElement.id.replace('step-', '')) || currentStep;
+        console.log(`Continue button clicked on step: ${current} Button:`, e.target);
+        moveToNextStep(current);
     });
 });
 
 function moveToNextStep(current) {
     let nextStep = current + 1;
-    if (current === 2.1) nextStep = 3;
+    if (current === 2.1) nextStep = 3; // Переход с 2.1 на 3
     if (nextStep < steps.length) {
         showStep(nextStep);
     }
