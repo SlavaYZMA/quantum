@@ -132,45 +132,24 @@
             };
 
             sketch.draw = () => {
-                console.error('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
-                if (window.currentStep < 3) {
-                    sketch.background(255);
-                    sketch.fill(255, 0, 0);
-                    sketch.rect(100, 100, 200, 200);
-                    if (window.img && window.isCanvasReady) {
-                        let imgWidth = 400;
-                        let imgHeight = 400;
-                        if (window.img.width > window.img.height) {
-                            imgHeight = 400 * window.img.height / window.img.width;
-                        } else {
-                            imgWidth = 400 * window.img.width / window.img.height;
-                        }
-                        let x = (400 - imgWidth) / 2;
-                        let y = (400 - imgHeight) / 2;
-                        sketch.image(window.img, x, y, imgWidth, imgHeight);
-                        console.error('Image rendered at x: ' + x + ', y: ' + y + ', width: ' + imgWidth + ', height: ' + imgHeight);
-                    }
-                    sketch.textAlign(sketch.LEFT, sketch.TOP);
-                    sketch.textSize(20);
-                    sketch.fill(0);
-                    sketch.text('Frame: ' + sketch.frameCount, 10, 10);
-                } else {
-                    sketch.background(255);
-                    sketch.fill(255, 0, 0);
-                    sketch.rect(100, 100, 200, 200);
-                    if (window.img && window.isCanvasReady) {
-                        sketch.image(window.img, 0, 0, 400, 400);
-                        console.error('Image rendered at x: 0, y: 0, width: 400, height: 400');
-                    }
-                    if (window.particles && window.particles.length > 0) {
-                        window.updateParticles(sketch);
-                    }
-                    sketch.textAlign(sketch.LEFT, sketch.TOP);
-                    sketch.textSize(20);
-                    sketch.fill(0);
-                    sketch.text('Frame: ' + sketch.frameCount, 10, 10);
-                }
-            };
+    console.error('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
+    sketch.background(255);
+    if (window.img && window.isCanvasReady) {
+        sketch.image(window.img, 0, 0, 400, 400);
+        console.error('Image rendered at x: 0, y: 0, width: 400, height: 400');
+    }
+    if (window.particles && window.particles.length > 0) {
+        window.updateParticles(sketch);
+    } else {
+        console.error('No particles to render:', { particles: window.particles?.length });
+    }
+    sketch.fill(255, 0, 0);
+    sketch.rect(100, 100, 200, 200);
+    sketch.textAlign(sketch.LEFT, sketch.TOP);
+    sketch.textSize(20);
+    sketch.fill(0);
+    sketch.text('Frame: ' + sketch.frameCount, 10, 10);
+};
 
             sketch.startAnimation = () => {
                 console.error('startAnimation called, currentStep: ' + window.currentStep);
