@@ -16,7 +16,6 @@
         </div>
     </section>
 
-    <!-- Остальные секции остаются без изменений -->
     <section id="step-1" class="step step-centered">
         <div class="step-title" data-i18n="step1_title">СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН</div>
         <div class="text-block typewriter" data-i18n="step1_text1">> Чему Шредингер может научить нас в области цифровой идентификации?</div>
@@ -26,7 +25,28 @@
             <button class="continue">Продолжить</button>
         </div>
     </section>
-    <!-- ... остальные секции step-2, step-2.1, step-3, step-4, step-5, step-6, step-7 без изменений ... -->
+
+    <section id="step-2" class="step step-centered">
+        <div class="step-title" data-i18n="step2_title">Шаг 1: Сканируйте лицо суперпозиции.</div>
+        <div class="text-block typewriter" data-i18n="step2_text1">Вы можете загрузить изображение или выбрать вариант из архива.</div>
+        <div class="button-block">
+            <button id="uploadImage">Загрузить изображение</button>
+            <button id="openGallery">Выбрать из архива</button>
+            <button id="activateCamera">Активировать камеру</button>
+        </div>
+        <div id="portrait-animation-container"></div>
+    </section>
+
+    <section id="step-2.1" class="step step-centered">
+        <div class="text-block typewriter" data-i18n="step2_text2">> Изображение принято.</div>
+        <div class="text-block typewriter" data-i18n="step2_text3">> Запускается волновая функция.</div>
+        <div class="text-block typewriter" data-i18n="step2_text4">> Система готова к инициализации.</div>
+        <div class="button-block">
+            <button class="continue">Продолжить</button>
+        </div>
+    </section>
+
+    <!-- Остальные секции (step-3, step-4, step-5, step-6, step-7) остаются без изменений -->
 
     <script>
         let quantumSketch = null;
@@ -90,11 +110,15 @@
 
         function initializeQuantumSketch() {
             if (window.quantumSketch) return;
+            const container = document.getElementById('portrait-animation-container');
+            if (!container) {
+                console.error('Container portrait-animation-container not found');
+                return;
+            }
             window.quantumSketch = new p5((sketch) => {
                 window.sketch = sketch;
                 let isPaused = false;
                 sketch.setup = () => {
-                    let container = document.getElementById('portrait-animation-container');
                     let canvas = sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     canvas.canvas.getContext('2d').willReadFrequently = true;
                     console.log('Canvas created, size:', sketch.width, 'x', sketch.height);
@@ -135,6 +159,8 @@
                                 }
                             }
                         }
+                    } else {
+                        console.log('No image or invalid step for drawing:', window.currentStep, window.img);
                     }
                 };
                 sketch.mousePressed = () => {
@@ -168,7 +194,7 @@
             }, 'portrait-animation-container');
         }
 
-        // Добавление обработчиков событий для кнопок выбора языка
+        // Добавление обработчиков событий для кнопок выбора языка и загрузки изображения
         document.addEventListener('DOMContentLoaded', () => {
             const languageButtons = document.querySelectorAll('.language-btn');
             languageButtons.forEach(button => {
@@ -177,6 +203,20 @@
                     window.setLanguageAndNext(lang);
                 });
             });
+
+            // Обработчики для кнопок на шаге 2
+            const uploadButton = document.getElementById('uploadImage');
+            if (uploadButton) {
+                uploadButton.addEventListener('click', window.loadImageOnce);
+            }
+            const galleryButton = document.getElementById('openGallery');
+            if (galleryButton) {
+                galleryButton.addEventListener('click', window.openGallery);
+            }
+            const cameraButton = document.getElementById('activateCamera');
+            if (cameraButton) {
+                cameraButton.addEventListener('click', window.activateCamera);
+            }
         });
     </script>
     <script src="js/globals.js"></script>
@@ -185,6 +225,6 @@
     <script src="js/textSteps.js"></script>
     <script src="js/audio.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/particles.js"></script> <!-- Перемещён в конец -->
+    <script src="js/particles.js"></script>
 </body>
 </html>
