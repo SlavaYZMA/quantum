@@ -20,11 +20,8 @@ function showStep(stepIndex) {
             if (stepId === 5) {
                 initializeStep5EventListeners();
             }
-            if (stepId === 4 || stepId === 5) {
-                startDynamicUpdates();
-            }
-            if (stepId === 2) {
-                initializeQuantumSketch(); // Инициализация холста на шаге 2
+            if (stepId >= 3 && window.quantumSketch) {
+                window.quantumSketch.startAnimation();
             }
         } else {
             step.style.display = 'none';
@@ -68,8 +65,13 @@ function moveToNextStep(current) {
     if (current === 2 && window.img) {
         nextStep = 2.1;
     }
+    if (current === 2.1) {
+        nextStep = 3;
+    }
     if (nextStep <= 7) {
         showStep(nextStep);
+    } else {
+        console.warn(`No step defined for index: ${nextStep}`);
     }
 }
 
@@ -123,19 +125,15 @@ function initializeStep5EventListeners() {
     }
     if (saveButton) {
         saveButton.addEventListener('click', () => {
-            const name = document.getElementById('portraitName').value;
-            if (name && window.quantumSketch) {
-                const dataURL = window.quantumSketch.canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = `${name}.png`;
-                link.href = dataURL;
-                link.click();
-                console.log(`Portrait saved as: ${name}.png, resuming step 5`);
+            const name = document.getElementById('portraitName').value || 'quantum_portrait';
+            if (window.quantumSketch) {
+                window.quantumSketch.saveCanvas(name, 'png');
+                console.log(`Saved canvas as ${name}.png`);
                 document.getElementById('saveInput').style.display = 'none';
                 recordButton.style.display = 'inline-block';
                 window.fixationCount = 1;
             } else {
-                alert('Пожалуйста, введите имя портрета!');
+                alert('Ошибка: холст не доступен для сохранения.');
             }
         });
     } else {
