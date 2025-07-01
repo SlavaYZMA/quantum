@@ -17,14 +17,14 @@ function showStep(stepIndex) {
             step.classList.add('active');
             step.style.display = 'flex';
             if (stepId === 2.1 && window.img && !window.particles.length) {
-                initializeParticles(window.img); // Инициализация частиц только на шаге 2.1
+                initializeParticles(window.img);
                 if (window.quantumSketch) {
                     window.quantumSketch.startAnimation();
                 } else {
                     console.error('quantumSketch not initialized on step 2.1');
                 }
             } else if (stepId >= 3 && window.quantumSketch) {
-                window.quantumSketch.startAnimation(); // Возобновляем анимацию
+                window.quantumSketch.startAnimation();
             }
             if (stepId === 5) {
                 initializeStep5EventListeners();
