@@ -254,6 +254,11 @@
             console.log('Current step:', stepIndex);
             if (stepIndex >= 2 && !window.quantumSketch) initializeQuantumSketch();
             if (stepIndex === 2.1 && window.quantumSketch) window.quantumSketch.startAnimation();
+            if (stepIndex === 5) initializeStep5EventListeners();
+        };
+
+        window.setLanguageAndNext = (lang) => {
+            window.showStep(1);
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -267,9 +272,12 @@
                 button.removeEventListener('click', window.handleContinue); // Удаляем старые обработчики
                 button.addEventListener('click', window.handleContinue = (e) => {
                     const stepElement = e.target.closest('.step');
+                    if (!stepElement) {
+                        console.error('No step element found for continue button');
+                        return;
+                    }
                     const current = parseFloat(stepElement.id.replace('step-', '')) || window.currentStep;
-                    let nextStep = current + (current === 2 ? 0.1 : 1);
-                    if (nextStep <= 7) window.showStep(nextStep);
+                    moveToNextStep(current);
                 });
             });
         });
