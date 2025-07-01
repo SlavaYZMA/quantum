@@ -99,18 +99,18 @@ button:hover {
     overflow: visible;
 }
 
-#portrait-animation-container canvas {
-    display: block;
-    width: 400px;
-    height: 400px;
+#portrait-animation-container canvas.quantum-canvas {
+    display: block !important;
+    width: 400px !important;
+    height: 400px !important;
     margin: 0;
     border: 5px solid #f00;
     position: relative;
     top: 0;
     left: 0;
     z-index: 1000;
-    visibility: visible;
-    opacity: 1;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 #saved-portrait {
@@ -131,9 +131,9 @@ button:hover {
         width: 300px;
         height: 300px;
     }
-    #portrait-animation-container canvas {
-        width: 300px;
-        height: 300px;
+    #portrait-animation-container canvas.quantum-canvas {
+        width: 300px !important;
+        height: 300px !important;
     }
     #saved-portrait {
         max-width: 300px;
