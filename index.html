@@ -32,6 +32,14 @@
         <div id="portrait-animation-container" style="border: 2px dashed #0f0;"></div>
     </section>
 
+    <section id="step-2.1" class="step step-centered">
+        <div class="text-block typewriter" data-i18n="step2_text2">> Анимация запущена.</div>
+        <div class="button-block">
+            <button class="continue">Продолжить</button>
+        </div>
+        <div id="portrait-animation-container" style="border: 2px dashed #0f0;"></div>
+    </section>
+
     <section id="step-3" class="step step-centered">
         <div class="step-title" data-i18n="step3_title">Шаг 2: Движение частиц</div>
         <div class="button-block">
@@ -86,70 +94,53 @@
         window.chaosFactor = 0.5;
         window.boundaryPoints = [];
         window.trailBuffer = null;
+        let currentStep = 0;
+        let steps;
 
-        function initializeQuantumSketch() {
-            if (quantumSketch) {
-                console.log('quantumSketch already initialized');
-                return;
+        function initializeSteps() {
+            steps = document.querySelectorAll('.step');
+            if (steps.length > 0) {
+                console.log(`Steps found: ${steps.length}`);
+                showStep(0);
+            } else {
+                console.error('No steps found in document. Check your HTML structure.');
             }
-            quantumSketch = new p5((sketch) => {
-                window.sketch = sketch;
-                sketch.setup = () => {
-                    console.log('p5 setup called');
-                    let canvas = sketch.createCanvas(400, 400);
-                    canvas.parent('portrait-animation-container');
-                    sketch.pixelDensity(1);
-                    window.trailBuffer = sketch.createGraphics(400, 400);
-                    window.trailBuffer.pixelDensity(1);
-                    window.isCanvasReady = true;
-                    initializeParticles(); // Вызов после создания canvas
-                    sketch.loop();
-                };
-                sketch.draw = () => {
-                    console.log('draw called, frame:', window.frame, 'particles:', window.particles.length);
-                    sketch.background(0);
-                    window.frame++;
-                    if (window.isCanvasReady && window.particles.length > 0) {
-                        updateParticles();
-                    }
-                };
-                sketch.startAnimation = () => {
-                    console.log('Starting animation');
-                    sketch.loop();
-                };
-            }, 'portrait-animation-container');
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM fully loaded, initializing event listeners');
-            initializeQuantumSketch();
-            document.querySelectorAll('.continue').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const stepElement = e.target.closest('.step');
-                    const current = parseFloat(stepElement.id.replace('step-', '')) || 0;
-                    let nextStep = current + 1;
-                    if (nextStep <= 7) {
-                        showStep(nextStep);
-                        if (nextStep >= 2 && quantumSketch) {
-                            initializeParticles();
-                            quantumSketch.startAnimation();
-                        }
-                    }
-                });
-            });
-        });
-
         function showStep(stepIndex) {
-            document.querySelectorAll('.step').forEach(step => {
+            steps.forEach((step) => {
                 const stepId = parseFloat(step.id.replace('step-', ''));
                 if (stepId === stepIndex) {
                     step.classList.add('active');
                     step.style.display = 'flex';
+                    console.log(`Showing step: ${step.id}`);
+                    if (stepId >= 2 && quantumSketch) {
+                        initializeParticles();
+                        quantumSketch.startAnimation();
+                    }
                 } else {
                     step.classList.remove('active');
                     step.style.display = 'none';
+                    console.log(`Hiding step: ${step.id}`);
                 }
             });
+            currentStep = stepIndex;
+            window.currentStep = stepIndex;
+            console.log(`Updated currentStep to: ${currentStep}`);
+        }
+
+        function moveToNextStep(current) {
+            let nextStep = current + 1;
+            console.log(`Checking move from step ${current}`);
+            if (current === 2) {
+                nextStep = 2.1;
+            }
+            if (nextStep <= 7) {
+                console.log(`Moving to next step: ${nextStep}`);
+                showStep(nextStep);
+            } else {
+                console.warn(`No step defined for index: ${nextStep}`);
+            }
         }
 
         function setLanguageAndNext(lang) {
@@ -171,4 +162,51 @@
             initializeQuantumSketch();
             showStep(0);
         }
+
+        function initializeQuantumSketch() {
+            if (quantumSketch) {
+                console.log('quantumSketch already initialized');
+                return;
+            }
+            quantumSketch = new p5((sketch) => {
+                window.sketch = sketch;
+                sketch.setup = () => {
+                    console.log('p5 setup called');
+                    let canvas = sketch.createCanvas(400, 400);
+                    canvas.parent('portrait-animation-container');
+                    sketch.pixelDensity(1);
+                    window.trailBuffer = sketch.createGraphics(400, 400);
+                    window.trailBuffer.pixelDensity(1);
+                    window.isCanvasReady = true;
+                    initializeParticles(); // Инициализация после создания canvas
+                    sketch.loop();
+                };
+                sketch.draw = () => {
+                    console.log('draw called, frame:', window.frame, 'particles:', window.particles.length);
+                    sketch.background(0);
+                    window.frame++;
+                    if (window.isCanvasReady && window.particles.length > 0) {
+                        updateParticles();
+                    }
+                };
+                sketch.startAnimation = () => {
+                    console.log('Starting animation');
+                    sketch.loop();
+                };
+            }, 'portrait-animation-container');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded, initializing event listeners');
+            initializeSteps();
+            document.querySelectorAll('.continue').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    console.log('Event listener triggered for continue button');
+                    const stepElement = e.target.closest('.step');
+                    const current = parseFloat(stepElement.id.replace('step-', '')) || currentStep;
+                    console.log(`Continue button clicked on step: ${current}`);
+                    moveToNextStep(current);
+                });
+            });
+        });
     </script>
