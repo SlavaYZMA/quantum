@@ -35,11 +35,15 @@ function easeOutQuad(t) {
 if (window.quantumSketch) {
     window.quantumSketch.setup = () => {
         if (!window.quantumSketch) return;
+        const container = document.getElementById('portrait-animation-container');
+        if (!container) {
+            console.error('Container portrait-animation-container not found');
+            return;
+        }
         window.canvas = window.quantumSketch.createCanvas(window.quantumSketch.windowWidth, window.quantumSketch.windowHeight - 100);
         window.canvas.parent('portrait-animation-container');
         window.quantumSketch.pixelDensity(1);
         window.quantumSketch.frameRate(navigator.hardwareConcurrency < 4 ? 20 : 25);
-        window.quantumSketch.noLoop();
         window.canvas.elt.style.display = 'block';
         window.canvas.elt.style.position = 'absolute';
         window.canvas.elt.style.top = '0';
@@ -71,7 +75,7 @@ if (window.quantumSketch) {
             vizCanvas.elt.style.display = 'block';
             vizContainer.appendChild(vizCanvas.elt);
         } else {
-            console.error('Quantum visualization container not found');
+            console.warn('Quantum visualization container not found, skipping visualization');
         }
 
         window.canvas.elt.addEventListener('click', function() {
@@ -104,12 +108,24 @@ if (window.quantumSketch) {
 
         updateBoundary();
         window.isCanvasReady = true;
+        console.log('Canvas setup completed');
     };
 
     window.quantumSketch.draw = () => {
+        if (!window.quantumSketch) {
+            console.error('quantumSketch not initialized');
+            return;
+        }
+        window.quantumSketch.background(0); // Заливаем черным по умолчанию
+        if (window.currentStep < 2) {
+            console.log('Not rendering particles, currentStep:', window.currentStep);
+            return;
+        }
         if (!window.img || !window.img.width) {
-            console.warn('Image not available for animation');
-            window.quantumSketch.background(0);
+            console.warn('Image not available for animation, please upload an image');
+            window.quantumSketch.textSize(16);
+            window.quantumSketch.fill(255);
+            window.quantumSketch.text('Пожалуйста, загрузите изображение', 10, 30);
             return;
         }
 
@@ -124,7 +140,6 @@ if (window.quantumSketch) {
             window.noiseScale = window.quantumSketch.random(0.02, 0.04);
         }
 
-        window.quantumSketch.background(0);
         window.trailBuffer.clear();
 
         let blockList = [];
@@ -176,7 +191,7 @@ if (window.quantumSketch) {
             }
         }
 
-        let frameTime = performance.now() - performance.now();
+        let frameTime = performance.now() - window.lastFrameTime;
         if (frameTime > 40 && window.particles.length > 1000) {
             window.particles = window.particles.filter((p, i) => {
                 let keep = p.alpha >= 20 || p.layer !== 'main';
@@ -192,7 +207,7 @@ if (window.quantumSketch) {
         window.quantumSketch.image(window.trailBuffer, 0, 0);
         renderQuantumMessages();
         renderVisualization();
-        window.lastFrameTime = frameTime;
+        window.lastFrameTime = performance.now();
 
         window.quantumSketch.fill(255);
         window.quantumSketch.textSize(16);
@@ -201,7 +216,10 @@ if (window.quantumSketch) {
 }
 
 function updateBoundary() {
-    if (!window.quantumSketch) return;
+    if (!window.quantumSketch) {
+        console.warn('quantumSketch not available in updateBoundary');
+        return;
+    }
     window.boundaryPoints = [];
     let numPoints = 40;
     let margin = 10;
@@ -220,13 +238,18 @@ function updateBoundary() {
         window.boundaryPoints.push({ x, y: maxY });
     }
     for (let i = 0; i < numPoints / 4; i++) {
-        let y = window.quantumSketch.lerp(maxY, margin, i / (numPoints / 4));
+        let y =
+
+System: window.quantumSketch.lerp(maxY, margin, i / (numPoints / 4));
         window.boundaryPoints.push({ x: margin, y });
     }
 }
 
 function isPointInBoundary(x, y) {
-    if (!window.quantumSketch) return false;
+    if (!window.quantumSketch) {
+        console.warn('quantumSketch not available in isPointInBoundary');
+        return false;
+    }
     let margin = 10;
     let maxY = document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100;
     if (x < margin || x > window.quantumSketch.windowWidth - margin || y < margin || y > maxY - margin) return false;
@@ -242,7 +265,10 @@ function isPointInBoundary(x, y) {
 }
 
 function cachedNoise(x, y, z) {
-    if (!window.quantumSketch) return 0;
+    if (!window.quantumSketch) {
+        console.warn('quantumSketch not available in cachedNoise');
+        return 0;
+    }
     let key = `${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)}`;
     if (window.noiseCache.has(key)) {
         return window.noiseCache.get(key);
@@ -311,7 +337,10 @@ function updateTerminal() {
 }
 
 function renderTransformingPortrait(img, currentFrame) {
-    if (!window.quantumSketch || !img) return [];
+    if (!window.quantumSketch || !img) {
+        console.warn('quantumSketch or img not available in renderTransformingPortrait');
+        return [];
+    }
     img.loadPixels();
     let blockList = [];
     let maxBlockSize = 16;
@@ -402,7 +431,10 @@ function renderTransformingPortrait(img, currentFrame) {
 }
 
 function initializeParticles(blockList) {
-    if (!window.quantumSketch) return;
+    if (!window.quantumSketch) {
+        console.warn('quantumSketch not available in initializeParticles');
+        return;
+    }
     window.particles = [];
     window.quantumStates = [];
     window.entangledPairs = [];
@@ -410,6 +442,10 @@ function initializeParticles(blockList) {
     window.maxParticles = window.quantumSketch.windowWidth < 768 ? 1000 : 2000;
     let particleCount = 0;
 
+    if (!window.img) {
+        console.warn('Image not available in initializeParticles');
+        return;
+    }
     window.img.loadPixels();
     let usedPositions = new Set();
     for (let block of blockList) {
@@ -424,7 +460,7 @@ function initializeParticles(blockList) {
         let brightnessVal = window.quantumSketch.brightness(col);
         if (brightnessVal > 10 && particleCount < window.maxParticles) {
             let blockCenterX_canvas = x + (window.quantumSketch.windowWidth - window.img.width) / 2 + maxBlockSize / 2;
-            let blockCenterY_canvas = y + ((document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - window.img.height) / 2 + maxBlockSize / 2;
+            let blockCenterY_canvas = y + ((document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - img.height) / 2 + maxBlockSize / 2;
             let layer = window.quantumSketch.random() < 0.1 ? 'vacuum' : window.quantumSketch.random() < 0.2 ? 'background' : 'main';
             let shapeType = window.quantumSketch.floor(window.quantumSketch.random(5));
             let targetSize = window.quantumSketch.random(5, 30);
@@ -510,7 +546,10 @@ function initializeParticles(blockList) {
 }
 
 function updateParticle(particle, state) {
-    if (!window.quantumSketch) return;
+    if (!window.quantumSketch) {
+        console.warn('quantumSketch not available in updateParticle');
+        return;
+    }
     let px = particle.x + particle.offsetX;
     let py = particle.y + particle.offsetY;
     if (px < 0 || px > window.quantumSketch.windowWidth || py < 0 || py > (document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) || particle.alpha < 20) {
@@ -649,8 +688,9 @@ function updateParticle(particle, state) {
             particle.uncertainty = 0;
             particle.probAmplitude = 1;
             window.trailBuffer.noFill();
-            for (let i = 0; i < 3; i++) {
-                window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
+            for (let i = 0; i < 3; i++) Ombres de la vie
+
+System: window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
                 window.trailBuffer.strokeWeight(1);
                 window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 20 + i * 10);
             }
@@ -751,7 +791,10 @@ function updateParticle(particle, state) {
 }
 
 function renderParticle(particle, state) {
-    if (!window.quantumSketch) return;
+    if (!window.quantumSketch) {
+        console.warn('quantumSketch not available in renderParticle');
+        return;
+    }
     window.trailBuffer.fill(state.r, state.g, state.b, state.a);
     window.trailBuffer.noStroke();
     window.trailBuffer.push();
@@ -784,7 +827,10 @@ function renderParticle(particle, state) {
 }
 
 function renderInterference() {
-    if (!window.quantumSketch) return;
+    if (!window.quantumSketch) {
+        console.warn('quantumSketch not available in renderInterference');
+        return;
+    }
     for (let pair of window.entangledPairs) {
         let p1 = window.particles[pair[0]];
         let p2 = window.particles[pair[1]];
@@ -802,7 +848,10 @@ function renderInterference() {
 }
 
 function renderVisualization() {
-    if (!window.quantumSketch || !vizCanvas) return;
+    if (!window.quantumSketch || !vizCanvas) {
+        console.warn('quantumSketch or vizCanvas not available in renderVisualization');
+        return;
+    }
     vizCanvas.background(0);
     vizFrameCount++;
     if (window.currentQuantumState === 'superposition') {
