@@ -209,7 +209,10 @@
                         console.log('Image loaded successfully, size:', img.width, 'x', img.height);
                         console.log('Checking step-2-1 existence:', !!document.getElementById('step-2-1'));
                         if (window.currentStep === 2 && document.getElementById('step-2-1')) {
-                            setTimeout(() => showStep(2.1), 100); // Задержка для синхронизации
+                            setTimeout(() => {
+                                console.log('Attempting transition to step 2.1 after delay');
+                                showStep(2.1);
+                            }, 500); // Задержка для синхронизации DOM
                         } else {
                             console.error('Step 2.1 not found or current step is not 2, staying on step 2');
                         }
