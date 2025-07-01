@@ -149,7 +149,7 @@
                     window.quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
                         window.img = img;
                         if (window.currentStep === 2) {
-                            showStep(2.1);
+                            window.showStep(2.1);
                             if (typeof initializeParticles === 'function') initializeParticles(img);
                         }
                     });
@@ -172,7 +172,7 @@
                 window.quantumSketch.remove();
                 window.quantumSketch = null;
             }
-            showStep(0);
+            window.showStep(0);
         };
         window.shareToArchive = () => alert('Функция поделиться в архив пока не реализована.');
         window.aboutAuthors = () => alert('Информация об авторах пока не реализована.');
@@ -238,7 +238,7 @@
             }, 'portrait-animation-container');
         }
 
-        function showStep(stepIndex) {
+        window.showStep = (stepIndex) => {
             const steps = document.querySelectorAll('.step');
             steps.forEach(step => {
                 const stepId = parseFloat(step.id.replace('step-', '')) || stepIndex;
@@ -254,9 +254,7 @@
             console.log('Current step:', stepIndex);
             if (stepIndex >= 2 && !window.quantumSketch) initializeQuantumSketch();
             if (stepIndex === 2.1 && window.quantumSketch) window.quantumSketch.startAnimation();
-        }
-
-        window.setLanguageAndNext = (lang) => showStep(1);
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
             const uploadButton = document.getElementById('uploadImage');
@@ -266,11 +264,12 @@
             const cameraButton = document.getElementById('activateCamera');
             if (cameraButton) cameraButton.addEventListener('click', window.activateCamera);
             document.querySelectorAll('.continue').forEach(button => {
-                button.addEventListener('click', (e) => {
+                button.removeEventListener('click', window.handleContinue); // Удаляем старые обработчики
+                button.addEventListener('click', window.handleContinue = (e) => {
                     const stepElement = e.target.closest('.step');
                     const current = parseFloat(stepElement.id.replace('step-', '')) || window.currentStep;
                     let nextStep = current + (current === 2 ? 0.1 : 1);
-                    if (nextStep <= 7) showStep(nextStep);
+                    if (nextStep <= 7) window.showStep(nextStep);
                 });
             });
         });
