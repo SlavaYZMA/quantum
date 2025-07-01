@@ -76,8 +76,12 @@ function moveToNextStep(current) {
 
 window.setLanguageAndNext = (lang) => {
     console.log(`Language set to: ${lang} Moving to step 1`);
-    setLanguage(lang);
-    showStep(1);
+    if (window.setLanguage) { // Проверяем, определена ли функция
+        window.setLanguage(lang);
+    } else {
+        console.error('setLanguage function not available');
+    }
+    showStep(1); // Переход к step-1 один раз
 };
 
 function initializeStep5EventListeners() {
@@ -92,7 +96,7 @@ function initializeStep5EventListeners() {
                 window.quantumSketch.noLoop();
                 recordButton.style.display = 'none';
                 document.getElementById('saveInput').style.display = 'block';
-                window.recordObservation(); // Вызываем наблюдение
+                window.recordObservation();
             } else {
                 console.error('quantumSketch not initialized');
             }
@@ -110,7 +114,7 @@ function initializeStep5EventListeners() {
                 recordButton.style.display = 'inline-block';
                 window.isPaused = false;
                 window.quantumSketch.loop();
-                showStep(6); // Переход к следующему шагу
+                showStep(6);
             } else {
                 alert('Ошибка: холст не доступен для сохранения.');
             }
