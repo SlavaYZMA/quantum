@@ -1,5 +1,19 @@
 const steps = document.querySelectorAll('.step');
 
+function waitForStep(stepId, callback) {
+    const checkStep = () => {
+        const step = document.getElementById(stepId);
+        if (step && step.offsetParent !== null) {
+            console.log(`${stepId} is now visible and ready`);
+            callback();
+        } else {
+            console.log(`Waiting for ${stepId} to be ready...`);
+            requestAnimationFrame(checkStep);
+        }
+    };
+    requestAnimationFrame(checkStep);
+}
+
 function showStep(stepIndex) {
     if (!steps || steps.length === 0) {
         console.error('No steps found');
@@ -14,6 +28,11 @@ function showStep(stepIndex) {
     if (targetStep) {
         targetStep.style.display = 'block';
         console.log(`Showing step: ${stepIndex} ID: ${targetStepId}, currentStep: ${window.currentStep}`);
+    } else if (stepIndex === 2.1 && document.getElementById('step-2-1')) {
+        targetStepId = 'step-2-1';
+        targetStep = document.getElementById('step-2-1');
+        targetStep.style.display = 'block';
+        console.log(`Showing step: 2.1 ID: ${targetStepId}, currentStep: ${window.currentStep}`);
     } else {
         console.warn(`Step ${stepIndex} (ID: ${targetStepId}) not found, defaulting to step 0`);
         document.getElementById('step-0').style.display = 'block';
@@ -62,20 +81,22 @@ document.querySelectorAll('.continue').forEach(button => {
                     console.warn('Image not loaded, staying on step 2');
                     return;
                 }
-                nextStep = 2.1; // Переход к подтверждению загрузки
+                nextStep = 2.1;
+                waitForStep('step-2-1', () => showStep(nextStep));
+                return; // Выход, чтобы избежать немедленного вызова
             } else if (window.currentStep === 2.1) {
-                nextStep = 3; // Переход к инициализации
+                nextStep = 3;
             } else if (window.currentStep === 5) {
                 window.fixationCount = window.fixationCount || 0;
                 if (window.fixationCount === 0) {
                     console.log('Fixation not yet recorded, staying on step 5');
-                    return; // Остаемся на 5 до фиксации
+                    return;
                 } else {
-                    nextStep = 6; // Переход к реакции системы
-                    window.fixationCount = 0; // Сброс после перехода
+                    nextStep = 6;
+                    window.fixationCount = 0;
                 }
             } else if (window.currentStep === 6) {
-                nextStep = 7; // Переход к заключению
+                nextStep = 7;
             }
             console.log('Moving to next step:', nextStep);
             showStep(nextStep);
