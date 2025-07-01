@@ -1,5 +1,5 @@
 function initializeParticles(img) {
-    console.log('initializeParticles called, img:', img, 'quantumSketch:', !!window.quantumSketch);
+    console.log('initializeParticles called, img:', !!img, 'quantumSketch:', !!window.quantumSketch);
     if (!window.quantumSketch || !img) {
         console.warn('quantumSketch or img not available in initializeParticles');
         return;
@@ -73,34 +73,39 @@ function updateBoundary() {
 }
 
 function updateParticles() {
-    console.log('updateParticles called, particles:', window.particles.length, 'quantumSketch:', !!window.quantumSketch);
+    console.log('updateParticles called, particles:', window.particles.length, 'quantumSketch:', !!window.quantumSketch, 'trailBuffer:', !!window.trailBuffer);
     if (!window.quantumSketch || !window.trailBuffer) {
         console.warn('quantumSketch or trailBuffer not available in updateParticles');
         return;
     }
     window.trailBuffer.clear();
+    window.quantumSketch.noStroke();
     for (let i = 0; i < window.particles.length; i++) {
         let particle = window.particles[i];
         let state = window.quantumStates[i];
-        let noiseX = window.quantumSketch.noise(particle.chaosSeed + window.frame * 0.03) * 2 - 1;
-        let noiseY = window.quantumSketch.noise(particle.chaosSeed + 100 + window.frame * 0.03) * 2 - 1;
-        particle.offsetX += noiseX * 1; // Уменьшено для более плавного движения
-        particle.offsetY += noiseY * 1;
+        let noiseX = window.quantumSketch.noise(particle.chaosSeed + window.frame * 0.05) * 2 - 1;
+        let noiseY = window.quantumSketch.noise(particle.chaosSeed + 100 + window.frame * 0.05) * 2 - 1;
+        particle.offsetX += noiseX * 1.5;
+        particle.offsetY += noiseY * 1.5;
         let d = window.quantumSketch.dist(window.quantumSketch.mouseX, window.quantumSketch.mouseY, particle.x + particle.offsetX, particle.y + particle.offsetY);
         if (d < window.mouseInfluenceRadius) {
             let influence = window.quantumSketch.map(d, 0, window.mouseInfluenceRadius, 1, 0);
             let angle = window.quantumSketch.atan2(particle.y + particle.offsetY - window.quantumSketch.mouseY, particle.x + particle.offsetX - window.quantumSketch.mouseX);
-            particle.offsetX += window.quantumSketch.cos(angle) * 5 * influence; // Уменьшено влияние мыши
-            particle.offsetY += window.quantumSketch.sin(angle) * 5 * influence;
+            particle.offsetX += window.quantumSketch.cos(angle) * 8 * influence;
+            particle.offsetY += window.quantumSketch.sin(angle) * 8 * influence;
         }
         // Ограничение перемещения частиц
-        if (particle.x + particle.offsetX < 10 || particle.x + particle.offsetX > 390 || particle.y + particle.offsetY < 10 || particle.y + particle.offsetY > 390) {
+        if (particle.x + particle.offsetX < 20 || particle.x + particle.offsetX > 380 || particle.y + particle.offsetY < 20 || particle.y + particle.offsetY > 380) {
             particle.offsetX = 0;
             particle.offsetY = 0;
         }
-        window.trailBuffer.fill(state.r, state.g, state.b, state.a * 0.8); // Добавлена прозрачность
+        // Рисуем на trailBuffer
+        window.trailBuffer.fill(state.r, state.g, state.b, 255); // Полная непрозрачность для видимости
         window.trailBuffer.noStroke();
         window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size);
+        // Тестовая отрисовка напрямую на главном холсте
+        window.quantumSketch.fill(state.r, state.g, state.b, 255);
+        window.quantumSketch.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size);
     }
     console.log('Particles updated, frame:', window.frame);
 }
