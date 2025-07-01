@@ -16,7 +16,7 @@ function showStep(stepIndex) {
         const stepId = parseFloat(step.id.replace('step-', ''));
         if (stepId === stepIndex) {
             step.classList.add('active');
-            step.style.display = 'flex'; // Явно устанавливаем display
+            step.style.display = 'flex';
             console.log(`Showing step: ${step.id}, currentStep: ${currentStep}, display: ${step.style.display}, classList: ${Array.from(step.classList)}`);
             if (stepId === 5) {
                 initializeStep5EventListeners();
@@ -27,7 +27,7 @@ function showStep(stepIndex) {
             }
         } else {
             step.classList.remove('active');
-            step.style.display = 'none'; // Явно скрываем
+            step.style.display = 'none';
             console.log(`Hiding step: ${step.id}, display: ${step.style.display}, classList: ${Array.from(step.classList)}`);
         }
     });
@@ -59,6 +59,7 @@ document.querySelectorAll('.continue').forEach(button => {
 
 function moveToNextStep(current) {
     let nextStep = current + 1;
+    console.log(`Checking move from step ${current}, img exists: ${!!window.img}`);
     if (current === 2 && !window.img) {
         alert('Пожалуйста, загрузите изображение перед продолжением!');
         return;
