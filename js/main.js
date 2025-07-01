@@ -21,7 +21,7 @@ function showStep(stepIndex) {
                 initializeStep5EventListeners();
             }
             if (stepId >= 3 && window.quantumSketch) {
-                console.log('Starting animation for step:', stepId);
+                console.log('Starting animation for step:', stepId, 'quantumSketch available:', !!window.quantumSketch);
                 window.quantumSketch.startAnimation();
             }
         } else {
