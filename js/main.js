@@ -13,7 +13,8 @@ function initializeSteps() {
 
 function showStep(stepIndex) {
     steps.forEach((step, index) => {
-        if (index === stepIndex || (typeof stepIndex === 'number' && index === Math.floor(stepIndex))) {
+        const stepId = parseFloat(step.id.replace('step-', ''));
+        if (stepId === stepIndex) {
             step.style.display = 'block';
             console.log(`Showing step: ${step.id}, currentStep: ${currentStep}`);
         } else {
@@ -51,7 +52,7 @@ document.querySelectorAll('.continue').forEach(button => {
 });
 
 function moveToNextStep(current) {
-    let nextStep = current + 1;
+    let nextStep = current + 0.1;
     if (current === 2.1) nextStep = 3; // Явный переход с 2.1 на 3
     if (nextStep < steps.length) {
         showStep(nextStep);
