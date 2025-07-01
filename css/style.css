@@ -96,18 +96,21 @@ button:hover {
     z-index: 1000;
     background-color: #000;
     border: 2px dashed #0f0;
+    overflow: visible; /* Убираем обрезку холста */
 }
 
 #portrait-animation-container canvas {
     display: block;
     width: 400px;
     height: 400px;
-    margin: 0 auto;
+    margin: 0;
     border: 5px solid #f00;
     position: relative;
     top: 0;
     left: 0;
     z-index: 1000;
+    visibility: visible;
+    opacity: 1;
 }
 
 #saved-portrait {
