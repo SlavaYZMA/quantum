@@ -11,8 +11,8 @@
     <section id="step-0" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</div>
         <div class="button-block">
-            <button class="language-btn" data-lang="ru" onclick="setLanguageAndNext('ru')">RU</button>
-            <button class="language-btn" data-lang="eng" onclick="setLanguageAndNext('eng')">ENG</button>
+            <button class="language-btn" data-lang="ru" onclick="window.setLanguageAndNext('ru')">RU</button>
+            <button class="language-btn" data-lang="eng" onclick="window.setLanguageAndNext('eng')">ENG</button>
         </div>
     </section>
 
@@ -26,14 +26,6 @@
 
     <section id="step-2" class="step step-centered">
         <div class="step-title" data-i18n="step2_title">Шаг 1: Анимация начинается</div>
-        <div class="button-block">
-            <button class="continue">Продолжить</button>
-        </div>
-        <div id="portrait-animation-container" style="border: 2px dashed #0f0;"></div>
-    </section>
-
-    <section id="step-2.1" class="step step-centered">
-        <div class="text-block typewriter" data-i18n="step2_text2">> Анимация запущена.</div>
         <div class="button-block">
             <button class="continue">Продолжить</button>
         </div>
@@ -76,11 +68,12 @@
     <section id="step-7" class="step step-centered">
         <div class="step-title" data-i18n="step7_title">Заключение</div>
         <div class="button-block">
-            <button onclick="restart()">Начать заново</button>
+            <button onclick="window.restart()">Начать заново</button>
         </div>
         <div id="portrait-animation-container"></div>
     </section>
 
+    <!-- Подключаем particles.js перед основным скриптом -->
     <script src="js/particles.js"></script>
     <script>
         let quantumSketch = null;
@@ -94,74 +87,6 @@
         window.chaosFactor = 0.5;
         window.boundaryPoints = [];
         window.trailBuffer = null;
-        let currentStep = 0;
-        let steps;
-
-        function initializeSteps() {
-            steps = document.querySelectorAll('.step');
-            if (steps.length > 0) {
-                console.log(`Steps found: ${steps.length}`);
-                showStep(0);
-            } else {
-                console.error('No steps found in document. Check your HTML structure.');
-            }
-        }
-
-        function showStep(stepIndex) {
-            steps.forEach((step) => {
-                const stepId = parseFloat(step.id.replace('step-', ''));
-                if (stepId === stepIndex) {
-                    step.classList.add('active');
-                    step.style.display = 'flex';
-                    console.log(`Showing step: ${step.id}`);
-                    if (stepId >= 2 && quantumSketch) {
-                        initializeParticles();
-                        quantumSketch.startAnimation();
-                    }
-                } else {
-                    step.classList.remove('active');
-                    step.style.display = 'none';
-                    console.log(`Hiding step: ${step.id}`);
-                }
-            });
-            currentStep = stepIndex;
-            window.currentStep = stepIndex;
-            console.log(`Updated currentStep to: ${currentStep}`);
-        }
-
-        function moveToNextStep(current) {
-            let nextStep = current + 1;
-            console.log(`Checking move from step ${current}`);
-            if (current === 2) {
-                nextStep = 2.1;
-            }
-            if (nextStep <= 7) {
-                console.log(`Moving to next step: ${nextStep}`);
-                showStep(nextStep);
-            } else {
-                console.warn(`No step defined for index: ${nextStep}`);
-            }
-        }
-
-        function setLanguageAndNext(lang) {
-            console.log(`Language set to: ${lang}, moving to step 1`);
-            showStep(1);
-        }
-
-        function restart() {
-            console.log('Restarting application');
-            window.particles = [];
-            window.quantumStates = [];
-            window.frame = 0;
-            window.isPaused = false;
-            if (quantumSketch) {
-                quantumSketch.noLoop();
-                quantumSketch.remove();
-                quantumSketch = null;
-            }
-            initializeQuantumSketch();
-            showStep(0);
-        }
 
         function initializeQuantumSketch() {
             if (quantumSketch) {
@@ -178,7 +103,7 @@
                     window.trailBuffer = sketch.createGraphics(400, 400);
                     window.trailBuffer.pixelDensity(1);
                     window.isCanvasReady = true;
-                    initializeParticles(); // Инициализация после создания canvas
+                    initializeParticles(); // Вызов функции после загрузки
                     sketch.loop();
                 };
                 sketch.draw = () => {
@@ -198,15 +123,48 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM fully loaded, initializing event listeners');
-            initializeSteps();
+            initializeQuantumSketch();
             document.querySelectorAll('.continue').forEach(button => {
                 button.addEventListener('click', (e) => {
-                    console.log('Event listener triggered for continue button');
                     const stepElement = e.target.closest('.step');
-                    const current = parseFloat(stepElement.id.replace('step-', '')) || currentStep;
-                    console.log(`Continue button clicked on step: ${current}`);
-                    moveToNextStep(current);
+                    const current = parseFloat(stepElement.id.replace('step-', '')) || 0;
+                    let nextStep = current + 1;
+                    if (nextStep <= 7) {
+                        showStep(nextStep);
+                        if (nextStep >= 2 && quantumSketch) {
+                            initializeParticles();
+                            quantumSketch.startAnimation();
+                        }
+                    }
                 });
             });
         });
+
+        function showStep(stepIndex) {
+            document.querySelectorAll('.step').forEach(step => {
+                const stepId = parseFloat(step.id.replace('step-', ''));
+                if (stepId === stepIndex) {
+                    step.classList.add('active');
+                    step.style.display = 'flex';
+                } else {
+                    step.classList.remove('active');
+                    step.style.display = 'none';
+                }
+            });
+        }
+
+        window.restart = () => {
+            console.log('Restarting application');
+            window.particles = [];
+            window.quantumStates = [];
+            window.frame = 0;
+            window.isPaused = false;
+            if (quantumSketch) {
+                quantumSketch.noLoop();
+                quantumSketch.remove();
+                quantumSketch = null;
+            }
+            initializeQuantumSketch();
+            showStep(0);
+        };
     </script>
