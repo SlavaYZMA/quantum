@@ -103,7 +103,8 @@
         <div class="button-block">
             <button class="continue">Продолжить</button>
         </div>
-        <div id="portrait-animation-container"></div>
+        <div id="portrait-animation-container" style="border: 2px dashed #0f0;"> <!-- Дебажный стиль -->
+        </div>
         <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
     </section>
 
@@ -156,7 +157,7 @@
                         window.img = img;
                         console.log('Image loaded successfully, size:', img.width, 'x', img.height);
                         if (window.currentStep === 2) {
-                            showStep(2.1); // Автоматический переход после загрузки
+                            showStep(2.1);
                         }
                     }, (err) => {
                         console.error('Error loading image:', err);
