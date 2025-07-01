@@ -1,105 +1,79 @@
 function initializeParticles(img) {
-    console.log('initializeParticles called, img:', !!img, 'quantumSketch:', !!window.quantumSketch);
-    if (!window.quantumSketch || !img) {
-        console.warn('quantumSketch or img not available in initializeParticles');
-        return;
-    }
+    console.log('Initializing particles');
     window.particles = [];
     window.quantumStates = [];
-    window.maxParticles = window.quantumSketch.width < 768 ? 500 : 1000;
     img.loadPixels();
-    let step = Math.floor(img.width / 20);
-    let scale = Math.min(400 / img.width, 400 / img.height);
-    let offsetX = (400 - img.width * scale) / 2;
-    let offsetY = (400 - img.height * scale) / 2;
-    for (let y = 0; y < img.height; y += step) {
-        for (let x = 0; x < img.width; x += step) {
-            let col = img.get(x, y);
-            let brightness = window.quantumSketch.brightness(col);
-            if (brightness > 10 && window.particles.length < window.maxParticles) {
-                let canvasX = offsetX + x * scale;
-                let canvasY = offsetY + y * scale;
-                let particle = {
-                    x: canvasX,
-                    y: canvasY,
-                    baseX: canvasX,
-                    baseY: canvasY,
-                    offsetX: 0,
-                    offsetY: 0,
-                    size: window.quantumSketch.random(8, 20),
-                    phase: window.quantumSketch.random(window.quantumSketch.TWO_PI),
-                    layer: 'main',
-                    chaosSeed: window.quantumSketch.random(1000),
-                    alpha: 255
-                };
-                window.particles.push(particle);
-                window.quantumStates.push({
-                    r: window.quantumSketch.red(col),
-                    g: window.quantumSketch.green(col),
-                    b: window.quantumSketch.blue(col),
-                    a: 255
-                });
-            }
+    const pixelStep = Math.floor(Math.max(img.width, img.height) / 20);
+    const centerX = img.width / 2;
+    const centerY = img.height / 2;
+    const maxRadius = Math.min(img.width, img.height) / 2;
+    const numParticles = 314;
+
+    for (let i = 0; i < numParticles; i++) {
+        let angle = Math.random() * Math.PI * 2;
+        let radius = Math.random() * maxRadius;
+        let x = centerX + Math.cos(angle) * radius;
+        let y = centerY + Math.sin(angle) * radius;
+
+        if (x >= 0 && x < img.width && y >= 0 && y < img.height) {
+            let index = (Math.floor(x) + Math.floor(y) * img.width) * 4;
+            let r = img.pixels[index];
+            let g = img.pixels[index + 1];
+            let b = img.pixels[index + 2];
+            let a = img.pixels[index + 3] || 255;
+
+            window.particles.push({
+                x: x,
+                y: y,
+                baseX: x,
+                baseY: y,
+                offsetX: 0,
+                offsetY: 0,
+                size: 5 + Math.random() * 10,
+                phase: Math.random() * Math.PI * 2,
+                frequency: 0.01 + Math.random() * 0.02
+            });
+
+            window.quantumStates.push({
+                r: r,
+                g: g,
+                b: b,
+                a: a,
+                probability: 1.0
+            });
         }
     }
     console.log(`Initialized ${window.particles.length} particles`);
 }
 
-function updateBoundary() {
-    console.log('updateBoundary called, quantumSketch:', !!window.quantumSketch);
-    if (!window.quantumSketch) {
-        console.warn('quantumSketch not available in updateBoundary');
-        return;
-    }
-    window.boundaryPoints = [];
-    let numPoints = 40;
-    let margin = 10;
-    let maxX = 400 - margin;
-    let maxY = 400 - margin;
-    for (let i = 0; i < numPoints / 4; i++) {
-        let x = window.quantumSketch.lerp(margin, maxX, i / (numPoints / 4));
-        window.boundaryPoints.push({ x, y: margin });
-    }
-    for (let i = 0; i < numPoints / 4; i++) {
-        let y = window.quantumSketch.lerp(margin, maxY, i / (numPoints / 4));
-        window.boundaryPoints.push({ x: maxX, y });
-    }
-    for (let i = 0; i < numPoints / 4; i++) {
-        let x = window.quantumSketch.lerp(maxX, margin, i / (numPoints / 4));
-        window.boundaryPoints.push({ x, y: maxY });
-    }
-    for (let i = 0; i < numPoints / 4; i++) {
-        let y = window.quantumSketch.lerp(maxY, margin, i / (numPoints / 4));
-        window.boundaryPoints.push({ x: margin, y });
-    }
-    console.log(`Updated ${window.boundaryPoints.length} boundary points`);
-}
-
 function updateParticles() {
-    console.log('updateParticles called, particles:', window.particles.length, 'quantumSketch:', !!window.quantumSketch);
-    if (!window.quantumSketch) {
-        console.warn('quantumSketch not available in updateParticles');
+    if (!window.quantumSketch || !window.particles || window.particles.length === 0) {
+        console.error('Cannot update particles: quantumSketch or particles not initialized');
         return;
     }
-    window.quantumSketch.noStroke();
-    for (let i = 0; i < window.particles.length; i++) {
-        let particle = window.particles[i];
-        let state = window.quantumStates[i];
-        let noiseX = window.quantumSketch.noise(particle.chaosSeed + window.frame * 0.05) * 2 - 1;
-        let noiseY = window.quantumSketch.noise(particle.chaosSeed + 100 + window.frame * 0.05) * 2 - 1;
-        particle.offsetX += noiseX * 2;
-        particle.offsetY += noiseY * 2;
-        let d = window.quantumSketch.dist(window.quantumSketch.mouseX, window.quantumSketch.mouseY, particle.x + particle.offsetX, particle.y + particle.offsetY);
-        if (d < window.mouseInfluenceRadius) {
-            let influence = window.quantumSketch.map(d, 0, window.mouseInfluenceRadius, 1.5, 0);
-            let angle = window.quantumSketch.atan2(particle.y + particle.offsetY - window.quantumSketch.mouseY, particle.x + particle.offsetX - window.quantumSketch.mouseX);
-            particle.offsetX += window.quantumSketch.cos(angle) * 10 * influence;
-            particle.offsetY += window.quantumSketch.sin(angle) * 10 * influence;
+    console.log('updateParticles called, particles:', window.particles.length);
+    window.particles.forEach((p, i) => {
+        let n = window.quantumSketch.noise(p.x * window.noiseScale, p.y * window.noiseScale, window.frame * 0.01);
+        p.phase += p.frequency;
+        p.offsetX = Math.cos(p.phase) * 20 * n * window.chaosFactor;
+        p.offsetY = Math.sin(p.phase) * 20 * n * window.chaosFactor;
+
+        let mouseX = window.quantumSketch.mouseX;
+        let mouseY = window.quantumSketch.mouseY;
+        if (mouseX > 0 && mouseX < 400 && mouseY > 0 && mouseY < 400) {
+            let dx = mouseX - (p.x + p.offsetX);
+            let dy = mouseY - (p.y + p.offsetY);
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < window.mouseInfluenceRadius && distance > 0) {
+                let force = (window.mouseInfluenceRadius - distance) / window.mouseInfluenceRadius;
+                p.offsetX += dx * force * 0.05;
+                p.offsetY += dy * force * 0.05;
+
+                let state = window.quantumStates[i];
+                state.probability = Math.max(0.1, state.probability - 0.01);
+                state.a = Math.floor(state.probability * 255);
+            }
         }
-        particle.offsetX = Math.max(-particle.x, Math.min(400 - particle.x, particle.offsetX));
-        particle.offsetY = Math.max(-particle.y, Math.min(400 - particle.y, particle.offsetY));
-        window.quantumSketch.fill(255, 0, 0, state.a); // Яркий красный для дебага
-        window.quantumSketch.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size);
-        console.log(`Particle ${i} at x: ${particle.x + particle.offsetX}, y: ${particle.y + particle.offsetY}`);
-    }
+        // Убраны логи для каждой частицы
+    });
 }
