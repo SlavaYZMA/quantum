@@ -11,8 +11,8 @@
     <section id="step-0" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</div>
         <div class="button-block">
-            <button class="language-btn" data-lang="ru" onclick="window.setLanguageAndNext('ru')">RU</button>
-            <button class="language-btn" data-lang="eng" onclick="window.setLanguageAndNext('eng')">ENG</button>
+            <button class="language-btn" data-lang="ru" onclick="setLanguageAndNext('ru')">RU</button>
+            <button class="language-btn" data-lang="eng" onclick="setLanguageAndNext('eng')">ENG</button>
         </div>
     </section>
 
@@ -68,12 +68,11 @@
     <section id="step-7" class="step step-centered">
         <div class="step-title" data-i18n="step7_title">Заключение</div>
         <div class="button-block">
-            <button onclick="window.restart()">Начать заново</button>
+            <button onclick="restart()">Начать заново</button>
         </div>
         <div id="portrait-animation-container"></div>
     </section>
 
-    <!-- Подключаем particles.js перед основным скриптом -->
     <script src="js/particles.js"></script>
     <script>
         let quantumSketch = null;
@@ -103,7 +102,7 @@
                     window.trailBuffer = sketch.createGraphics(400, 400);
                     window.trailBuffer.pixelDensity(1);
                     window.isCanvasReady = true;
-                    initializeParticles(); // Вызов функции после загрузки
+                    initializeParticles(); // Вызов после создания canvas
                     sketch.loop();
                 };
                 sketch.draw = () => {
@@ -153,7 +152,12 @@
             });
         }
 
-        window.restart = () => {
+        function setLanguageAndNext(lang) {
+            console.log(`Language set to: ${lang}, moving to step 1`);
+            showStep(1);
+        }
+
+        function restart() {
             console.log('Restarting application');
             window.particles = [];
             window.quantumStates = [];
@@ -166,5 +170,5 @@
             }
             initializeQuantumSketch();
             showStep(0);
-        };
+        }
     </script>
