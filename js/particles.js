@@ -51,7 +51,7 @@ function updateParticles() {
         console.error('Cannot update particles: quantumSketch or particles not initialized');
         return;
     }
-    console.log('updateParticles called, particles:', window.particles.length);
+    console.log('updateParticles called, particles:', window.particles.length, 'quantumSketch:', !!window.quantumSketch);
     window.particles.forEach((p, i) => {
         let n = window.quantumSketch.noise(p.x * window.noiseScale, p.y * window.noiseScale, window.frame * 0.01);
         p.phase += p.frequency;
@@ -74,6 +74,9 @@ function updateParticles() {
                 state.a = Math.floor(state.probability * 255);
             }
         }
-        // Убраны логи для каждой частицы
+
+        p.x = Math.max(0, Math.min(400, p.x + p.offsetX));
+        p.y = Math.max(0, Math.min(400, p.y + p.offsetY));
+        console.log(`Particle ${i} at x: ${p.x}, y: ${p.y}`);
     });
 }
