@@ -87,3 +87,9 @@ function setLanguage(lang) {
         }
     });
 }
+
+window.setLanguageAndNext = (lang) => {
+    console.log(`Language set to: ${lang} Moving to step 1`);
+    setLanguage(lang);
+    showStep(1);
+};
