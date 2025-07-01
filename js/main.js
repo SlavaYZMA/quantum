@@ -17,6 +17,10 @@ function showStep(stepIndex) {
         if (stepId === stepIndex) {
             step.style.display = 'block';
             console.log(`Showing step: ${step.id}, currentStep: ${currentStep}`);
+            // Инициализация обработчиков для step-5
+            if (stepId === 5) {
+                initializeStep5EventListeners();
+            }
         } else {
             step.style.display = 'none';
             console.log(`Hiding step: ${step.id}`);
@@ -52,8 +56,8 @@ document.querySelectorAll('.continue').forEach(button => {
 });
 
 function moveToNextStep(current) {
-    let nextStep = Math.floor(current) + 1; // Переход к следующему целому шагу
-    if (current === 2.1) nextStep = 3; // Специальный переход с 2.1 на 3
+    let nextStep = Math.floor(current) + 1;
+    if (current === 2.1) nextStep = 3;
     if (nextStep < steps.length) {
         showStep(nextStep);
     }
@@ -73,3 +77,41 @@ window.continueStep2 = () => {
         alert('Пожалуйста, загрузите изображение перед продолжением!');
     }
 };
+
+// Новая функция для инициализации обработчиков step-5
+function initializeStep5EventListeners() {
+    const recordButton = document.getElementById('recordButton');
+    const saveButton = document.getElementById('saveButton');
+    if (recordButton) {
+        recordButton.addEventListener('click', () => {
+            if (quantumSketch) {
+                quantumSketch.startAnimation();
+                console.log('Record button clicked, preparing to pause');
+                recordButton.style.display = 'none';
+                document.getElementById('saveInput').style.display = 'block';
+            }
+        });
+    } else {
+        console.error('Record button not found in DOM when step-5 is shown');
+    }
+    if (saveButton) {
+        saveButton.addEventListener('click', () => {
+            const name = document.getElementById('portraitName').value;
+            if (name && quantumSketch) {
+                const dataURL = quantumSketch.get().canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `${name}.png`;
+                link.href = dataURL;
+                link.click();
+                console.log(`Portrait saved as: ${name}.png, resuming step 5`);
+                document.getElementById('saveInput').style.display = 'none';
+                recordButton.style.display = 'inline-block';
+                window.fixationCount = 1;
+            } else {
+                alert('Пожалуйста, введите имя портрета!');
+            }
+        });
+    } else {
+        console.error('Save button not found in DOM when step-5 is shown');
+    }
+}
