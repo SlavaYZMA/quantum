@@ -12,14 +12,16 @@ function initializeSteps() {
 }
 
 function showStep(stepIndex) {
-    steps.forEach((step, index) => {
+    steps.forEach((step) => {
         const stepId = parseFloat(step.id.replace('step-', ''));
         if (stepId === stepIndex) {
             step.style.display = 'block';
             console.log(`Showing step: ${step.id}, currentStep: ${currentStep}`);
-            // Инициализация обработчиков для step-5
             if (stepId === 5) {
                 initializeStep5EventListeners();
+            }
+            if (stepId === 4 || stepId === 5) {
+                startDynamicUpdates();
             }
         } else {
             step.style.display = 'none';
@@ -27,10 +29,9 @@ function showStep(stepIndex) {
         }
     });
     currentStep = stepIndex;
+    window.currentStep = currentStep;
     console.log(`Updated currentStep to: ${currentStep}`);
-    if (stepIndex === 4 || stepIndex === 5) {
-        startDynamicUpdates();
-    } else {
+    if (stepIndex !== 4 && stepIndex !== 5) {
         stopDynamicUpdates();
     }
 }
@@ -49,16 +50,22 @@ document.querySelectorAll('.continue').forEach(button => {
     button.addEventListener('click', (e) => {
         console.log('Event listener triggered for continue button, target:', e.target);
         const stepElement = e.target.closest('.step');
-        const current = parseFloat(stepElement.id.replace('step-', '')) || currentStep;
+        const current = parseFloat(stepElement.id.replace('step-', ''));
         console.log(`Continue button clicked on step: ${current} Button:`, e.target);
         moveToNextStep(current);
     });
 });
 
 function moveToNextStep(current) {
-    let nextStep = Math.floor(current) + 1;
-    if (current === 2.1) nextStep = 3;
-    if (nextStep < steps.length) {
+    let nextStep = current + 1;
+    if (current === 2 && window.img) {
+        nextStep = 2.1;
+    }
+    if (current === 2 && !window.img) {
+        alert('Пожалуйста, загрузите изображение перед продолжением!');
+        return;
+    }
+    if (nextStep <= 7) {
         showStep(nextStep);
     }
 }
@@ -69,26 +76,44 @@ window.setLanguageAndNext = (lang) => {
     showStep(1);
 };
 
-window.continueStep2 = () => {
-    console.log('Checking image status:', window.img ? 'Image available' : 'No image available');
-    if (window.img) {
-        showStep(2.1);
-    } else {
-        alert('Пожалуйста, загрузите изображение перед продолжением!');
-    }
-};
+function startDynamicUpdates() {
+    console.log('Starting dynamic updates at', new Date().toLocaleTimeString());
+    if (window.updateInterval) clearInterval(window.updateInterval);
+    window.updateInterval = setInterval(() => {
+        if (window.currentStep === 4 || window.currentStep === 5) {
+            const terminal = document.getElementById('terminal-message');
+            if (terminal && window.quantumSketch) {
+                console.log('Updating terminal at', new Date().toLocaleTimeString());
+                terminal.textContent = 'Терминал: Квантовая анимация обновляется...';
+                window.quantumSketch.startAnimation();
+            }
+        }
+    }, 2000);
+}
 
-// Новая функция для инициализации обработчиков step-5
+function stopDynamicUpdates() {
+    console.log('Stopping dynamic updates at', new Date().toLocaleTimeString());
+    if (window.updateInterval) {
+        clearInterval(window.updateInterval);
+        window.updateInterval = null;
+    }
+}
+
 function initializeStep5EventListeners() {
+    const recordButton = document.getElementiniziStep5EventListeners() {
     const recordButton = document.getElementById('recordButton');
     const saveButton = document.getElementById('saveButton');
     if (recordButton) {
         recordButton.addEventListener('click', () => {
-            if (quantumSketch) {
-                quantumSketch.startAnimation();
+            if (window.quantumSketch) {
+                window.quantumSketch.startAnimation();
                 console.log('Record button clicked, preparing to pause');
+                window.currentQuantumState = 'collapse';
+                window.quantumSketch.noLoop();
                 recordButton.style.display = 'none';
                 document.getElementById('saveInput').style.display = 'block';
+            } else {
+                console.error('quantumSketch not initialized');
             }
         });
     } else {
@@ -97,8 +122,8 @@ function initializeStep5EventListeners() {
     if (saveButton) {
         saveButton.addEventListener('click', () => {
             const name = document.getElementById('portraitName').value;
-            if (name && quantumSketch) {
-                const dataURL = quantumSketch.get().canvas.toDataURL('image/png');
+            if (name && window.quantumSketch) {
+                const dataURL = window.quantumSketch.canvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.download = `${name}.png`;
                 link.href = dataURL;
