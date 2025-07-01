@@ -69,7 +69,7 @@
         <div class="text-block">
             <div class="button-block">
                 <button class="back">Назад</button>
-                <button class="continue">Продолжить</button> <!-- Убран onclick="continueStep2()" -->
+                <button class="continue">Продолжить</button>
             </div>
         </div>
     </section>
@@ -82,13 +82,13 @@
         </div>
         <div class="text-block">
             <div class="text-block typewriter" data-i18n="step3_text1">> Изображение преобразовано в пиксельную сетку.</div>
-            <div class="text-block typewriter" data-i18n="step3_text2">> Каждому пикселю назначены параметры (x, y, brightness, color)<span class="green-text"> (x, y, brightness, color)</span>.</div>
-            <div class="text-block typewriter" data-i18n="step3_text3">> На их основе построена волновая функция: ψ(x, y, t)<span class="green-text"> ψ(x, y, t)</span>.</div>
+            <div class="text-block typewriter" data-i18n="step3_text2">> Каждому пикселю назначены параметры (x, y, brightness, color).</div>
+            <div class="text-block typewriter" data-i18n="step3_text3">> На их основе построена волновая функция: ψ(x, y, t).</div>
             <div class="text-block typewriter" data-i18n="step3_text4">Уравнение эволюции:</div>
             <div class="text-block typewriter">
                 <p class="language-text green-text" data-i18n="step3_text5">iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
             </div>
-            <div class="text-block typewriter" data-i18n="step3_text6">> Потенциал V(x, y)<span class="green-text"> V(x, y)</span> формируется из визуальных характеристик изображения.</div>
+            <div class="text-block typewriter" data-i18n="step3_text6">> Потенциал V(x, y) формируется из визуальных характеристик изображения.</div>
             <div class="text-block typewriter" data-i18n="step3_text7">> Система переходит в режим временной симуляции.</div>
             <div class="text-block typewriter" data-i18n="step3_text8">> Портрет существует как совокупность возможных состояний.</div>
             <div class="button-block">
@@ -137,7 +137,7 @@
         </div>
         <div class="portrait-animation-container" id="portrait-animation-container" style="width: 100%; margin: 20px 0; position: relative; z-index: 1;"></div>
         <div class="button-block">
-            <button class="action-btn" id="recordButton" onclick="recordObservation()">ЗАПИСАТЬ НАБЛЮДЕНИЕ</button>
+            <button class="action-btn" id="recordButton">ЗАПИСАТЬ НАБЛЮДЕНИЕ</button>
             <button class="back">Назад</button>
             <button class="continue">Продолжить</button>
         </div>
@@ -343,32 +343,6 @@
                 window.updateInterval = null;
             }
         }
-
-        document.getElementById('recordButton').addEventListener('click', () => {
-            if (quantumSketch) {
-                quantumSketch.startAnimation();
-                console.log('Record button clicked, preparing to pause');
-                document.getElementById('recordButton').style.display = 'none';
-                document.getElementById('saveInput').style.display = 'block';
-            }
-        });
-
-        document.getElementById('saveButton').addEventListener('click', () => {
-            const name = document.getElementById('portraitName').value;
-            if (name && quantumSketch) {
-                const dataURL = quantumSketch.get().canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = `${name}.png`;
-                link.href = dataURL;
-                link.click();
-                console.log(`Portrait saved as: ${name}.png, resuming step 5`);
-                document.getElementById('saveInput').style.display = 'none';
-                document.getElementById('recordButton').style.display = 'inline-block';
-                window.fixationCount = 1;
-            } else {
-                alert('Пожалуйста, введите имя портрета!');
-            }
-        });
     </script>
     <script src="js/globals.js"></script>
     <script src="js/utils.js"></script>
