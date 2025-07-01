@@ -31,9 +31,6 @@ function showStep(stepIndex) {
     currentStep = stepIndex;
     window.currentStep = currentStep;
     console.log(`Updated currentStep to: ${currentStep}`);
-    if (stepIndex !== 4 && stepIndex !== 5) {
-        stopDynamicUpdates();
-    }
 }
 
 function hideStep(stepIndex) {
@@ -81,37 +78,13 @@ window.setLanguageAndNext = (lang) => {
     showStep(1);
 };
 
-function startDynamicUpdates() {
-    console.log('Starting dynamic updates at', new Date().toLocaleTimeString());
-    if (window.updateInterval) clearInterval(window.updateInterval);
-    window.updateInterval = setInterval(() => {
-        if (window.currentStep === 4 || window.currentStep === 5) {
-            const terminal = document.getElementById('terminal-message');
-            if (terminal && window.quantumSketch) {
-                console.log('Updating terminal at', new Date().toLocaleTimeString());
-                terminal.textContent = 'Терминал: Квантовая анимация обновляется...';
-                window.quantumSketch.startAnimation();
-            }
-        }
-    }, 2000);
-}
-
-function stopDynamicUpdates() {
-    console.log('Stopping dynamic updates at', new Date().toLocaleTimeString());
-    if (window.updateInterval) {
-        clearInterval(window.updateInterval);
-        window.updateInterval = null;
-    }
-}
-
 function initializeStep5EventListeners() {
     const recordButton = document.getElementById('recordButton');
     const saveButton = document.getElementById('saveButton');
     if (recordButton) {
         recordButton.addEventListener('click', () => {
             if (window.quantumSketch) {
-                window.quantumSketch.startAnimation();
-                console.log('Record button clicked, preparing to pause');
+                console.log('Record button clicked, pausing animation');
                 window.currentQuantumState = 'collapse';
                 window.quantumSketch.noLoop();
                 recordButton.style.display = 'none';
@@ -131,7 +104,7 @@ function initializeStep5EventListeners() {
                 console.log(`Saved canvas as ${name}.png`);
                 document.getElementById('saveInput').style.display = 'none';
                 recordButton.style.display = 'inline-block';
-                window.fixationCount = 1;
+                window.quantumSketch.loop();
             } else {
                 alert('Ошибка: холст не доступен для сохранения.');
             }
