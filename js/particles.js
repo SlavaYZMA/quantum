@@ -34,14 +34,16 @@ function easeOutQuad(t) {
 
 if (window.quantumSketch) {
     window.quantumSketch.setup = () => {
-        if (!window.quantumSketch) return;
+        if (!window.quantumSketch) {
+            console.error('quantumSketch not initialized in setup');
+            return;
+        }
         const container = document.getElementById('portrait-animation-container');
         if (!container) {
             console.error('Container portrait-animation-container not found');
             return;
         }
-        window.canvas = window.quantumSketch.createCanvas(window.quantumSketch.windowWidth, window.quantumSketch.windowHeight - 100);
-        window.canvas.parent('portrait-animation-container');
+        window.canvas = window.quantumSketch.createCanvas(400, 400).parent('portrait-animation-container');
         window.quantumSketch.pixelDensity(1);
         window.quantumSketch.frameRate(navigator.hardwareConcurrency < 4 ? 20 : 25);
         window.canvas.elt.style.display = 'block';
@@ -60,13 +62,13 @@ if (window.quantumSketch) {
                 });
             } else {
                 document.exitFullscreen().then(() => {
-                    window.quantumSketch.resizeCanvas(window.quantumSketch.windowWidth, window.quantumSketch.windowHeight - 100);
+                    window.quantumSketch.resizeCanvas(400, 400);
                     updateBoundary();
                 });
             }
         });
 
-        window.trailBuffer = window.quantumSketch.createGraphics(window.quantumSketch.windowWidth, window.quantumSketch.windowHeight - 100);
+        window.trailBuffer = window.quantumSketch.createGraphics(400, 400);
         window.trailBuffer.pixelDensity(1);
 
         let vizContainer = document.getElementById('quantum-visualization-container');
@@ -100,9 +102,11 @@ if (window.quantumSketch) {
         }, { passive: false });
 
         window.addEventListener('resize', () => {
-            window.quantumSketch.resizeCanvas(window.quantumSketch.windowWidth, document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100);
-            window.trailBuffer = window.quantumSketch.createGraphics(window.quantumSketch.windowWidth, document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100);
-            window.trailBuffer.pixelDensity(1);
+            if (!document.fullscreenElement) {
+                window.quantumSketch.resizeCanvas(400, 400);
+                window.trailBuffer = window.quantumSketch.createGraphics(400, 400);
+                window.trailBuffer.pixelDensity(1);
+            }
             updateBoundary();
         });
 
@@ -113,10 +117,10 @@ if (window.quantumSketch) {
 
     window.quantumSketch.draw = () => {
         if (!window.quantumSketch) {
-            console.error('quantumSketch not initialized');
+            console.error('quantumSketch not initialized in draw');
             return;
         }
-        window.quantumSketch.background(0); // Заливаем черным по умолчанию
+        window.quantumSketch.background(0);
         if (window.currentStep < 2) {
             console.log('Not rendering particles, currentStep:', window.currentStep);
             return;
@@ -191,19 +195,6 @@ if (window.quantumSketch) {
             }
         }
 
-        let frameTime = performance.now() - window.lastFrameTime;
-        if (frameTime > 40 && window.particles.length > 1000) {
-            window.particles = window.particles.filter((p, i) => {
-                let keep = p.alpha >= 20 || p.layer !== 'main';
-                if (!keep) window.quantumStates.splice(i, 1);
-                return keep;
-            });
-        }
-
-        if (window.frame % 60 === 0) {
-            renderInterference();
-        }
-
         window.quantumSketch.image(window.trailBuffer, 0, 0);
         renderQuantumMessages();
         renderVisualization();
@@ -223,8 +214,8 @@ function updateBoundary() {
     window.boundaryPoints = [];
     let numPoints = 40;
     let margin = 10;
-    let maxX = window.quantumSketch.windowWidth - margin;
-    let maxY = (document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - margin;
+    let maxX = 400 - margin;
+    let maxY = 400 - margin;
     for (let i = 0; i < numPoints / 4; i++) {
         let x = window.quantumSketch.lerp(margin, maxX, i / (numPoints / 4));
         window.boundaryPoints.push({ x, y: margin });
@@ -238,9 +229,7 @@ function updateBoundary() {
         window.boundaryPoints.push({ x, y: maxY });
     }
     for (let i = 0; i < numPoints / 4; i++) {
-        let y =
-
-System: window.quantumSketch.lerp(maxY, margin, i / (numPoints / 4));
+        let y = window.quantumSketch.lerp(maxY, margin, i / (numPoints / 4));
         window.boundaryPoints.push({ x: margin, y });
     }
 }
@@ -251,8 +240,8 @@ function isPointInBoundary(x, y) {
         return false;
     }
     let margin = 10;
-    let maxY = document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100;
-    if (x < margin || x > window.quantumSketch.windowWidth - margin || y < margin || y > maxY - margin) return false;
+    let maxY = 400 - margin;
+    if (x < margin || x > 400 - margin || y < margin || y > maxY - margin) return false;
     let inside = false;
     for (let i = 0, j = window.boundaryPoints.length - 1; i < window.boundaryPoints.length; j = i++) {
         let xi = window.boundaryPoints[i].x, yi = window.boundaryPoints[i].y;
@@ -331,7 +320,7 @@ function updateTerminal() {
         if (window.textMessages.active) {
             window.terminalLog.push(`> ${window.textMessages.active.text} (alpha: ${Math.round(window.textMessages.active.alpha)})`);
         }
-        terminal.innerHTML = `<p>Терминал: Квантовая анимация обновляется...</p>` + 
+        terminal.innerHTML = `<p>Терминал: Квантовая анимация обновляется...</p>` +
                             window.terminalLog.map(msg => `<p style="margin: 5px 0;">${msg}</p>`).join('');
     }
 }
@@ -395,8 +384,8 @@ function renderTransformingPortrait(img, currentFrame) {
                 offsetY += waveOffset * window.quantumSketch.sin(block.wavePhase);
                 rotation += noiseVal * 0.1;
             }
-            let canvasX = x + (window.quantumSketch.windowWidth - img.width) / 2 + offsetX;
-            let canvasY = y + ((document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - img.height) / 2 + offsetY;
+            let canvasX = x + (400 - img.width) / 2 + offsetX;
+            let canvasY = y + (400 - img.height) / 2 + offsetY;
 
             if (currentFrame >= block.startFrame) {
                 let probDensity = block.probAmplitude * 100;
@@ -438,7 +427,6 @@ function initializeParticles(blockList) {
     window.particles = [];
     window.quantumStates = [];
     window.entangledPairs = [];
-    const maxBlockSize = 16;
     window.maxParticles = window.quantumSketch.windowWidth < 768 ? 1000 : 2000;
     let particleCount = 0;
 
@@ -459,8 +447,8 @@ function initializeParticles(blockList) {
         let col = window.img.get(pixelX, pixelY);
         let brightnessVal = window.quantumSketch.brightness(col);
         if (brightnessVal > 10 && particleCount < window.maxParticles) {
-            let blockCenterX_canvas = x + (window.quantumSketch.windowWidth - window.img.width) / 2 + maxBlockSize / 2;
-            let blockCenterY_canvas = y + ((document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) - img.height) / 2 + maxBlockSize / 2;
+            let blockCenterX_canvas = x + (400 - window.img.width) / 2 + 8;
+            let blockCenterY_canvas = y + (400 - window.img.height) / 2 + 8;
             let layer = window.quantumSketch.random() < 0.1 ? 'vacuum' : window.quantumSketch.random() < 0.2 ? 'background' : 'main';
             let shapeType = window.quantumSketch.floor(window.quantumSketch.random(5));
             let targetSize = window.quantumSketch.random(5, 30);
@@ -474,7 +462,7 @@ function initializeParticles(blockList) {
                 baseY: blockCenterY_canvas,
                 offsetX: 0,
                 offsetY: 0,
-                size: maxBlockSize,
+                size: 16,
                 targetSize: targetSize,
                 phase: window.quantumSketch.random(window.quantumSketch.TWO_PI),
                 gridX: x,
@@ -499,7 +487,7 @@ function initializeParticles(blockList) {
                 targetRadialDistance: window.quantumSketch.random(100, 300),
                 superpositionT: 0,
                 probAmplitude: window.quantumSketch.random(0.5, 1.5),
-                barrier: window.quantumSketch.random() < 0.1 ? { x: window.quantumSketch.random(window.quantumSketch.windowWidth), y: window.quantumSketch.random(window.quantumSketch.windowHeight), width: 20, height: 100 } : null,
+                barrier: window.quantumSketch.random() < 0.1 ? { x: window.quantumSketch.random(400), y: window.quantumSketch.random(400), width: 20, height: 100 } : null,
                 speed: window.quantumSketch.random(0.8, 1.5),
                 rotation: 0,
                 individualPeriod: window.quantumSketch.random(0.5, 3),
@@ -511,8 +499,8 @@ function initializeParticles(blockList) {
 
             if (window.quantumSketch.random() < 0.05 && particle.layer === 'main') {
                 let entangled = { ...particle };
-                entangled.x = window.quantumSketch.random(window.quantumSketch.windowWidth);
-                entangled.y = window.quantumSketch.random(document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100);
+                entangled.x = window.quantumSketch.random(400);
+                entangled.y = window.quantumSketch.random(400);
                 entangled.baseX = entangled.x;
                 entangled.baseY = entangled.y;
                 entangled.chaosSeed = window.quantumSketch.random(1000);
@@ -552,7 +540,7 @@ function updateParticle(particle, state) {
     }
     let px = particle.x + particle.offsetX;
     let py = particle.y + particle.offsetY;
-    if (px < 0 || px > window.quantumSketch.windowWidth || py < 0 || py > (document.fullscreenElement ? window.quantumSketch.windowHeight : window.quantumSketch.windowHeight - 100) || particle.alpha < 20) {
+    if (px < 0 || px > 400 || py < 0 || py > 400 || particle.alpha < 20) {
         return;
     }
 
@@ -688,9 +676,8 @@ function updateParticle(particle, state) {
             particle.uncertainty = 0;
             particle.probAmplitude = 1;
             window.trailBuffer.noFill();
-            for (let i = 0; i < 3; i++) Ombres de la vie
-
-System: window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
+            for (let i = 0; i < 3; i++) {
+                window.trailBuffer.stroke(state.r, state.g, state.b, 255 - i * 85);
                 window.trailBuffer.strokeWeight(1);
                 window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, 20 + i * 10);
             }
