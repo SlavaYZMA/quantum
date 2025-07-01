@@ -16,14 +16,26 @@ function showStep(stepIndex) {
         if (stepId === stepIndex) {
             step.classList.add('active');
             step.style.display = 'flex';
+            // Перемещение canvas в текущий контейнер
+            const canvas = document.querySelector('.quantum-canvas');
+            const targetContainer = document.querySelector(`#portrait-animation-container-step-${stepId}`);
+            if (canvas && targetContainer && stepId >= 2) {
+                targetContainer.appendChild(canvas);
+                canvas.style.display = 'block';
+                console.log('Moved canvas to step:', stepId);
+            } else if (stepId >= 2) {
+                console.error('Failed to move canvas:', { canvas, targetContainer });
+            }
             if (stepId === 2.1 && window.img && !window.particles.length) {
                 initializeParticles(window.img);
                 if (window.quantumSketch) {
+                    console.error('Attempting startAnimation on step:', stepId);
                     window.quantumSketch.startAnimation();
                 } else {
                     console.error('quantumSketch not initialized on step 2.1');
                 }
             } else if (stepId >= 3 && window.quantumSketch) {
+                console.error('Attempting startAnimation on step:', stepId);
                 window.quantumSketch.startAnimation();
             }
             if (stepId === 5) {
@@ -96,6 +108,7 @@ function initializeStep5EventListeners() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing steps');
     initializeSteps();
     document.querySelectorAll('.continue').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -104,6 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
             moveToNextStep(current);
         });
     });
+    // Проверка инициализации quantumSketch
+    console.log('quantumSketch initialized:', window.quantumSketch);
 });
 
 window.setLanguageAndNext = (lang) => {
