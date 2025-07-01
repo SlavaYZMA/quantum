@@ -9,8 +9,7 @@ window.recordObservation = () => {
         if (savedPortrait) {
             savedPortrait.src = dataURL;
             savedPortrait.style.display = 'block';
-            window.fixationCount = (window.fixationCount || 0) + 1;
-            console.log('Observation recorded, fixationCount set to', window.fixationCount);
+            window.fixationCount = 1;
         } else {
             console.error('Saved portrait element not found');
         }
@@ -23,8 +22,7 @@ window.shareToArchive = () => {
     const portraitName = document.getElementById('portraitName');
     const savedPortrait = document.getElementById('saved-portrait');
     if (portraitName && portraitName.value && savedPortrait && savedPortrait.src) {
-        let dataURL = savedPortrait.src;
-        console.log('Portrait', portraitName.value, 'shared to archive:', dataURL);
+        console.log('Portrait shared to archive');
         alert('Изображение сохранено в архиве под названием: ' + portraitName.value);
         showStep(7);
     } else {
