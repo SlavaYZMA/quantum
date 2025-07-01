@@ -93,12 +93,16 @@ button:hover {
     height: 400px;
     margin: 20px auto;
     position: relative;
-    z-index: 0;
+    z-index: 1; /* Увеличен z-index для видимости */
+    background-color: #000; /* Черный фон для холста */
 }
 
 #portrait-animation-container canvas {
     display: block;
+    width: 400px !important;
+    height: 400px !important;
     margin: 0 auto;
+    border: 1px solid #333; /* Добавлена рамка для видимости */
 }
 
 #quantum-visualization-container {
@@ -148,6 +152,10 @@ button:hover {
     #portrait-animation-container {
         width: 300px;
         height: 300px;
+    }
+    #portrait-animation-container canvas {
+        width: 300px !important;
+        height: 300px !important;
     }
     button {
         padding: 8px 16px;
