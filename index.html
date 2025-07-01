@@ -209,10 +209,10 @@
                         console.log('Image loaded successfully, size:', img.width, 'x', img.height);
                         console.log('Checking step-2-1 existence:', !!document.getElementById('step-2-1'));
                         if (window.currentStep === 2 && document.getElementById('step-2-1')) {
-                            setTimeout(() => {
-                                console.log('Attempting transition to step 2.1 after delay');
+                            requestAnimationFrame(() => {
+                                console.log('Attempting transition to step 2.1 with requestAnimationFrame');
                                 showStep(2.1);
-                            }, 500); // Задержка для синхронизации DOM
+                            });
                         } else {
                             console.error('Step 2.1 not found or current step is not 2, staying on step 2');
                         }
@@ -234,7 +234,10 @@
                     console.log('Checking container:', container, 'offsetParent:', container?.offsetParent, 'display:', container?.style.display, 'visibility:', container?.style.visibility);
                     if (!container || container.offsetParent === null || container.style.display === 'none' || container.style.visibility === 'hidden') {
                         console.error('Container not visible or not in DOM, retrying in 500ms');
-                        setTimeout(initializeQuantumSketch, 500);
+                        setTimeout(() => {
+                            container.style.display = 'block'; // Временное отображение для теста
+                            initializeQuantumSketch();
+                        }, 500);
                         return;
                     }
                     let canvas = sketch.createCanvas(400, 400).parent('portrait-animation-container');
