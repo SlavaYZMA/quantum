@@ -1,14 +1,3 @@
-window.frame = 0;
-window.isPaused = false;
-window.particles = [];
-window.quantumStates = [];
-window.isCanvasReady = false;
-window.noiseScale = 0.03;
-window.mouseInfluenceRadius = 200;
-window.chaosFactor = 0.5;
-window.boundaryPoints = [];
-window.trailBuffer = null;
-
 function initializeParticles(img) {
     if (!window.quantumSketch || !img) {
         console.warn('quantumSketch or img not available in initializeParticles');
@@ -107,57 +96,4 @@ function updateParticles() {
         window.trailBuffer.noStroke();
         window.trailBuffer.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size);
     }
-}
-
-if (window.quantumSketch) {
-    window.quantumSketch.setup = () => {
-        if (!window.quantumSketch) {
-            console.error('quantumSketch not initialized in setup');
-            return;
-        }
-        const container = document.getElementById('portrait-animation-container');
-        if (!container) {
-            console.error('Container portrait-animation-container not found');
-            return;
-        }
-        window.quantumSketch.createCanvas(400, 400).parent('portrait-animation-container');
-        window.quantumSketch.pixelDensity(1);
-        window.trailBuffer = window.quantumSketch.createGraphics(400, 400);
-        window.trailBuffer.pixelDensity(1);
-        updateBoundary();
-        window.isCanvasReady = true;
-        console.log('Canvas setup completed');
-    };
-
-    window.quantumSketch.draw = () => {
-        if (!window.quantumSketch) {
-            console.error('quantumSketch not initialized in draw');
-            return;
-        }
-        window.quantumSketch.background(0);
-        window.trailBuffer.clear();
-        if (window.currentStep < 2 || !window.img) {
-            window.quantumSketch.fill(255);
-            window.quantumSketch.textSize(16);
-            window.quantumSketch.text('Пожалуйста, загрузите изображение', 10, 30);
-            return;
-        }
-        window.frame++;
-        let scale = Math.min(window.quantumSketch.width / window.img.width, window.quantumSketch.height / window.img.height);
-        let displayWidth = window.img.width * scale;
-        let displayHeight = window.img.height * scale;
-        let x = (window.quantumSketch.width - displayWidth) / 2;
-        let y = (window.quantumSketch.height - displayHeight) / 2;
-        window.quantumSketch.image(window.img, x, y, displayWidth, displayHeight);
-        if (window.currentStep >= 3) {
-            if (window.particles.length === 0) {
-                initializeParticles(window.img);
-            }
-            updateParticles();
-            window.quantumSketch.image(window.trailBuffer, 0, 0);
-        }
-        window.quantumSketch.fill(255);
-        window.quantumSketch.textSize(16);
-        window.quantumSketch.text(`Frame: ${window.frame}`, 10, 20);
-    };
 }
