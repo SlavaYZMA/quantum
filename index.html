@@ -145,13 +145,19 @@
             input.onchange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    // Не инициализируем quantumSketch здесь, чтобы избежать мелькания
-                    window.sketch.loadImage(URL.createObjectURL(file), (img) => {
-                        window.img = img;
-                        if (window.currentStep === 2) {
-                            showStep(2.1); // Переход к шагу 2.1
-                        }
-                    }, (err) => console.error('Error loading image:', err));
+                    if (!window.quantumSketch) {
+                        window.initializeQuantumSketch();
+                    }
+                    if (window.quantumSketch) {
+                        window.quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
+                            window.img = img;
+                            if (window.currentStep === 2) {
+                                showStep(2.1);
+                            }
+                        }, (err) => console.error('Error loading image:', err));
+                    } else {
+                        console.error('quantumSketch not initialized before loading image');
+                    }
                 }
             };
             input.click();
@@ -167,20 +173,20 @@
             window.quantumSketch = new p5((sketch) => {
                 window.sketch = sketch;
                 sketch.setup = () => {
-                    console.log('p5 setup called');
-                    let canvas = sketch salvatore  sketch.createCanvas(400, 400);
+                    console.error('p5 setup called');
+                    let canvas = sketch.createCanvas(400, 400);
                     canvas.parent('portrait-animation-container');
-                    console.log('Canvas created, width: 400, height: 400');
+                    console.error('Canvas created, width: 400, height: 400');
                     sketch.pixelDensity(1);
                     window.trailBuffer = sketch.createGraphics(400, 400);
                     window.isCanvasReady = true;
-                    sketch.loop();
+                    sketch.noLoop(); // Не запускаем анимацию до шага 2.1
                 };
                 sketch.draw = () => {
                     const canvas = document.querySelector('#portrait-animation-container canvas');
-                    console.log('draw called, currentStep:', window.currentStep, 'canvasVisible:', canvas?.style.display !== 'none');
-                    sketch.background(255); // Белый фон для теста
-                    sketch.fill(255, 0, 0); // Красный квадрат для теста
+                    console.error('draw called, currentStep:', window.currentStep, 'canvasVisible:', canvas?.style.display !== 'none');
+                    sketch.background(255); // Белый фон
+                    sketch.fill(255, 0, 0); // Красный квадрат
                     sketch.rect(100, 100, 200, 200);
                     sketch.fill(0);
                     sketch.textSize(16);
@@ -197,7 +203,7 @@
                     let x = (sketch.width - displayWidth) / 2;
                     let y = (sketch.height - displayHeight) / 2;
                     sketch.image(window.img, x, y, displayWidth, displayHeight);
-                    console.log('Image rendered at x:', x, 'y:', y, 'width:', displayWidth, 'height:', displayHeight);
+                    console.error('Image rendered at x:', x, 'y:', y, 'width:', displayWidth, 'height:', displayHeight);
                     if (window.currentStep >= 3 && window.isCanvasReady && window.particles.length > 0 && typeof updateParticles === 'function') {
                         updateParticles();
                         window.particles.forEach((p, i) => {
