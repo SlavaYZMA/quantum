@@ -96,7 +96,7 @@ button:hover {
     z-index: 1000;
     background-color: #000;
     border: 2px dashed #0f0;
-    overflow: visible; /* Убираем обрезку холста */
+    overflow: visible;
 }
 
 #portrait-animation-container canvas {
