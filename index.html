@@ -140,6 +140,7 @@
                         }
                     }, (err) => {
                         console.error('Error loading image:', err);
+                        alert('Ошибка при загрузке изображения');
                     });
                 }
             };
@@ -160,6 +161,8 @@
             console.log('Restarting application');
             window.img = null;
             window.currentQuantumState = 'init';
+            window.particles = [];
+            window.quantumStates = [];
             showStep(0);
         };
 
@@ -182,78 +185,11 @@
             }
             window.quantumSketch = new p5((sketch) => {
                 window.sketch = sketch;
-                let isPaused = false;
-                sketch.setup = () => {
-                    let canvas = sketch.createCanvas(400, 400).parent('portrait-animation-container');
-                    canvas.canvas.getContext('2d').willReadFrequently = true;
-                    console.log('Canvas created, size:', sketch.width, 'x', sketch.height);
-                    sketch.noLoop();
-                };
-                sketch.draw = () => {
-                    sketch.background(0);
-                    if (window.img && (window.currentStep >= 2)) {
-                        console.log('Drawing image, currentStep:', window.currentStep, 'img:', window.img);
-                        let scale = Math.min(sketch.width / window.img.width, sketch.height / window.img.height);
-                        let displayWidth = window.img.width * scale;
-                        let displayHeight = window.img.height * scale;
-                        let x = (sketch.width - displayWidth) / 2;
-                        let y = (sketch.height - displayHeight) / 2;
-                        sketch.image(window.img, x, y, displayWidth, displayHeight);
-                        if (!isPaused && window.currentQuantumState) {
-                            console.log('Quantum state:', window.currentQuantumState);
-                            if (window.currentQuantumState === 'superposition') {
-                                for (let i = 0; i < 30; i++) {
-                                    let x = sketch.random(sketch.width);
-                                    let y = sketch.random(sketch.height);
-                                    let prob = sketch.noise(x * 0.01, y * 0.01);
-                                    if (prob > 0.3) {
-                                        sketch.stroke(0, 255 * prob, 100);
-                                        sketch.point(x, y);
-                                    }
-                                }
-                            } else if (window.currentQuantumState === 'collapse') {
-                                let centerX = sketch.width / 2;
-                                let centerY = sketch.height / 2;
-                                for (let i = 0; i < 30; i++) {
-                                    let angle = sketch.random(sketch.TWO_PI);
-                                    let r = sketch.map(sketch.sin(sketch.frameCount * 0.01 + i), -1, 1, 0, 150);
-                                    let x = centerX + r * sketch.cos(angle);
-                                    let y = centerY + r * sketch.sin(angle);
-                                    sketch.stroke(255, 50, 0, 255 - r * 1.5);
-                                    sketch.point(x, y);
-                                }
-                            }
-                        }
-                    } else {
-                        console.log('No image or invalid step for drawing:', window.currentStep, window.img);
-                    }
-                };
-                sketch.mousePressed = () => {
-                    if (window.currentStep === 5 && sketch.mouseX >= 0 && sketch.mouseX <= sketch.width && sketch.mouseY >= 0 && sketch.mouseY <= sketch.height) {
-                        isPaused = !isPaused;
-                        if (isPaused) {
-                            console.log('Animation paused at step 5');
-                            window.currentQuantumState = 'collapse';
-                            sketch.noLoop();
-                            document.getElementById('recordButton').style.display = 'none';
-                            document.getElementById('saveInput').style.display = 'block';
-                        } else {
-                            console.log('Animation resumed at step 5');
-                            window.currentQuantumState = 'superposition';
-                            sketch.loop();
-                            document.getElementById('recordButton').style.display = 'inline-block';
-                            document.getElementById('saveInput').style.display = 'none';
-                        }
-                    }
-                };
+                sketch.setup = window.quantumSketch.setup;
+                sketch.draw = window.quantumSketch.draw;
                 sketch.startAnimation = () => {
-                    if (!window.img) {
-                        console.warn('No image available for animation. Please upload an image on Step 2.');
-                        return;
-                    }
-                    console.log('Starting animation, setting initial state to superposition');
+                    console.log('Starting animation');
                     window.currentQuantumState = 'superposition';
-                    isPaused = false;
                     sketch.loop();
                 };
             }, 'portrait-animation-container');
@@ -283,10 +219,6 @@
         });
     </script>
     <script src="js/globals.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/observer.js"></script>
-    <script src="js/textSteps.js"></script>
-    <script src="js/audio.js"></script>
     <script src="js/main.js"></script>
     <script src="js/particles.js"></script>
 </body>
