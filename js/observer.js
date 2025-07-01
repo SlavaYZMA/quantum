@@ -9,8 +9,8 @@ window.recordObservation = () => {
         if (savedPortrait) {
             savedPortrait.src = dataURL;
             savedPortrait.style.display = 'block';
-            window.fixationCount = 1;
-            console.log('Observation recorded, fixationCount set to 1');
+            window.fixationCount = (window.fixationCount || 0) + 1;
+            console.log('Observation recorded, fixationCount set to', window.fixationCount);
         } else {
             console.error('Saved portrait element not found');
         }
