@@ -5,6 +5,7 @@ body {
     color: white;
     font-family: 'Courier New', Courier, monospace;
     overflow-x: hidden;
+    overflow-y: auto; /* Разрешаем прокрутку */
 }
 
 .step {
@@ -21,7 +22,7 @@ body {
 }
 
 .step.active {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -95,22 +96,34 @@ button:hover {
 
 #portrait-animation-container {
     display: block !important;
-    width: 400px;
-    height: 400px;
-    margin: 20px auto;
-    position: relative;
-    z-index: 100; /* Еще увеличен z-index */
+    width: 400px !important;
+    height: 400px !important;
+    margin: 20px auto !important;
+    position: relative !important;
+    z-index: 1000 !important;
     background-color: #000;
     visibility: visible !important;
+    opacity: 1 !important;
+    top: 0 !important; /* Убираем смещение */
+    left: 0 !important;
 }
 
 #portrait-animation-container canvas {
     display: block !important;
     width: 400px !important;
     height: 400px !important;
-    margin: 0 auto;
-    border: 3px solid #f00; /* Красная рамка для видимости */
+    margin: 0 auto !important;
+    border: 5px solid #f00 !important;
     visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+}
+
+#saved-portrait {
+    display: none;
+    max-width: 400px;
+    margin: 20px auto;
+    z-index: 1;
 }
 
 #quantum-visualization-container {
@@ -161,12 +174,15 @@ button:hover {
         font-size: 14px;
     }
     #portrait-animation-container {
-        width: 300px;
-        height: 300px;
+        width: 300px !important;
+        height: 300px !important;
     }
     #portrait-animation-container canvas {
         width: 300px !important;
         height: 300px !important;
+    }
+    #saved-portrait {
+        max-width: 300px;
     }
     button {
         padding: 8px 16px;
