@@ -176,6 +176,12 @@
             window.particles = [];
             window.quantumStates = [];
             window.frame = 0;
+            window.isCanvasReady = false;
+            if (window.quantumSketch) {
+                window.quantumSketch.noLoop();
+                window.quantumSketch.remove();
+                window.quantumSketch = null;
+            }
             showStep(0);
         };
 
@@ -209,8 +215,8 @@
                     sketch.loop();
                 };
                 sketch.draw = () => {
+                    console.log('draw called, currentStep:', window.currentStep, 'frame:', window.frame, 'particles:', window.particles.length);
                     sketch.background(0);
-                    window.trailBuffer.clear();
                     if (window.currentStep < 2 || !window.img) {
                         sketch.fill(255);
                         sketch.textSize(16);
@@ -224,12 +230,16 @@
                     let x = (sketch.width - displayWidth) / 2;
                     let y = (sketch.height - displayHeight) / 2;
                     sketch.image(window.img, x, y, displayWidth, displayHeight);
-                    if (window.currentStep >= 3) {
+                    if (window.currentStep >= 3 && window.isCanvasReady) {
                         if (window.particles.length === 0) {
                             initializeParticles(window.img);
                         }
                         updateParticles();
-                        sketch.image(window.trailBuffer, 0, 0);
+                        if (window.trailBuffer) {
+                            sketch.image(window.trailBuffer, 0, 0);
+                        } else {
+                            console.warn('trailBuffer not available in draw');
+                        }
                     }
                     sketch.fill(255);
                     sketch.textSize(16);
