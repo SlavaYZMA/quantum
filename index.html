@@ -176,11 +176,12 @@
                     console.error('p5 setup called');
                     let canvas = sketch.createCanvas(400, 400);
                     canvas.parent('portrait-animation-container');
+                    canvas.class('quantum-canvas');
                     console.error('Canvas created, width: 400, height: 400');
                     sketch.pixelDensity(1);
                     window.trailBuffer = sketch.createGraphics(400, 400);
                     window.isCanvasReady = true;
-                    sketch.noLoop(); // Не запускаем анимацию до шага 2.1
+                    sketch.noLoop(); // Не рендерим до шага 2.1
                 };
                 sketch.draw = () => {
                     const canvas = document.querySelector('#portrait-animation-container canvas');
