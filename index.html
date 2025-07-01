@@ -73,14 +73,20 @@
         <div id="portrait-animation-container"></div>
     </section>
 
+    <!-- Подключаем particles.js перед основным скриптом -->
+    <script src="js/particles.js"></script>
     <script>
         let quantumSketch = null;
         window.frame = 0;
         window.isPaused = false;
         window.particles = [];
+        window.quantumStates = [];
         window.isCanvasReady = false;
         window.noiseScale = 0.05;
         window.mouseInfluenceRadius = 200;
+        window.chaosFactor = 0.5;
+        window.boundaryPoints = [];
+        window.trailBuffer = null;
 
         function initializeQuantumSketch() {
             if (quantumSketch) {
@@ -94,8 +100,10 @@
                     let canvas = sketch.createCanvas(400, 400);
                     canvas.parent('portrait-animation-container');
                     sketch.pixelDensity(1);
+                    window.trailBuffer = sketch.createGraphics(400, 400);
+                    window.trailBuffer.pixelDensity(1);
                     window.isCanvasReady = true;
-                    initializeParticles();
+                    initializeParticles(); // Вызов функции после загрузки
                     sketch.loop();
                 };
                 sketch.draw = () => {
@@ -123,6 +131,10 @@
                     let nextStep = current + 1;
                     if (nextStep <= 7) {
                         showStep(nextStep);
+                        if (nextStep >= 2 && quantumSketch) {
+                            initializeParticles();
+                            quantumSketch.startAnimation();
+                        }
                     }
                 });
             });
@@ -134,10 +146,6 @@
                 if (stepId === stepIndex) {
                     step.classList.add('active');
                     step.style.display = 'flex';
-                    if (stepId >= 2 && quantumSketch) {
-                        initializeParticles();
-                        quantumSketch.startAnimation();
-                    }
                 } else {
                     step.classList.remove('active');
                     step.style.display = 'none';
@@ -148,6 +156,7 @@
         window.restart = () => {
             console.log('Restarting application');
             window.particles = [];
+            window.quantumStates = [];
             window.frame = 0;
             window.isPaused = false;
             if (quantumSketch) {
@@ -159,4 +168,3 @@
             showStep(0);
         };
     </script>
-    <script src="js/particles.js"></script>
