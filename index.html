@@ -159,8 +159,6 @@
                             showStep(2.1);
                             if (typeof initializeParticles === 'function') {
                                 initializeParticles(img);
-                            } else {
-                                initializeDefaultParticles();
                             }
                         }
                     }, (err) => {
@@ -231,8 +229,6 @@
                     console.log('Canvas setup completed, trailBuffer:', !!window.trailBuffer);
                     if (window.img && typeof initializeParticles === 'function') {
                         initializeParticles(window.img);
-                    } else {
-                        initializeDefaultParticles(); // Дефолтная анимация
                     }
                     sketch.loop();
                 };
@@ -256,11 +252,16 @@
                     console.log('Image rendered at x:', x, 'y:', y, 'width:', displayWidth, 'height:', displayHeight);
                     if (window.currentStep >= 3 && window.isCanvasReady && window.particles.length > 0 && typeof updateParticles === 'function') {
                         updateParticles();
-                    } else if (window.particles.length > 0) {
-                        // Отрисовка дефолтных частиц
                         window.particles.forEach((p, i) => {
-                            sketch.fill(255, 0, 0); // Красный цвет для теста
-                            sketch.ellipse(p.x + p.offsetX, p.y + p.offsetY, p.size);
+                            // Ограничение координат
+                            p.x = Math.max(0, Math.min(400, p.x));
+                            p.y = Math.max(0, Math.min(400, p.y));
+                            p.offsetX = Math.max(-p.x, Math.min(400 - p.x, p.offsetX));
+                            p.offsetY = Math.max(-p.y, Math.min(400 - p.y, p.offsetY));
+                            // Отрисовка поверх изображения
+                            let state = window.quantumStates[i] || { r: 255, g: 0, b: 0, a: 255 };
+                            sketch.fill(state.r, state.g, state.b, state.a);
+                            sketch.ellipse(p.x + p.offsetX, p.y + p.offsetY, p.size || 10);
                         });
                     }
                 };
@@ -270,23 +271,6 @@
                     sketch.loop();
                 };
             }, 'portrait-animation-container');
-        }
-
-        function initializeDefaultParticles() {
-            console.log('Initializing default particles');
-            window.particles = [];
-            for (let i = 0; i < 220; i++) {
-                window.particles.push({
-                    x: Math.random() * 400,
-                    y: Math.random() * 400,
-                    offsetX: 0,
-                    offsetY: 0,
-                    size: 10,
-                    alpha: 255
-                });
-                window.quantumStates.push({ r: 255, g: 0, b: 0, a: 255 });
-            }
-            console.log(`Initialized ${window.particles.length} default particles`);
         }
 
         function showStep(stepIndex) {
@@ -315,7 +299,7 @@
 
         window.setLanguageAndNext = (lang) => {
             console.log(`Language set to: ${lang}, moving to step 1`);
-            // Здесь должна быть логика смены языка (предполагается, что она в utils.js или globals.js)
+            // Логика смены языка (предполагается в utils.js или globals.js)
             showStep(1);
         };
 
@@ -333,7 +317,6 @@
             if (cameraButton) {
                 cameraButton.addEventListener('click', window.activateCamera);
             }
-            // Добавляем обработчик для кнопок "Продолжить"
             document.querySelectorAll('.continue').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const stepElement = e.target.closest('.step');
