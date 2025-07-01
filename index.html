@@ -149,10 +149,10 @@
                     window.quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
                         window.img = img;
                         if (window.currentStep === 2) {
-                            window.showStep(2.1);
+                            showStep(2.1);
                             if (typeof initializeParticles === 'function') initializeParticles(img);
                         }
-                    });
+                    }, (err) => console.error('Error loading image:', err));
                 }
             };
             input.click();
@@ -172,7 +172,7 @@
                 window.quantumSketch.remove();
                 window.quantumSketch = null;
             }
-            window.showStep(0);
+            showStep(0);
         };
         window.shareToArchive = () => alert('Функция поделиться в архив пока не реализована.');
         window.aboutAuthors = () => alert('Информация об авторах пока не реализована.');
@@ -238,7 +238,7 @@
             }, 'portrait-animation-container');
         }
 
-        window.showStep = (stepIndex) => {
+        function showStep(stepIndex) {
             const steps = document.querySelectorAll('.step');
             steps.forEach(step => {
                 const stepId = parseFloat(step.id.replace('step-', '')) || stepIndex;
@@ -254,12 +254,9 @@
             console.log('Current step:', stepIndex);
             if (stepIndex >= 2 && !window.quantumSketch) initializeQuantumSketch();
             if (stepIndex === 2.1 && window.quantumSketch) window.quantumSketch.startAnimation();
-            if (stepIndex === 5) initializeStep5EventListeners();
-        };
+        }
 
-        window.setLanguageAndNext = (lang) => {
-            window.showStep(1);
-        };
+        window.setLanguageAndNext = (lang) => showStep(1);
 
         document.addEventListener('DOMContentLoaded', () => {
             const uploadButton = document.getElementById('uploadImage');
@@ -269,15 +266,11 @@
             const cameraButton = document.getElementById('activateCamera');
             if (cameraButton) cameraButton.addEventListener('click', window.activateCamera);
             document.querySelectorAll('.continue').forEach(button => {
-                button.removeEventListener('click', window.handleContinue); // Удаляем старые обработчики
-                button.addEventListener('click', window.handleContinue = (e) => {
+                button.addEventListener('click', (e) => {
                     const stepElement = e.target.closest('.step');
-                    if (!stepElement) {
-                        console.error('No step element found for continue button');
-                        return;
-                    }
                     const current = parseFloat(stepElement.id.replace('step-', '')) || window.currentStep;
-                    moveToNextStep(current);
+                    let nextStep = current + (current === 2 ? 0.1 : 1);
+                    if (nextStep <= 7) showStep(nextStep);
                 });
             });
         });
