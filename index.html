@@ -220,8 +220,11 @@
                     sketch.loop();
                 };
                 sketch.draw = () => {
-                    console.log('draw called, currentStep:', window.currentStep, 'frame:', window.frame, 'particles:', window.particles.length, 'trailBuffer:', !!window.trailBuffer);
+                    console.log('draw called, currentStep:', window.currentStep, 'frame:', window.frame, 'particles:', window.particles.length, 'trailBuffer:', !!window.trailBuffer, 'canvasVisible:', document.querySelector('#portrait-animation-container canvas')?.style.display !== 'none');
                     sketch.background(0);
+                    // Тестовая анимация: мигающий красный круг
+                    sketch.fill(255, 0, 0, 255 * (Math.sin(window.frame * 0.1) + 1) / 2);
+                    sketch.ellipse(200, 200, 50, 50);
                     if (window.currentStep < 2 || !window.img) {
                         sketch.fill(255);
                         sketch.textSize(16);
@@ -241,12 +244,6 @@
                             initializeParticles(window.img);
                         }
                         updateParticles();
-                        if (window.trailBuffer) {
-                            sketch.image(window.trailBuffer, 0, 0);
-                            console.log('trailBuffer rendered on canvas');
-                        } else {
-                            console.warn('trailBuffer not available in draw');
-                        }
                     }
                     sketch.fill(255);
                     sketch.textSize(16);
