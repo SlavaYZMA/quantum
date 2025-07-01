@@ -1,25 +1,31 @@
-// Глобальная функция для записи наблюдения
 window.recordObservation = () => {
-    if (window.canvas && !window.isPaused) {
+    if (window.canvas && !window.isPaused && window.quantumSketch) {
         window.isPaused = true;
-        noLoop();
+        window.quantumSketch.noLoop();
         let dataURL = window.canvas.elt.toDataURL();
-        document.getElementById('saved-portrait').src = dataURL;
-        document.getElementById('saved-portrait').style.display = 'block';
-        window.fixationCount = 1; // Устанавливаем фиксацию
-        console.log('Observation recorded, fixationCount set to 1');
+        const savedPortrait = document.getElementById('saved-portrait');
+        if (savedPortrait) {
+            savedPortrait.src = dataURL;
+            savedPortrait.style.display = 'block';
+            window.fixationCount = 1;
+            console.log('Observation recorded, fixationCount set to 1');
+        } else {
+            console.error('Saved portrait element not found');
+        }
+    } else {
+        console.error('Canvas or quantumSketch not available for recording observation');
     }
 };
 
-// Глобальная функция для сохранения в архив
 window.shareToArchive = () => {
-    let portraitName = document.getElementById('portrait-name').value;
-    if (portraitName && document.getElementById('saved-portrait').src) {
-        let dataURL = document.getElementById('saved-portrait').src;
-        console.log('Portrait', portraitName, 'shared to archive:', dataURL);
-        alert('Изображение сохранено в архиве под названием: ' + portraitName);
-        showStep(0);
+    const portraitName = document.getElementById('portraitName');
+    const savedPortrait = document.getElementById('saved-portrait');
+    if (portraitName && portraitName.value && savedPortrait && savedPortrait.src) {
+        let dataURL = savedPortrait.src;
+        console.log('Portrait', portraitName.value, 'shared to archive:', dataURL);
+        alert('Изображение сохранено в архиве под названием: ' + portraitName.value);
+        showStep(7);
     } else {
-        alert('Введите название портрета!');
+        alert('Введите название портрета или убедитесь, что изображение сохранено!');
     }
 };
