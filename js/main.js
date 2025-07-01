@@ -4,6 +4,7 @@ let currentStep = 0;
 function initializeSteps() {
     steps = document.querySelectorAll('.step');
     if (steps.length > 0) {
+        console.log('initializeSteps: Found', steps.length, 'steps');
         showStep(0);
     } else {
         console.error('No steps found in document. Check your HTML structure.');
@@ -11,12 +12,13 @@ function initializeSteps() {
 }
 
 function showStep(stepIndex) {
+    console.log('showStep called with stepIndex:', stepIndex);
     steps.forEach((step) => {
         const stepId = parseFloat(step.id.replace('step-', ''));
         if (stepId === stepIndex) {
             step.classList.add('active');
             step.style.display = 'flex';
-            // Перемещение canvas в текущий контейнер
+            // Перемещение canvas
             const canvas = document.querySelector('.quantum-canvas');
             const targetContainer = document.querySelector(`#portrait-animation-container-step-${stepId}`);
             if (canvas && targetContainer && stepId >= 2) {
@@ -24,19 +26,22 @@ function showStep(stepIndex) {
                 canvas.style.display = 'block';
                 console.log('Moved canvas to step:', stepId);
             } else if (stepId >= 2) {
-                console.error('Failed to move canvas:', { canvas, targetContainer });
+                console.error('Failed to move canvas:', { canvas: !!canvas, targetContainer: !!targetContainer });
             }
-            if (stepId === 2.1 && window.img && !window.particles.length) {
-                initializeParticles(window.img);
+            if (stepId === 2.1 && window.img) {
+                console.log('Initializing particles for step 2.1, img:', !!window.img);
+                window.initializeParticles(window.img);
                 if (window.quantumSketch) {
-                    console.error('Attempting startAnimation on step:', stepId);
+                    console.log('Attempting startAnimation on step:', stepId);
                     window.quantumSketch.startAnimation();
                 } else {
                     console.error('quantumSketch not initialized on step 2.1');
                 }
             } else if (stepId >= 3 && window.quantumSketch) {
-                console.error('Attempting startAnimation on step:', stepId);
+                console.log('Attempting startAnimation on step:', stepId);
                 window.quantumSketch.startAnimation();
+            } else if (stepId >= 3) {
+                console.error('quantumSketch not initialized for step:', stepId);
             }
             if (stepId === 5) {
                 initializeStep5EventListeners();
@@ -51,6 +56,7 @@ function showStep(stepIndex) {
 }
 
 function moveToNextStep(current) {
+    console.log('moveToNextStep called with current:', current);
     let nextStep = current + 1;
     if (current === 2 && !window.img) {
         alert('Пожалуйста, загрузите изображение перед продолжением!');
@@ -109,6 +115,7 @@ function initializeStep5EventListeners() {
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing steps');
+    console.log('quantumSketch initialized:', window.quantumSketch);
     initializeSteps();
     document.querySelectorAll('.continue').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -117,8 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
             moveToNextStep(current);
         });
     });
-    // Проверка инициализации quantumSketch
-    console.log('quantumSketch initialized:', window.quantumSketch);
 });
 
 window.setLanguageAndNext = (lang) => {
