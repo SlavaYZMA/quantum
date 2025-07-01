@@ -19,7 +19,7 @@ function showStep(stepIndex) {
             if (stepId === 5) {
                 initializeStep5EventListeners();
             }
-            if (stepId >= 3 && window.quantumSketch && window.img) {
+            if (stepId >= 2.1 && window.quantumSketch && window.img && typeof initializeParticles === 'function') {
                 initializeParticles(window.img);
                 window.quantumSketch.startAnimation();
             }
@@ -51,6 +51,7 @@ function moveToNextStep(current) {
 }
 
 window.setLanguageAndNext = (lang) => {
+    // Убрана попытка вызова window.setLanguage
     showStep(1);
 };
 
@@ -79,19 +80,12 @@ function initializeStep5EventListeners() {
                 window.isPaused = false;
                 window.quantumSketch.loop();
                 showStep(6);
-            } else {
-                alert('Ошибка: холст не доступен для сохранения.');
             }
         });
     }
 }
 
-document.addEventListener('DOMContentLoaded', initializeSteps);
-
-document.querySelectorAll('.continue').forEach(button => {
-    button.addEventListener('click', (e) => {
-        const stepElement = e.target.closest('.step');
-        const current = parseFloat(stepElement.id.replace('step-', '')) || currentStep;
-        moveToNextStep(current);
-    });
+document.addEventListener('DOMContentLoaded', () => {
+    initializeSteps();
+    // Убраны дублирующиеся обработчики
 });
