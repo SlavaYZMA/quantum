@@ -11,8 +11,8 @@
     <section id="step-0" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</div>
         <div class="button-block">
-            <button class="language-btn" data-lang="ru">RU</button>
-            <button class="language-btn" data-lang="eng">ENG</button>
+            <button class="language-btn" data-lang="ru" onclick="window.setLanguageAndNext('ru')">RU</button>
+            <button class="language-btn" data-lang="eng" onclick="window.setLanguageAndNext('eng')">ENG</button>
         </div>
     </section>
 
@@ -231,7 +231,7 @@
                 };
                 sketch.draw = () => {
                     console.log('draw called, currentStep:', window.currentStep, 'frame:', window.frame, 'particles:', window.particles.length, 'trailBuffer:', !!window.trailBuffer, 'canvasVisible:', document.querySelector('#portrait-animation-container canvas')?.style.display !== 'none');
-                    sketch.background(0); // Черный фон для видимости частиц
+                    sketch.background(0);
                     if (window.currentStep < 2 || !window.img) {
                         sketch.fill(255);
                         sketch.textSize(16);
@@ -265,26 +265,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM fully loaded, initializing event listeners');
-            const languageButtons = document.querySelectorAll('.language-btn');
-            languageButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const lang = button.getAttribute('data-lang');
-                    window.setLanguageAndNext(lang);
-                });
-            });
-
-            const uploadButton = document.getElementById('uploadImage');
-            if (uploadButton) {
-                uploadButton.addEventListener('click', window.loadImageOnce);
-            }
-            const galleryButton = document.getElementById('openGallery');
-            if (galleryButton) {
-                galleryButton.addEventListener('click', window.openGallery);
-            }
-            const cameraButton = document.getElementById('activateCamera');
-            if (cameraButton) {
-                cameraButton.addEventListener('click', window.activateCamera);
-            }
+            // Обработчики уже определены в HTML через onclick
         });
     </script>
     <script src="js/utils.js"></script>
