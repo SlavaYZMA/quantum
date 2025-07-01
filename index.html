@@ -234,11 +234,15 @@
                     sketch.loop();
                 };
                 sketch.draw = () => {
-                    console.log('draw called, currentStep:', window.currentStep, 'frame:', window.frame, 'particles:', window.particles.length, 'trailBuffer:', !!window.trailBuffer);
-                    sketch.background(0);
+                    console.log('draw called, currentStep:', window.currentStep, 'frame:', window.frame, 'particles:', window.particles.length, 'trailBuffer:', !!window.trailBuffer, 'canvasVisible:', document.querySelector('#portrait-animation-container canvas')?.style.display !== 'none');
+                    sketch.background(255); // Белый фон для заметности
+                    sketch.fill(255, 0, 0); // Красный квадрат для теста
+                    sketch.rect(100, 100, 200, 200);
+                    sketch.fill(0);
+                    sketch.textSize(16);
+                    sketch.text(`Frame: ${window.frame}`, 10, 20);
                     if (window.currentStep < 2 || !window.img) {
                         sketch.fill(255);
-                        sketch.textSize(16);
                         sketch.text('Пожалуйста, загрузите изображение', 10, 40);
                         window.frame++;
                         return;
@@ -249,8 +253,8 @@
                     let displayHeight = window.img.height * scale;
                     let x = (sketch.width - displayWidth) / 2;
                     let y = (sketch.height - displayHeight) / 2;
-                    // sketch.image(window.img, x, y, displayWidth, displayHeight); // Закомментируй для теста
-                    console.log('Image render skipped for test, x:', x, 'y:', y, 'width:', displayWidth, 'height:', displayHeight);
+                    sketch.image(window.img, x, y, displayWidth, displayHeight);
+                    console.log('Image rendered at x:', x, 'y:', y, 'width:', displayWidth, 'height:', displayHeight);
                     if (window.currentStep >= 3 && window.isCanvasReady && window.particles.length > 0 && typeof updateParticles === 'function') {
                         updateParticles();
                         window.particles.forEach((p, i) => {
@@ -276,7 +280,7 @@
         function showStep(stepIndex) {
             const steps = document.querySelectorAll('.step');
             steps.forEach(step => {
-                const stepId = parseFloat(step.id.replace('step-', ''));
+                const stepId = parseFloat(step.id.replace('step-', '')) || stepIndex;
                 if (stepId === stepIndex) {
                     step.classList.add('active');
                     step.style.display = 'flex';
@@ -335,3 +339,5 @@
     <script src="js/globals.js"></script>
     <script src="js/main.js"></script>
     <script src="js/particles.js"></script>
+</body>
+</html>
