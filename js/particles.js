@@ -14,7 +14,7 @@ function initializeParticles(img) {
             let col = img.get(x, y);
             let brightness = window.quantumSketch.brightness(col);
             if (brightness > 10 && window.particles.length < window.maxParticles) {
-                let canvasX = x + (400 - img.width) / 2;
+                let canvasX = x + (400 - img.width) / 2; // Смещение для центрирования
                 let canvasY = y + (400 - img.height) / 2;
                 let particle = {
                     x: canvasX,
@@ -97,7 +97,9 @@ function updateParticles() {
             particle.offsetX = window.quantumSketch.random(-5, 5);
             particle.offsetY = window.quantumSketch.random(-5, 5);
         }
-        window.quantumSketch.fill(state.r, state.g, state.b, state.a);
+        // Дебажный яркий цвет для видимости
+        window.quantumSketch.fill(255, 0, 0, state.a); // Красный цвет вместо оригинального
         window.quantumSketch.ellipse(particle.x + particle.offsetX, particle.y + particle.offsetY, particle.size);
+        console.log(`Particle ${i} at x: ${particle.x + particle.offsetX}, y: ${particle.y + particle.offsetY}`);
     }
 }
