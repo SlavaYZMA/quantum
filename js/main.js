@@ -52,8 +52,8 @@ document.querySelectorAll('.continue').forEach(button => {
 });
 
 function moveToNextStep(current) {
-    let nextStep = current + 0.1;
-    if (current === 2.1) nextStep = 3; // Явный переход с 2.1 на 3
+    let nextStep = Math.floor(current) + 1; // Переход к следующему целому шагу
+    if (current === 2.1) nextStep = 3; // Специальный переход с 2.1 на 3
     if (nextStep < steps.length) {
         showStep(nextStep);
     }
