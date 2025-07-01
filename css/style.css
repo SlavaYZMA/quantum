@@ -17,7 +17,7 @@ body {
     padding: 20px;
     box-sizing: border-box;
     position: relative;
-    z-index: 0; /* Уменьшен z-index для step */
+    z-index: 0;
 }
 
 .step.active {
@@ -94,21 +94,23 @@ button:hover {
 }
 
 #portrait-animation-container {
-    display: block;
+    display: block !important;
     width: 400px;
     height: 400px;
     margin: 20px auto;
     position: relative;
-    z-index: 10; /* Увеличен z-index для холста */
+    z-index: 100; /* Еще увеличен z-index */
     background-color: #000;
+    visibility: visible !important;
 }
 
 #portrait-animation-container canvas {
-    display: block;
+    display: block !important;
     width: 400px !important;
     height: 400px !important;
     margin: 0 auto;
-    border: 2px solid #fff; /* Увеличена рамка для видимости */
+    border: 3px solid #f00; /* Красная рамка для видимости */
+    visibility: visible !important;
 }
 
 #quantum-visualization-container {
