@@ -52,7 +52,7 @@ document.querySelectorAll('.continue').forEach(button => {
 
 function moveToNextStep(current) {
     let nextStep = current + 1;
-    if (current === 2.1) nextStep = 3; // Переход с 2.1 на 3
+    if (current === 2.1) nextStep = 3; // Явный переход с 2.1 на 3
     if (nextStep < steps.length) {
         showStep(nextStep);
     }
