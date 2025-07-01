@@ -138,49 +138,29 @@
         window.trailBuffer = null;
 
         window.loadImageOnce = () => {
-            if (window.img) {
-                console.warn('Image already loaded, skipping new load');
-                return;
-            }
+            if (window.img) return;
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
             input.onchange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    if (!window.quantumSketch) {
-                        initializeQuantumSketch();
-                    }
+                    if (!window.quantumSketch) initializeQuantumSketch();
                     window.quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
                         window.img = img;
-                        console.log('Image loaded, size:', img.width, 'x', img.height);
                         if (window.currentStep === 2) {
                             showStep(2.1);
-                            if (typeof initializeParticles === 'function') {
-                                initializeParticles(img);
-                            }
+                            if (typeof initializeParticles === 'function') initializeParticles(img);
                         }
-                    }, (err) => {
-                        console.error('Error loading image:', err);
-                        alert('Ошибка при загрузке изображения');
                     });
                 }
             };
             input.click();
         };
 
-        window.activateCamera = () => {
-            console.log('Camera activation requested');
-            alert('Функция активации камеры пока не реализована.');
-        };
-
-        window.openGallery = () => {
-            console.log('Gallery opened');
-            alert('Функция выбора из архива пока не реализована.');
-        };
-
+        window.activateCamera = () => alert('Функция активации камеры пока не реализована.');
+        window.openGallery = () => alert('Функция выбора из архива пока не реализована.');
         window.restart = () => {
-            console.log('Restarting application');
             window.img = null;
             window.currentQuantumState = 'init';
             window.particles = [];
@@ -194,22 +174,11 @@
             }
             showStep(0);
         };
-
-        window.shareToArchive = () => {
-            console.log('Sharing to archive');
-            alert('Функция поделиться в архив пока не реализована.');
-        };
-
-        window.aboutAuthors = () => {
-            console.log('Showing about authors');
-            alert('Информация об авторах пока не реализована.');
-        };
+        window.shareToArchive = () => alert('Функция поделиться в архив пока не реализована.');
+        window.aboutAuthors = () => alert('Информация об авторах пока не реализована.');
 
         function initializeQuantumSketch() {
-            if (window.quantumSketch) {
-                console.log('quantumSketch already initialized');
-                return;
-            }
+            if (window.quantumSketch) return;
             const container = document.getElementById('portrait-animation-container');
             if (!container) {
                 console.error('Container portrait-animation-container not found');
@@ -221,20 +190,17 @@
                     console.log('p5 setup called');
                     let canvas = sketch.createCanvas(400, 400);
                     canvas.parent('portrait-animation-container');
-                    console.log('Canvas created, width:', sketch.width, 'height:', sketch.height);
+                    console.log('Canvas created, width: 400, height: 400');
                     sketch.pixelDensity(1);
                     window.trailBuffer = sketch.createGraphics(400, 400);
-                    window.trailBuffer.pixelDensity(1);
                     window.isCanvasReady = true;
-                    if (window.img && typeof initializeParticles === 'function') {
-                        initializeParticles(window.img);
-                    }
+                    if (window.img && typeof initializeParticles === 'function') initializeParticles(window.img);
                     sketch.loop();
                 };
                 sketch.draw = () => {
                     console.log('draw called, currentStep:', window.currentStep, 'canvasVisible:', document.querySelector('#portrait-animation-container canvas')?.style.display !== 'none');
-                    sketch.background(255); // Белый фон для заметности
-                    sketch.fill(255, 0, 0); // Красный квадрат для теста
+                    sketch.background(255);
+                    sketch.fill(255, 0, 0);
                     sketch.rect(100, 100, 200, 200);
                     sketch.fill(0);
                     sketch.textSize(16);
@@ -266,7 +232,6 @@
                     }
                 };
                 sketch.startAnimation = () => {
-                    console.log('Starting animation, currentStep:', window.currentStep);
                     window.currentQuantumState = 'superposition';
                     sketch.loop();
                 };
@@ -286,42 +251,26 @@
                 }
             });
             window.currentStep = stepIndex;
-            console.log('Updated currentStep to:', window.currentStep);
-            if (stepIndex >= 2 && !window.quantumSketch) {
-                initializeQuantumSketch();
-            }
-            if (stepIndex === 2.1 && window.quantumSketch) {
-                window.quantumSketch.startAnimation();
-            }
+            console.log('Current step:', stepIndex);
+            if (stepIndex >= 2 && !window.quantumSketch) initializeQuantumSketch();
+            if (stepIndex === 2.1 && window.quantumSketch) window.quantumSketch.startAnimation();
         }
 
-        window.setLanguageAndNext = (lang) => {
-            console.log('Language set to:', lang);
-            showStep(1);
-        };
+        window.setLanguageAndNext = (lang) => showStep(1);
 
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM fully loaded');
             const uploadButton = document.getElementById('uploadImage');
-            if (uploadButton) {
-                uploadButton.addEventListener('click', window.loadImageOnce);
-            }
+            if (uploadButton) uploadButton.addEventListener('click', window.loadImageOnce);
             const galleryButton = document.getElementById('openGallery');
-            if (galleryButton) {
-                galleryButton.addEventListener('click', window.openGallery);
-            }
+            if (galleryButton) galleryButton.addEventListener('click', window.openGallery);
             const cameraButton = document.getElementById('activateCamera');
-            if (cameraButton) {
-                cameraButton.addEventListener('click', window.activateCamera);
-            }
+            if (cameraButton) cameraButton.addEventListener('click', window.activateCamera);
             document.querySelectorAll('.continue').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const stepElement = e.target.closest('.step');
                     const current = parseFloat(stepElement.id.replace('step-', '')) || window.currentStep;
                     let nextStep = current + (current === 2 ? 0.1 : 1);
-                    if (nextStep <= 7) {
-                        showStep(nextStep);
-                    }
+                    if (nextStep <= 7) showStep(nextStep);
                 });
             });
         });
