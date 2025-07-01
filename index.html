@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Квантовые портреты</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+    <script>
+        // Предварительное определение steps для доступности
+        const steps = document.querySelectorAll('.step');
+    </script>
 </head>
 <body>
     <section id="step-0" class="step">
@@ -186,7 +191,6 @@
         </div>
     </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <script>
         let quantumSketch = null;
         window.img = null;
@@ -204,18 +208,12 @@
                 const file = e.target.files[0];
                 if (file) {
                     console.log('Loading image:', file.name);
-                    if (!quantumSketch) initializeQuantumSketch();
+                    initializeQuantumSketch();
                     quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
                         window.img = img;
                         console.log('Image loaded successfully, size:', img.width, 'x', img.height);
-                        console.log('Checking step-2-1 existence:', !!document.getElementById('step-2-1'));
                         if (window.currentStep === 2 && document.getElementById('step-2-1')) {
-                            waitForStep('step-2-1', () => {
-                                console.log('Step 2.1 is ready, transitioning');
-                                showStep(2.1);
-                            });
-                        } else {
-                            console.error('Step 2.1 not found or current step is not 2, staying on step 2');
+                            showStep(2.1);
                         }
                     }, (err) => {
                         console.error('Error loading image:', err);
@@ -225,20 +223,6 @@
             input.click();
         };
 
-        function waitForStep(stepId, callback) {
-            const checkStep = () => {
-                const step = document.getElementById(stepId);
-                if (step && step.offsetParent !== null) {
-                    console.log(`${stepId} is now visible and ready`);
-                    callback();
-                } else {
-                    console.log(`Waiting for ${stepId} to be ready...`);
-                    requestAnimationFrame(checkStep);
-                }
-            };
-            requestAnimationFrame(checkStep);
-        }
-
         function initializeQuantumSketch() {
             if (quantumSketch) return;
             quantumSketch = new p5((sketch) => {
@@ -246,15 +230,6 @@
                 let isPaused = false;
                 sketch.setup = () => {
                     let container = document.getElementById('portrait-animation-container');
-                    console.log('Checking container:', container, 'offsetParent:', container?.offsetParent, 'display:', container?.style.display, 'visibility:', container?.style.visibility);
-                    if (!container || container.offsetParent === null || container.style.display === 'none' || container.style.visibility === 'hidden') {
-                        console.error('Container not visible or not in DOM, retrying in 500ms');
-                        setTimeout(() => {
-                            container.style.display = 'block'; // Временное отображение
-                            initializeQuantumSketch();
-                        }, 500);
-                        return;
-                    }
                     let canvas = sketch.createCanvas(400, 400).parent('portrait-animation-container');
                     canvas.canvas.getContext('2d').willReadFrequently = true;
                     console.log('Canvas created, size:', sketch.width, 'x', sketch.height);
@@ -292,8 +267,6 @@
                                 }
                             }
                         }
-                    } else if (!window.img) {
-                        console.log('No image available for drawing');
                     }
                 };
                 sketch.mousePressed = () => {
@@ -402,7 +375,6 @@
         });
 
         // Инициализация первого шага
-        console.log('Initial step setup, all continue buttons:', document.querySelectorAll('.continue'));
         if (steps && steps.length > 0) {
             console.log(`Steps found: ${steps.length}`);
             showStep(0);
