@@ -222,6 +222,7 @@
                     console.log('p5 setup called');
                     let canvas = sketch.createCanvas(400, 400);
                     canvas.parent('portrait-animation-container');
+                    console.log('Canvas created, width:', sketch.width, 'height:', sketch.height);
                     sketch.pixelDensity(1);
                     window.trailBuffer = sketch.createGraphics(400, 400);
                     window.trailBuffer.pixelDensity(1);
@@ -248,21 +249,20 @@
                     let displayHeight = window.img.height * scale;
                     let x = (sketch.width - displayWidth) / 2;
                     let y = (sketch.height - displayHeight) / 2;
-                    sketch.image(window.img, x, y, displayWidth, displayHeight);
-                    console.log('Image rendered at x:', x, 'y:', y, 'width:', displayWidth, 'height:', displayHeight);
+                    // sketch.image(window.img, x, y, displayWidth, displayHeight); // Закомментируй для теста
+                    console.log('Image render skipped for test, x:', x, 'y:', y, 'width:', displayWidth, 'height:', displayHeight);
                     if (window.currentStep >= 3 && window.isCanvasReady && window.particles.length > 0 && typeof updateParticles === 'function') {
                         updateParticles();
                         window.particles.forEach((p, i) => {
-                            // Ограничение координат
                             p.x = Math.max(0, Math.min(400, p.x));
                             p.y = Math.max(0, Math.min(400, p.y));
                             p.offsetX = Math.max(-p.x, Math.min(400 - p.x, p.offsetX));
                             p.offsetY = Math.max(-p.y, Math.min(400 - p.y, p.offsetY));
-                            // Отрисовка поверх изображения
                             let state = window.quantumStates[i] || { r: 255, g: 0, b: 0, a: 255 };
                             sketch.fill(state.r, state.g, state.b, state.a);
                             sketch.ellipse(p.x + p.offsetX, p.y + p.offsetY, p.size || 10);
                         });
+                        console.log('Particles drawn:', window.particles.length);
                     }
                 };
                 sketch.startAnimation = () => {
@@ -299,7 +299,6 @@
 
         window.setLanguageAndNext = (lang) => {
             console.log(`Language set to: ${lang}, moving to step 1`);
-            // Логика смены языка (предполагается в utils.js или globals.js)
             showStep(1);
         };
 
