@@ -21,6 +21,7 @@ function showStep(stepIndex) {
                 initializeStep5EventListeners();
             }
             if (stepId >= 3 && window.quantumSketch) {
+                console.log('Starting animation for step:', stepId);
                 window.quantumSketch.startAnimation();
             }
         } else {
@@ -29,7 +30,7 @@ function showStep(stepIndex) {
         }
     });
     currentStep = stepIndex;
-    window.currentStep = currentStep;
+    window.currentStep = stepIndex;
     console.log(`Updated currentStep to: ${currentStep}`);
 }
 
@@ -66,6 +67,7 @@ function moveToNextStep(current) {
         nextStep = 3;
     }
     if (nextStep <= 7) {
+        console.log(`Moving to next step: ${nextStep}`);
         showStep(nextStep);
     } else {
         console.warn(`No step defined for index: ${nextStep}`);
