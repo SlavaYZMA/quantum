@@ -179,6 +179,8 @@ window.updateParticles = function(sketch) {
         return;
     }
     console.log('updateParticles called, particles: ' + window.particles.length + ', currentStep: ' + window.currentStep);
+    window.terminalMessages.push(`[UPDATE] Updating quantum particles on step ${window.currentStep}`);
+    window.updateTerminalLog();
     window.frame = window.frame || 0;
     window.frame++;
 
@@ -189,7 +191,7 @@ window.updateParticles = function(sketch) {
     sketch.drawingContext.fillStyle = gradient;
     sketch.rect(0, 0, 400, 400);
 
-    // Квантовая декомпозиция
+    // Квантовая декомпозиция только на шаге 4
     if (window.currentStep === 4 && window.decompositionTimer < 4) {
         window.decompositionTimer += 0.015;
         if (window.img) {
@@ -200,6 +202,9 @@ window.updateParticles = function(sketch) {
             window.terminalMessages.push(`[DECOMPOSITION] Portrait fading, alpha: ${imgAlpha.toFixed(0)}`);
             window.updateTerminalLog();
         }
+    } else if (window.currentStep === 5) {
+        window.terminalMessages.push(`[STATE] Stable quantum state, no decomposition`);
+        window.updateTerminalLog();
     }
 
     // Обновление волнового пакета мыши
@@ -213,7 +218,7 @@ window.updateParticles = function(sketch) {
         try {
             var state = window.quantumStates[i];
 
-            // Квантовая декомпозиция с "взрывным" эффектом
+            // Квантовая декомпозиция с "взрывным" эффектом только на шаге 4
             if (window.currentStep === 4 && window.decompositionTimer < 4) {
                 p.decompositionProgress = Math.min(1, p.decompositionProgress + 0.015);
                 state.a = Math.floor(p.decompositionProgress * 255);
