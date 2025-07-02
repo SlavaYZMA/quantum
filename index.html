@@ -184,6 +184,17 @@
                 sketch.loop();
                 console.log('Animation started');
             };
+
+            sketch.switchCanvasParent = function(stepIndex) {
+                var canvas = document.querySelector('.quantum-canvas');
+                if (stepIndex === 4) {
+                    canvas.parent('portrait-animation-container-step-4');
+                    console.log('Canvas switched to portrait-animation-container-step-4');
+                } else if (stepIndex === 5) {
+                    canvas.parent('portrait-animation-container-step-5');
+                    console.log('Canvas switched to portrait-animation-container-step-5');
+                }
+            };
         });
 
         document.getElementById('uploadImage').addEventListener('click', function() {
@@ -270,6 +281,7 @@
                 console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + stepIndex);
             });
             if (stepIndex === 4 || stepIndex === 5) {
+                window.quantumSketch.switchCanvasParent(stepIndex);
                 window.quantumSketch.startAnimation();
                 window.terminalMessages = [];
                 window.terminalMessages.push(`[INIT] Quantum portrait animation started for step ${stepIndex}`);
