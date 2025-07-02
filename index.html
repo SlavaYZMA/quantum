@@ -162,6 +162,22 @@
         };
 
         window.quantumSketch = new p5(sketch);
+
+        // Функция для управления отображением миниатюры и оригинального портрета
+        function updateThumbnailsDisplay() {
+            const thumbnails = document.querySelectorAll('#thumbnail-portrait');
+            const originals = document.querySelectorAll('#original-portrait');
+            const isVisible = window.currentStep === 4 || window.currentStep === 5;
+            thumbnails.forEach(thumbnail => {
+                thumbnail.style.display = isVisible ? 'block' : 'none';
+                console.log('Thumbnail display set to:', thumbnail.style.display, 'for step:', window.currentStep);
+            });
+            originals.forEach(original => {
+                original.style.display = isVisible ? 'block' : 'none';
+                console.log('Original portrait display set to:', original.style.display, 'for step:', window.currentStep);
+            });
+        }
+
         document.getElementById('uploadImage').addEventListener('click', () => {
             let input = document.createElement('input');
             input.type = 'file';
@@ -182,15 +198,16 @@
                     window.img = img;
                     const thumbnails = document.querySelectorAll('#thumbnail-portrait');
                     const originals = document.querySelectorAll('#original-portrait');
+                    console.log('Found thumbnails:', thumbnails.length, 'originals:', originals.length);
                     thumbnails.forEach(thumbnail => {
                         thumbnail.src = URL.createObjectURL(file);
                         thumbnail.style.display = window.currentStep === 4 || window.currentStep === 5 ? 'block' : 'none';
-                        console.log('Updated thumbnail src');
+                        console.log('Updated thumbnail src:', thumbnail.src, 'display:', thumbnail.style.display);
                     });
                     originals.forEach(original => {
                         original.src = URL.createObjectURL(file);
                         original.style.display = window.currentStep === 4 || window.currentStep === 5 ? 'block' : 'none';
-                        console.log('Updated original portrait src');
+                        console.log('Updated original portrait src:', original.src, 'display:', original.style.display);
                     });
                     window.moveToNextStep(2);
                     input.remove();
@@ -201,6 +218,14 @@
             };
             input.click();
         });
+
+        // Перехватываем moveToNextStep для управления отображением
+        const originalMoveToNextStep = window.moveToNextStep;
+        window.moveToNextStep = function(stepIndex) {
+            console.log('moveToNextStep called with stepIndex:', stepIndex);
+            originalMoveToNextStep(stepIndex);
+            updateThumbnailsDisplay();
+        };
     </script>
 </body>
 </html>
