@@ -5,6 +5,18 @@ window.noiseScale = 0.02;
 window.chaosFactor = 1.0;
 window.mouseInfluenceRadius = 50;
 
+// Define step transitions explicitly
+const stepTransitions = {
+    0: 1,
+    1: 2,
+    2: 2.1,
+    2.1: 3,
+    3: 4,
+    4: 5,
+    5: 6,
+    6: 7
+};
+
 function initializeSteps() {
     console.log('initializeSteps: Found ' + document.querySelectorAll('.step').length + ' steps');
     var steps = document.querySelectorAll('.step');
@@ -14,6 +26,7 @@ function initializeSteps() {
     }
     steps.forEach(function(step, index) {
         step.style.display = index === 0 ? 'flex' : 'none';
+        console.log('Step ' + step.id + ' initial display: ' + step.style.display);
     });
     window.currentStep = 0;
 
@@ -22,7 +35,12 @@ function initializeSteps() {
     continueButtons.forEach(function(button) {
         button.addEventListener('click', function() {
             console.log('Continue button clicked, currentStep: ' + window.currentStep);
-            window.moveToNextStep(window.currentStep + 1);
+            const nextStep = stepTransitions[window.currentStep];
+            if (nextStep === undefined) {
+                console.error('No next step defined for currentStep: ' + window.currentStep);
+                return;
+            }
+            window.moveToNextStep(nextStep);
         });
     });
 
@@ -39,7 +57,11 @@ function showStep(stepIndex) {
     var steps = document.querySelectorAll('.step');
     steps.forEach(function(step) {
         var stepId = step.id.replace('step-', '');
-        step.style.display = stepId === stepIndex.toString() ? 'flex' : 'none';
+        const isActive = stepId === stepIndex.toString();
+        step.style.display = isActive ? 'flex' : 'none';
+        if (isActive) {
+            console.log('Displaying step ' + stepId + ' with display: ' + step.style.display);
+        }
     });
     window.currentStep = stepIndex;
 
