@@ -11,7 +11,7 @@ function initAudioContext() {
 }
 
 // Частоты нот для C минорной гаммы (C4, D#4, F4, G4, A#4)
-const noteFrequencies = {
+window.noteFrequencies = {
     'C4': 261.63,
     'D#4': 311.13,
     'F4': 349.23,
@@ -104,7 +104,7 @@ function playArpeggio(shape, duration = 0.5, gainValue = 0.2) {
         const oscillator = ctx.createOscillator();
         const gain = ctx.createGain();
         oscillator.type = 'sawtooth';
-        oscillator.frequency.setValueAtTime(noteFrequencies[note], ctx.currentTime + i * 0.15);
+        oscillator.frequency.setValueAtTime(window.noteFrequencies[note], ctx.currentTime + i * 0.15);
         gain.gain.setValueAtTime(gainValue, ctx.currentTime + i * 0.15);
         gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + duration / 3);
 
@@ -142,7 +142,7 @@ function playStabilization(duration = 1.5, gainValue = 0.15) {
         const oscillator = ctx.createOscillator();
         const gain = ctx.createGain();
         oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(noteFrequencies[note], ctx.currentTime);
+        oscillator.frequency.setValueAtTime(window.noteFrequencies[note], ctx.currentTime);
         gain.gain.setValueAtTime(gainValue, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
 
@@ -153,3 +153,12 @@ function playStabilization(duration = 1.5, gainValue = 0.15) {
         oscillator.stop(ctx.currentTime + duration);
     });
 }
+
+// Экспортируем функции в глобальную область
+window.initAudioContext = initAudioContext;
+window.playNote = playNote;
+window.playInterference = playInterference;
+window.playTunneling = playTunneling;
+window.playArpeggio = playArpeggio;
+window.playInitialization = playInitialization;
+window.playStabilization = playStabilization;
