@@ -14,13 +14,12 @@ function initializeSteps() {
 function showStep(stepIndex) {
     console.log('showStep called with stepIndex:', stepIndex);
     steps.forEach((step) => {
-        const stepId = parseFloat(step.id.replace('step-', ''));
+        const stepId = parseFloat(step.id.replace('step-', '').replace('-', '.'));
         if (stepId === stepIndex) {
             step.classList.add('active');
             step.style.display = 'flex';
-            // Перемещение canvas
             const canvas = document.querySelector('.quantum-canvas');
-            const targetContainer = document.querySelector(`#portrait-animation-container-step-${stepId}`);
+            const targetContainer = document.querySelector(`#portrait-animation-container-step-${stepId.toString().replace('.', '-')}`);
             if (canvas && targetContainer && stepId >= 2) {
                 targetContainer.appendChild(canvas);
                 canvas.style.display = 'block';
@@ -38,6 +37,14 @@ function showStep(stepIndex) {
                     console.error('quantumSketch not initialized on step 2.1');
                 }
             } else if (stepId >= 3 && window.quantumSketch) {
+                if (!window.particles || window.particles.length === 0) {
+                    console.log('No particles found on step', stepId, ', attempting to initialize');
+                    if (window.img) {
+                        window.initializeParticles(window.img);
+                    } else {
+                        console.error('Cannot initialize particles: window.img is not defined');
+                    }
+                }
                 console.log('Attempting startAnimation on step:', stepId);
                 window.quantumSketch.startAnimation();
             } else if (stepId >= 3) {
@@ -71,7 +78,8 @@ function moveToNextStep(current) {
     if (nextStep <= 7) {
         showStep(nextStep);
     } else {
-        console.error(`No step defined for index: ${nextStep}`);
+        console.log('Experiment completed, resetting to step 0');
+        showStep(0);
     }
 }
 
@@ -120,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.continue').forEach(button => {
         button.addEventListener('click', (e) => {
             const stepElement = e.target.closest('.step');
-            const current = parseFloat(stepElement.id.replace('step-', '')) || currentStep;
+            const current = parseFloat(stepElement.id.replace('step-', '').replace('-', '.')) || currentStep;
             moveToNextStep(current);
         });
     });
