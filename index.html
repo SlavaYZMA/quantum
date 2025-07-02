@@ -76,7 +76,6 @@
     </section>
     <section id="step-4" class="step step-centered">
         <div class="text-block typewriter">
-            <canvas class="text-canvas" style="display: block; width: 600px; height: 100px;"></canvas>
             <div data-i18n="step4_title" style="display: none;">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</div>
             <div data-i18n="step4_text1" style="display: none;">> Двигайте курсором по изображению.</div>
             <div data-i18n="step4_text2" style="display: none;">> Каждый ваш жест запускает коллапс.</div>
@@ -93,7 +92,6 @@
     </section>
     <section id="step-5" class="step step-centered">
         <div class="text-block typewriter">
-            <canvas class="text-canvas" style="display: block; width: 600px; height: 100px;"></canvas>
             <div data-i18n="step5_title" style="display: none;"></div>
             <div data-i18n="step5_text1" style="display: none;"></div>
             <div data-i18n="step5_text2" style="display: none;"></div>
@@ -141,19 +139,36 @@
         window.quantumSketch = new p5(function(sketch) {
             console.log('p5 настройка вызвана');
             let portraitCanvas, textCanvasStep4, textCanvasStep5;
+
             sketch.setup = function() {
+                const container4 = document.getElementById('portrait-animation-container-step-4');
+                if (!container4) {
+                    console.error('Контейнер portrait-animation-container-step-4 не найден');
+                    return;
+                }
                 portraitCanvas = sketch.createCanvas(400, 400);
                 portraitCanvas.class('quantum-canvas');
-                portraitCanvas.parent('portrait-animation-container-step-4');
+                portraitCanvas.parent(container4);
                 console.log('Холст портрета создан, ширина: ' + portraitCanvas.width + ', высота: ' + portraitCanvas.height);
-                textCanvasStep4 = sketch.createCanvas(600, 100);
-                textCanvasStep4.class('text-canvas');
-                textCanvasStep4.parent(document.querySelector('#step-4 .text-block'));
-                console.log('Холст текста для шага 4 создан, ширина: ' + textCanvasStep4.width + ', высота: ' + textCanvasStep4.height);
-                textCanvasStep5 = sketch.createCanvas(600, 100);
-                textCanvasStep5.class('text-canvas');
-                textCanvasStep5.parent(document.querySelector('#step-5 .text-block'));
-                console.log('Холст текста для шага 5 создан, ширина: ' + textCanvasStep5.width + ', высота: ' + textCanvasStep5.height);
+
+                const textBlock4 = document.querySelector('#step-4 .text-block');
+                const textBlock5 = document.querySelector('#step-5 .text-block');
+                if (textBlock4) {
+                    textCanvasStep4 = sketch.createCanvas(600, 100);
+                    textCanvasStep4.class('text-canvas');
+                    textBlock4.insertBefore(textCanvasStep4.elt, textBlock4.firstChild);
+                    console.log('Холст текста для шага 4 создан, ширина: ' + textCanvasStep4.width + ', высота: ' + textCanvasStep4.height);
+                } else {
+                    console.error('text-block для шага 4 не найден');
+                }
+                if (textBlock5) {
+                    textCanvasStep5 = sketch.createCanvas(600, 100);
+                    textCanvasStep5.class('text-canvas');
+                    textBlock5.insertBefore(textCanvasStep5.elt, textBlock5.firstChild);
+                    console.log('Холст текста для шага 5 создан, ширина: ' + textCanvasStep5.width + ', высота: ' + textCanvasStep5.height);
+                } else {
+                    console.error('text-block для шага 5 не найден');
+                }
                 sketch.noLoop();
             };
 
@@ -163,20 +178,34 @@
                     console.error('Quantum canvas не найден');
                     return;
                 }
-                console.log('draw вызван, currentStep: ' + window.currentStep + ', canvasVisible: ' + (quantumCanvas.style.display !== 'none'));
-                sketch.background(0);
                 if (window.currentStep === 4 || window.currentStep === 5) {
+                    sketch.drawingContext = quantumCanvas.getContext('2d');
+                    sketch.width = 400;
+                    sketch.height = 400;
+                    sketch.background(0);
                     if (window.particles && window.particles.length > 0) {
                         window.updateParticles(sketch);
                     } else {
-                        console.error('Нет частиц для рендеринга: ', { particles: window.particles ? window.particles.length : 0 });
+                        console.warn('Нет частиц для рендеринга портрета');
                     }
-                    if (window.textParticles && window.textParticles.length > 0) {
-                        window.updateTextParticles(sketch);
+
+                    const textCanvas = document.querySelector(`#step-${window.currentStep} .text-canvas`);
+                    if (textCanvas) {
+                        sketch.drawingContext = textCanvas.getContext('2d');
+                        sketch.width = 600;
+                        sketch.height = 100;
+                        sketch.background(0);
+                        if (window.textParticles && window.textParticles.length > 0) {
+                            window.updateTextParticles(sketch);
+                        } else {
+                            console.log('Нет текстовых частиц, инициализация...');
+                            window.initializeTextParticles(sketch);
+                        }
                     } else {
-                        console.log('Нет текстовых частиц для рендеринга, инициализация...');
-                        window.initializeTextParticles(sketch);
+                        console.error('Текстовый холст не найден для шага ' + window.currentStep);
                     }
+
+                    sketch.drawingContext = quantumCanvas.getContext('2d');
                     sketch.fill(255);
                     sketch.textSize(16);
                     sketch.text('Кадр: ' + (window.frame || 0), 10, 20);
@@ -223,6 +252,11 @@
         });
 
         document.getElementById('uploadImage').addEventListener('click', function() {
+            if (!window.initializeParticles) {
+                console.error('initializeParticles не определена. Проверьте загрузку particles.js');
+                alert('Ошибка: particles.js не загружен');
+                return;
+            }
             var input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
@@ -240,18 +274,24 @@
                 window.quantumSketch.loadImage(URL.createObjectURL(file), function(img) {
                     console.log('Image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
                     window.img = img;
-                    window.initializeParticles(img);
-                    var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-                    console.log('Found thumbnails: ' + thumbnails.length);
-                    thumbnails.forEach(function(thumbnail) {
-                        thumbnail.src = URL.createObjectURL(file);
-                        thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-                        console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
-                    });
-                    window.moveToNextStep(2.1);
+                    try {
+                        window.initializeParticles(img);
+                        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+                        console.log('Found thumbnails: ' + thumbnails.length);
+                        thumbnails.forEach(function(thumbnail) {
+                            thumbnail.src = URL.createObjectURL(file);
+                            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+                            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+                        });
+                        window.moveToNextStep(2.1);
+                    } catch (error) {
+                        console.error('Ошибка инициализации частиц: ' + error);
+                        alert('Ошибка при обработке изображения');
+                    }
                     input.remove();
                 }, function() {
                     console.error('Error loading image');
+                    alert('Ошибка загрузки изображения');
                     input.remove();
                 });
             };
@@ -319,6 +359,15 @@
                 window.quantumSketch.noLoop();
             }
         };
+
+        window.addEventListener('load', function() {
+            if (!window.initializeParticles) {
+                console.error('particles.js не загружен или содержит ошибки. Проверьте путь и содержимое файла.');
+                alert('Критическая ошибка: particles.js не загружен');
+            } else {
+                console.log('particles.js успешно загружен');
+            }
+        });
     </script>
 </body>
 </html>
