@@ -162,7 +162,7 @@
             };
 
             sketch.mouseMoved = function() {
-                if (window.currentStep === 4) {
+                if (window.currentStep === 4 || window.currentStep === 5) {
                     window.observeParticles(sketch, sketch.mouseX, sketch.mouseY);
                 }
             };
@@ -170,6 +170,7 @@
             sketch.mouseClicked = function() {
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     window.clickParticles(sketch, sketch.mouseX, sketch.mouseY);
+                    sketch.loop(); // Ensure animation continues after click
                 }
             };
 
