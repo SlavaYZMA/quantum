@@ -280,7 +280,7 @@ window.updateParticles = function(sketch) {
     if (window.terminalMessageCooldown <= 0) {
         window.terminalMessages.push(getRandomMessage('update'));
         window.updateTerminalLog();
-        window.terminalMessageCooldown = 120;
+        window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
     }
     window.terminalMessageCooldown--;
     window.frame = window.frame || 0;
@@ -304,13 +304,13 @@ window.updateParticles = function(sketch) {
             if (window.terminalMessageCooldown <= 0) {
                 window.terminalMessages.push(getRandomMessage('decomposition', { imgAlpha: imgAlpha.toFixed(0) }));
                 window.updateTerminalLog();
-                window.terminalMessageCooldown = 120;
+                window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
             }
         }
     } else if (window.currentStep === 5 && window.terminalMessageCooldown <= 0) {
         window.terminalMessages.push(getRandomMessage('stabilized'));
         window.updateTerminalLog();
-        window.terminalMessageCooldown = 120;
+        window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
     }
 
     // Обновление волнового пакета мыши
@@ -337,7 +337,7 @@ window.updateParticles = function(sketch) {
                 if (window.frame % 60 === 0 && window.terminalMessageCooldown <= 0) {
                     window.terminalMessages.push(getRandomMessage('scatter'));
                     window.updateTerminalLog();
-                    window.terminalMessageCooldown = 120;
+                    window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
                 }
             } else {
                 state.a = 255; // Keep particles "alive" on steps 4 and 5
@@ -354,7 +354,7 @@ window.updateParticles = function(sketch) {
                     p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
                     window.terminalMessages.push(getRandomMessage('superposition', { shape: p.shape }));
                     window.updateTerminalLog();
-                    window.terminalMessageCooldown = 120;
+                    window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
                 }
             } else {
                 p.offsetX *= 0.9; // Замедление движения при коллапсе
@@ -373,7 +373,7 @@ window.updateParticles = function(sketch) {
                     if (window.frame % 60 === 0) {
                         window.terminalMessages.push(getRandomMessage('mouseInfluence'));
                         window.updateTerminalLog();
-                        window.terminalMessageCooldown = 120;
+                        window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
                     }
                 }
             }
@@ -385,7 +385,7 @@ window.updateParticles = function(sketch) {
                 if (window.frame % 120 === 0) {
                     window.terminalMessages.push(getRandomMessage('featureAttraction'));
                     window.updateTerminalLog();
-                    window.terminalMessageCooldown = 120;
+                    window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
                 }
             }
 
@@ -495,7 +495,7 @@ window.updateParticles = function(sketch) {
             if (window.terminalMessageCooldown <= 0) {
                 window.terminalMessages.push(getRandomMessage('error', { index: i }));
                 window.updateTerminalLog();
-                window.terminalMessageCooldown = 120;
+                window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
             }
         }
     });
@@ -520,7 +520,7 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
     if (window.terminalMessageCooldown <= 0) {
         window.terminalMessages.push(getRandomMessage('mouseInfluence'));
         window.updateTerminalLog();
-        window.terminalMessageCooldown = 120;
+        window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
     }
     window.mouseWave.x = mouseX;
     window.mouseWave.y = mouseY;
@@ -535,7 +535,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
         window.updateTerminalLog();
         return;
     }
-    if (window.currentStep !== 4 && window.currentStep === 5) {
+    if (window.currentStep !== 4 && window.currentStep !== 5) {
         console.log('clickParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
         return;
     }
@@ -558,7 +558,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     console.log('Particle ' + i + ' collapsed, shape: ' + p.shape + ', alpha: ' + state.a);
                     window.terminalMessages.push(getRandomMessage('collapse', { shape: p.shape }));
                     window.updateTerminalLog();
-                    window.terminalMessageCooldown = 120;
+                    window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
                 } else {
                     p.collapsed = false;
                     p.phase = Math.random() * 2 * Math.PI;
@@ -567,7 +567,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     console.log('Particle ' + i + ' restored to superposition, shape: ' + p.shape + ', alpha: ' + state.a);
                     window.terminalMessages.push(getRandomMessage('superpositionRestore'));
                     window.updateTerminalLog();
-                    window.terminalMessageCooldown = 120;
+                    window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
                 }
             }
         } catch (error) {
@@ -575,7 +575,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
             if (window.terminalMessageCooldown <= 0) {
                 window.terminalMessages.push(getRandomMessage('error', { index: i }));
                 window.updateTerminalLog();
-                window.terminalMessageCooldown = 120;
+                window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
             }
         }
     });
