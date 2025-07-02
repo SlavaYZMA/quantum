@@ -1,7 +1,7 @@
 console.log('main.js loaded');
 
 window.currentStep = 0;
-window.noiseScale = 0.02;
+window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
 window.mouseInfluenceRadius = 50;
 
@@ -15,6 +15,18 @@ const stepTransitions = {
     4: 5,
     5: 6,
     6: 7
+};
+
+// Define back transitions
+const stepTransitionsBack = {
+    1: 0,
+    2: 1,
+    2.1: 2,
+    3: 2.1,
+    4: 3,
+    5: 4,
+    6: 5,
+    7: 6
 };
 
 function initializeSteps() {
@@ -41,6 +53,20 @@ function initializeSteps() {
                 return;
             }
             window.moveToNextStep(nextStep);
+        });
+    });
+
+    var backButtons = document.querySelectorAll('.back');
+    console.log('Found ' + backButtons.length + ' back buttons');
+    backButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            console.log('Back button clicked, currentStep: ' + window.currentStep);
+            const prevStep = stepTransitionsBack[window.currentStep];
+            if (prevStep === undefined) {
+                console.error('No previous step defined for currentStep: ' + window.currentStep);
+                return;
+            }
+            window.moveToNextStep(prevStep);
         });
     });
 
@@ -94,6 +120,7 @@ window.moveToNextStep = function(stepIndex) {
 
 window.setLanguageAndNext = function(language) {
     console.log('setLanguageAndNext called with language: ' + language);
+    window.setLanguage(language);
     window.moveToNextStep(1);
 };
 
