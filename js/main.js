@@ -1,72 +1,111 @@
 console.log('main.js loaded');
 
 window.currentStep = 0;
+window.noiseScale = 0.01;
+window.chaosFactor = 1.0;
+window.mouseInfluenceRadius = 50;
 
-window.initializeSteps = function() {
-    console.log('initializeSteps called');
-    const steps = document.querySelectorAll('.step');
-    console.log('initializeSteps: Found ' + steps.length + ' steps');
-    steps.forEach(step => {
+// Define step transitions explicitly
+const stepTransitions = {
+    0: 1,
+    1: 2,
+    2: 2.1,
+    2.1: 3,
+    3: 4,
+    4: 5,
+    5: 6,
+    6: 7
+};
+
+// Define back transitions
+const stepTransitionsBack = {
+    1: 0,
+    2: 1,
+    2.1: 2,
+    3: 2.1,
+    4: 3,
+    5: 4,
+    6: 5,
+    7: 6
+};
+
+function initializeSteps() {
+    console.log('initializeSteps: Found ' + document.querySelectorAll('.step').length + ' steps');
+    var steps = document.querySelectorAll('.step');
+    if (steps.length === 0) {
+        console.error('No steps found in DOM');
+        return;
+    }
+    steps.forEach(function(step, index) {
+        step.style.display = index === 0 ? 'flex' : 'none';
         console.log('Step ' + step.id + ' initial display: ' + step.style.display);
     });
+    window.currentStep = 0;
 
-    const continueButtons = document.querySelectorAll('.continue');
+    var continueButtons = document.querySelectorAll('.continue');
     console.log('Found ' + continueButtons.length + ' continue buttons');
-    continueButtons.forEach(button => {
-        button.addEventListener('click', () => {
+    continueButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
             console.log('Continue button clicked, currentStep: ' + window.currentStep);
-            let nextStep = window.currentStep + 1;
-            if (window.currentStep === 2) {
-                nextStep = '2-1';
+            const nextStep = stepTransitions[window.currentStep];
+            if (nextStep === undefined) {
+                console.error('No next step defined for currentStep: ' + window.currentStep);
+                return;
             }
             window.moveToNextStep(nextStep);
         });
     });
 
-    const backButtons = document.querySelectorAll('.back');
+    var backButtons = document.querySelectorAll('.back');
     console.log('Found ' + backButtons.length + ' back buttons');
-    backButtons.forEach(button => {
-        button.addEventListener('click', () => {
+    backButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
             console.log('Back button clicked, currentStep: ' + window.currentStep);
-            let prevStep = window.currentStep - 1;
-            if (window.currentStep === '2-1') {
-                prevStep = 2;
-            } else if (window.currentStep === 3) {
-                prevStep = '2-1';
+            const prevStep = stepTransitionsBack[window.currentStep];
+            if (prevStep === undefined) {
+                console.error('No previous step defined for currentStep: ' + window.currentStep);
+                return;
             }
             window.moveToNextStep(prevStep);
         });
     });
 
-    if (window.quantumSketch) {
-        console.log('quantumSketch initialized: ' + !!window.quantumSketch);
+    console.log('quantumSketch initialized: ' + !!window.quantumSketch);
+    var canvas = document.querySelector('#quantumCanvas');
+    if (canvas) {
+        canvas.style.display = 'none';
+        console.log('Canvas hidden on initialization');
     } else {
-        console.log('Canvas not found during initialization, waiting for p5.js setup');
+        console.warn('Canvas not found during initialization, waiting for p5.js setup');
     }
-};
+}
 
-window.showStep = function(stepIndex) {
+function showStep(stepIndex) {
     console.log('showStep called with stepIndex: ' + stepIndex);
-    const steps = document.querySelectorAll('.step');
-    steps.forEach(step => {
-        step.style.display = 'none';
+    var steps = document.querySelectorAll('.step');
+    steps.forEach(function(step) {
+        var stepId = step.id.replace('step-', '');
+        const isActive = stepId === stepIndex.toString();
+        step.style.display = isActive ? 'flex' : 'none';
+        if (isActive) {
+            console.log('Displaying step ' + stepId + ' with display: ' + step.style.display);
+        }
     });
-    const targetStep = document.querySelector(`#step-${String(stepIndex).replace('.', '-')}`);
-    if (targetStep) {
-        targetStep.style.display = 'flex';
-        console.log('Displaying step ' + stepIndex + ' with display: ' + targetStep.style.display);
-        window.currentStep = stepIndex;
-    } else {
-        console.error('Step not found: step-' + stepIndex);
-    }
-};
+    window.currentStep = stepIndex;
+}
 
 window.moveToNextStep = function(stepIndex) {
     console.log('moveToNextStep called with stepIndex: ' + stepIndex);
-    window.showStep(stepIndex);
+    showStep(stepIndex);
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+window.setLanguageAndNext = function(language) {
+    console.log('setLanguageAndNext called with language: ' + language);
+    window.setLanguage(language);
+    setTimeout(() => window.moveToNextStep(1), 100); // Delay to ensure text is loaded
+};
+
+document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing steps');
-    window.initializeSteps();
+    initializeSteps();
 });
