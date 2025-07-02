@@ -98,7 +98,7 @@ function getRandomMessage(type, params = {}) {
     for (let key in params) {
         msg = msg.replace(`\${${key}}`, params[key]);
     }
-    return msg;
+    return `[${new Date().toLocaleTimeString()}] ${msg}`; // Добавлены временные метки
 }
 
 // Обновление терминального лога с сообщениями для зрителя
@@ -319,14 +319,17 @@ window.updateParticles = function(sketch) {
                 messageAddedThisFrame = true;
             }
         }
-    } else if (window.currentStep === 5 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-        window.terminalMessages.push(getRandomMessage('stabilized'));
-        window.updateTerminalLog();
-        if (typeof window.playStabilization === 'function') {
-            window.playStabilization();
+    } else if (window.currentStep === 5) {
+        // На шаге 5 частицы активны, но без декомпозиции
+        if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+            window.terminalMessages.push(getRandomMessage('stabilized'));
+            window.updateTerminalLog();
+            if (typeof window.playStabilization === 'function') {
+                window.playStabilization();
+            }
+            window.globalMessageCooldown = 300; // ~5 секунд
+            messageAddedThisFrame = true;
         }
-        window.globalMessageCooldown = 300; // ~5 секунд
-        messageAddedThisFrame = true;
     }
 
     // Обновление волнового пакета мыши
