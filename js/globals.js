@@ -93,5 +93,9 @@ window.setLanguage = (lang) => {
 window.setLanguageAndNext = (lang) => {
     console.log(`setLanguageAndNext called with: ${lang}`);
     window.setLanguage(lang);
-    // Note: The actual step navigation is handled in main.js
 };
+
+window.noiseScale = 0.01;
+window.chaosFactor = 1.0;
+window.mouseInfluenceRadius = 50;
+window.frame = 0;
