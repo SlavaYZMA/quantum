@@ -280,7 +280,7 @@ window.updateParticles = function(sketch) {
     if (window.terminalMessageCooldown <= 0) {
         window.terminalMessages.push(getRandomMessage('update'));
         window.updateTerminalLog();
-        window.terminalMessageCooldown = 240; // Увеличено до ~4 секунд
+        window.terminalMessageCooldown = 360; // Увеличено до ~6 секунд
     }
     window.terminalMessageCooldown--;
     window.frame = window.frame || 0;
