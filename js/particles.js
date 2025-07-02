@@ -61,17 +61,20 @@ const messages = {
     interference: [
         "Квантовые волны частиц переплетаются, создавая узор портрета!",
         "Интерференция волн формирует квантовый облик портрета!",
-        "Частицы портрета взаимодействуют, создавая квантовые узоры!"
+        "Частицы портрета взаимодействуют, создавая квантовые узоры!",
+        "Волновые функции частиц сливаются, рисуя квантовый портрет!"
     ],
     tunneling: [
         "Частица портрета туннелировала через квантовый барьер!",
         "Квантовая магия: частица мгновенно переместилась в портрете!",
-        "Туннелирование! Частица портрета преодолела квантовый барьер."
+        "Туннелирование! Частица портрета преодолела квантовый барьер.",
+        "Частица портрета исчезла и появилась в новом месте! Квантовое туннелирование!"
     ],
     entanglement: [
         "Запутанные частицы портрета синхронизировались! Квантовая нелокальность в действии.",
         "Квантовая связь! Запутанные частицы портрета действуют как одно целое.",
-        "Нелокальность: частицы портрета связаны через квантовое поле!"
+        "Нелокальность: частицы портрета связаны через квантовое поле!",
+        "Запутанность объединяет частицы портрета на расстоянии!"
     ],
     collapse: [
         "Ваш клик вызвал коллапс волновой функции! Частица портрета зафиксирована.",
@@ -331,7 +334,7 @@ window.updateParticles = function(sketch) {
                 var wave = Math.sin(dist * 0.04 + window.decompositionTimer * 2);
                 p.offsetX += wave * 6 * p.featureWeight * (dx / (dist + 1));
                 p.offsetY += wave * 6 * p.featureWeight * (dy / (dist + 1));
-                if (i < 5 && window.frame % 60 === 0 && window.terminalMessageCooldown <= 0) {
+                if (window.frame % 60 === 0 && window.terminalMessageCooldown <= 0) {
                     window.terminalMessages.push(getRandomMessage('scatter'));
                     window.updateTerminalLog();
                     window.terminalMessageCooldown = 120;
@@ -349,11 +352,9 @@ window.updateParticles = function(sketch) {
                 p.size = (3 + 2 * n * state.probability) * (1 + p.featureWeight * 0.5);
                 if (Math.random() < 0.015 && window.terminalMessageCooldown <= 0) {
                     p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
-                    if (i < 5) {
-                        window.terminalMessages.push(getRandomMessage('superposition', { shape: p.shape }));
-                        window.updateTerminalLog();
-                        window.terminalMessageCooldown = 120;
-                    }
+                    window.terminalMessages.push(getRandomMessage('superposition', { shape: p.shape }));
+                    window.updateTerminalLog();
+                    window.terminalMessageCooldown = 120;
                 }
             } else {
                 p.offsetX *= 0.9; // Замедление движения при коллапсе
@@ -369,7 +370,7 @@ window.updateParticles = function(sketch) {
                     var influence = (window.mouseInfluenceRadius - distance) / window.mouseInfluenceRadius;
                     p.offsetX += dx * influence * 0.1;
                     p.offsetY += dy * influence * 0.1;
-                    if (i < 5 && window.frame % 60 === 0) {
+                    if (window.frame % 60 === 0) {
                         window.terminalMessages.push(getRandomMessage('mouseInfluence'));
                         window.updateTerminalLog();
                         window.terminalMessageCooldown = 120;
@@ -381,7 +382,7 @@ window.updateParticles = function(sketch) {
             if (p.featureWeight > 0.1 && window.terminalMessageCooldown <= 0) {
                 p.offsetX += (p.baseX - p.x) * 0.06 * p.featureWeight;
                 p.offsetY += (p.baseY - p.y) * 0.06 * p.featureWeight;
-                if (i < 5 && window.frame % 120 === 0) {
+                if (window.frame % 120 === 0) {
                     window.terminalMessages.push(getRandomMessage('featureAttraction'));
                     window.updateTerminalLog();
                     window.terminalMessageCooldown = 120;
@@ -405,12 +406,12 @@ window.updateParticles = function(sketch) {
                     if (distance < 60 && p.featureWeight > 0.1 && other.featureWeight > 0.1) {
                         var wave = Math.sin(distance * 0.07 + state.interferencePhase + window.frame * 0.025);
                         interference += wave * 0.08;
-                        if (Math.random() < 0.004 && i < 5 && window.terminalMessageCooldown <= 0) {
+                        if (Math.random() < 0.01 && window.terminalMessageCooldown <= 0) {
                             sketch.stroke(state.r, state.g, state.b, 25);
                             sketch.line(p.x, p.y, other.x, other.y);
                             window.terminalMessages.push(getRandomMessage('interference'));
                             window.updateTerminalLog();
-                            window.terminalMessageCooldown = 120;
+                            window.terminalMessageCooldown = 0; // Приоритет для интерференции
                         }
                     }
                 }
@@ -426,7 +427,7 @@ window.updateParticles = function(sketch) {
             if (p.y > 400 - margin) p.offsetY -= (p.y - (400 - margin)) * 0.1;
 
             // Квантовое туннелирование
-            if (Math.random() < 0.007 && !p.collapsed && window.terminalMessageCooldown <= 0) {
+            if (Math.random() < 0.015 && !p.collapsed) {
                 var oldX = p.x, oldY = p.y;
                 p.x = Math.random() * 400;
                 p.y = Math.random() * 400;
@@ -439,7 +440,7 @@ window.updateParticles = function(sketch) {
                 console.log('Particle ' + i + ' tunneled from x: ' + oldX.toFixed(2) + ', y: ' + oldY.toFixed(2) + ' to x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2));
                 window.terminalMessages.push(getRandomMessage('tunneling'));
                 window.updateTerminalLog();
-                window.terminalMessageCooldown = 120;
+                window.terminalMessageCooldown = 0; // Приоритет для туннелирования
             } else {
                 sketch.noStroke();
             }
@@ -460,7 +461,7 @@ window.updateParticles = function(sketch) {
                     console.log('Non-locality: Particle ' + p.entangledPartner + ' flashed due to ' + i);
                     window.terminalMessages.push(getRandomMessage('entanglement'));
                     window.updateTerminalLog();
-                    window.terminalMessageCooldown = 120;
+                    window.terminalMessageCooldown = 0; // Приоритет для запутанности
                 }
                 if (state.entanglementFlash > 0) {
                     sketch.stroke(state.r, state.g, state.b, state.entanglementFlash * 10);
