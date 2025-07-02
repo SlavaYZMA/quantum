@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quantum Portrait</title>
     <link rel="stylesheet" href="./css/style.css">
-    <script src="[invalid url, do not cite]
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <script src="./js/globals.js"></script>
     <script src="./js/particles.js"></script>
     <script src="./js/observer.js"></script>
@@ -189,6 +190,7 @@
                 window.quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
                     console.log('Image loaded successfully, dimensions:', img.width, img.height);
                     window.img = img;
+                    window.initializeParticles(img); // Инициализация частиц
                     const thumbnails = document.querySelectorAll('#thumbnail-portrait');
                     console.log('Found thumbnails:', thumbnails.length);
                     thumbnails.forEach(thumbnail => {
@@ -196,7 +198,7 @@
                         thumbnail.style.display = window.currentStep === 4 || window.currentStep === 5 ? 'block' : 'none';
                         console.log('Updated thumbnail src:', thumbnail.src, 'display:', thumbnail.style.display);
                     });
-                    window.moveToNextStep(2);
+                    window.moveToNextStep(2.1); // Переход на шаг 2.1
                     input.remove();
                 }, () => {
                     console.error('Error loading image');
@@ -212,7 +214,13 @@
             console.log('moveToNextStep called with stepIndex:', stepIndex);
             originalMoveToNextStep(stepIndex);
             updateThumbnailsDisplay();
+            if (stepIndex === 4 || stepIndex === 5) {
+                window.quantumSketch.startAnimation();
+            } else {
+                window.quantumSketch.noLoop();
+            }
         };
     </script>
 </body>
 </html>
+```
