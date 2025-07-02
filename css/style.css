@@ -38,6 +38,29 @@ body {
 
 .text-block div {
     margin-bottom: 10px;
+    opacity: 0; /* Скрываем строки по умолчанию */
+    overflow: hidden; /* Для эффекта пишущей машинки */
+    white-space: nowrap; /* Убедимся, что текст не переносится */
+    border-right: 2px solid #0f0; /* Курсор */
+    display: inline-block; /* Для корректной ширины анимации */
+}
+
+/* Анимация пишущей машинки с переменной скоростью */
+.text-block div.typewriter {
+    opacity: 1;
+    animation: typing calc(var(--typewriter-speed) * 1ms) steps(var(--typewriter-steps), end) forwards,
+               blink 0.7s step-end infinite;
+}
+
+/* Анимация набора текста */
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+/* Анимация мигающего курсора */
+@keyframes blink {
+    50% { border-color: transparent; }
 }
 
 .button-block {
@@ -67,6 +90,7 @@ button:hover {
     width: 400px;
     height: 400px;
     background: #000;
+    display: block;
 }
 
 .terminal-log {
@@ -81,12 +105,12 @@ button:hover {
     overflow-y: auto;
     margin-left: 10px;
     line-height: 1.4;
-    display: none; /* Hidden by default, shown on steps 4 and 5 */
+    display: none;
 }
 
 #terminal-log-step-4,
 #terminal-log-step-5 {
-    display: block; /* Show on steps 4 and 5 */
+    display: block;
 }
 
 .terminal-log div {
