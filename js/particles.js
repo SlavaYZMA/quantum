@@ -1,4 +1,3 @@
-javascript
 console.log('particles.js loaded');
 
 window.particles = [];
