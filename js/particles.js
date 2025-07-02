@@ -10,7 +10,7 @@ window.textParticles = [];
 window.initializeTextParticles = function(sketch) {
     console.log('initializeTextParticles called, currentStep: ' + window.currentStep);
     window.textParticles = [];
-    const textBlock = document.querySelector(`#step-${window.currentStep} .text-block`);
+    const textBlock = document.querySelector(`#step-${String(window.currentStep).replace('.', '-')} .text-block`);
     if (!textBlock) {
         console.error('Text block not found for step ' + window.currentStep);
         return;
@@ -18,7 +18,7 @@ window.initializeTextParticles = function(sketch) {
     const textElements = textBlock.querySelectorAll('[data-i18n]');
     let yOffset = 20;
     textElements.forEach((element, index) => {
-        const text = window.getTranslatedText(element.getAttribute('data-i18n')) || element.textContent;
+        const text = element.textContent || ''; // Используем textContent напрямую
         for (let i = 0; i < text.length; i++) {
             window.textParticles.push({
                 char: text[i],
@@ -179,10 +179,6 @@ function drawMouseWave(sketch) {
 window.updateParticles = function(sketch) {
     if (!window.quantumSketch || !window.particles || window.particles.length === 0) {
         console.error('Cannot update particles: quantumSketch: ' + !!window.quantumSketch + ', particlesLength: ' + (window.particles ? window.particles.length : 0));
-        return;
-    }
-    if (window.currentStep !== 4 && window.currentStep !== 5) {
-        console.log('updateParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
         return;
     }
     console.log('updateParticles called, particles: ' + window.particles.length + ', textParticles: ' + window.textParticles.length + ', currentStep: ' + window.currentStep);
@@ -363,7 +359,7 @@ window.updateParticles = function(sketch) {
         }
     });
 
-    // Обновление и отрисовка текста
+    // Обновление и отрисовка текста на всех шагах
     if (window.textParticles.length > 0) {
         window.textParticles.forEach(function(tp, i) {
             // Суперпозиция: дрожание текста
@@ -422,16 +418,12 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
         console.error('observeParticles: No particles or quantum states available');
         return;
     }
-    if (window.currentStep !== 4 && window.currentStep !== 5) {
-        console.log('observeParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
-        return;
-    }
     console.log('observeParticles called, mouseX: ' + mouseX + ', mouseY: ' + mouseY);
     window.mouseWave.x = mouseX;
     window.mouseWave.y = mouseY;
     window.mouseWave.radius = window.mouseInfluenceRadius;
 
-    // Инициализация текста при первом вызове на шаге
+    // Инициализация текста при первом вызове
     if (!window.textParticles || window.textParticles.length === 0) {
         window.initializeTextParticles(sketch);
     }
@@ -441,10 +433,6 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
 window.clickParticles = function(sketch, mouseX, mouseY) {
     if (!window.particles || !window.quantumStates || window.particles.length === 0) {
         console.error('clickParticles: No particles or quantum states available');
-        return;
-    }
-    if (window.currentStep !== 4 && window.currentStep !== 5) {
-        console.log('clickParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
         return;
     }
     console.log('clickParticles called, mouseX: ' + mouseX + ', mouseY: ' + mouseY);
