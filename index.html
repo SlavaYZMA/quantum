@@ -178,24 +178,31 @@
             input.type = 'file';
             input.accept = 'image/*';
             input.onchange = (e) => {
-                if (e.target.files[0] && window.quantumSketch) {
-                    window.quantumSketch.loadImage(URL.createObjectURL(e.target.files[0]), (img) => {
-                        window.img = img;
-                        console.log('Image loaded, updating thumbnail');
-                        const thumbnail = document.querySelector('#thumbnail-portrait');
-                        if (thumbnail) {
-                            thumbnail.src = URL.createObjectURL(e.target.files[0]);
-                            thumbnail.style.display = 'block';
-                        } else {
-                            console.error('Thumbnail element not found');
-                        }
-                        window.moveToNextStep(2);
-                    }, () => {
-                        console.error('Error loading image');
+                console.log('Image input changed, files:', e.target?.files?.length);
+                if (!e.target || !e.target.files || e.target.files.length === 0 || !window.quantumSketch) {
+                    console.error('Error: Invalid file input or quantumSketch not initialized', {
+                        hasTarget: !!e.target,
+                        hasFiles: e.target?.files?.length,
+                        quantumSketch: !!window.quantumSketch
                     });
-                } else {
-                    console.error('quantumSketch not initialized before loading image');
+                    return;
                 }
+                const file = e.target.files[0];
+                window.quantumSketch.loadImage(URL.createObjectURL(file), (img) => {
+                    console.log('Image loaded successfully, dimensions:', img.width, img.height);
+                    window.img = img;
+                    const thumbnails = document.querySelectorAll('#thumbnail-portrait');
+                    thumbnails.forEach(thumbnail => {
+                        thumbnail.src = URL.createObjectURL(file);
+                        thumbnail.style.display = 'block';
+                        console.log('Updated thumbnail src');
+                    });
+                    window.moveToNextStep(2);
+                    input.remove(); // Очищаем input, чтобы предотвратить повторные вызовы
+                }, () => {
+                    console.error('Error loading image');
+                    input.remove();
+                });
             };
             input.click();
         });
