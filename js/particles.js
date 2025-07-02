@@ -2,14 +2,44 @@ console.log('particles.js loaded');
 
 window.particles = [];
 window.quantumStates = [];
-window.textParticles = [];
-window.textQuantumStates = [];
 window.decompositionTimer = 0;
 window.mouseWave = { x: 0, y: 0, radius: 0, trail: [] };
-window.noiseScale = 0.01;
-window.chaosFactor = 1.0;
-window.mouseInfluenceRadius = 50;
+window.textParticles = [];
 
+// Инициализация частиц текста
+window.initializeTextParticles = function(sketch) {
+    console.log('initializeTextParticles called, currentStep: ' + window.currentStep);
+    window.textParticles = [];
+    const textBlock = document.querySelector(`#step-${window.currentStep} .text-block`);
+    if (!textBlock) {
+        console.error('Text block not found for step ' + window.currentStep);
+        return;
+    }
+    const textElements = textBlock.querySelectorAll('[data-i18n]');
+    let yOffset = 20;
+    textElements.forEach((element, index) => {
+        const text = window.getTranslatedText(element.getAttribute('data-i18n')) || element.textContent;
+        for (let i = 0; i < text.length; i++) {
+            window.textParticles.push({
+                char: text[i],
+                x: 20 + i * 10,
+                y: yOffset,
+                baseX: 20 + i * 10,
+                baseY: yOffset,
+                offsetX: 0,
+                offsetY: 0,
+                phase: Math.random() * 2 * Math.PI,
+                frequency: 0.01,
+                alpha: 255,
+                interferencePhase: Math.random() * 2 * Math.PI
+            });
+        }
+        yOffset += 30;
+    });
+    console.log('Initialized ' + window.textParticles.length + ' text particles');
+};
+
+// Инициализация частиц из портрета
 window.initializeParticles = function(img) {
     console.log('initializeParticles called, img defined: ' + !!img + ', dimensions: ' + (img ? img.width + 'x' + img.height : 'undefined'));
     if (!img || !img.pixels) {
@@ -29,11 +59,12 @@ window.initializeParticles = function(img) {
         var numParticles = 250;
         var validParticles = 0;
 
+        // Ключевые точки лица (глаза, нос, рот)
         var faceFeatures = [
-            { x: img.width * 0.35, y: img.height * 0.3, weight: 0.4 },
-            { x: img.width * 0.65, y: img.height * 0.3, weight: 0.4 },
-            { x: img.width * 0.5, y: img.height * 0.5, weight: 0.3 },
-            { x: img.width * 0.5, y: img.height * 0.7, weight: 0.3 }
+            { x: img.width * 0.35, y: img.height * 0.3, weight: 0.4 }, // Левый глаз
+            { x: img.width * 0.65, y: img.height * 0.3, weight: 0.4 }, // Правый глаз
+            { x: img.width * 0.5, y: img.height * 0.5, weight: 0.3 }, // Нос
+            { x: img.width * 0.5, y: img.height * 0.7, weight: 0.3 }  // Рот
         ];
 
         for (var i = 0; i < numParticles; i++) {
@@ -68,7 +99,7 @@ window.initializeParticles = function(img) {
                     size: 3 + brightness / 255 * 3,
                     phase: Math.random() * 2 * Math.PI,
                     frequency: 0.01,
-                    entangledPartner: Math.random() < 0.2 ? Math.floor(Math.random() * numParticlesツ) : null,
+                    entangledPartner: Math.random() < 0.2 ? Math.floor(Math.random() * numParticles) : null,
                     collapsed: false,
                     decompositionProgress: 0,
                     shape: ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)],
@@ -98,120 +129,7 @@ window.initializeParticles = function(img) {
     }
 };
 
-window.initializeTextParticles = function(sketch) {
-    console.log('initializeTextParticles called, currentStep: ' + window.currentStep);
-    window.textParticles = [];
-    window.textQuantumStates = [];
-
-    const textBlock = document.querySelector(`#step-${window.currentStep} .text-block`);
-    if (!textBlock) {
-        console.error('text-block not found for step ' + window.currentStep);
-        return;
-    }
-    const textElements = textBlock.querySelectorAll('div[data-i18n]');
-    let fullText = Array.from(textElements).map(el => el.innerText).join('\n');
-    if (!fullText.trim()) {
-        console.warn('Text empty for step ' + window.currentStep + ', using fallback text');
-        fullText = window.currentStep === 4
-            ? 'Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ\n> Двигайте курсором\n> Каждый жест\n> Система реагирует'
-            : 'Шаг 4: ФИКСАЦИЯ\n> Портрет — процесс\n> Зафиксируй миг\n> Один из тебя';
-    }
-    console.log('Text for rendering:', fullText);
-
-    let textCanvas = sketch.createGraphics(600, 100);
-    textCanvas.background(0);
-    textCanvas.fill(255);
-    textCanvas.textSize(16);
-    textCanvas.textFont('monospace'); // Use 'monospace' as fallback
-    textCanvas.textAlign(sketch.LEFT, sketch.TOP);
-    textCanvas.text(fullText, 10, 10, 580, 80);
-    textCanvas.loadPixels();
-
-    if (!textCanvas.pixels || textCanvas.pixels.length === 0) {
-        console.error('Error: textCanvas.pixels is empty or not loaded');
-        textCanvas.remove();
-        return;
-    }
-
-    const numTextParticles = 50;
-    const step = Math.max(1, Math.floor(textCanvas.width / 10));
-    let validTextParticles = 0;
-
-    for (let x = 0; x < textCanvas.width; x += step) {
-        for (let y = 0; y < textCanvas.height; y += step) {
-            const index = (x + y * textCanvas.width) * 4;
-            const brightness = (textCanvas.pixels[index] + textCanvas.pixels[index + 1] + textCanvas.pixels[index + 2]) / 3;
-            if (brightness > 30 && Math.random() < 0.5) { // Relaxed condition
-                const r = window.img && window.img.pixels ? window.img.pixels[index % (window.img.width * 4)] || 15 : 15;
-                const g = window.img && window.img.pixels ? window.img.pixels[(index % (window.img.width * 4)) + 1] || 255 : 255;
-                const b = window.img && window.img.pixels ? window.img.pixels[(index % (window.img.width * 4)) + 2] || 15 : 15;
-                window.textParticles.push({
-                    x: x,
-                    y: y,
-                    baseX: x,
-                    baseY: y,
-                    offsetX: 0,
-                    offsetY: 0,
-                    size: 3 + brightness / 255 * 2,
-                    phase: Math.random() * 2 * Math.PI,
-                    frequency: 0.01,
-                    entangledPartner: Math.random() < 0.2 ? Math.floor(Math.random() * numTextParticles) : null,
-                    collapsed: false,
-                    shape: ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)],
-                    featureWeight: 0.3
-                });
-
-                window.textQuantumStates.push({
-                    r: r,
-                    g: g,
-                    b: b,
-                    a: 200,
-                    probability: 1.0,
-                    tunnelFlash: 0,
-                    interferencePhase: Math.random() * 2 * Math.PI,
-                    entanglementFlash: 0
-                });
-                validTextParticles++;
-            }
-        }
-    }
-    console.log('Initialized ' + window.textParticles.length + ' text particles, valid: ' + validTextParticles);
-    if (validTextParticles === 0) {
-        console.error('No text particles created. Check text rendering or canvas pixels.');
-        // Fallback: create minimal particles
-        for (let i = 0; i < 10; i++) {
-            window.textParticles.push({
-                x: Math.random() * 600,
-                y: Math.random() * 100,
-                baseX: Math.random() * 600,
-                baseY: Math.random() * 100,
-                offsetX: 0,
-                offsetY: 0,
-                size: 3,
-                phase: Math.random() * 2 * Math.PI,
-                frequency: 0.01,
-                entangledPartner: null,
-                collapsed: false,
-                shape: 'ellipse',
-                featureWeight: 0.3
-            });
-            window.textQuantumStates.push({
-                r: 255,
-                g: 255,
-                b: 255,
-                a: 200,
-                probability: 1.0,
-                tunnelFlash: 0,
-                interferencePhase: Math.random() * 2 * Math.PI,
-                entanglementFlash: 0
-            });
-            validTextParticles++;
-        }
-        console.log('Created ' + validTextParticles + ' fallback text particles');
-    }
-    textCanvas.remove();
-};
-
+// Отрисовка форм
 function drawShape(sketch, x, y, size, shape, rotation, r, g, b, a, featureWeight) {
     sketch.push();
     sketch.translate(x, y);
@@ -235,6 +153,7 @@ function drawShape(sketch, x, y, size, shape, rotation, r, g, b, a, featureWeigh
     sketch.pop();
 }
 
+// Отрисовка мыши как квантового объекта
 function drawMouseWave(sketch) {
     if (window.currentStep !== 4 && window.currentStep !== 5 || window.mouseWave.radius <= 0) return;
     sketch.noFill();
@@ -248,6 +167,7 @@ function drawMouseWave(sketch) {
     sketch.strokeWeight(2);
     sketch.ellipse(window.mouseWave.x, window.mouseWave.y, window.mouseWave.radius * 2);
     
+    // Шлейф
     window.mouseWave.trail.forEach((point, i) => {
         let alpha = 100 * (1 - i / window.mouseWave.trail.length);
         sketch.stroke(200, 200, 200, alpha);
@@ -255,6 +175,7 @@ function drawMouseWave(sketch) {
     });
 }
 
+// Обновление частиц
 window.updateParticles = function(sketch) {
     if (!window.quantumSketch || !window.particles || window.particles.length === 0) {
         console.error('Cannot update particles: quantumSketch: ' + !!window.quantumSketch + ', particlesLength: ' + (window.particles ? window.particles.length : 0));
@@ -264,16 +185,18 @@ window.updateParticles = function(sketch) {
         console.log('updateParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
         return;
     }
-    console.log('updateParticles called, particles: ' + window.particles.length + ', currentStep: ' + window.currentStep);
+    console.log('updateParticles called, particles: ' + window.particles.length + ', textParticles: ' + window.textParticles.length + ', currentStep: ' + window.currentStep);
     window.frame = window.frame || 0;
     window.frame++;
 
+    // Тёмный градиентный фон
     let gradient = sketch.drawingContext.createLinearGradient(0, 0, 400, 400);
     gradient.addColorStop(0, 'rgba(20, 20, 30, 0.9)');
     gradient.addColorStop(1, 'rgba(10, 10, 20, 0.9)');
     sketch.drawingContext.fillStyle = gradient;
     sketch.rect(0, 0, 400, 400);
 
+    // Квантовая декомпозиция
     if (window.currentStep === 4 && window.decompositionTimer < 4) {
         window.decompositionTimer += 0.015;
         if (window.img) {
@@ -284,16 +207,19 @@ window.updateParticles = function(sketch) {
         }
     }
 
+    // Обновление волнового пакета мыши
     if (window.currentStep === 4 || window.currentStep === 5) {
         window.mouseWave.radius = Math.max(0, window.mouseWave.radius - 1);
         window.mouseWave.trail.push({ x: window.mouseWave.x, y: window.mouseWave.y });
         if (window.mouseWave.trail.length > 10) window.mouseWave.trail.shift();
     }
 
+    // Обновление частиц портрета
     window.particles.forEach(function(p, i) {
         try {
             var state = window.quantumStates[i];
 
+            // Квантовая декомпозиция с "взрывным" эффектом
             if (window.currentStep === 4 && window.decompositionTimer < 4) {
                 p.decompositionProgress = Math.min(1, p.decompositionProgress + 0.015);
                 state.a = Math.floor(p.decompositionProgress * 255);
@@ -304,9 +230,10 @@ window.updateParticles = function(sketch) {
                 p.offsetX += wave * 6 * p.featureWeight * (dx / (dist + 1));
                 p.offsetY += wave * 6 * p.featureWeight * (dy / (dist + 1));
             } else {
-                state.a = 255;
+                state.a = 255; // Keep particles "alive" on steps 4 and 5
             }
 
+            // Суперпозиция и неопределённость
             var n = sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale, window.frame * 0.015);
             if (!p.collapsed) {
                 p.phase += p.frequency * p.featureWeight;
@@ -317,10 +244,11 @@ window.updateParticles = function(sketch) {
                     p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
                 }
             } else {
-                p.offsetX *= 0.9;
+                p.offsetX *= 0.9; // Замедление движения при коллапсе
                 p.offsetY *= 0.9;
             }
 
+            // Влияние мыши как волнового пакета
             if (window.currentStep === 4 || window.currentStep === 5) {
                 var dx = p.x - window.mouseWave.x;
                 var dy = p.y - window.mouseWave.y;
@@ -332,17 +260,20 @@ window.updateParticles = function(sketch) {
                 }
             }
 
+            // Притяжение к ключевым точкам лица
             if (p.featureWeight > 0.1) {
                 p.offsetX += (p.baseX - p.x) * 0.06 * p.featureWeight;
                 p.offsetY += (p.baseY - p.y) * 0.06 * p.featureWeight;
             }
 
+            // Цвета, приближенные к портрету
             if (!p.collapsed) {
                 state.r = Math.min(255, Math.max(0, state.r + (n - 0.5) * 5));
                 state.g = Math.min(255, Math.max(0, state.g + (n - 0.5) * 5));
                 state.b = Math.min(255, Math.max(0, state.b + (n - 0.5) * 5));
             }
 
+            // Интерференция
             var interference = 0;
             window.particles.forEach(function(other, j) {
                 if (i !== j) {
@@ -362,12 +293,14 @@ window.updateParticles = function(sketch) {
             p.offsetX += interference * 5;
             p.offsetY += interference * 5;
 
+            // Отталкивание от краёв
             var margin = 20;
             if (p.x < margin) p.offsetX += (margin - p.x) * 0.1;
             if (p.x > 400 - margin) p.offsetX -= (p.x - (400 - margin)) * 0.1;
             if (p.y < margin) p.offsetY += (margin - p.y) * 0.1;
             if (p.y > 400 - margin) p.offsetY -= (p.y - (400 - margin)) * 0.1;
 
+            // Квантовое туннелирование
             if (Math.random() < 0.007 && !p.collapsed) {
                 var oldX = p.x, oldY = p.y;
                 p.x = Math.random() * 400;
@@ -383,6 +316,7 @@ window.updateParticles = function(sketch) {
                 sketch.noStroke();
             }
 
+            // Запутанность и нелокальность
             if (p.entangledPartner !== null && window.particles[p.entangledPartner]) {
                 var partner = window.particles[p.entangledPartner];
                 var partnerState = window.quantumStates[p.entangledPartner];
@@ -404,9 +338,11 @@ window.updateParticles = function(sketch) {
                 }
             }
 
+            // Обновление позиции
             p.x = Math.max(0, Math.min(400, p.baseX + p.offsetX));
             p.y = Math.max(0, Math.min(400, p.baseY + p.offsetY));
 
+            // Отрисовка частицы
             if (p.size > 0) {
                 sketch.fill(state.r, state.g, state.b, state.a / 5);
                 sketch.ellipse(p.x, p.y, p.size + 6, p.size + 6);
@@ -418,6 +354,7 @@ window.updateParticles = function(sketch) {
                 }
             }
 
+            // Логирование первых 5 частиц
             if (i < 5) {
                 console.log('Particle ' + i + ' at x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2) + ', size: ' + p.size.toFixed(2) + ', shape: ' + p.shape + ', color: rgb(' + state.r + ', ' + state.g + ', ' + state.b + ', ' + state.a + ')');
             }
@@ -426,125 +363,60 @@ window.updateParticles = function(sketch) {
         }
     });
 
+    // Обновление и отрисовка текста
+    if (window.textParticles.length > 0) {
+        window.textParticles.forEach(function(tp, i) {
+            // Суперпозиция: дрожание текста
+            var n = sketch.noise(tp.x * window.noiseScale, tp.y * window.noiseScale, window.frame * 0.015);
+            tp.phase += tp.frequency;
+            tp.offsetX = Math.cos(tp.phase) * 2 * n;
+            tp.offsetY = Math.sin(tp.phase) * 2 * n;
+            tp.alpha = 255 * (0.8 + 0.2 * n);
+
+            // Влияние мыши
+            var dx = tp.x - window.mouseWave.x;
+            var dy = tp.y - window.mouseWave.y;
+            var distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < window.mouseInfluenceRadius && distance > 0) {
+                var influence = (window.mouseInfluenceRadius - distance) / window.mouseInfluenceRadius;
+                tp.offsetX += dx * influence * 0.05;
+                tp.offsetY += dy * influence * 0.05;
+                tp.alpha = Math.min(255, tp.alpha + influence * 50);
+            }
+
+            // Интерференция между буквами
+            var interference = 0;
+            window.textParticles.forEach(function(other, j) {
+                if (i !== j) {
+                    var dx = tp.x - other.x;
+                    var dy = tp.y - other.y;
+                    var distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 30) {
+                        var wave = Math.sin(distance * 0.07 + tp.interferencePhase + window.frame * 0.025);
+                        interference += wave * 0.04;
+                        if (Math.random() < 0.004) {
+                            sketch.stroke(0, 255, 0, 25);
+                            sketch.line(tp.x + tp.offsetX, tp.y + tp.offsetY, other.x + other.offsetX, other.y + other.offsetY);
+                        }
+                    }
+                }
+            });
+            tp.offsetX += interference * 2;
+            tp.offsetY += interference * 2;
+
+            // Отрисовка буквы
+            sketch.fill(0, 255, 0, tp.alpha); // Зеленый цвет для текста
+            sketch.textSize(16);
+            sketch.textFont('Courier New');
+            sketch.text(tp.char, tp.x + tp.offsetX, tp.y + tp.offsetY);
+        });
+    }
+
+    // Отрисовка мыши
     drawMouseWave(sketch);
 };
 
-window.updateTextParticles = function(sketch) {
-    if (!window.textParticles || window.textParticles.length === 0) {
-        console.error('No text particles to update');
-        return;
-    }
-    if (window.currentStep !== 4 && window.currentStep !== 5) {
-        console.log('updateTextParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
-        return;
-    }
-    console.log('updateTextParticles called, textParticles: ' + window.textParticles.length);
-
-    window.textParticles.forEach(function(p, i) {
-        try {
-            var state = window.textQuantumStates[i];
-            var n = sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale, window.frame * 0.015);
-            if (!p.collapsed) {
-                p.phase += p.frequency * p.featureWeight;
-                p.offsetX = Math.cos(p.phase) * 4 * n * window.chaosFactor;
-                p.offsetY = Math.sin(p.phase) * 4 * n * window.chaosFactor;
-                p.size = (2 + n * state.probability) * (1 + p.featureWeight * 0.5);
-                if (Math.random() < 0.015) {
-                    p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
-                }
-            } else {
-                p.offsetX *= 0.9;
-                p.offsetY *= 0.9;
-            }
-
-            var dx = p.x - window.mouseWave.x;
-            var dy = p.y - window.mouseWave.y;
-            var distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < window.mouseInfluenceRadius && distance > 0 && !p.collapsed) {
-                var influence = (window.mouseInfluenceRadius - distance) / window.mouseInfluenceRadius;
-                p.offsetX += dx * influence * 0.1;
-                p.offsetY += dy * influence * 0.1;
-            }
-
-            if (p.featureWeight > 0.1) {
-                p.offsetX += (p.baseX - p.x) * 0.06 * p.featureWeight;
-                p.offsetY += (p.baseY - p.y) * 0.06 * p.featureWeight;
-            }
-
-            p.x = Math.max(0, Math.min(600, p.baseX + p.offsetX));
-            p.y = Math.max(0, Math.min(100, p.baseY + p.offsetY));
-
-            if (p.size > 0) {
-                sketch.fill(state.r, state.g, state.b, state.a / 5);
-                sketch.ellipse(p.x, p.y, p.size + 4, p.size + 4);
-                drawShape(sketch, p.x, p.y, p.size, p.shape, p.phase, state.r, state.g, state.b, state.a, p.featureWeight);
-                if (state.tunnelFlash > 0) {
-                    sketch.fill(state.r, state.g, state.b, state.tunnelFlash * 5);
-                    sketch.ellipse(p.x, p.y, p.size + 5, p.size + 5);
-                    state.tunnelFlash--;
-                }
-            }
-        } catch (error) {
-            console.error('Error updating text particle ' + i + ': ' + error);
-        }
-    });
-};
-
-window.observeTextParticles = function(sketch, mouseX, mouseY) {
-    if (!window.textParticles || window.textParticles.length === 0) {
-        console.error('observeTextParticles: No text particles available');
-        return;
-    }
-    if (window.currentStep !== 4 && window.currentStep !== 5) {
-        console.log('observeTextParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
-        return;
-    }
-    console.log('observeTextParticles called, mouseX: ' + mouseX + ', mouseY: ' + mouseY);
-    window.mouseWave.x = mouseX;
-    window.mouseWave.y = mouseY;
-    window.mouseWave.radius = window.mouseInfluenceRadius;
-};
-
-window.clickTextParticles = function(sketch, mouseX, mouseY) {
-    if (!window.textParticles || window.textParticles.length === 0) {
-        console.error('clickTextParticles: No text particles available');
-        return;
-    }
-    if (window.currentStep !== 4 && window.currentStep !== 5) {
-        console.log('clickTextParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
-        return;
-    }
-    console.log('clickTextParticles called, mouseX: ' + mouseX + ', mouseY: ' + mouseY);
-    window.textParticles.forEach(function(p, i) {
-        try {
-            var dx = mouseX - p.x;
-            var dy = mouseY - p.y;
-            var distance = Math.sqrt(dx * dx + dy * dy);
-            var state = window.textQuantumStates[i];
-
-            if (distance < window.mouseInfluenceRadius && distance > 0) {
-                if (!p.collapsed) {
-                    p.collapsed = true;
-                    state.a = 255;
-                    p.size = 4;
-                    p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
-                    sketch.fill(state.r, state.g, state.b, 180);
-                    sketch.ellipse(p.x, p.y, 12, 12);
-                    console.log('Text particle ' + i + ' collapsed, shape: ' + p.shape + ', alpha: ' + state.a);
-                } else {
-                    p.collapsed = false;
-                    p.phase = Math.random() * 2 * Math.PI;
-                    state.a = 200;
-                    p.size = 3 + (sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale) * 2);
-                    console.log('Text particle ' + i + ' restored to superposition, shape: ' + p.shape + ', alpha: ' + state.a);
-                }
-            }
-        } catch (error) {
-            console.error('Error clicking text particle ' + i + ': ' + error);
-        }
-    });
-};
-
+// Реакция частиц на движение мыши
 window.observeParticles = function(sketch, mouseX, mouseY) {
     if (!window.particles || !window.quantumStates || window.particles.length === 0) {
         console.error('observeParticles: No particles or quantum states available');
@@ -558,8 +430,14 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
     window.mouseWave.x = mouseX;
     window.mouseWave.y = mouseY;
     window.mouseWave.radius = window.mouseInfluenceRadius;
+
+    // Инициализация текста при первом вызове на шаге
+    if (!window.textParticles || window.textParticles.length === 0) {
+        window.initializeTextParticles(sketch);
+    }
 };
 
+// Реакция частиц на клик (коллапс/восстановление)
 window.clickParticles = function(sketch, mouseX, mouseY) {
     if (!window.particles || !window.quantumStates || window.particles.length === 0) {
         console.error('clickParticles: No particles or quantum states available');
