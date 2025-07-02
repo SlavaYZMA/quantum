@@ -23,51 +23,63 @@
         </div>
     </section>
     <section id="step-1" class="step step-centered">
-        <div class="text-block typewriter" data-i18n="step1_text">
-            СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН<br>
-            > Чему Шредингер может научить нас в области цифровой идентификации?<br>
-            > Добро пожаловать в экспериментальную зону.<br>
-            > Здесь наблюдение = вмешательство
+        <div class="text-block typewriter">
+            <div data-i18n="step1_title"></div>
+            <div data-i18n="step1_text1"></div>
+            <div data-i18n="step1_text2"></div>
+            <div data-i18n="step1_text3"></div>
         </div>
         <div class="button-block">
             <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
     <section id="step-2" class="step step-centered">
-        <div class="text-block typewriter" data-i18n="step2_text">
-            Шаг 1: Сканируйте лицо суперпозиции.<br>
-            Вы можете загрузить изображение, включить камеру или выбрать вариант из архива.
+        <div class="text-block typewriter">
+            <div data-i18n="step2_title"></div>
+            <div data-i18n="step2_text1"></div>
         </div>
         <div class="button-block">
             <button id="uploadImage" data-i18n="upload_image">Загрузить изображение</button>
             <button id="useCamera" data-i18n="use_camera">Включить камеру</button>
             <button id="useArchive" data-i18n="use_archive">Выбрать из архива</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
     <section id="step-2.1" class="step step-centered">
-        <div class="text-block typewriter" data-i18n="step2.1_text">
-            > Изображение успешно загружено.<br>
-            > Ваш портрет готов к квантовому преобразованию.<br>
-            > Нажмите "Продолжить" для перехода к следующему этапу.
+        <div class="text-block typewriter">
+            <div data-i18n="step2_text2"></div>
+            <div data-i18n="step2_text3"></div>
+            <div data-i18n="step2_text4"></div>
         </div>
         <div class="button-block">
             <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
     <section id="step-3" class="step step-centered">
-        <div class="text-block typewriter" data-i18n="step3_text">
-            > Подготовка к наблюдению квантового портрета.<br>
-            > На следующем этапе вы увидите, как ваш портрет взаимодействует с квантовой системой.
+        <div class="text-block typewriter">
+            <div data-i18n="step3_title"></div>
+            <div data-i18n="step3_text1"></div>
+            <div data-i18n="step3_text2"></div>
+            <div data-i18n="step3_text3"></div>
+            <div data-i18n="step3_text4"></div>
+            <div data-i18n="step3_text5"></div>
+            <div data-i18n="step3_text6"></div>
+            <div data-i18n="step3_text7"></div>
+            <div data-i18n="step3_text8"></div>
         </div>
         <div class="button-block">
             <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
     <section id="step-4" class="step step-centered">
-        <div class="text-block typewriter" data-i18n="step4_text">
-            > Наблюдение квантового портрета.<br>
-            > Перемещайте курсор, чтобы взаимодействовать с частицами.<br>
-            > Наблюдение вызывает коллапс волновой функции.
+        <div class="text-block typewriter">
+            <div data-i18n="step4_title"></div>
+            <div data-i18n="step4_text1"></div>
+            <div data-i18n="step4_text2"></div>
+            <div data-i18n="step4_text3"></div>
         </div>
         <div style="display: flex; justify-content: space-between; width: 100%;">
             <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
@@ -75,36 +87,51 @@
         </div>
         <div class="button-block">
             <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
     <section id="step-5" class="step step-centered">
-        <div class="text-block typewriter" data-i18n="step5_text">
-            > Фиксация квантового портрета.<br>
-            > Частицы подвергаются декогеренции.<br>
-            > Нажмите, чтобы сохранить результат.
+        <div class="text-block typewriter">
+            <div data-i18n="step5_title"></div>
+            <div data-i18n="step5_text1"></div>
+            <div data-i18n="step5_text2"></div>
+            <div data-i18n="step5_text3"></div>
         </div>
         <div style="display: flex; justify-content: space-between; width: 100%;">
             <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
             <div id="portrait-animation-container-step-5" style="border: 2px dashed #0f0;"></div>
         </div>
         <div class="button-block">
-            <button id="saveImage" data-i18n="save_image">Сохранить изображение</button>
+            <input id="portraitName" type="text" placeholder="Название портрета" data-i18n-placeholder="portrait_name_placeholder">
+            <button id="saveImage" data-i18n="save_observation">[ЗАПИСАТЬ НАБЛЮДЕНИЕ]</button>
+            <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
     <section id="step-6" class="step step-centered">
-        <div class="text-block typewriter" data-i18n="step6_text">
-            > Ваш квантовый портрет зафиксирован.<br>
-            > Как наблюдение изменило вашу цифровую идентичность?
+        <div class="text-block typewriter">
+            <div data-i18n="step6_title"></div>
+            <div data-i18n="step6_text1"></div>
+            <div data-i18n="step6_text2"></div>
+            <div data-i18n="step6_text3"></div>
         </div>
         <div class="button-block">
+            <button id="shareObservation" data-i18n="share_observation">[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]</button>
             <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
     <section id="step-7" class="step step-centered">
-        <div class="text-block typewriter" data-i18n="step7_text">
-            > Эксперимент завершен.<br>
-            > Квантовый портрет создан.<br>
-            > Спасибо за участие!
+        <div class="text-block typewriter">
+            <div data-i18n="step7_text1"></div>
+            <div data-i18n="step7_text2"></div>
+            <div data-i18n="step7_text3"></div>
+        </div>
+        <div class="button-block">
+            <button id="restart" data-i18n="restart">[↻ НАЧАТЬ СНАЧАЛА]</button>
+            <button id="archive" data-i18n="archive">[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]</button>
+            <button id="aboutAuthors" data-i18n="about_authors">[ОБ АВТОРАХ]</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
 
@@ -141,7 +168,7 @@
             };
 
             sketch.mouseClicked = function() {
-                if (window.currentStep === 4) {
+                if (window.currentStep === 4 || window.currentStep === 5) {
                     window.clickParticles(sketch, sketch.mouseX, sketch.mouseY);
                 }
             };
@@ -189,15 +216,36 @@
         });
 
         document.getElementById('saveImage').addEventListener('click', function() {
-            window.quantumSketch.saveCanvas('quantum_portrait.png');
-            window.moveToNextStep(6);
+            const portraitName = document.getElementById('portraitName').value || 'quantum_portrait';
+            window.quantumSketch.saveCanvas(portraitName, 'png');
+            console.log('Image saved with name: ' + portraitName);
         });
 
-        // Placeholder for camera and archive buttons (not implemented)
+        document.getElementById('shareObservation').addEventListener('click', function() {
+            window.open('https://t.me/quantum_portrait_channel', '_blank');
+            console.log('Share observation: opened Telegram channel');
+        });
+
+        document.getElementById('restart').addEventListener('click', function() {
+            window.location.reload();
+            console.log('Restart: page reloaded');
+        });
+
+        document.getElementById('archive').addEventListener('click', function() {
+            window.open('https://t.me/quantum_portrait_channel', '_blank');
+            console.log('Archive: opened Telegram channel');
+        });
+
+        document.getElementById('aboutAuthors').addEventListener('click', function() {
+            window.location.href = './about.html';
+            console.log('About authors: navigated to about.html');
+        });
+
         document.getElementById('useCamera').addEventListener('click', function() {
             console.log('Camera button clicked - functionality not implemented');
             alert('Камера пока не поддерживается.');
         });
+
         document.getElementById('useArchive').addEventListener('click', function() {
             console.log('Archive button clicked - functionality not implemented');
             alert('Архив пока не поддерживается.');
