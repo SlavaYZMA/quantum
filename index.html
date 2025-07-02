@@ -1,22 +1,28 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quantum Portrait</title>
+    <link rel="stylesheet" href="./css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-    <script src="js/particles.js"></script>
-    <link rel="stylesheet" href="css/style.css">
+    <script src="./js/globals.js"></script>
+    <script src="./js/particles.js"></script>
+    <script src="./js/observer.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/audio.js"></script>
+    <script src="./js/textSteps.js"></script>
+    <script src="./js/utils.js"></script>
 </head>
 <body>
-    <section id="step-0" class="step step-centered">
+    <section id="step-0" class="step">
         <div class="text-block typewriter" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</div>
         <div class="button-block">
-            <button onclick="nextStep(1, 'ru')">RU</button>
-            <button onclick="nextStep(1, 'en')">ENG</button>
+            <button onclick="window.setLanguageAndNext('ru')">RU</button>
+            <button onclick="window.setLanguageAndNext('en')">ENG</button>
         </div>
     </section>
-    <section id="step-1" class="step step-centered" style="display: none;">
+    <section id="step-1" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step1_text">
             СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН<br>
             > Чему Шредингер может научить нас в области цифровой идентификации?<br>
@@ -24,10 +30,10 @@
             > Здесь наблюдение = вмешательство
         </div>
         <div class="button-block">
-            <button class="continue" onclick="nextStep(2)" data-i18n="continue">Продолжить</button>
+            <button class="continue" data-i18n="continue">Продолжить</button>
         </div>
     </section>
-    <section id="step-2" class="step step-centered" style="display: none;">
+    <section id="step-2" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step2_text">
             Шаг 1: Сканируйте лицо суперпозиции.<br>
             Вы можете загрузить изображение, включить камеру или выбрать вариант из архива.
@@ -38,60 +44,60 @@
             <button id="useArchive" data-i18n="use_archive">Выбрать из архива</button>
         </div>
     </section>
-    <section id="step-2.1" class="step step-centered" style="display: none;">
+    <section id="step-2.1" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step2.1_text">
             > Изображение успешно загружено.<br>
             > Ваш портрет готов к квантовому преобразованию.<br>
             > Нажмите "Продолжить" для перехода к следующему этапу.
         </div>
         <div class="button-block">
-            <button class="continue" onclick="nextStep(3)" data-i18n="continue">Продолжить</button>
+            <button class="continue" data-i18n="continue">Продолжить</button>
         </div>
     </section>
-    <section id="step-3" class="step step-centered" style="display: none;">
+    <section id="step-3" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step3_text">
             > Подготовка к наблюдению квантового портрета.<br>
             > На следующем этапе вы увидите, как ваш портрет взаимодействует с квантовой системой.
         </div>
         <div class="button-block">
-            <button class="continue" onclick="nextStep(4)" data-i18n="continue">Продолжить</button>
+            <button class="continue" data-i18n="continue">Продолжить</button>
         </div>
     </section>
-    <section id="step-4" class="step step-centered" style="display: none;">
+    <section id="step-4" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step4_text">
             > Наблюдение квантового портрета.<br>
             > Перемещайте курсор, чтобы взаимодействовать с частицами.<br>
             > Наблюдение вызывает коллапс волновой функции.
         </div>
-        <div id="portrait-animation-container-step-4">
-            <img id="thumbnail-portrait" class="thumbnail-portrait" style="display: none;" />
-            <canvas class="quantum.canvas"></canvas>
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+            <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
+            <div id="portrait-animation-container-step-4" style="border: 2px dashed #0f0;"></div>
         </div>
     </section>
-    <section id="step-5" class="step step-centered" style="display: none;">
+    <section id="step-5" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step5_text">
             > Фиксация квантового портрета.<br>
             > Частицы подвергаются декогеренции.<br>
             > Нажмите, чтобы сохранить результат.
         </div>
-        <div id="portrait-animation-container-step-5">
-            <img id="thumbnail-portrait" class="thumbnail-portrait" style="display: none;" />
-            <canvas class="quantum-canvas"></canvas>
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+            <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
+            <div id="portrait-animation-container-step-5" style="border: 2px dashed #0f0;"></div>
         </div>
         <div class="button-block">
             <button id="saveImage" data-i18n="save_image">Сохранить изображение</button>
         </div>
     </section>
-    <section id="step-6" class="step step-centered" style="display: none;">
+    <section id="step-6" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step6_text">
             > Ваш квантовый портрет зафиксирован.<br>
             > Как наблюдение изменило вашу цифровую идентичность?
         </div>
         <div class="button-block">
-            <button class="continue" onclick="nextStep(7)" data-i18n="continue">Продолжить</button>
+            <button class="continue" data-i18n="continue">Продолжить</button>
         </div>
     </section>
-    <section id="step-7" class="step step-centered" style="display: none;">
+    <section id="step-7" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step7_text">
             > Эксперимент завершен.<br>
             > Квантовый портрет создан.<br>
@@ -100,113 +106,109 @@
     </section>
 
     <script>
-        let img;
-        window.currentStep = 0;
-        window.noiseScale = 0.02;
-        window.chaosFactor = 1.0;
-        window.mouseInfluenceRadius = 50;
+        window.quantumSketch = new p5(function(sketch) {
+            console.log('p5 setup called');
+            sketch.setup = function() {
+                var canvas = sketch.createCanvas(400, 400);
+                canvas.class('quantum-canvas');
+                canvas.parent('portrait-animation-container-step-4');
+                console.log('Canvas created, width: ' + canvas.width + ', height: ' + canvas.height);
+                sketch.noLoop();
+            };
 
-        function nextStep(step, lang) {
-            document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
-            document.getElementById(`step-${step}`).style.display = 'block';
-            window.currentStep = step;
-            console.log('Switched to step: ' + step);
-            if (lang) {
-                window.language = lang;
-                console.log('Language set to: ' + lang);
-            }
-            if (step === 4 && img) {
-                window.initializeParticles(img);
-                window.quantumSketch.loop();
-            } else if (step !== 4 && step !== 5) {
-                window.quantumSketch.noLoop();
-            }
-            updateThumbnails();
-        }
+            sketch.draw = function() {
+                console.log('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
+                sketch.background(0);
+                if (window.currentStep === 4 || window.currentStep === 5) {
+                    if (window.particles && window.particles.length > 0) {
+                        window.updateParticles(sketch);
+                    } else {
+                        console.error('No particles to render: ', { particles: window.particles ? window.particles.length : 0 });
+                    }
+                    sketch.fill(255);
+                    sketch.textSize(16);
+                    sketch.text('Frame: ' + (window.frame || 0), 10, 20);
+                }
+            };
 
-        function updateThumbnails() {
-            const thumbnails = document.querySelectorAll('#thumbnail-portrait');
-            thumbnails.forEach(thumbnail => {
-                thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-                console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + window.currentStep);
-            });
-        }
+            sketch.mouseMoved = function() {
+                if (window.currentStep === 4) {
+                    window.observeParticles(sketch.mouseX, sketch.mouseY);
+                }
+            };
 
-        function setup() {
-            let quantumCanvas = createCanvas(400, 400);
-            quantumCanvas.class('quantum-canvas');
-            quantumCanvas.parent('portrait-animation-container-step-4');
-            let quantumCanvas2 = createCanvas(400, 400);
-            quantumCanvas2.class('quantum-canvas');
-            quantumCanvas2.parent('portrait-animation-container-step-5');
-            window.quantumSketch = this;
-            noLoop();
-        }
-
-        function draw() {
-            if (window.currentStep === 4) {
-                select('#portrait-animation-container-step-4').style('display', 'flex');
-                select('#portrait-animation-container-step-5').style('display', 'none');
-                window.updateParticles(window.quantumSketch);
-            } else if (window.currentStep === 5) {
-                select('#portrait-animation-container-step-4').style('display', 'none');
-                select('#portrait-animation-container-step-5').style('display', 'flex');
-                window.updateParticles(window.quantumSketch);
-            }
-        }
-
-        function mouseMoved() {
-            if (window.currentStep === 4) {
-                window.observeParticles(window.quantumSketch, mouseX, mouseY);
-            }
-        }
-
-        function mouseClicked() {
-            if (window.currentStep === 4) {
-                window.mouseClicked(window.quantumSketch, mouseX, mouseY);
-            }
-        }
+            sketch.startAnimation = function() {
+                sketch.loop();
+                console.log('Animation started');
+            };
+        });
 
         document.getElementById('uploadImage').addEventListener('click', function() {
-            let input = document.createElement('input');
+            var input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
             input.onchange = function(e) {
-                if (e.target.files && e.target.files[0]) {
-                    let reader = new FileReader();
-                    reader.onload = function(event) {
-                        loadImage(event.target.result, function(loadedImg) {
-                            img = loadedImg;
-                            console.log('Image loaded: ' + img.width + 'x' + img.height);
-                            document.querySelectorAll('#thumbnail-portrait').forEach(thumbnail => {
-                                thumbnail.src = event.target.result;
-                            });
-                            nextStep(2.1);
-                        }, function() {
-                            console.error('Error loading image');
-                        });
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
+                console.log('Image input changed, files: ' + e.target.files.length);
+                if (!e.target || !e.target.files || e.target.files.length === 0 || !window.quantumSketch) {
+                    console.error('Error: Invalid file input or quantumSketch not initialized', {
+                        hasTarget: !!e.target,
+                        hasFiles: e.target.files ? e.target.files.length : 0,
+                        quantumSketch: !!window.quantumSketch
+                    });
+                    return;
                 }
-                input.remove();
+                var file = e.target.files[0];
+                window.quantumSketch.loadImage(URL.createObjectURL(file), function(img) {
+                    console.log('Image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
+                    window.img = img;
+                    window.initializeParticles(img);
+                    var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+                    console.log('Found thumbnails: ' + thumbnails.length);
+                    thumbnails.forEach(function(thumbnail) {
+                        thumbnail.src = URL.createObjectURL(file);
+                        thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+                        console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+                    });
+                    window.moveToNextStep(2.1);
+                    input.remove();
+                }, function() {
+                    console.error('Error loading image');
+                    input.remove();
+                });
             };
             input.click();
         });
 
+        document.getElementById('saveImage').addEventListener('click', function() {
+            window.quantumSketch.saveCanvas('quantum_portrait.png');
+            window.moveToNextStep(6);
+        });
+
+        // Placeholder for camera and archive buttons (not implemented)
         document.getElementById('useCamera').addEventListener('click', function() {
             console.log('Camera button clicked - functionality not implemented');
             alert('Камера пока не поддерживается.');
         });
-
         document.getElementById('useArchive').addEventListener('click', function() {
             console.log('Archive button clicked - functionality not implemented');
             alert('Архив пока не поддерживается.');
         });
 
-        document.getElementById('saveImage').addEventListener('click', function() {
-            window.quantumSketch.saveCanvas('quantum_portrait.png');
-            nextStep(6);
-        });
+        var originalMoveToNextStep = window.moveToNextStep;
+        window.moveToNextStep = function(stepIndex) {
+            console.log('moveToNextStep called with stepIndex: ' + stepIndex);
+            originalMoveToNextStep(stepIndex);
+            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+            thumbnails.forEach(function(thumbnail) {
+                thumbnail.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
+                console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + stepIndex);
+            });
+            if (stepIndex === 4 || stepIndex === 5) {
+                window.quantumSketch.startAnimation();
+            } else {
+                window.quantumSketch.noLoop();
+            }
+        };
     </script>
 </body>
 </html>
