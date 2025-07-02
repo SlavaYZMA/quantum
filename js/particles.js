@@ -6,7 +6,7 @@ window.decompositionTimer = 0;
 window.mouseWave = { x: 0, y: 0, radius: 0, trail: [] };
 window.terminalMessages = [];
 
-// Обновление терминального лога
+// Обновление терминального лога с сообщениями для зрителя
 window.updateTerminalLog = function() {
     const maxMessages = 10;
     while (window.terminalMessages.length > maxMessages) {
@@ -21,11 +21,11 @@ window.updateTerminalLog = function() {
 // Инициализация частиц из портрета
 window.initializeParticles = function(img) {
     console.log('initializeParticles called, img defined: ' + !!img + ', dimensions: ' + (img ? img.width + 'x' + img.height : 'undefined'));
-    window.terminalMessages.push(`[INIT] Initializing ${img ? img.width + 'x' + img.height : 'unknown'} quantum portrait`);
+    window.terminalMessages.push(`Ваш портрет превращается в квантовую систему! Частицы готовы к наблюдению.`);
     window.updateTerminalLog();
     if (!img || !img.pixels) {
         console.error('Error: window.img is not defined or pixels not loaded');
-        window.terminalMessages.push('[ERROR] Image not defined or pixels not loaded');
+        window.terminalMessages.push('Ошибка: изображение не загружено для квантовой обработки.');
         window.updateTerminalLog();
         return;
     }
@@ -37,7 +37,7 @@ window.initializeParticles = function(img) {
         img.loadPixels();
         if (!img.pixels || img.pixels.length === 0) {
             console.error('Error: img.pixels is empty or not loaded');
-            window.terminalMessages.push('[ERROR] Image pixels empty or not loaded');
+            window.terminalMessages.push('Ошибка: данные изображения недоступны.');
             window.updateTerminalLog();
             return;
         }
@@ -106,16 +106,16 @@ window.initializeParticles = function(img) {
             }
         }
         console.log('Initialized ' + window.particles.length + ' particles, valid: ' + validParticles);
-        window.terminalMessages.push(`[INIT] Initialized ${validParticles} quantum particles`);
+        window.terminalMessages.push(`Создано ${validParticles} квантовых частиц для вашего портрета.`);
         window.updateTerminalLog();
         if (validParticles === 0) {
             console.error('No valid particles created. Check image dimensions or pixel data.');
-            window.terminalMessages.push('[ERROR] No valid particles created');
+            window.terminalMessages.push('Ошибка: не удалось создать квантовые частицы.');
             window.updateTerminalLog();
         }
     } catch (error) {
         console.error('Error in initializeParticles: ' + error);
-        window.terminalMessages.push(`[ERROR] Initialization failed: ${error}`);
+        window.terminalMessages.push(`Ошибка при создании квантовой системы: ${error}`);
         window.updateTerminalLog();
     }
 };
@@ -170,7 +170,7 @@ function drawMouseWave(sketch) {
 window.updateParticles = function(sketch) {
     if (!window.quantumSketch || !window.particles || window.particles.length === 0) {
         console.error('Cannot update particles: quantumSketch: ' + !!window.quantumSketch + ', particlesLength: ' + (window.particles ? window.particles.length : 0));
-        window.terminalMessages.push('[ERROR] Cannot update: No particles or quantumSketch');
+        window.terminalMessages.push('Ошибка: квантовые частицы или система не инициализированы.');
         window.updateTerminalLog();
         return;
     }
@@ -179,7 +179,7 @@ window.updateParticles = function(sketch) {
         return;
     }
     console.log('updateParticles called, particles: ' + window.particles.length + ', currentStep: ' + window.currentStep);
-    window.terminalMessages.push(`[UPDATE] Updating quantum particles on step ${window.currentStep}`);
+    window.terminalMessages.push(`Квантовые частицы портрета в движении на шаге ${window.currentStep}.`);
     window.updateTerminalLog();
     window.frame = window.frame || 0;
     window.frame++;
@@ -199,11 +199,11 @@ window.updateParticles = function(sketch) {
             sketch.tint(255, imgAlpha);
             sketch.image(window.img, 0, 0, 400, 400);
             console.log('Decomposition: Image alpha ' + imgAlpha.toFixed(0));
-            window.terminalMessages.push(`[DECOMPOSITION] Portrait fading, alpha: ${imgAlpha.toFixed(0)}`);
+            window.terminalMessages.push(`Портрет распадается в квантовую суперпозицию, прозрачность: ${imgAlpha.toFixed(0)}/255.`);
             window.updateTerminalLog();
         }
     } else if (window.currentStep === 5) {
-        window.terminalMessages.push(`[STATE] Stable quantum state, no decomposition`);
+        window.terminalMessages.push(`Портрет стабилизирован в квантовом состоянии.`);
         window.updateTerminalLog();
     }
 
@@ -229,7 +229,7 @@ window.updateParticles = function(sketch) {
                 p.offsetX += wave * 6 * p.featureWeight * (dx / (dist + 1));
                 p.offsetY += wave * 6 * p.featureWeight * (dy / (dist + 1));
                 if (i < 5 && window.frame % 60 === 0) {
-                    window.terminalMessages.push(`[DECOMPOSITION] Particle ${i} scattering, weight: ${p.featureWeight.toFixed(2)}`);
+                    window.terminalMessages.push(`Частица портрета рассеивается в квантовом поле!`);
                     window.updateTerminalLog();
                 }
             } else {
@@ -246,7 +246,7 @@ window.updateParticles = function(sketch) {
                 if (Math.random() < 0.015) {
                     p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
                     if (i < 5) {
-                        window.terminalMessages.push(`[SUPERPOSITION] Particle ${i} changed shape to ${p.shape}`);
+                        window.terminalMessages.push(`Частица в суперпозиции меняет форму: ${p.shape}.`);
                         window.updateTerminalLog();
                     }
                 }
@@ -265,7 +265,7 @@ window.updateParticles = function(sketch) {
                     p.offsetX += dx * influence * 0.1;
                     p.offsetY += dy * influence * 0.1;
                     if (i < 5 && window.frame % 60 === 0) {
-                        window.terminalMessages.push(`[OBSERVATION] Particle ${i} influenced by wave packet at (${window.mouseWave.x.toFixed(0)}, ${window.mouseWave.y.toFixed(0)})`);
+                        window.terminalMessages.push(`Ваше наблюдение влияет на частицу портрета!`);
                         window.updateTerminalLog();
                     }
                 }
@@ -276,7 +276,7 @@ window.updateParticles = function(sketch) {
                 p.offsetX += (p.baseX - p.x) * 0.06 * p.featureWeight;
                 p.offsetY += (p.baseY - p.y) * 0.06 * p.featureWeight;
                 if (i < 5 && window.frame % 120 === 0) {
-                    window.terminalMessages.push(`[FEATURE] Particle ${i} attracted to facial feature, weight: ${p.featureWeight.toFixed(2)}`);
+                    window.terminalMessages.push(`Частица притягивается к ключевым чертам лица.`);
                     window.updateTerminalLog();
                 }
             }
@@ -301,7 +301,7 @@ window.updateParticles = function(sketch) {
                         if (Math.random() < 0.004 && i < 5) {
                             sketch.stroke(state.r, state.g, state.b, 25);
                             sketch.line(p.x, p.y, other.x, other.y);
-                            window.terminalMessages.push(`[INTERFERENCE] Wave interaction between particles ${i} and ${j}`);
+                            window.terminalMessages.push(`Частицы портрета взаимодействуют, создавая квантовую интерференцию.`);
                             window.updateTerminalLog();
                         }
                     }
@@ -329,7 +329,7 @@ window.updateParticles = function(sketch) {
                 sketch.stroke(state.r, state.g, state.b, 50);
                 sketch.ellipse(p.x, p.y, state.tunnelFlash * 0.5, state.tunnelFlash * 0.5);
                 console.log('Particle ' + i + ' tunneled from x: ' + oldX.toFixed(2) + ', y: ' + oldY.toFixed(2) + ' to x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2));
-                window.terminalMessages.push(`[TUNNELING] Particle ${i} tunneled to (${p.x.toFixed(0)}, ${p.y.toFixed(0)})`);
+                window.terminalMessages.push(`Квантовая частица мгновенно переместилась! Это квантовое туннелирование.`);
                 window.updateTerminalLog();
             } else {
                 sketch.noStroke();
@@ -349,7 +349,7 @@ window.updateParticles = function(sketch) {
                     partner.shape = p.shape;
                     state.entanglementFlash = 15;
                     console.log('Non-locality: Particle ' + p.entangledPartner + ' flashed due to ' + i);
-                    window.terminalMessages.push(`[ENTANGLEMENT] Particle ${p.entangledPartner} collapsed due to ${i}`);
+                    window.terminalMessages.push(`Запутанные частицы синхронизировались! Квантовая нелокальность в действии.`);
                     window.updateTerminalLog();
                 }
                 if (state.entanglementFlash > 0) {
@@ -375,13 +375,13 @@ window.updateParticles = function(sketch) {
                 }
             }
 
-            // Логирование первых 5 частиц
+            // Логирование первых 5 частиц (в консоль, не в терминал)
             if (i < 5) {
                 console.log('Particle ' + i + ' at x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2) + ', size: ' + p.size.toFixed(2) + ', shape: ' + p.shape + ', color: rgb(' + state.r + ', ' + state.g + ', ' + state.b + ', ' + state.a + ')');
             }
         } catch (error) {
             console.error('Error updating particle ' + i + ': ' + error);
-            window.terminalMessages.push(`[ERROR] Particle ${i} update failed: ${error}`);
+            window.terminalMessages.push(`Ошибка в квантовой системе: частица ${i} не обновлена.`);
             window.updateTerminalLog();
         }
     });
@@ -394,7 +394,7 @@ window.updateParticles = function(sketch) {
 window.observeParticles = function(sketch, mouseX, mouseY) {
     if (!window.particles || !window.quantumStates || window.particles.length === 0) {
         console.error('observeParticles: No particles or quantum states available');
-        window.terminalMessages.push('[ERROR] No particles or quantum states for observation');
+        window.terminalMessages.push('Ошибка: нет частиц для наблюдения.');
         window.updateTerminalLog();
         return;
     }
@@ -403,7 +403,7 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
         return;
     }
     console.log('observeParticles called, mouseX: ' + mouseX + ', mouseY: ' + mouseY);
-    window.terminalMessages.push(`[OBSERVATION] Wave packet detected at (${mouseX.toFixed(0)}, ${mouseY.toFixed(0)})`);
+    window.terminalMessages.push(`Ваше наблюдение формирует портрет! Движение мыши создаёт волновой пакет.`);
     window.updateTerminalLog();
     window.mouseWave.x = mouseX;
     window.mouseWave.y = mouseY;
@@ -414,7 +414,7 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
 window.clickParticles = function(sketch, mouseX, mouseY) {
     if (!window.particles || !window.quantumStates || window.particles.length === 0) {
         console.error('clickParticles: No particles or quantum states available');
-        window.terminalMessages.push('[ERROR] No particles or quantum states for interaction');
+        window.terminalMessages.push('Ошибка: нет частиц для взаимодействия.');
         window.updateTerminalLog();
         return;
     }
@@ -439,7 +439,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     sketch.fill(state.r, state.g, state.b, 180);
                     sketch.ellipse(p.x, p.y, 12, 12);
                     console.log('Particle ' + i + ' collapsed, shape: ' + p.shape + ', alpha: ' + state.a);
-                    window.terminalMessages.push(`[COLLAPSE] Particle ${i} collapsed to ${p.shape}, alpha: ${state.a}`);
+                    window.terminalMessages.push(`Ваш клик вызвал коллапс волновой функции частицы!`);
                     window.updateTerminalLog();
                 } else {
                     p.collapsed = false;
@@ -447,13 +447,13 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     state.a = 255;
                     p.size = 3 + (sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale) * 2);
                     console.log('Particle ' + i + ' restored to superposition, shape: ' + p.shape + ', alpha: ' + state.a);
-                    window.terminalMessages.push(`[SUPERPOSITION] Particle ${i} restored to ${p.shape}, alpha: ${state.a}`);
+                    window.terminalMessages.push(`Частица вернулась в состояние суперпозиции!`);
                     window.updateTerminalLog();
                 }
             }
         } catch (error) {
             console.error('Error clicking particle ' + i + ': ' + error);
-            window.terminalMessages.push(`[ERROR] Particle ${i} interaction failed: ${error}`);
+            window.terminalMessages.push(`Ошибка взаимодействия с частицей ${i}.`);
             window.updateTerminalLog();
         }
     });
