@@ -40,6 +40,12 @@ body {
 }
 
 /* Стили для контейнеров анимации */
+.animation-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
 #portrait-animation-container-step-2,
 #portrait-animation-container-step-2-1,
 #portrait-animation-container-step-3,
@@ -49,7 +55,7 @@ body {
 #portrait-animation-container-step-7 {
     width: 400px;
     height: 400px;
-    margin: 20px auto;
+    margin: 20px 0;
     position: relative;
     z-index: 1000;
     background-color: #000;
@@ -76,6 +82,15 @@ body {
     z-index: 1000;
     visibility: visible !important;
     opacity: 1 !important;
+}
+
+/* Стили для миниатюры портрета */
+#thumbnail-portrait {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border: 2px solid #0f0;
+    margin: 0;
 }
 
 /* Стили для текстовых блоков */
