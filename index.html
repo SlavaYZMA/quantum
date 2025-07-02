@@ -186,12 +186,13 @@
             };
 
             sketch.switchCanvasParent = function(stepIndex) {
-                if (stepIndex === 4) {
-                    sketch.canvas.parent('portrait-animation-container-step-4');
-                    console.log('Canvas switched to portrait-animation-container-step-4');
-                } else if (stepIndex === 5) {
-                    sketch.canvas.parent('portrait-animation-container-step-5');
-                    console.log('Canvas switched to portrait-animation-container-step-5');
+                let containerId = stepIndex === 4 ? 'portrait-animation-container-step-4' : 'portrait-animation-container-step-5';
+                let container = document.getElementById(containerId);
+                if (container && sketch.canvas) {
+                    container.appendChild(sketch.canvas);
+                    console.log('Canvas switched to ' + containerId);
+                } else {
+                    console.error('Failed to switch canvas parent: container or canvas not found', { container, canvas: !!sketch.canvas });
                 }
             };
         });
