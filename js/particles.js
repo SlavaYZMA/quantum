@@ -109,7 +109,9 @@ window.updateTerminalLog = function() {
     }
     const terminalDiv = document.getElementById(`terminal-log-step-${window.currentStep}`);
     if (terminalDiv) {
-        terminalDiv.innerHTML = window.terminalMessages.map(msg => `<div>${msg}</div>`).join('');
+        terminalDiv.innerHTML = window.terminalMessages.map(msg => 
+            `<div class="${msg.includes('туннелирование') ? 'tunneling' : msg.includes('интерфери') ? 'interference' : ''}">${msg}</div>`
+        ).join('');
     }
 };
 
@@ -368,9 +370,10 @@ window.updateParticles = function(sketch) {
                 if (Math.random() < 0.015 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
                     potentialMessages.push({ type: 'superposition', params: { shape: p.shape } });
-                    if (typeof window.playNote === 'function') {
+                    if (typeof window.playNote === 'function' && window.noteFrequencies) {
                         const notes = ['C4', 'D#4', 'F4', 'G4', 'A#4'];
-                        const freq = window.noteFrequencies[notes[Math.floor(Math.random() * notes.length)]];
+                        const note = notes[Math.floor(Math.random() * notes.length)];
+                        const freq = window.noteFrequencies[note] || 261.63; // Fallback to C4
                         window.playNote(freq, 'sine', 0.5, 0.2);
                     }
                 }
@@ -475,8 +478,8 @@ window.updateParticles = function(sketch) {
                     state.entanglementFlash = 15;
                     console.log('Non-locality: Particle ' + p.entangledPartner + ' flashed due to ' + i);
                     potentialMessages.push({ type: 'entanglement', params: {} });
-                    if (typeof window.playNote === 'function') {
-                        const freq = window.noteFrequencies['C4'];
+                    if (typeof window.playNote === 'function' && window.noteFrequencies) {
+                        const freq = window.noteFrequencies['C4'] || 261.63; // Fallback to C4
                         window.playNote(freq, 'sine', 0.5, 0.2);
                     }
                 }
@@ -606,8 +609,8 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     console.log('Particle ' + i + ' restored to superposition, shape: ' + p.shape + ', alpha: ' + state.a);
                     window.terminalMessages.push(getRandomMessage('superpositionRestore'));
                     window.updateTerminalLog();
-                    if (typeof window.playNote === 'function') {
-                        const freq = window.noteFrequencies['C4'];
+                    if (typeof window.playNote === 'function' && window.noteFrequencies) {
+                        const freq = window.noteFrequencies['C4'] || 261.63; // Fallback to C4
                         window.playNote(freq, 'sine', 0.5, 0.2);
                     }
                     window.globalMessageCooldown = 300; // ~5 секунд
