@@ -83,7 +83,10 @@
         </div>
         <div style="display: flex; justify-content: space-between; width: 100%;">
             <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
-            <div id="portrait-animation-container-step-4" style="border: 2px dashed #0f0;"></div>
+            <div style="display: flex; flex-direction: row;">
+                <div id="portrait-animation-container-step-4" style="border: 2px dashed #0f0;"></div>
+                <div class="terminal-log" id="terminal-log-step-4"></div>
+            </div>
         </div>
         <div class="button-block">
             <button class="continue" data-i18n="continue">Продолжить</button>
@@ -99,7 +102,10 @@
         </div>
         <div style="display: flex; justify-content: space-between; width: 100%;">
             <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
-            <div id="portrait-animation-container-step-5" style="border: 2px dashed #0f0;"></div>
+            <div style="display: flex; flex-direction: row;">
+                <div id="portrait-animation-container-step-5" style="border: 2px dashed #0f0;"></div>
+                <div class="terminal-log" id="terminal-log-step-5"></div>
+            </div>
         </div>
         <div class="button-block">
             <input id="portraitName" type="text" placeholder="Название портрета" data-i18n-placeholder="portrait_name_placeholder">
@@ -220,6 +226,8 @@
             const portraitName = document.getElementById('portraitName').value || 'quantum_portrait';
             window.quantumSketch.saveCanvas(portraitName, 'png');
             console.log('Image saved with name: ' + portraitName);
+            window.terminalMessages.push(`[SAVE] Quantum portrait saved as ${portraitName}.png`);
+            window.updateTerminalLog();
         });
 
         document.getElementById('shareObservation').addEventListener('click', function() {
@@ -263,8 +271,13 @@
             });
             if (stepIndex === 4 || stepIndex === 5) {
                 window.quantumSketch.startAnimation();
+                window.terminalMessages = [];
+                window.terminalMessages.push(`[INIT] Quantum portrait animation started for step ${stepIndex}`);
+                window.updateTerminalLog();
             } else {
                 window.quantumSketch.noLoop();
+                window.terminalMessages = [];
+                window.updateTerminalLog();
             }
         };
     </script>
