@@ -24,7 +24,7 @@ function initializeParticles(img) {
                     velocity: { x: 0, y: 0 },
                     shape: shape,
                     size: Math.random() * 5 + 5,
-                    phase: Math.random() * TWO_PI,
+                    phase: Math.random() * 2 * Math.PI,
                     amplitude: 10,
                     collapsed: false
                 });
@@ -43,8 +43,8 @@ function updateParticles(sketch) {
     window.frame = (window.frame || 0) + 1;
     window.particles.forEach(particle => {
         const noiseVal = sketch.noise(particle.x * window.noiseScale, particle.y * window.noiseScale, window.frame * 0.01);
-        particle.velocity.x = Math.cos(noiseVal * TWO_PI) * window.chaosFactor;
-        particle.velocity.y = Math.sin(noiseVal * TWO_PI) * window.chaosFactor;
+        particle.velocity.x = Math.cos(noiseVal * 2 * Math.PI) * window.chaosFactor;
+        particle.velocity.y = Math.sin(noiseVal * 2 * Math.PI) * window.chaosFactor;
         particle.x += particle.velocity.x;
         particle.y += particle.velocity.y;
         particle.x = sketch.constrain(particle.x, 0, sketch.width);
@@ -69,8 +69,8 @@ function updateParticles(sketch) {
             sketch.ellipse(0, 0, particle.size, particle.size * 0.5);
         } else if (particle.shape === 'cluster') {
             for (let i = 0; i < 5; i++) {
-                const offsetX = sketch.cos(i * TWO_PI / 5) * particle.size * 0.5;
-                const offsetY = sketch.sin(i * TWO_PI / 5) * particle.size * 0.5;
+                const offsetX = sketch.cos(i * 2 * Math.PI / 5) * particle.size * 0.5;
+                const offsetY = sketch.sin(i * 2 * Math.PI / 5) * particle.size * 0.5;
                 sketch.ellipse(offsetX, offsetY, particle.size * 0.3);
             }
         }
@@ -128,5 +128,4 @@ function clickParticles(sketch, mouseX, mouseY) {
             }
         }
     });
-    // Removed sketch.noLoop() to ensure animation continues
 }
