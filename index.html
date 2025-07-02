@@ -21,7 +21,6 @@
             <button onclick="window.setLanguageAndNext('ru')">RU</button>
             <button onclick="window.setLanguageAndNext('en')">ENG</button>
         </div>
-        <div class="text-canvas-container"></div>
     </section>
     <section id="step-1" class="step step-centered">
         <div class="text-block typewriter">
@@ -34,7 +33,6 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
-        <div class="text-canvas-container"></div>
     </section>
     <section id="step-2" class="step step-centered">
         <div class="text-block typewriter">
@@ -47,9 +45,8 @@
             <button id="useArchive" data-i18n="use_archive">Выбрать из архива</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
-        <div class="text-canvas-container"></div>
     </section>
-    <section id="step-2-1" class="step step-centered">
+    <section id="step-2.1" class="step step-centered">
         <div class="text-block typewriter">
             <div data-i18n="step2_text2"></div>
             <div data-i18n="step2_text3"></div>
@@ -59,7 +56,6 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
-        <div class="text-canvas-container"></div>
     </section>
     <section id="step-3" class="step step-centered">
         <div class="text-block typewriter">
@@ -77,7 +73,6 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
-        <div class="text-canvas-container"></div>
     </section>
     <section id="step-4" class="step step-centered">
         <div class="text-block typewriter">
@@ -94,7 +89,6 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
-        <div class="text-canvas-container"></div>
     </section>
     <section id="step-5" class="step step-centered">
         <div class="text-block typewriter">
@@ -113,7 +107,6 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
-        <div class="text-canvas-container"></div>
     </section>
     <section id="step-6" class="step step-centered">
         <div class="text-block typewriter">
@@ -127,7 +120,6 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
-        <div class="text-canvas-container"></div>
     </section>
     <section id="step-7" class="step step-centered">
         <div class="text-block typewriter">
@@ -141,7 +133,6 @@
             <button id="aboutAuthors" data-i18n="about_authors">[ОБ АВТОРАХ]</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
-        <div class="text-canvas-container"></div>
     </section>
 
     <script>
@@ -167,16 +158,13 @@
                     sketch.fill(255);
                     sketch.textSize(16);
                     sketch.text('Frame: ' + (window.frame || 0), 10, 20);
-                } else {
-                    // Рендеринг текста на других шагах
-                    if (window.textParticles && window.textParticles.length > 0) {
-                        window.updateParticles(sketch);
-                    }
                 }
             };
 
             sketch.mouseMoved = function() {
-                window.observeParticles(sketch, sketch.mouseX, sketch.mouseY);
+                if (window.currentStep === 4 || window.currentStep === 5) {
+                    window.observeParticles(sketch, sketch.mouseX, sketch.mouseY);
+                }
             };
 
             sketch.mouseClicked = function() {
@@ -218,7 +206,7 @@
                         thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
                         console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
                     });
-                    window.moveToNextStep('2-1');
+                    window.moveToNextStep(2.1);
                     input.remove();
                 }, function() {
                     console.error('Error loading image');
@@ -273,28 +261,10 @@
                 thumbnail.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
                 console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + stepIndex);
             });
-            // Создание или перемещение текстового холста
-            var textCanvas = document.querySelector('.text-canvas');
-            if (!textCanvas) {
-                textCanvas = window.quantumSketch.createCanvas(600, 400);
-                textCanvas.class('text-canvas');
-                console.log('Text canvas created, width: ' + textCanvas.width + ', height: ' + textCanvas.height);
-            }
-            var targetContainer = document.querySelector(`#step-${String(stepIndex).replace('.', '-')} .text-canvas-container`);
-            if (targetContainer && textCanvas) {
-                textCanvas.parentElement.removeChild(textCanvas);
-                targetContainer.appendChild(textCanvas);
-                console.log('Text canvas moved to step-' + stepIndex);
-            } else {
-                console.error('Target container or text canvas not found for step-' + stepIndex);
-            }
-            // Очистка и инициализация текста
-            window.textParticles = [];
-            window.initializeTextParticles(window.quantumSketch);
             if (stepIndex === 4 || stepIndex === 5) {
                 window.quantumSketch.startAnimation();
             } else {
-                window.quantumSketch.loop(); // Запускаем анимацию для текста на всех шагах
+                window.quantumSketch.noLoop();
             }
         };
     </script>
