@@ -153,12 +153,6 @@
                 canvas.parent('portrait-animation-container-step-4');
                 console.log('Canvas created, width: ' + canvas.width + ', height: ' + canvas.height);
                 sketch.noLoop();
-
-                // Создание холста для текста
-                var textCanvas = sketch.createCanvas(600, 400);
-                textCanvas.class('text-canvas');
-                textCanvas.parent(`step-0 .text-canvas-container`);
-                console.log('Text canvas created, width: ' + textCanvas.width + ', height: ' + textCanvas.height);
             };
 
             sketch.draw = function() {
@@ -173,13 +167,16 @@
                     sketch.fill(255);
                     sketch.textSize(16);
                     sketch.text('Frame: ' + (window.frame || 0), 10, 20);
+                } else {
+                    // Рендеринг текста на других шагах
+                    if (window.textParticles && window.textParticles.length > 0) {
+                        window.updateParticles(sketch);
+                    }
                 }
             };
 
             sketch.mouseMoved = function() {
-                if (window.currentStep === 4 || window.currentStep === 5) {
-                    window.observeParticles(sketch, sketch.mouseX, sketch.mouseY);
-                }
+                window.observeParticles(sketch, sketch.mouseX, sketch.mouseY);
             };
 
             sketch.mouseClicked = function() {
@@ -276,26 +273,28 @@
                 thumbnail.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
                 console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + stepIndex);
             });
-            // Перемещение текстового холста
+            // Создание или перемещение текстового холста
             var textCanvas = document.querySelector('.text-canvas');
-            if (textCanvas) {
-                var targetContainer = document.querySelector(`#step-${String(stepIndex).replace('.', '-')} .text-canvas-container`);
-                if (targetContainer) {
-                    textCanvas.parentElement.removeChild(textCanvas);
-                    targetContainer.appendChild(textCanvas);
-                    console.log('Text canvas moved to step-' + stepIndex);
-                } else {
-                    console.error('Target container not found for step-' + stepIndex);
-                }
+            if (!textCanvas) {
+                textCanvas = window.quantumSketch.createCanvas(600, 400);
+                textCanvas.class('text-canvas');
+                console.log('Text canvas created, width: ' + textCanvas.width + ', height: ' + textCanvas.height);
+            }
+            var targetContainer = document.querySelector(`#step-${String(stepIndex).replace('.', '-')} .text-canvas-container`);
+            if (targetContainer && textCanvas) {
+                textCanvas.parentElement.removeChild(textCanvas);
+                targetContainer.appendChild(textCanvas);
+                console.log('Text canvas moved to step-' + stepIndex);
             } else {
-                console.error('Text canvas not found');
+                console.error('Target container or text canvas not found for step-' + stepIndex);
             }
             // Очистка и инициализация текста
             window.textParticles = [];
+            window.initializeTextParticles(window.quantumSketch);
             if (stepIndex === 4 || stepIndex === 5) {
                 window.quantumSketch.startAnimation();
             } else {
-                window.quantumSketch.noLoop();
+                window.quantumSketch.loop(); // Запускаем анимацию для текста на всех шагах
             }
         };
     </script>
