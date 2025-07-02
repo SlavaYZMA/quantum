@@ -40,17 +40,15 @@
             <button id="activateCamera">Активировать камеру</button>
         </div>
         <div id="portrait-animation-container-step-2" style="border: 2px dashed #0f0;"></div>
-        <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
     </section>
-    <section id="step-2.1" class="step step-centered">
+    <section id="step-2-1" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step2_text2">> Изображение принято.</div>
         <div class="text-block typewriter" data-i18n="step2_text3">> Запускается волновая функция.</div>
         <div class="text-block typewriter" data-i18n="step2_text4">> Система готова к инициализации.</div>
         <div class="button-block">
             <button class="continue">Продолжить</button>
         </div>
-        <div id="portrait-animation-container-step-2.1" style="border: 2px dashed #0f0;"></div>
-        <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
+        <div id="portrait-animation-container-step-2-1" style="border: 2px dashed #0f0;"></div>
     </section>
     <section id="step-3" class="step step-centered">
         <div class="step-title" data-i18n="step3_title">Шаг 2: Инициализация</div>
@@ -66,7 +64,6 @@
             <button class="continue">Продолжить</button>
         </div>
         <div id="portrait-animation-container-step-3" style="border: 2px dashed #0f0;"></div>
-        <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
     </section>
     <section id="step-4" class="step step-centered">
         <div class="step-title" data-i18n="step4_title">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</div>
@@ -77,7 +74,6 @@
             <button class="continue">Продолжить</button>
         </div>
         <div id="portrait-animation-container-step-4" style="border: 2px dashed #0f0;"></div>
-        <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
     </section>
     <section id="step-5" class="step step-centered">
         <div class="step-title" data-i18n="step5_title">Шаг 4: ФИКСАЦИЯ</div>
@@ -92,7 +88,6 @@
             </div>
         </div>
         <div id="portrait-animation-container-step-5" style="border: 2px dashed #0f0;"></div>
-        <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
     </section>
     <section id="step-6" class="step step-centered">
         <div class="step-title" data-i18n="step6_title">Шаг 5: РЕАКЦИЯ СИСТЕМЫ</div>
@@ -103,7 +98,6 @@
             <button class="continue">Продолжить</button>
         </div>
         <div id="portrait-animation-container-step-6" style="border: 2px dashed #0f0;"></div>
-        <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
     </section>
     <section id="step-7" class="step step-centered">
         <div class="step-title" data-i18n="step7_title">Заключение</div>
@@ -114,34 +108,33 @@
             <button class="continue">Завершить</button>
         </div>
         <div id="portrait-animation-container-step-7" style="border: 2px dashed #0f0;"></div>
-        <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
     </section>
+    <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
 
     <script>
         let sketch = (sketch) => {
             sketch.setup = () => {
-                console.error('p5 setup called');
+                console.log('p5 setup called');
                 let canvas = sketch.createCanvas(400, 400);
                 canvas.class('quantum-canvas');
-                console.error('Canvas created, width: 400, height: 400');
+                console.log('Canvas created, width: 400, height: 400');
                 sketch.pixelDensity(1);
                 window.trailBuffer = sketch.createGraphics(400, 400);
                 window.isCanvasReady = true;
                 sketch.noLoop();
-                // Перемещение canvas будет в main.js
             };
 
             sketch.draw = () => {
-                console.error('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
+                console.log('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
                 sketch.background(255);
                 if (window.img && window.isCanvasReady) {
                     sketch.image(window.img, 0, 0, 400, 400);
-                    console.error('Image rendered at x: 0, y: 0, width: 400, height: 400');
+                    console.log('Image rendered at x: 0, y: 0, width: 400, height: 400');
                 }
                 if (window.particles && window.particles.length > 0) {
                     window.updateParticles(sketch);
                 } else {
-                    console.error('No particles to render:', { particles: window.particles?.length });
+                    console.log('No particles to render:', { particles: window.particles?.length });
                 }
                 sketch.fill(255, 0, 0);
                 sketch.rect(100, 100, 200, 200);
@@ -152,7 +145,7 @@
             };
 
             sketch.startAnimation = () => {
-                console.error('startAnimation called, currentStep: ' + window.currentStep);
+                console.log('startAnimation called, currentStep: ' + window.currentStep);
                 sketch.loop();
             };
 
