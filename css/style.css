@@ -87,7 +87,7 @@ body {
 
 /* Стили для текстовых блоков */
 .text-block {
-    margin: 10px 0;
+    margin: 20px 0;
     font-size: 18px;
 }
 
@@ -116,19 +116,7 @@ button:hover {
     color: black;
 }
 
-/* Стили для сохраненного портрета */
-#saved-portrait {
-    display: none;
-    max-width: 400px;
-    margin: 20px auto;
-}
-
 /* Стили для поля ввода имени портрета */
-#saveInput {
-    display: none;
-    margin: 10px 0;
-}
-
 #portraitName {
     background-color: #333;
     color: white;
@@ -136,6 +124,12 @@ button:hover {
     padding: 5px;
     font-family: 'Courier New', Courier, monospace;
     font-size: 16px;
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+#portraitName::placeholder {
+    color: #999;
 }
 
 /* Эффект пишущей машинки */
