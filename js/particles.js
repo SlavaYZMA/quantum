@@ -47,7 +47,7 @@ window.initializeParticles = function(img) {
                     entangledPartner: Math.random() < 0.2 ? Math.floor(Math.random() * numParticles) : null,
                     collapsed: false,
                     decompositionProgress: 0,
-                    shape: Math.random() < 0.5 ? 'circle' : 'star' // Неопределённость формы
+                    shape: Math.random() < 0.5 ? 'circle' : 'star'
                 });
 
                 window.quantumStates.push({
@@ -119,7 +119,6 @@ window.updateParticles = function(sketch) {
             if (window.currentStep === 4 && window.decompositionTimer < 3) {
                 p.decompositionProgress = Math.min(1, p.decompositionProgress + 0.02);
                 state.a = Math.floor(p.decompositionProgress * 255);
-                // Волновой эффект появления
                 var wave = Math.sin(p.x * 0.05 + p.y * 0.05 + window.decompositionTimer);
                 p.offsetX += wave * 5;
                 p.offsetY += wave * 5;
@@ -132,9 +131,7 @@ window.updateParticles = function(sketch) {
             p.phase += p.frequency;
             p.offsetX = Math.cos(p.phase) * 10 * n * window.chaosFactor;
             p.offsetY = Math.sin(p.phase) * 10 * n * window.chaosFactor;
-            // Пульсация размера
             p.size = 6 + 4 * n;
-            // Смена формы
             if (Math.random() < 0.01 && !p.collapsed) {
                 p.shape = p.shape === 'circle' ? 'star' : 'circle';
             }
@@ -247,7 +244,7 @@ window.updateParticles = function(sketch) {
 };
 
 // Реакция частиц на наблюдение (коллапс)
-window.observeParticles = function(mouseX, mouseY) {
+window.observeParticles = function(sketch, mouseX, mouseY) {
     if (!window.particles || !window.quantumStates || window.particles.length === 0) {
         console.error('observeParticles: No particles or quantum states available');
         return;
