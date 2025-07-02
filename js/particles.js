@@ -1,4 +1,4 @@
-```javascript
+javascript
 console.log('particles.js loaded');
 
 window.particles = [];
@@ -19,11 +19,11 @@ window.initializeParticles = function(img) {
             console.error('Error: img.pixels is empty or not loaded');
             return;
         }
-        var pixelStep = Math.floor(Math.max(img.width, img.height) / 20); // Шаг для выборки пикселей
+        var pixelStep = Math.floor(Math.max(img.width, img.height) / 20);
         var centerX = img.width / 2;
         var centerY = img.height / 2;
         var maxRadius = Math.min(img.width, img.height) / 2;
-        var numParticles = 314; // Количество частиц
+        var numParticles = 314;
 
         var validParticles = 0;
         for (var i = 0; i < numParticles; i++) {
@@ -32,7 +32,6 @@ window.initializeParticles = function(img) {
             var x = centerX + Math.cos(angle) * radius;
             var y = centerY + Math.sin(angle) * radius;
 
-            // Проверка, что координаты в пределах изображения
             if (x >= 0 && x < img.width && y >= 0 && y < img.height) {
                 var index = (Math.floor(x) + Math.floor(y) * img.width) * 4;
                 var r = img.pixels[index] || 255;
@@ -40,28 +39,26 @@ window.initializeParticles = function(img) {
                 var b = img.pixels[index + 2] || 255;
                 var a = img.pixels[index + 3] || 255;
 
-                // Добавление частицы с квантовыми свойствами
                 window.particles.push({
-                    x: x * 400 / img.width, // Масштабирование на холст 400x400
+                    x: x * 400 / img.width,
                     y: y * 400 / img.height,
-                    baseX: x * 400 / img.width, // Базовая позиция для суперпозиции
+                    baseX: x * 400 / img.width,
                     baseY: y * 400 / img.height,
-                    offsetX: 0, // Смещение для анимации
+                    offsetX: 0,
                     offsetY: 0,
-                    size: 5 + Math.random() * 10, // Размер частицы
-                    phase: Math.random() * Math.PI * 2, // Фаза для волнового движения
-                    frequency: 0.01 + Math.random() * 0.02, // Частота колебаний
-                    entangledPartner: Math.random() < 0.2 ? Math.floor(Math.random() * numParticles) : null // 20% шанс запутанности
+                    size: 5 + Math.random() * 10,
+                    phase: Math.random() * Math.PI * 2,
+                    frequency: 0.01 + Math.random() * 0.02,
+                    entangledPartner: Math.random() < 0.2 ? Math.floor(Math.random() * numParticles) : null
                 });
 
-                // Квантовое состояние частицы
                 window.quantumStates.push({
                     r: r,
                     g: g,
                     b: b,
                     a: a,
-                    probability: 1.0, // Вероятность состояния
-                    decoherenceTimer: 0 // Таймер декогеренции
+                    probability: 1.0,
+                    decoherenceTimer: 0
                 });
                 validParticles++;
             }
@@ -93,20 +90,17 @@ window.updateParticles = function(sketch) {
         try {
             var state = window.quantumStates[i];
 
-            // Суперпозиция: случайное движение с использованием шума
             var n = sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale, window.frame * 0.01);
             p.phase += p.frequency;
             p.offsetX = Math.cos(p.phase) * 20 * n * window.chaosFactor;
             p.offsetY = Math.sin(p.phase) * 20 * n * window.chaosFactor;
 
-            // Квантовое туннелирование: 1% шанс перепрыгнуть через край холста
             if (Math.random() < 0.01) {
                 p.x = Math.random() * 400;
                 p.y = Math.random() * 400;
                 console.log('Particle ' + i + ' tunneled to x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2));
             }
 
-            // Запутанность: синхронизация цвета с запутанным партнером
             if (p.entangledPartner !== null && window.particles[p.entangledPartner]) {
                 var partner = window.particles[p.entangledPartner];
                 var partnerState = window.quantumStates[p.entangledPartner];
@@ -116,24 +110,20 @@ window.updateParticles = function(sketch) {
                 console.log('Particle ' + i + ' entangled with ' + p.entangledPartner + ', synced color: rgb(' + state.r + ', ' + state.g + ', ' + state.b + ')');
             }
 
-            // Движение частицы с ограничением в пределах холста
             p.x = Math.max(0, Math.min(400, p.baseX + p.offsetX));
             p.y = Math.max(0, Math.min(400, p.baseY + p.offsetY));
 
-            // Декогеренция: постепенное уменьшение вероятности и прозрачности
             state.decoherenceTimer += 0.01;
             if (state.decoherenceTimer > 10) {
-                state.probability = Math.max(0.1, state.probability - 0.005); // Минимум 0.1 для видимости
+                state.probability = Math.max(0.1, state.probability - 0.005);
                 state.a = Math.floor(state.probability * 255);
                 console.log('Particle ' + i + ' decohering, probability: ' + state.probability.toFixed(2) + ', alpha: ' + state.a);
             }
 
-            // Рендеринг частицы
             sketch.fill(state.r, state.g, state.b, state.a);
             sketch.noStroke();
             sketch.ellipse(p.x, p.y, p.size, p.size);
 
-            // Логирование первых 5 частиц для отладки
             if (i < 5) {
                 console.log('Particle ' + i + ' at x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2) + ', color: rgb(' + state.r + ', ' + state.g + ', ' + state.b + ', ' + state.a + ')');
             }
@@ -161,14 +151,13 @@ window.observeParticles = function(mouseX, mouseY) {
             var distance = Math.sqrt(dx * dx + dy * dy);
             var state = window.quantumStates[i];
 
-            // Коллапс при измерении: если курсор близко, частица фиксируется
             if (distance < window.mouseInfluenceRadius && distance > 0) {
                 var force = (window.mouseInfluenceRadius - distance) / window.mouseInfluenceRadius;
                 p.offsetX += dx * force * 0.05;
                 p.offsetY += dy * force * 0.05;
-                state.probability = Math.max(0.1, state.probability - 0.01); // Уменьшение вероятности
-                state.a = Math.floor(state.probability * 255); // Изменение прозрачности
-                p.phase = 0; // Замораживание фазы для коллапса
+                state.probability = Math.max(0.1, state.probability - 0.01);
+                state.a = Math.floor(state.probability * 255);
+                p.phase = 0;
                 console.log('Particle ' + i + ' collapsed, probability: ' + state.probability.toFixed(2) + ', alpha: ' + state.a);
             }
         } catch (error) {
@@ -176,4 +165,3 @@ window.observeParticles = function(mouseX, mouseY) {
         }
     });
 };
-```
