@@ -39,7 +39,6 @@
             <button id="openGallery">Выбрать из архива</button>
             <button id="activateCamera">Активировать камеру</button>
         </div>
-        <div id="portrait-animation-container-step-2" style="border: 2px dashed #0f0;"></div>
     </section>
     <section id="step-2-1" class="step step-centered">
         <div class="text-block typewriter" data-i18n="step2_text2">> Изображение принято.</div>
@@ -47,10 +46,6 @@
         <div class="text-block typewriter" data-i18n="step2_text4">> Система готова к инициализации.</div>
         <div class="button-block">
             <button class="continue">Продолжить</button>
-        </div>
-        <div class="animation-container">
-            <img id="thumbnail-portrait" style="display: none;">
-            <div id="portrait-animation-container-step-2-1" style="border: 2px dashed #0f0;"></div>
         </div>
     </section>
     <section id="step-3" class="step step-centered">
@@ -65,10 +60,6 @@
         <div class="text-block typewriter" data-i18n="step3_text8">> Портрет существует как совокупность возможных состояний.</div>
         <div class="button-block">
             <button class="continue">Продолжить</button>
-        </div>
-        <div class="animation-container">
-            <img id="thumbnail-portrait" style="display: none;">
-            <div id="portrait-animation-container-step-3" style="border: 2px dashed #0f0;"></div>
         </div>
     </section>
     <section id="step-4" class="step step-centered">
@@ -109,10 +100,6 @@
         <div class="button-block">
             <button class="continue">Продолжить</button>
         </div>
-        <div class="animation-container">
-            <img id="thumbnail-portrait" style="display: none;">
-            <div id="portrait-animation-container-step-6" style="border: 2px dashed #0f0;"></div>
-        </div>
     </section>
     <section id="step-7" class="step step-centered">
         <div class="step-title" data-i18n="step7_title">Заключение</div>
@@ -121,10 +108,6 @@
         <div class="text-block typewriter" data-i18n="step7_text3">Здесь ты — одновременно субъект и объект.</div>
         <div class="button-block">
             <button class="continue">Завершить</button>
-        </div>
-        <div class="animation-container">
-            <img id="thumbnail-portrait" style="display: none;">
-            <div id="portrait-animation-container-step-7" style="border: 2px dashed #0f0;"></div>
         </div>
     </section>
     <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
@@ -144,6 +127,10 @@
 
             sketch.draw = () => {
                 console.log('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
+                // Рендерим только на шагах 4 и 5
+                if (window.currentStep !== 4 && window.currentStep !== 5) {
+                    return;
+                }
                 sketch.background(255);
                 if (window.img && window.isCanvasReady) {
                     sketch.image(window.img, 0, 0, 400, 400);
@@ -194,7 +181,7 @@
                     const thumbnails = document.querySelectorAll('#thumbnail-portrait');
                     thumbnails.forEach(thumbnail => {
                         thumbnail.src = URL.createObjectURL(file);
-                        thumbnail.style.display = 'block';
+                        thumbnail.style.display = window.currentStep === 4 || window.currentStep === 5 ? 'block' : 'none';
                         console.log('Updated thumbnail src');
                     });
                     window.moveToNextStep(2);
