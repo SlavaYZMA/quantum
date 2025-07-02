@@ -42,7 +42,7 @@ body {
 /* Стили для контейнеров анимации */
 .animation-container {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     align-items: flex-start;
     gap: 20px;
 }
