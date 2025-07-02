@@ -21,6 +21,7 @@
             <button onclick="window.setLanguageAndNext('ru')">RU</button>
             <button onclick="window.setLanguageAndNext('en')">ENG</button>
         </div>
+        <div class="text-canvas-container"></div>
     </section>
     <section id="step-1" class="step step-centered">
         <div class="text-block typewriter">
@@ -33,6 +34,7 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
+        <div class="text-canvas-container"></div>
     </section>
     <section id="step-2" class="step step-centered">
         <div class="text-block typewriter">
@@ -45,6 +47,7 @@
             <button id="useArchive" data-i18n="use_archive">Выбрать из архива</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
+        <div class="text-canvas-container"></div>
     </section>
     <section id="step-2.1" class="step step-centered">
         <div class="text-block typewriter">
@@ -56,6 +59,7 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
+        <div class="text-canvas-container"></div>
     </section>
     <section id="step-3" class="step step-centered">
         <div class="text-block typewriter">
@@ -73,6 +77,7 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
+        <div class="text-canvas-container"></div>
     </section>
     <section id="step-4" class="step step-centered">
         <div class="text-block typewriter">
@@ -89,6 +94,7 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
+        <div class="text-canvas-container"></div>
     </section>
     <section id="step-5" class="step step-centered">
         <div class="text-block typewriter">
@@ -107,6 +113,7 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
+        <div class="text-canvas-container"></div>
     </section>
     <section id="step-6" class="step step-centered">
         <div class="text-block typewriter">
@@ -120,6 +127,7 @@
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
+        <div class="text-canvas-container"></div>
     </section>
     <section id="step-7" class="step step-centered">
         <div class="text-block typewriter">
@@ -133,153 +141,61 @@
             <button id="aboutAuthors" data-i18n="about_authors">[ОБ АВТОРАХ]</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
+        <div class="text-canvas-container"></div>
     </section>
 
     <script>
         window.quantumSketch = new p5(function(sketch) {
             console.log('p5 setup called');
-            let portraitCanvas, textCanvasStep4, textCanvasStep5;
-
             sketch.setup = function() {
-                console.log('sketch.setup started');
-                portraitCanvas = sketch.createCanvas(400, 400);
-                portraitCanvas.class('quantum-canvas');
-                portraitCanvas.id('quantumCanvas');
-                console.log('Portrait canvas created, ID: quantumCanvas, width: ' + portraitCanvas.width + ', height: ' + portraitCanvas.height);
-
-                const textBlock4 = document.querySelector('#step-4 .text-block');
-                const textBlock5 = document.querySelector('#step-5 .text-block');
-                if (textBlock4) {
-                    textCanvasStep4 = sketch.createCanvas(600, 100);
-                    textCanvasStep4.class('text-canvas');
-                    textCanvasStep4.id('textCanvasStep4');
-                    textBlock4.insertBefore(textCanvasStep4.elt, textBlock4.firstChild);
-                    console.log('Text canvas for step 4 created, ID: textCanvasStep4, width: ' + textCanvasStep4.width + ', height: ' + textCanvasStep4.height);
-                } else {
-                    console.error('text-block for step 4 not found');
-                }
-                if (textBlock5) {
-                    textCanvasStep5 = sketch.createCanvas(600, 100);
-                    textCanvasStep5.class('text-canvas');
-                    textCanvasStep5.id('textCanvasStep5');
-                    textBlock5.insertBefore(textCanvasStep5.elt, textBlock5.firstChild);
-                    console.log('Text canvas for step 5 created, ID: textCanvasStep5, width: ' + textCanvasStep5.width + ', height: ' + textCanvasStep5.height);
-                } else {
-                    console.error('text-block for step 5 not found');
-                }
+                var canvas = sketch.createCanvas(400, 400);
+                canvas.class('quantum-canvas');
+                canvas.parent('portrait-animation-container-step-4');
+                console.log('Canvas created, width: ' + canvas.width + ', height: ' + canvas.height);
                 sketch.noLoop();
-                console.log('sketch.setup completed');
+
+                // Создание холста для текста
+                var textCanvas = sketch.createCanvas(600, 400);
+                textCanvas.class('text-canvas');
+                textCanvas.parent(`step-0 .text-canvas-container`);
+                console.log('Text canvas created, width: ' + textCanvas.width + ', height: ' + textCanvas.height);
             };
 
             sketch.draw = function() {
-                if (window.currentStep !== 4 && window.currentStep !== 5) {
-                    sketch.noLoop();
-                    return;
-                }
-                const quantumCanvas = document.querySelector('#quantumCanvas');
-                if (!quantumCanvas) {
-                    console.error('Quantum canvas not found');
-                    sketch.noLoop();
-                    return;
-                }
-                sketch.canvas = quantumCanvas; // Ensure p5.js uses the correct canvas
-                sketch.drawingContext = quantumCanvas.getContext('2d');
-                sketch.width = 400;
-                sketch.height = 400;
+                console.log('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
                 sketch.background(0);
-
-                if (window.particles && window.particles.length > 0) {
-                    window.updateParticles(sketch);
-                } else {
-                    console.warn('No particles to render portrait');
-                }
-
-                const textCanvas = document.querySelector(`#textCanvasStep${window.currentStep}`);
-                if (textCanvas) {
-                    sketch.canvas = textCanvas;
-                    sketch.drawingContext = textCanvas.getContext('2d');
-                    sketch.width = 600;
-                    sketch.height = 100;
-                    sketch.background(0);
-                    if (window.textParticles && window.textParticles.length > 0) {
-                        window.updateTextParticles(sketch);
+                if (window.currentStep === 4 || window.currentStep === 5) {
+                    if (window.particles && window.particles.length > 0) {
+                        window.updateParticles(sketch);
                     } else {
-                        console.log('No text particles, initializing...');
-                        setTimeout(() => {
-                            window.initializeTextParticles(sketch);
-                            if (window.textParticles.length === 0) {
-                                console.warn('Text particles initialization failed, retrying...');
-                                setTimeout(() => window.initializeTextParticles(sketch), 500);
-                            }
-                        }, 500);
+                        console.error('No particles to render: ', { particles: window.particles ? window.particles.length : 0 });
                     }
-                } else {
-                    console.error('Text canvas not found for step ' + window.currentStep);
+                    sketch.fill(255);
+                    sketch.textSize(16);
+                    sketch.text('Frame: ' + (window.frame || 0), 10, 20);
                 }
-
-                sketch.canvas = quantumCanvas;
-                sketch.drawingContext = quantumCanvas.getContext('2d');
-                sketch.fill(255);
-                sketch.textSize(16);
-                sketch.text('Frame: ' + (window.frame || 0), 10, 20);
             };
 
             sketch.mouseMoved = function() {
                 if (window.currentStep === 4 || window.currentStep === 5) {
-                    const mouseX = sketch.mouseX;
-                    const mouseY = sketch.mouseY;
-                    if (mouseX >= 0 && mouseX <= 400 && mouseY >= 0 && mouseY <= 400) {
-                        window.observeParticles(sketch, mouseX, mouseY);
-                    }
-                    if (mouseX >= 0 && mouseX <= 600 && mouseY >= 0 && mouseY <= 100) {
-                        window.observeTextParticles(sketch, mouseX, mouseY);
-                    }
+                    window.observeParticles(sketch, sketch.mouseX, sketch.mouseY);
                 }
             };
 
             sketch.mouseClicked = function() {
                 if (window.currentStep === 4 || window.currentStep === 5) {
-                    const mouseX = sketch.mouseX;
-                    const mouseY = sketch.mouseY;
-                    if (mouseX >= 0 && mouseX <= 400 && mouseY >= 0 && mouseY <= 400) {
-                        window.clickParticles(sketch, mouseX, mouseY);
-                    }
-                    if (mouseX >= 0 && mouseX <= 600 && mouseY >= 0 && mouseY <= 100) {
-                        window.clickTextParticles(sketch, mouseX, mouseY);
-                    }
-                    sketch.loop();
+                    window.clickParticles(sketch, sketch.mouseX, sketch.mouseY);
+                    sketch.loop(); // Ensure animation continues after click
                 }
             };
 
             sketch.startAnimation = function() {
-                console.log('startAnimation called, currentStep: ' + window.currentStep);
-                const quantumCanvas = document.querySelector('#quantumCanvas');
-                if (quantumCanvas) {
-                    sketch.canvas = quantumCanvas;
-                    sketch.drawingContext = quantumCanvas.getContext('2d');
-                    sketch.loop();
-                    console.log('Animation started');
-                    if (window.currentStep === 4 || window.currentStep === 5) {
-                        setTimeout(() => {
-                            window.initializeTextParticles(sketch);
-                            if (window.textParticles.length === 0) {
-                                console.warn('Text particles initialization failed, retrying...');
-                                setTimeout(() => window.initializeTextParticles(sketch), 500);
-                            }
-                        }, 500);
-                    }
-                } else {
-                    console.error('Cannot start animation: quantum-canvas not found');
-                }
+                sketch.loop();
+                console.log('Animation started');
             };
         });
 
         document.getElementById('uploadImage').addEventListener('click', function() {
-            if (!window.initializeParticles) {
-                console.error('initializeParticles not defined. Check particles.js loading');
-                alert('Error: particles.js not loaded');
-                return;
-            }
             var input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
@@ -297,24 +213,18 @@
                 window.quantumSketch.loadImage(URL.createObjectURL(file), function(img) {
                     console.log('Image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
                     window.img = img;
-                    try {
-                        window.initializeParticles(img);
-                        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-                        console.log('Found thumbnails: ' + thumbnails.length);
-                        thumbnails.forEach(function(thumbnail) {
-                            thumbnail.src = URL.createObjectURL(file);
-                            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-                            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
-                        });
-                        window.moveToNextStep(2.1);
-                    } catch (error) {
-                        console.error('Error initializing particles: ' + error);
-                        alert('Error processing image');
-                    }
+                    window.initializeParticles(img);
+                    var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+                    console.log('Found thumbnails: ' + thumbnails.length);
+                    thumbnails.forEach(function(thumbnail) {
+                        thumbnail.src = URL.createObjectURL(file);
+                        thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+                        console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+                    });
+                    window.moveToNextStep(2.1);
                     input.remove();
                 }, function() {
                     console.error('Error loading image');
-                    alert('Error loading image');
                     input.remove();
                 });
             };
@@ -323,15 +233,8 @@
 
         document.getElementById('saveImage').addEventListener('click', function() {
             const portraitName = document.getElementById('portraitName').value || 'quantum_portrait';
-            const quantumCanvas = document.querySelector('#quantumCanvas');
-            if (quantumCanvas) {
-                window.quantumSketch.canvas = quantumCanvas;
-                window.quantumSketch.saveCanvas(portraitName, 'png');
-                console.log('Image saved with name: ' + portraitName);
-            } else {
-                console.error('Cannot save canvas: quantum-canvas not found');
-                alert('Error: cannot save image, canvas not found');
-            }
+            window.quantumSketch.saveCanvas(portraitName, 'png');
+            console.log('Image saved with name: ' + portraitName);
         });
 
         document.getElementById('shareObservation').addEventListener('click', function() {
@@ -364,7 +267,7 @@
             alert('Архив пока не поддерживается.');
         });
 
-        var originalMoveToNextStep = window.moveToNextStep || function() {};
+        var originalMoveToNextStep = window.moveToNextStep;
         window.moveToNextStep = function(stepIndex) {
             console.log('moveToNextStep called with stepIndex: ' + stepIndex);
             originalMoveToNextStep(stepIndex);
@@ -373,50 +276,21 @@
                 thumbnail.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
                 console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + stepIndex);
             });
-            var textCanvases = document.querySelectorAll('.text-canvas');
-            textCanvases.forEach(function(canvas) {
-                canvas.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
-                console.log('Text canvas display set to: ' + canvas.style.display + ' for step: ' + stepIndex);
-            });
-            const quantumCanvas = document.querySelector('#quantumCanvas');
+            // Перемещение текстового холста
+            var textCanvas = document.querySelector('.text-canvas');
+            if (textCanvas) {
+                textCanvas.parentElement.removeChild(textCanvas);
+                document.querySelector(`#step-${stepIndex} .text-canvas-container`).appendChild(textCanvas);
+                console.log('Text canvas moved to step-' + stepIndex);
+            }
+            // Очистка и инициализация текста
+            window.textParticles = [];
             if (stepIndex === 4 || stepIndex === 5) {
-                if (quantumCanvas) {
-                    quantumCanvas.style.display = 'block';
-                    const container = document.querySelector(`#portrait-animation-container-step-${stepIndex}`);
-                    if (container) {
-                        window.quantumSketch.canvas = quantumCanvas;
-                        window.quantumSketch.canvas.parentElement.removeChild(window.quantumSketch.canvas);
-                        container.appendChild(window.quantumSketch.canvas);
-                        console.log(`Canvas moved to step-${stepIndex} container`);
-                        setTimeout(() => window.quantumSketch.startAnimation(), 500);
-                    } else {
-                        console.error(`Container for step-${stepIndex} not found`);
-                    }
-                } else {
-                    console.error('Quantum canvas not found, cannot start animation');
-                }
+                window.quantumSketch.startAnimation();
             } else {
-                if (quantumCanvas) {
-                    quantumCanvas.style.display = 'none';
-                }
                 window.quantumSketch.noLoop();
             }
         };
-
-        window.addEventListener('load', function() {
-            if (!window.initializeParticles) {
-                console.error('particles.js not loaded or contains errors. Check file path and contents.');
-                alert('Critical error: particles.js not loaded');
-            } else {
-                console.log('particles.js successfully loaded');
-            }
-            setTimeout(() => {
-                const textBlock4 = document.querySelector('#step-4 .text-block');
-                console.log('step-4 text-block content:', textBlock4 ? textBlock4.innerText : 'not found');
-                const textBlock5 = document.querySelector('#step-5 .text-block');
-                console.log('step-5 text-block content:', textBlock5 ? textBlock5.innerText : 'not found');
-            }, 1000);
-        });
     </script>
 </body>
 </html>
