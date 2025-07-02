@@ -47,16 +47,19 @@ body {
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     display: flex;
-    gap: 20px;
     align-items: center;
+    justify-content: center;
+    gap: 20px;
 }
 
 .quantum-canvas {
-    border: 1px solid #0f0;
+    border: 2px dashed #0f0;
 }
 
 .thumbnail-portrait {
     border: 1px solid #0f0;
+    width: 100px;
+    height: 100px;
 }
 
 /* Эффект печатной машинки */
