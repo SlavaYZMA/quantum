@@ -49,7 +49,7 @@
         </div>
         <div class="text-canvas-container"></div>
     </section>
-    <section id="step-2.1" class="step step-centered">
+    <section id="step-2-1" class="step step-centered">
         <div class="text-block typewriter">
             <div data-i18n="step2_text2"></div>
             <div data-i18n="step2_text3"></div>
@@ -221,7 +221,7 @@
                         thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
                         console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
                     });
-                    window.moveToNextStep(2.1);
+                    window.moveToNextStep('2-1');
                     input.remove();
                 }, function() {
                     console.error('Error loading image');
@@ -279,9 +279,16 @@
             // Перемещение текстового холста
             var textCanvas = document.querySelector('.text-canvas');
             if (textCanvas) {
-                textCanvas.parentElement.removeChild(textCanvas);
-                document.querySelector(`#step-${stepIndex} .text-canvas-container`).appendChild(textCanvas);
-                console.log('Text canvas moved to step-' + stepIndex);
+                var targetContainer = document.querySelector(`#step-${String(stepIndex).replace('.', '-')} .text-canvas-container`);
+                if (targetContainer) {
+                    textCanvas.parentElement.removeChild(textCanvas);
+                    targetContainer.appendChild(textCanvas);
+                    console.log('Text canvas moved to step-' + stepIndex);
+                } else {
+                    console.error('Target container not found for step-' + stepIndex);
+                }
+            } else {
+                console.error('Text canvas not found');
             }
             // Очистка и инициализация текста
             window.textParticles = [];
