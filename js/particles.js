@@ -22,11 +22,11 @@ window.updateTerminalLog = function() {
 // Инициализация частиц из портрета
 window.initializeParticles = function(img) {
     console.log('initializeParticles called, img defined: ' + !!img + ', dimensions: ' + (img ? img.width + 'x' + img.height : 'undefined'));
-    window.terminalMessages.push(`Ваш портрет превращается в квантовую систему! Частицы готовы к наблюдению.`);
+    window.terminalMessages.push(`Ваш портрет становится квантовой системой! Частицы находятся в суперпозиции, ожидая вашего наблюдения.`);
     window.updateTerminalLog();
     if (!img || !img.pixels) {
         console.error('Error: window.img is not defined or pixels not loaded');
-        window.terminalMessages.push('Ошибка: изображение не загружено для квантовой обработки.');
+        window.terminalMessages.push('Ошибка: изображение не готово для квантовой трансформации.');
         window.updateTerminalLog();
         return;
     }
@@ -39,7 +39,7 @@ window.initializeParticles = function(img) {
         img.loadPixels();
         if (!img.pixels || img.pixels.length === 0) {
             console.error('Error: img.pixels is empty or not loaded');
-            window.terminalMessages.push('Ошибка: данные изображения недоступны.');
+            window.terminalMessages.push('Ошибка: данные портрета недоступны для квантовой обработки.');
             window.updateTerminalLog();
             return;
         }
@@ -108,16 +108,16 @@ window.initializeParticles = function(img) {
             }
         }
         console.log('Initialized ' + window.particles.length + ' particles, valid: ' + validParticles);
-        window.terminalMessages.push(`Создано ${validParticles} квантовых частиц для вашего портрета.`);
+        window.terminalMessages.push(`Квантовый портрет создан: ${validParticles} частиц в суперпозиции, готовых к вашему наблюдению.`);
         window.updateTerminalLog();
         if (validParticles === 0) {
             console.error('No valid particles created. Check image dimensions or pixel data.');
-            window.terminalMessages.push('Ошибка: не удалось создать квантовые частицы.');
+            window.terminalMessages.push('Ошибка: не удалось создать квантовый портрет.');
             window.updateTerminalLog();
         }
     } catch (error) {
         console.error('Error in initializeParticles: ' + error);
-        window.terminalMessages.push(`Ошибка при создании квантовой системы: ${error}`);
+        window.terminalMessages.push(`Ошибка: квантовая система портрета не инициализирована: ${error}`);
         window.updateTerminalLog();
     }
 };
@@ -172,7 +172,7 @@ function drawMouseWave(sketch) {
 window.updateParticles = function(sketch) {
     if (!window.quantumSketch || !window.particles || window.particles.length === 0) {
         console.error('Cannot update particles: quantumSketch: ' + !!window.quantumSketch + ', particlesLength: ' + (window.particles ? window.particles.length : 0));
-        window.terminalMessages.push('Ошибка: квантовые частицы или система не инициализированы.');
+        window.terminalMessages.push('Ошибка: квантовый портрет не инициализирован.');
         window.updateTerminalLog();
         return;
     }
@@ -182,9 +182,9 @@ window.updateParticles = function(sketch) {
     }
     console.log('updateParticles called, particles: ' + window.particles.length + ', currentStep: ' + window.currentStep);
     if (window.terminalMessageCooldown <= 0) {
-        window.terminalMessages.push(`Квантовые частицы портрета в движении на шаге ${window.currentStep}.`);
+        window.terminalMessages.push(`Ваш квантовый портрет оживает! Наблюдение формирует его состояние.`);
         window.updateTerminalLog();
-        window.terminalMessageCooldown = 120; // Сообщение раз в ~2 секунды при 60 FPS
+        window.terminalMessageCooldown = 120;
     }
     window.terminalMessageCooldown--;
     window.frame = window.frame || 0;
@@ -206,13 +206,13 @@ window.updateParticles = function(sketch) {
             sketch.image(window.img, 0, 0, 400, 400);
             console.log('Decomposition: Image alpha ' + imgAlpha.toFixed(0));
             if (window.terminalMessageCooldown <= 0) {
-                window.terminalMessages.push(`Портрет распадается в квантовую суперпозицию, прозрачность: ${imgAlpha.toFixed(0)}/255.`);
+                window.terminalMessages.push(`Портрет растворяется в квантовом поле! Суперпозиция частиц усиливается: прозрачность ${imgAlpha.toFixed(0)}/255.`);
                 window.updateTerminalLog();
                 window.terminalMessageCooldown = 120;
             }
         }
     } else if (window.currentStep === 5 && window.terminalMessageCooldown <= 0) {
-        window.terminalMessages.push(`Портрет стабилизирован в квантовом состоянии.`);
+        window.terminalMessages.push(`Квантовый портрет стабилизирован! Ваше наблюдение зафиксировало его форму.`);
         window.updateTerminalLog();
         window.terminalMessageCooldown = 120;
     }
@@ -239,7 +239,7 @@ window.updateParticles = function(sketch) {
                 p.offsetX += wave * 6 * p.featureWeight * (dx / (dist + 1));
                 p.offsetY += wave * 6 * p.featureWeight * (dy / (dist + 1));
                 if (i < 5 && window.frame % 60 === 0 && window.terminalMessageCooldown <= 0) {
-                    window.terminalMessages.push(`Частица портрета рассеивается в квантовом поле!`);
+                    window.terminalMessages.push(`Частицы портрета рассеиваются, создавая квантовую неопределенность!`);
                     window.updateTerminalLog();
                     window.terminalMessageCooldown = 120;
                 }
@@ -257,7 +257,7 @@ window.updateParticles = function(sketch) {
                 if (Math.random() < 0.015 && window.terminalMessageCooldown <= 0) {
                     p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
                     if (i < 5) {
-                        window.terminalMessages.push(`Частица в суперпозиции меняет форму: ${p.shape}.`);
+                        window.terminalMessages.push(`Частица портрета колеблется в суперпозиции, принимая форму: ${p.shape}.`);
                         window.updateTerminalLog();
                         window.terminalMessageCooldown = 120;
                     }
@@ -277,7 +277,7 @@ window.updateParticles = function(sketch) {
                     p.offsetX += dx * influence * 0.1;
                     p.offsetY += dy * influence * 0.1;
                     if (i < 5 && window.frame % 60 === 0) {
-                        window.terminalMessages.push(`Ваше наблюдение влияет на частицу портрета!`);
+                        window.terminalMessages.push(`Ваше наблюдение создаёт волновой пакет, формируя квантовый портрет!`);
                         window.updateTerminalLog();
                         window.terminalMessageCooldown = 120;
                     }
@@ -289,7 +289,7 @@ window.updateParticles = function(sketch) {
                 p.offsetX += (p.baseX - p.x) * 0.06 * p.featureWeight;
                 p.offsetY += (p.baseY - p.y) * 0.06 * p.featureWeight;
                 if (i < 5 && window.frame % 120 === 0) {
-                    window.terminalMessages.push(`Частица притягивается к ключевым чертам лица.`);
+                    window.terminalMessages.push(`Частицы портрета притягиваются к лицу, усиливая квантовую структуру.`);
                     window.updateTerminalLog();
                     window.terminalMessageCooldown = 120;
                 }
@@ -315,7 +315,7 @@ window.updateParticles = function(sketch) {
                         if (Math.random() < 0.004 && i < 5 && window.terminalMessageCooldown <= 0) {
                             sketch.stroke(state.r, state.g, state.b, 25);
                             sketch.line(p.x, p.y, other.x, other.y);
-                            window.terminalMessages.push(`Частицы портрета взаимодействуют, создавая квантовую интерференцию.`);
+                            window.terminalMessages.push(`Квантовые волны частиц интерферируют, создавая узор портрета!`);
                             window.updateTerminalLog();
                             window.terminalMessageCooldown = 120;
                         }
@@ -344,7 +344,7 @@ window.updateParticles = function(sketch) {
                 sketch.stroke(state.r, state.g, state.b, 50);
                 sketch.ellipse(p.x, p.y, state.tunnelFlash * 0.5, state.tunnelFlash * 0.5);
                 console.log('Particle ' + i + ' tunneled from x: ' + oldX.toFixed(2) + ', y: ' + oldY.toFixed(2) + ' to x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2));
-                window.terminalMessages.push(`Квантовая частица мгновенно переместилась! Это квантовое туннелирование.`);
+                window.terminalMessages.push(`Частица портрета туннелировала через квантовый барьер, мгновенно переместившись!`);
                 window.updateTerminalLog();
                 window.terminalMessageCooldown = 120;
             } else {
@@ -365,7 +365,7 @@ window.updateParticles = function(sketch) {
                     partner.shape = p.shape;
                     state.entanglementFlash = 15;
                     console.log('Non-locality: Particle ' + p.entangledPartner + ' flashed due to ' + i);
-                    window.terminalMessages.push(`Запутанные частицы синхронизировались! Квантовая нелокальность в действии.`);
+                    window.terminalMessages.push(`Запутанные частицы портрета синхронизировались на расстоянии! Это квантовая нелокальность.`);
                     window.updateTerminalLog();
                     window.terminalMessageCooldown = 120;
                 }
@@ -399,7 +399,7 @@ window.updateParticles = function(sketch) {
         } catch (error) {
             console.error('Error updating particle ' + i + ': ' + error);
             if (window.terminalMessageCooldown <= 0) {
-                window.terminalMessages.push(`Ошибка в квантовой системе: частица ${i} не обновлена.`);
+                window.terminalMessages.push(`Ошибка в квантовой системе портрета: частица ${i} не обновлена.`);
                 window.updateTerminalLog();
                 window.terminalMessageCooldown = 120;
             }
@@ -414,7 +414,7 @@ window.updateParticles = function(sketch) {
 window.observeParticles = function(sketch, mouseX, mouseY) {
     if (!window.particles || !window.quantumStates || window.particles.length === 0) {
         console.error('observeParticles: No particles or quantum states available');
-        window.terminalMessages.push('Ошибка: нет частиц для наблюдения.');
+        window.terminalMessages.push('Ошибка: квантовый портрет не содержит частиц для наблюдения.');
         window.updateTerminalLog();
         return;
     }
@@ -424,7 +424,7 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
     }
     console.log('observeParticles called, mouseX: ' + mouseX + ', mouseY: ' + mouseY);
     if (window.terminalMessageCooldown <= 0) {
-        window.terminalMessages.push(`Ваше наблюдение формирует портрет! Движение мыши создаёт волновой пакет.`);
+        window.terminalMessages.push(`Ваше наблюдение создаёт квантовую волну, формирующую портрет в реальном времени!`);
         window.updateTerminalLog();
         window.terminalMessageCooldown = 120;
     }
@@ -437,7 +437,7 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
 window.clickParticles = function(sketch, mouseX, mouseY) {
     if (!window.particles || !window.quantumStates || window.particles.length === 0) {
         console.error('clickParticles: No particles or quantum states available');
-        window.terminalMessages.push('Ошибка: нет частиц для взаимодействия.');
+        window.terminalMessages.push('Ошибка: нет частиц для квантового взаимодействия.');
         window.updateTerminalLog();
         return;
     }
@@ -462,7 +462,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     sketch.fill(state.r, state.g, state.b, 180);
                     sketch.ellipse(p.x, p.y, 12, 12);
                     console.log('Particle ' + i + ' collapsed, shape: ' + p.shape + ', alpha: ' + state.a);
-                    window.terminalMessages.push(`Ваш клик вызвал коллапс волновой функции частицы!`);
+                    window.terminalMessages.push(`Ваш клик вызвал коллапс волновой функции! Частица портрета зафиксировала своё состояние.`);
                     window.updateTerminalLog();
                     window.terminalMessageCooldown = 120;
                 } else {
@@ -471,7 +471,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     state.a = 255;
                     p.size = 3 + (sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale) * 2);
                     console.log('Particle ' + i + ' restored to superposition, shape: ' + p.shape + ', alpha: ' + state.a);
-                    window.terminalMessages.push(`Частица вернулась в состояние суперпозиции!`);
+                    window.terminalMessages.push(`Частица портрета вернулась в квантовую суперпозицию, готовая к новому наблюдению!`);
                     window.updateTerminalLog();
                     window.terminalMessageCooldown = 120;
                 }
@@ -479,7 +479,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
         } catch (error) {
             console.error('Error clicking particle ' + i + ': ' + error);
             if (window.terminalMessageCooldown <= 0) {
-                window.terminalMessages.push(`Ошибка взаимодействия с частицей ${i}.`);
+                window.terminalMessages.push(`Ошибка в квантовой системе портрета: взаимодействие с частицей ${i} не удалось.`);
                 window.updateTerminalLog();
                 window.terminalMessageCooldown = 120;
             }
