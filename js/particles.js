@@ -418,7 +418,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
         window.updateTerminalLog();
         return;
     }
-    if (window.currentStep !== 4 && window.currentStep !== 5) {
+    if (window.currentStep !== 4 && window.currentStep === 5) {
         console.log('clickParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
         return;
     }
