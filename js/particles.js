@@ -7,14 +7,18 @@ window.quantumStates = [];
 // Инициализация частиц на основе загруженного изображения
 window.initializeParticles = (img) => {
     console.log('initializeParticles called, img:', !!img, 'img dimensions:', img?.width, img?.height);
-    if (!img) {
-        console.error('Error: window.img is not defined');
+    if (!img || !img.pixels) {
+        console.error('Error: window.img is not defined or pixels not loaded');
         return;
     }
     window.particles = [];
     window.quantumStates = [];
     try {
         img.loadPixels();
+        if (!img.pixels || img.pixels.length === 0) {
+            console.error('Error: img.pixels is empty or not loaded');
+            return;
+        }
         const pixelStep = Math.floor(Math.max(img.width, img.height) / 20); // Шаг для выборки пикселей
         const centerX = img.width / 2;
         const centerY = img.height / 2;
@@ -62,7 +66,7 @@ window.initializeParticles = (img) => {
                 validParticles++;
             }
         }
-        console.log(`Initialized ${window.particles.length} particles, valid: ${validParticles}`);
+        console.log('Initialized ' + window.particles.length + ' particles, valid: ' + validParticles);
         if (validParticles === 0) {
             console.error('No valid particles created. Check image dimensions or pixel data.');
         }
@@ -102,7 +106,7 @@ window.updateParticles = (sketch) => {
             if (Math.random() < 0.01) {
                 p.x = Math.random() * 400;
                 p.y = Math.random() * 400;
-                console.log(`Particle ${i} tunneled to x: ${p.x.toFixed(2)}, y: ${p.y.toFixed(2)}`);
+                console.log('Particle ' + i + ' tunneled to x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2));
             }
 
             // Запутанность: синхронизация цвета с запутанным партнером
@@ -112,7 +116,7 @@ window.updateParticles = (sketch) => {
                 state.r = partnerState.r = (state.r + partnerState.r) / 2;
                 state.g = partnerState.g = (state.g + partnerState.g) / 2;
                 state.b = partnerState.b = (state.b + partnerState.b) / 2;
-                console.log(`Particle ${i} entangled with ${p.entangledPartner}, synced color: rgb(${state.r}, ${state.g}, ${state.b})`);
+                console.log('Particle ' + i + ' entangled with ' + p.entangledPartner + ', synced color: rgb(' + state.r + ', ' + state.g + ', ' + state.b + ')');
             }
 
             // Движение частицы с ограничением в пределах холста
@@ -124,7 +128,7 @@ window.updateParticles = (sketch) => {
             if (state.decoherenceTimer > 10) {
                 state.probability = Math.max(0.1, state.probability - 0.005); // Минимум 0.1 для видимости
                 state.a = Math.floor(state.probability * 255);
-                console.log(`Particle ${i} decohering, probability: ${state.probability.toFixed(2)}, alpha: ${state.a}`);
+                console.log('Particle ' + i + ' decohering, probability: ' + state.probability.toFixed(2) + ', alpha: ' + state.a);
             }
 
             // Рендеринг частицы
@@ -134,10 +138,10 @@ window.updateParticles = (sketch) => {
 
             // Логирование первых 5 частиц для отладки
             if (i < 5) {
-                console.log(`Particle ${i} at x: ${p.x.toFixed(2)}, y: ${p.y.toFixed(2)}, color: rgb(${state.r}, ${state.g}, ${state.b}, ${state.a})`);
+                console.log('Particle ' + i + ' at x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2) + ', color: rgb(' + state.r + ', ' + state.g + ', ' + state.b + ', ' + state.a + ')');
             }
         } catch (error) {
-            console.error(`Error updating particle ${i}:`, error);
+            console.error('Error updating particle ' + i + ':', error);
         }
     });
 };
@@ -168,10 +172,10 @@ window.observeParticles = (mouseX, mouseY) => {
                 state.probability = Math.max(0.1, state.probability - 0.01); // Уменьшение вероятности
                 state.a = Math.floor(state.probability * 255); // Изменение прозрачности
                 p.phase = 0; // Замораживание фазы для коллапса
-                console.log(`Particle ${i} collapsed, probability: ${state.probability.toFixed(2)}, alpha: ${state.a}`);
+                console.log('Particle ' + i + ' collapsed, probability: ' + state.probability.toFixed(2) + ', alpha: ' + state.a);
             }
         } catch (error) {
-            console.error(`Error observing particle ${i}:`, error);
+            console.error('Error observing particle ' + i + ':', error);
         }
     });
 };
