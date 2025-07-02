@@ -72,6 +72,7 @@
         </div>
         <div class="animation-container">
             <img id="thumbnail-portrait" style="display: none;">
+            <img id="original-portrait" style="display: none;">
             <div id="portrait-animation-container-step-4" style="border: 2px dashed #0f0;"></div>
         </div>
     </section>
@@ -89,6 +90,7 @@
         </div>
         <div class="animation-container">
             <img id="thumbnail-portrait" style="display: none;">
+            <img id="original-portrait" style="display: none;">
             <div id="portrait-animation-container-step-5" style="border: 2px dashed #0f0;"></div>
         </div>
     </section>
@@ -179,10 +181,16 @@
                     console.log('Image loaded successfully, dimensions:', img.width, img.height);
                     window.img = img;
                     const thumbnails = document.querySelectorAll('#thumbnail-portrait');
+                    const originals = document.querySelectorAll('#original-portrait');
                     thumbnails.forEach(thumbnail => {
                         thumbnail.src = URL.createObjectURL(file);
                         thumbnail.style.display = window.currentStep === 4 || window.currentStep === 5 ? 'block' : 'none';
                         console.log('Updated thumbnail src');
+                    });
+                    originals.forEach(original => {
+                        original.src = URL.createObjectURL(file);
+                        original.style.display = window.currentStep === 4 || window.currentStep === 5 ? 'block' : 'none';
+                        console.log('Updated original portrait src');
                     });
                     window.moveToNextStep(2);
                     input.remove();
