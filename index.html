@@ -63,9 +63,9 @@
             > Перемещайте курсор, чтобы взаимодействовать с частицами.<br>
             > Наблюдение вызывает коллапс волновой функции.
         </div>
-        <div style="display: flex; justify-content: space-between; width: 100%;">
-            <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
-            <div id="portrait-animation-container-step-4" style="border: 2px dashed #0f0;"></div>
+        <div id="portrait-animation-container-step-4">
+            <img id="thumbnail-portrait" class="thumbnail-portrait" style="display: none;" />
+            <canvas class="quantum.canvas"></canvas>
         </div>
     </section>
     <section id="step-5" class="step step-centered" style="display: none;">
@@ -74,9 +74,9 @@
             > Частицы подвергаются декогеренции.<br>
             > Нажмите, чтобы сохранить результат.
         </div>
-        <div style="display: flex; justify-content: space-between; width: 100%;">
-            <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
-            <div id="portrait-animation-container-step-5" style="border: 2px dashed #0f0;"></div>
+        <div id="portrait-animation-container-step-5">
+            <img id="thumbnail-portrait" class="thumbnail-portrait" style="display: none;" />
+            <canvas class="quantum-canvas"></canvas>
         </div>
         <div class="button-block">
             <button id="saveImage" data-i18n="save_image">Сохранить изображение</button>
@@ -145,12 +145,12 @@
 
         function draw() {
             if (window.currentStep === 4) {
-                select('#portrait-animation-container-step-4').style('display', 'block');
+                select('#portrait-animation-container-step-4').style('display', 'flex');
                 select('#portrait-animation-container-step-5').style('display', 'none');
                 window.updateParticles(window.quantumSketch);
             } else if (window.currentStep === 5) {
                 select('#portrait-animation-container-step-4').style('display', 'none');
-                select('#portrait-animation-container-step-5').style('display', 'block');
+                select('#portrait-animation-container-step-5').style('display', 'flex');
                 window.updateParticles(window.quantumSketch);
             }
         }
