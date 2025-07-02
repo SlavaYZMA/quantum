@@ -7,7 +7,7 @@ window.mouseWave = { x: 0, y: 0, radius: 0, trail: [] };
 window.terminalMessages = [];
 window.globalMessageCooldown = 0; // Глобальный кулдаун для всех сообщений
 
-// Варианты сообщений для разнообразия
+// Варианты сообщений в научном стиле
 const messages = {
     initialize: [
         "Инициализация квантовой системы портрета. Частицы установлены в состояние суперпозиции.",
@@ -60,15 +60,14 @@ const messages = {
         "Частицы портрета локализуются у ключевых точек изображения."
     ],
     interference: [
-        "Квантовые волновые функции частиц интерферируют, формируя структуру портрета.",
+        "Квантовая интерференция волновых функций частиц формирует структуру портрета.",
         "Интерференция волн частиц приводит к изменению квантовой системы портрета.",
-        "Квантовая интерференция: частицы портрета создают когерентные узоры.",
-        "Волновые функции частиц демонстрируют интерференцию в квантовой системе."
+        "Квантовая интерференция: частицы портрета создают когерентные узоры."
     ],
     tunneling: [
         "Частица портрета осуществила квантовое туннелирование через потенциальный барьер.",
-        "Квантовое туннелирование: частица портрета переместилась в новое состояние.",
-        "Частица портрета демонстрирует туннелирование через квантовый барьер."
+        "Квантовая система: частица портрета переместилась в новое состояние туннелированием.",
+        "Частица портрета демонстрирует квантовое туннелирование через барьер."
     ],
     entanglement: [
         "Запутанные частицы портрета демонстрируют квантовую корреляцию.",
@@ -119,6 +118,9 @@ window.initializeParticles = function(img) {
     console.log('initializeParticles called, img defined: ' + !!img + ', dimensions: ' + (img ? img.width + 'x' + img.height : 'undefined'));
     window.terminalMessages.push(getRandomMessage('initialize'));
     window.updateTerminalLog();
+    if (typeof window.playInitialization === 'function') {
+        window.playInitialization();
+    }
     if (!img || !img.pixels) {
         console.error('Error: window.img is not defined or pixels not loaded');
         window.terminalMessages.push(getRandomMessage('initializeError'));
@@ -205,6 +207,9 @@ window.initializeParticles = function(img) {
         console.log('Initialized ' + window.particles.length + ' particles, valid: ' + validParticles);
         window.terminalMessages.push(getRandomMessage('initializeSuccess', { validParticles }));
         window.updateTerminalLog();
+        if (typeof window.playInitialization === 'function') {
+            window.playInitialization();
+        }
         if (validParticles === 0) {
             console.error('No valid particles created. Check image dimensions or pixel data.');
             window.terminalMessages.push(getRandomMessage('initializeError'));
@@ -270,7 +275,7 @@ window.updateParticles = function(sketch) {
         if (window.globalMessageCooldown <= 0) {
             window.terminalMessages.push(getRandomMessage('error', { index: 0 }));
             window.updateTerminalLog();
-            window.globalMessageCooldown = 240; // ~5 секунд
+            window.globalMessageCooldown = 300; // ~5 секунд
         }
         return;
     }
@@ -283,7 +288,7 @@ window.updateParticles = function(sketch) {
     if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
         window.terminalMessages.push(getRandomMessage('update'));
         window.updateTerminalLog();
-        window.globalMessageCooldown = 600; // ~10 секунд
+        window.globalMessageCooldown = 300; // ~5 секунд
         messageAddedThisFrame = true;
     }
     window.globalMessageCooldown--;
@@ -308,14 +313,17 @@ window.updateParticles = function(sketch) {
             if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                 window.terminalMessages.push(getRandomMessage('decomposition', { imgAlpha: imgAlpha.toFixed(0) }));
                 window.updateTerminalLog();
-                window.globalMessageCooldown = 600; // ~10 секунд
+                window.globalMessageCooldown = 300; // ~5 секунд
                 messageAddedThisFrame = true;
             }
         }
     } else if (window.currentStep === 5 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
         window.terminalMessages.push(getRandomMessage('stabilized'));
         window.updateTerminalLog();
-        window.globalMessageCooldown = 600; // ~10 секунд
+        if (typeof window.playStabilization === 'function') {
+            window.playStabilization();
+        }
+        window.globalMessageCooldown = 300; // ~5 секунд
         messageAddedThisFrame = true;
     }
 
@@ -360,6 +368,11 @@ window.updateParticles = function(sketch) {
                 if (Math.random() < 0.015 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
                     potentialMessages.push({ type: 'superposition', params: { shape: p.shape } });
+                    if (typeof window.playNote === 'function') {
+                        const notes = ['C4', 'D#4', 'F4', 'G4', 'A#4'];
+                        const freq = window.noteFrequencies[notes[Math.floor(Math.random() * notes.length)]];
+                        window.playNote(freq, 'sine', 0.5, 0.2);
+                    }
                 }
             } else {
                 p.offsetX *= 0.9; // Замедление движения при коллапсе
@@ -407,6 +420,9 @@ window.updateParticles = function(sketch) {
                             sketch.stroke(state.r, state.g, state.b, 25);
                             sketch.line(p.x, p.y, other.x, other.y);
                             potentialMessages.push({ type: 'interference', params: {} });
+                            if (typeof window.playInterference === 'function') {
+                                window.playInterference(440, 445, 1.0, 0.15);
+                            }
                         }
                     }
                 }
@@ -435,6 +451,10 @@ window.updateParticles = function(sketch) {
                 console.log('Particle ' + i + ' tunneled from x: ' + oldX.toFixed(2) + ', y: ' + oldY.toFixed(2) + ' to x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2));
                 if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     potentialMessages.push({ type: 'tunneling', params: {} });
+                    if (typeof window.playTunneling === 'function') {
+                        const freq = (p.x * p.y) % 440 + 220;
+                        window.playTunneling(freq, 0.2, 0.3);
+                    }
                 }
             } else {
                 sketch.noStroke();
@@ -455,6 +475,10 @@ window.updateParticles = function(sketch) {
                     state.entanglementFlash = 15;
                     console.log('Non-locality: Particle ' + p.entangledPartner + ' flashed due to ' + i);
                     potentialMessages.push({ type: 'entanglement', params: {} });
+                    if (typeof window.playNote === 'function') {
+                        const freq = window.noteFrequencies['C4'];
+                        window.playNote(freq, 'sine', 0.5, 0.2);
+                    }
                 }
                 if (state.entanglementFlash > 0) {
                     sketch.stroke(state.r, state.g, state.b, state.entanglementFlash * 10);
@@ -500,7 +524,7 @@ window.updateParticles = function(sketch) {
                              potentialMessages[Math.floor(Math.random() * potentialMessages.length)];
         window.terminalMessages.push(getRandomMessage(selectedMessage.type, selectedMessage.params));
         window.updateTerminalLog();
-        window.globalMessageCooldown = 600; // ~10 секунд
+        window.globalMessageCooldown = 300; // ~5 секунд
         messageAddedThisFrame = true;
     }
 
@@ -515,7 +539,7 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
         if (window.globalMessageCooldown <= 0) {
             window.terminalMessages.push(getRandomMessage('error', { index: 0 }));
             window.updateTerminalLog();
-            window.globalMessageCooldown = 600; // ~10 секунд
+            window.globalMessageCooldown = 300; // ~5 секунд
         }
         return;
     }
@@ -527,7 +551,7 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
     if (window.globalMessageCooldown <= 0) {
         window.terminalMessages.push(getRandomMessage('mouseInfluence'));
         window.updateTerminalLog();
-        window.globalMessageCooldown = 600; // ~10 секунд
+        window.globalMessageCooldown = 300; // ~5 секунд
     }
     window.mouseWave.x = mouseX;
     window.mouseWave.y = mouseY;
@@ -541,7 +565,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
         if (window.globalMessageCooldown <= 0) {
             window.terminalMessages.push(getRandomMessage('error', { index: 0 }));
             window.updateTerminalLog();
-            window.globalMessageCooldown = 600; // ~10 секунд
+            window.globalMessageCooldown = 300; // ~5 секунд
         }
         return;
     }
@@ -569,7 +593,10 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     console.log('Particle ' + i + ' collapsed, shape: ' + p.shape + ', alpha: ' + state.a);
                     window.terminalMessages.push(getRandomMessage('collapse', { shape: p.shape }));
                     window.updateTerminalLog();
-                    window.globalMessageCooldown = 600; // ~10 секунд
+                    if (typeof window.playArpeggio === 'function') {
+                        window.playArpeggio(p.shape);
+                    }
+                    window.globalMessageCooldown = 300; // ~5 секунд
                     messageAddedThisFrame = true;
                 } else {
                     p.collapsed = false;
@@ -579,7 +606,11 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     console.log('Particle ' + i + ' restored to superposition, shape: ' + p.shape + ', alpha: ' + state.a);
                     window.terminalMessages.push(getRandomMessage('superpositionRestore'));
                     window.updateTerminalLog();
-                    window.globalMessageCooldown = 600; // ~10 секунд
+                    if (typeof window.playNote === 'function') {
+                        const freq = window.noteFrequencies['C4'];
+                        window.playNote(freq, 'sine', 0.5, 0.2);
+                    }
+                    window.globalMessageCooldown = 300; // ~5 секунд
                     messageAddedThisFrame = true;
                 }
             }
@@ -588,7 +619,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
             if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                 window.terminalMessages.push(getRandomMessage('error', { index: i }));
                 window.updateTerminalLog();
-                window.globalMessageCooldown = 600; // ~10 секунд
+                window.globalMessageCooldown = 300; // ~5 секунд
                 messageAddedThisFrame = true;
             }
         }
