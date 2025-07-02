@@ -71,7 +71,7 @@ function initializeSteps() {
     });
 
     console.log('quantumSketch initialized: ' + !!window.quantumSketch);
-    var canvas = document.querySelector('.quantum-canvas');
+    var canvas = document.querySelector('#quantumCanvas');
     if (canvas) {
         canvas.style.display = 'none';
         console.log('Canvas hidden on initialization');
@@ -92,32 +92,6 @@ function showStep(stepIndex) {
         }
     });
     window.currentStep = stepIndex;
-
-    var canvas = document.querySelector('.quantum-canvas');
-    if (stepIndex === 4 || stepIndex === 5) {
-        if (!canvas) {
-            console.warn('Canvas not found, waiting for p5.js to create it');
-            setTimeout(() => showStep(stepIndex), 100); // Retry after delay
-            return;
-        }
-        try {
-            var container = document.querySelector('#portrait-animation-container-step-' + stepIndex);
-            if (canvas && container) {
-                container.appendChild(canvas);
-                canvas.style.display = 'block';
-                console.log('Canvas moved to step-' + stepIndex + ' container');
-            } else {
-                console.error('Failed to move canvas: canvas: ' + !!canvas + ', container: ' + !!container);
-            }
-        } catch (error) {
-            console.error('Error moving canvas: ' + error);
-        }
-    } else {
-        if (canvas) {
-            canvas.style.display = 'none';
-            console.log('Canvas hidden for step: ' + stepIndex);
-        }
-    }
 }
 
 window.moveToNextStep = function(stepIndex) {
@@ -128,7 +102,7 @@ window.moveToNextStep = function(stepIndex) {
 window.setLanguageAndNext = function(language) {
     console.log('setLanguageAndNext called with language: ' + language);
     window.setLanguage(language);
-    window.moveToNextStep(1);
+    setTimeout(() => window.moveToNextStep(1), 100); // Delay to ensure text is loaded
 };
 
 document.addEventListener('DOMContentLoaded', function() {
