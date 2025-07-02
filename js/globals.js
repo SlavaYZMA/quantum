@@ -20,21 +20,31 @@ const translations = {
         step3_text7: "> Система переходит в режим временной симуляции.",
         step3_text8: "> Портрет существует как совокупность возможных состояний.",
         step4_title: "Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ",
-        step4_text1: "Двигайте курсором по изображению.",
-        step4_text2: "Каждый ваш жест запускает коллапс.",
-        step4_text3: "Система реагирует. Наблюдаемый образ формируется здесь и сейчас.",
+        step4_text1: "> Двигайте курсором по изображению.",
+        step4_text2: "> Каждый ваш жест запускает коллапс.",
+        step4_text3: "> Система реагирует. Наблюдаемый образ формируется здесь и сейчас.",
         step5_title: "Шаг 4: ФИКСАЦИЯ",
         step5_text1: "> Портрет — это процесс.",
         step5_text2: "> Но ты можешь зафиксировать один миг.",
         step5_text3: "> Это будет один из возможных тебя.",
         step6_title: "Шаг 5: РЕАКЦИЯ СИСТЕМЫ",
-        step6_text1: "Это не портрет.",
-        step6_text2: "Это — реакция системы на тебя.",
-        step6_text3: "Ты повлиял на исход.",
+        step6_text1: "> Это не портрет.",
+        step6_text2: "> Это — реакция системы на тебя.",
+        step6_text3: "> Ты повлиял на исход.",
         step7_title: "Заключение",
-        step7_text1: "Ты — не единственный наблюдатель",
+        step7_text1: "Ты — не единственный наблюдатель.",
         step7_text2: "Каждое наблюдение — это акт, формирующий образ.",
-        step7_text3: "Здесь ты — одновременно субъект и объект."
+        step7_text3: "Здесь ты — одновременно субъект и объект.",
+        continue: "Продолжить",
+        upload_image: "Загрузить изображение",
+        use_camera: "Включить камеру",
+        use_archive: "Выбрать из архива",
+        save_observation: "[ЗАПИСАТЬ НАБЛЮДЕНИЕ]",
+        share_observation: "[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]",
+        restart: "[↻ НАЧАТЬ СНАЧАЛА]",
+        archive: "[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]",
+        about_authors: "[ОБ АВТОРАХ]",
+        back: "Назад"
     },
     eng: {
         step0_text: "Please select language RU / ENG",
@@ -57,21 +67,31 @@ const translations = {
         step3_text7: "> System enters time simulation mode.",
         step3_text8: "> Portrait exists as a superposition of possible states.",
         step4_title: "Step 3: BEGIN OBSERVATION",
-        step4_text1: "Move your cursor over the image.",
-        step4_text2: "Each gesture triggers a collapse.",
-        step4_text3: "The system reacts. The observed image forms here and now.",
+        step4_text1: "> Move your cursor over the image.",
+        step4_text2: "> Each gesture triggers a collapse.",
+        step4_text3: "> The system reacts. The observed image forms here and now.",
         step5_title: "Step 4: FIXATION",
         step5_text1: "> The portrait is a process.",
         step5_text2: "> But you can fix a single moment.",
         step5_text3: "> This will be one of the possible yous.",
         step6_title: "Step 5: SYSTEM REACTION",
-        step6_text1: "This is not a portrait.",
-        step6_text2: "This is the system’s reaction to you.",
-        step6_text3: "You influenced the outcome.",
+        step6_text1: "> This is not a portrait.",
+        step6_text2: "> This is the system’s reaction to you.",
+        step6_text3: "> You influenced the outcome.",
         step7_title: "Conclusion",
         step7_text1: "You are not the only observer.",
         step7_text2: "Each observation is an act that shapes the image.",
-        step7_text3: "Here, you are both subject and object."
+        step7_text3: "Here, you are both subject and object.",
+        continue: "Continue",
+        upload_image: "Upload Image",
+        use_camera: "Use Camera",
+        use_archive: "Select from Archive",
+        save_observation: "[RECORD OBSERVATION]",
+        share_observation: "[SHARE OBSERVATION]",
+        restart: "[↻ START OVER]",
+        archive: "[⧉ GO TO OBSERVATION ARCHIVE]",
+        about_authors: "[ABOUT AUTHORS]",
+        back: "Back"
     }
 };
 
@@ -93,6 +113,7 @@ window.setLanguage = (lang) => {
 window.setLanguageAndNext = (lang) => {
     console.log(`setLanguageAndNext called with: ${lang}`);
     window.setLanguage(lang);
+    window.moveToNextStep(1);
 };
 
 window.noiseScale = 0.01;
