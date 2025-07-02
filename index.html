@@ -76,10 +76,11 @@
     </section>
     <section id="step-4" class="step step-centered">
         <div class="text-block typewriter">
-            <div data-i18n="step4_title"></div>
-            <div data-i18n="step4_text1"></div>
-            <div data-i18n="step4_text2"></div>
-            <div data-i18n="step4_text3"></div>
+            <canvas class="text-canvas" style="display: block; width: 600px; height: 100px;"></canvas>
+            <div data-i18n="step4_title" style="display: none;">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</div>
+            <div data-i18n="step4_text1" style="display: none;">> Двигайте курсором по изображению.</div>
+            <div data-i18n="step4_text2" style="display: none;">> Каждый ваш жест запускает коллапс.</div>
+            <div data-i18n="step4_text3" style="display: none;">> Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</div>
         </div>
         <div style="display: flex; justify-content: space-between; width: 100%;">
             <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
@@ -92,10 +93,11 @@
     </section>
     <section id="step-5" class="step step-centered">
         <div class="text-block typewriter">
-            <div data-i18n="step5_title"></div>
-            <div data-i18n="step5_text1"></div>
-            <div data-i18n="step5_text2"></div>
-            <div data-i18n="step5_text3"></div>
+            <canvas class="text-canvas" style="display: block; width: 600px; height: 100px;"></canvas>
+            <div data-i18n="step5_title" style="display: none;"></div>
+            <div data-i18n="step5_text1" style="display: none;"></div>
+            <div data-i18n="step5_text2" style="display: none;"></div>
+            <div data-i18n="step5_text3" style="display: none;"></div>
         </div>
         <div style="display: flex; justify-content: space-between; width: 100%;">
             <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
@@ -137,46 +139,86 @@
 
     <script>
         window.quantumSketch = new p5(function(sketch) {
-            console.log('p5 setup called');
+            console.log('p5 настройка вызвана');
+            let portraitCanvas, textCanvasStep4, textCanvasStep5;
             sketch.setup = function() {
-                var canvas = sketch.createCanvas(400, 400);
-                canvas.class('quantum-canvas');
-                canvas.parent('portrait-animation-container-step-4');
-                console.log('Canvas created, width: ' + canvas.width + ', height: ' + canvas.height);
+                portraitCanvas = sketch.createCanvas(400, 400);
+                portraitCanvas.class('quantum-canvas');
+                portraitCanvas.parent('portrait-animation-container-step-4');
+                console.log('Холст портрета создан, ширина: ' + portraitCanvas.width + ', высота: ' + portraitCanvas.height);
+                textCanvasStep4 = sketch.createCanvas(600, 100);
+                textCanvasStep4.class('text-canvas');
+                textCanvasStep4.parent(document.querySelector('#step-4 .text-block'));
+                console.log('Холст текста для шага 4 создан, ширина: ' + textCanvasStep4.width + ', высота: ' + textCanvasStep4.height);
+                textCanvasStep5 = sketch.createCanvas(600, 100);
+                textCanvasStep5.class('text-canvas');
+                textCanvasStep5.parent(document.querySelector('#step-5 .text-block'));
+                console.log('Холст текста для шага 5 создан, ширина: ' + textCanvasStep5.width + ', высота: ' + textCanvasStep5.height);
                 sketch.noLoop();
             };
 
             sketch.draw = function() {
-                console.log('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
+                const quantumCanvas = document.querySelector('.quantum-canvas');
+                if (!quantumCanvas) {
+                    console.error('Quantum canvas не найден');
+                    return;
+                }
+                console.log('draw вызван, currentStep: ' + window.currentStep + ', canvasVisible: ' + (quantumCanvas.style.display !== 'none'));
                 sketch.background(0);
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     if (window.particles && window.particles.length > 0) {
                         window.updateParticles(sketch);
                     } else {
-                        console.error('No particles to render: ', { particles: window.particles ? window.particles.length : 0 });
+                        console.error('Нет частиц для рендеринга: ', { particles: window.particles ? window.particles.length : 0 });
+                    }
+                    if (window.textParticles && window.textParticles.length > 0) {
+                        window.updateTextParticles(sketch);
+                    } else {
+                        console.log('Нет текстовых частиц для рендеринга, инициализация...');
+                        window.initializeTextParticles(sketch);
                     }
                     sketch.fill(255);
                     sketch.textSize(16);
-                    sketch.text('Frame: ' + (window.frame || 0), 10, 20);
+                    sketch.text('Кадр: ' + (window.frame || 0), 10, 20);
                 }
             };
 
             sketch.mouseMoved = function() {
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     window.observeParticles(sketch, sketch.mouseX, sketch.mouseY);
+                    window.observeTextParticles(sketch, sketch.mouseX, sketch.mouseY);
                 }
             };
 
             sketch.mouseClicked = function() {
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     window.clickParticles(sketch, sketch.mouseX, sketch.mouseY);
-                    sketch.loop(); // Ensure animation continues after click
+                    window.clickTextParticles(sketch, sketch.mouseX, sketch.mouseY);
+                    sketch.loop();
                 }
             };
 
             sketch.startAnimation = function() {
                 sketch.loop();
-                console.log('Animation started');
+                console.log('Анимация запущена');
+                if (window.currentStep === 4 || window.currentStep === 5) {
+                    if (!window.textParticles || window.textParticles.length === 0) {
+                        window.initializeTextParticles(sketch);
+                    }
+                }
+            };
+
+            sketch.moveCanvas = function(step) {
+                if (step === 4 || step === 5) {
+                    const containerId = `portrait-animation-container-step-${step}`;
+                    const container = document.getElementById(containerId);
+                    if (container && portraitCanvas) {
+                        portraitCanvas.parent(containerId);
+                        console.log(`Холст портрета перемещён в ${containerId}`);
+                    } else {
+                        console.error('Не удалось переместить холст портрета', { container: !!container, portraitCanvas: !!portraitCanvas });
+                    }
+                }
             };
         });
 
@@ -254,14 +296,24 @@
 
         var originalMoveToNextStep = window.moveToNextStep;
         window.moveToNextStep = function(stepIndex) {
-            console.log('moveToNextStep called with stepIndex: ' + stepIndex);
+            console.log('moveToNextStep вызван с stepIndex: ' + stepIndex);
             originalMoveToNextStep(stepIndex);
             var thumbnails = document.querySelectorAll('#thumbnail-portrait');
             thumbnails.forEach(function(thumbnail) {
                 thumbnail.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
-                console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + stepIndex);
+                console.log('Отображение миниатюры установлено: ' + thumbnail.style.display + ' для шага: ' + stepIndex);
+            });
+            var textCanvases = document.querySelectorAll('.text-canvas');
+            textCanvases.forEach(function(canvas) {
+                canvas.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
+                if (stepIndex === 4 || stepIndex === 5) {
+                    canvas.parentElement.querySelectorAll('div[data-i18n]').forEach(div => div.style.display = 'none');
+                } else {
+                    canvas.parentElement.querySelectorAll('div[data-i18n]').forEach(div => div.style.display = 'block');
+                }
             });
             if (stepIndex === 4 || stepIndex === 5) {
+                window.quantumSketch.moveCanvas(stepIndex);
                 window.quantumSketch.startAnimation();
             } else {
                 window.quantumSketch.noLoop();
