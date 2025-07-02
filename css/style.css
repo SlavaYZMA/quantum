@@ -47,13 +47,8 @@ body {
     gap: 20px;
 }
 
-#portrait-animation-container-step-2,
-#portrait-animation-container-step-2-1,
-#portrait-animation-container-step-3,
 #portrait-animation-container-step-4,
-#portrait-animation-container-step-5,
-#portrait-animation-container-step-6,
-#portrait-animation-container-step-7 {
+#portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
     margin: 20px 0;
@@ -65,18 +60,12 @@ body {
 }
 
 /* Стили для canvas внутри контейнеров */
-#portrait-animation-container-step-2 canvas.quantum-canvas,
-#portrait-animation-container-step-2-1 canvas.quantum-canvas,
-#portrait-animation-container-step-3 canvas.quantum-canvas,
 #portrait-animation-container-step-4 canvas.quantum-canvas,
-#portrait-animation-container-step-5 canvas.quantum-canvas,
-#portrait-animation-container-step-6 canvas.quantum-canvas,
-#portrait-animation-container-step-7 canvas.quantum-canvas {
+#portrait-animation-container-step-5 canvas.quantum-canvas {
     display: block !important;
     width: 400px !important;
     height: 400px !important;
     margin: 0;
-    border: 5px solid #f00;
     position: relative;
     top: 0;
     left: 0;
