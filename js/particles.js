@@ -68,7 +68,7 @@ window.initializeParticles = function(img) {
                     size: 3 + brightness / 255 * 3,
                     phase: Math.random() * 2 * Math.PI,
                     frequency: 0.01,
-                    entangledPartner: Math.random() < 0.2 ? Math.floor(Math.random() * numParticles) : null,
+                    entangledPartner: Math.random() < 0.2 ? Math.floor(Math.random() * numParticlesツ) : null,
                     collapsed: false,
                     decompositionProgress: 0,
                     shape: ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)],
@@ -112,7 +112,9 @@ window.initializeTextParticles = function(sketch) {
     let fullText = Array.from(textElements).map(el => el.innerText).join('\n');
     if (!fullText.trim()) {
         console.warn('Text empty for step ' + window.currentStep + ', using fallback text');
-        fullText = `Step ${window.currentStep}: OBSERVATION`;
+        fullText = window.currentStep === 4
+            ? 'Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ\n> Двигайте курсором\n> Каждый жест\n> Система реагирует'
+            : 'Шаг 4: ФИКСАЦИЯ\n> Портрет — процесс\n> Зафиксируй миг\n> Один из тебя';
     }
     console.log('Text for rendering:', fullText);
 
@@ -120,7 +122,7 @@ window.initializeTextParticles = function(sketch) {
     textCanvas.background(0);
     textCanvas.fill(255);
     textCanvas.textSize(16);
-    textCanvas.textFont('Courier New');
+    textCanvas.textFont('monospace'); // Use 'monospace' as fallback
     textCanvas.textAlign(sketch.LEFT, sketch.TOP);
     textCanvas.text(fullText, 10, 10, 580, 80);
     textCanvas.loadPixels();
@@ -139,7 +141,7 @@ window.initializeTextParticles = function(sketch) {
         for (let y = 0; y < textCanvas.height; y += step) {
             const index = (x + y * textCanvas.width) * 4;
             const brightness = (textCanvas.pixels[index] + textCanvas.pixels[index + 1] + textCanvas.pixels[index + 2]) / 3;
-            if (brightness > 50 && Math.random() < 0.3) {
+            if (brightness > 30 && Math.random() < 0.5) { // Relaxed condition
                 const r = window.img && window.img.pixels ? window.img.pixels[index % (window.img.width * 4)] || 15 : 15;
                 const g = window.img && window.img.pixels ? window.img.pixels[(index % (window.img.width * 4)) + 1] || 255 : 255;
                 const b = window.img && window.img.pixels ? window.img.pixels[(index % (window.img.width * 4)) + 2] || 15 : 15;
@@ -175,7 +177,37 @@ window.initializeTextParticles = function(sketch) {
     }
     console.log('Initialized ' + window.textParticles.length + ' text particles, valid: ' + validTextParticles);
     if (validTextParticles === 0) {
-        console.error('No text particles created. Check text or canvas pixels.');
+        console.error('No text particles created. Check text rendering or canvas pixels.');
+        // Fallback: create minimal particles
+        for (let i = 0; i < 10; i++) {
+            window.textParticles.push({
+                x: Math.random() * 600,
+                y: Math.random() * 100,
+                baseX: Math.random() * 600,
+                baseY: Math.random() * 100,
+                offsetX: 0,
+                offsetY: 0,
+                size: 3,
+                phase: Math.random() * 2 * Math.PI,
+                frequency: 0.01,
+                entangledPartner: null,
+                collapsed: false,
+                shape: 'ellipse',
+                featureWeight: 0.3
+            });
+            window.textQuantumStates.push({
+                r: 255,
+                g: 255,
+                b: 255,
+                a: 200,
+                probability: 1.0,
+                tunnelFlash: 0,
+                interferencePhase: Math.random() * 2 * Math.PI,
+                entanglementFlash: 0
+            });
+            validTextParticles++;
+        }
+        console.log('Created ' + validTextParticles + ' fallback text particles');
     }
     textCanvas.remove();
 };
