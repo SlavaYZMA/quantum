@@ -323,8 +323,7 @@ window.updateParticles = function(sketch) {
     // Обновление волнового пакета мыши
     if (window.currentStep === 4 || window.currentStep === 5) {
         window.mouseWave.radius = Math.max(0, window.mouseWave.radius - 1);
-        window.mouseWave.trail.push({ x: window.mouseWave.x, y: window.mous
-eWave.y });
+        window.mouseWave.trail.push({ x: window.mouseWave.x, y: window.mouseWave.y });
         if (window.mouseWave.trail.length > 10) window.mouseWave.trail.shift();
     }
 
@@ -405,7 +404,7 @@ eWave.y });
                     if (distance < 60 && p.featureWeight > 0.1 && other.featureWeight > 0.1) {
                         var wave = Math.sin(distance * 0.07 + state.interferencePhase + window.frame * 0.025);
                         interference += wave * 0.08;
-                        if (Math.random() < 0.002 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                        if (Math.random() < 0.001 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                             sketch.stroke(state.r, state.g, state.b, 25);
                             sketch.line(p.x, p.y, other.x, other.y);
                             potentialMessages.push({ type: 'interference', params: {} });
@@ -424,7 +423,7 @@ eWave.y });
             if (p.y > 400 - margin) p.offsetY -= (p.y - (400 - margin)) * 0.1;
 
             // Квантовое туннелирование
-            if (Math.random() < 0.003 && !p.collapsed) {
+            if (Math.random() < 0.002 && !p.collapsed) {
                 var oldX = p.x, oldY = p.y;
                 p.x = Math.random() * 400;
                 p.y = Math.random() * 400;
