@@ -3,7 +3,7 @@ let currentStep = 0;
 let img = null;
 window.currentStep = currentStep;
 window.noiseScale = 0.02;
-window.chaosFactor = 1.0;
+window.chaosFactor = 1.5; // Увеличено для хаотичности
 window.mouseInfluenceRadius = 50;
 
 function preload() {
@@ -18,6 +18,7 @@ function setup() {
     window.quantumSketch = this;
     pixelDensity(1);
     updateStepVisibility();
+    setupEventListeners();
 }
 
 function draw() {
@@ -40,7 +41,12 @@ function mouseClicked() {
 function updateStepVisibility() {
     console.log('updateStepVisibility called, currentStep: ' + window.currentStep);
     selectAll('.step').forEach(elt => elt.style('display', 'none'));
-    select('#step-' + window.currentStep).style('display', 'flex');
+    let stepElement = select('#step-' + window.currentStep);
+    if (stepElement) {
+        stepElement.style('display', 'flex');
+    } else {
+        console.error('Step element #step-' + window.currentStep + ' not found');
+    }
     if (window.currentStep === 4) {
         select('.quantum-canvas').style('display', 'block');
     } else {
@@ -78,35 +84,39 @@ function handleFile(file) {
 
 function setupEventListeners() {
     console.log('setupEventListeners called');
-    select('#language-ru').mousePressed(() => {
-        console.log('Language RU selected');
-        window.currentStep = 1;
-        updateStepVisibility();
-        setTimeout(() => {
-            advanceStep();
-        }, 2000);
-    });
+    let languageButton = select('#language-ru');
+    if (languageButton) {
+        languageButton.mousePressed(() => {
+            console.log('Language RU selected');
+            window.currentStep = 1;
+            updateStepVisibility();
+            setTimeout(() => {
+                advanceStep();
+            }, 2000);
+        });
+    } else {
+        console.error('Element #language-ru not found');
+    }
 
-    select('#file-input').changed((event) => {
-        console.log('File input changed');
-        if (event.elt.files.length > 0) {
-            handleFile(event.elt.files[0]);
-        }
-    });
+    let fileInput = select('#file-input');
+    if (fileInput) {
+        fileInput.changed((event) => {
+            console.log('File input changed');
+            if (event.elt.files.length > 0) {
+                handleFile(event.elt.files[0]);
+            }
+        });
+    } else {
+        console.error('Element #file-input not found');
+    }
 
-    select('#download-button').mousePressed(() => {
-        console.log('Download button pressed');
-        saveCanvas('quantum_portrait_frame_' + frameCount, 'png');
-    });
-}
-
-function setup() {
-    console.log('setup called');
-    let canvas = createCanvas(400, 400);
-    canvas.class('quantum-canvas');
-    canvas.parent('portrait-animation-container-step-4');
-    window.quantumSketch = this;
-    pixelDensity(1);
-    updateStepVisibility();
-    setupEventListeners();
+    let downloadButton = select('#download-button');
+    if (downloadButton) {
+        downloadButton.mousePressed(() => {
+            console.log('Download button pressed');
+            saveCanvas('quantum_portrait_frame_' + frameCount, 'png');
+        });
+    } else {
+        console.error('Element #download-button not found');
+    }
 }
