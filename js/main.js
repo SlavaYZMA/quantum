@@ -1,103 +1,112 @@
 console.log('main.js loaded');
-
-window.currentStep = 0;
+let currentStep = 0;
+let img = null;
+window.currentStep = currentStep;
 window.noiseScale = 0.02;
 window.chaosFactor = 1.0;
 window.mouseInfluenceRadius = 50;
 
-// Define step transitions explicitly
-const stepTransitions = {
-    0: 1,
-    1: 2,
-    2: 2.1,
-    2.1: 3,
-    3: 4,
-    4: 5,
-    5: 6,
-    6: 7
-};
+function preload() {
+    console.log('preload called');
+}
 
-function initializeSteps() {
-    console.log('initializeSteps: Found ' + document.querySelectorAll('.step').length + ' steps');
-    var steps = document.querySelectorAll('.step');
-    if (steps.length === 0) {
-        console.error('No steps found in DOM');
-        return;
-    }
-    steps.forEach(function(step, index) {
-        step.style.display = index === 0 ? 'flex' : 'none';
-        console.log('Step ' + step.id + ' initial display: ' + step.style.display);
-    });
-    window.currentStep = 0;
+function setup() {
+    console.log('setup called');
+    let canvas = createCanvas(400, 400);
+    canvas.class('quantum-canvas');
+    canvas.parent('portrait-animation-container-step-4');
+    window.quantumSketch = this;
+    pixelDensity(1);
+    updateStepVisibility();
+}
 
-    var continueButtons = document.querySelectorAll('.continue');
-    console.log('Found ' + continueButtons.length + ' continue buttons');
-    continueButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            console.log('Continue button clicked, currentStep: ' + window.currentStep);
-            const nextStep = stepTransitions[window.currentStep];
-            if (nextStep === undefined) {
-                console.error('No next step defined for currentStep: ' + window.currentStep);
-                return;
-            }
-            window.moveToNextStep(nextStep);
-        });
-    });
-
-    console.log('quantumSketch initialized: ' + !!window.quantumSketch);
-    var canvas = document.querySelector('.quantum-canvas');
-    if (canvas) {
-        canvas.style.display = 'none';
-        console.log('Canvas hidden on initialization');
+function draw() {
+    if (window.currentStep === 4 || window.currentStep === 5) {
+        if (window.updateParticles) {
+            window.updateParticles(window.quantumSketch);
+        } else {
+            console.error('updateParticles not defined');
+        }
     }
 }
 
-function showStep(stepIndex) {
-    console.log('showStep called with stepIndex: ' + stepIndex);
-    var steps = document.querySelectorAll('.step');
-    steps.forEach(function(step) {
-        var stepId = step.id.replace('step-', '');
-        const isActive = stepId === stepIndex.toString();
-        step.style.display = isActive ? 'flex' : 'none';
-        if (isActive) {
-            console.log('Displaying step ' + stepId + ' with display: ' + step.style.display);
-        }
-    });
-    window.currentStep = stepIndex;
+function mouseClicked() {
+    if (window.currentStep === 4 && window.observeParticles) {
+        window.observeParticles(mouseX, mouseY);
+        console.log('mouseClicked triggered observeParticles');
+    }
+}
 
-    var canvas = document.querySelector('.quantum-canvas');
-    if (stepIndex === 4 || stepIndex === 5) {
-        try {
-            var container = document.querySelector('#portrait-animation-container-step-' + stepIndex);
-            if (canvas && container) {
-                container.appendChild(canvas);
-                canvas.style.display = 'block';
-                console.log('Canvas moved to step-' + stepIndex + ' container');
-            } else {
-                console.error('Failed to move canvas: canvas: ' + !!canvas + ', container: ' + !!container);
-            }
-        } catch (error) {
-            console.error('Error moving canvas: ' + error);
-        }
+function updateStepVisibility() {
+    console.log('updateStepVisibility called, currentStep: ' + window.currentStep);
+    selectAll('.step').forEach(elt => elt.style('display', 'none'));
+    select('#step-' + window.currentStep).style('display', 'flex');
+    if (window.currentStep === 4) {
+        select('.quantum-canvas').style('display', 'block');
     } else {
-        if (canvas) {
-            canvas.style.display = 'none';
-            console.log('Canvas hidden for step: ' + stepIndex);
+        select('.quantum-canvas').style('display', 'none');
+    }
+}
+
+function advanceStep() {
+    console.log('advanceStep called, currentStep: ' + window.currentStep);
+    if (window.currentStep < 5) {
+        window.currentStep++;
+        updateStepVisibility();
+        if (window.currentStep === 4 && window.initializeParticles && window.img) {
+            console.log('Initializing particles for step 4');
+            window.initializeParticles(window.img);
         }
     }
 }
 
-window.moveToNextStep = function(stepIndex) {
-    console.log('moveToNextStep called with stepIndex: ' + stepIndex);
-    showStep(stepIndex);
-};
+function handleFile(file) {
+    console.log('handleFile called, file type: ' + file.type);
+    if (file.type === 'image') {
+        window.img = loadImage(file.data, () => {
+            console.log('Image loaded, dimensions: ' + window.img.width + 'x' + window.img.height);
+            window.currentStep = 2.1;
+            updateStepVisibility();
+            setTimeout(() => {
+                advanceStep();
+            }, 2000);
+        });
+    } else {
+        console.error('File is not an image');
+    }
+}
 
-window.setLanguageAndNext = function(language) {
-    console.log('setLanguageAndNext called with language: ' + language);
-    window.moveToNextStep(1);
-};
+function setupEventListeners() {
+    console.log('setupEventListeners called');
+    select('#language-ru').mousePressed(() => {
+        console.log('Language RU selected');
+        window.currentStep = 1;
+        updateStepVisibility();
+        setTimeout(() => {
+            advanceStep();
+        }, 2000);
+    });
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing steps');
-    initializeSteps();
-});
+    select('#file-input').changed((event) => {
+        console.log('File input changed');
+        if (event.elt.files.length > 0) {
+            handleFile(event.elt.files[0]);
+        }
+    });
+
+    select('#download-button').mousePressed(() => {
+        console.log('Download button pressed');
+        saveCanvas('quantum_portrait_frame_' + frameCount, 'png');
+    });
+}
+
+function setup() {
+    console.log('setup called');
+    let canvas = createCanvas(400, 400);
+    canvas.class('quantum-canvas');
+    canvas.parent('portrait-animation-container-step-4');
+    window.quantumSketch = this;
+    pixelDensity(1);
+    updateStepVisibility();
+    setupEventListeners();
+}
