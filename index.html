@@ -186,12 +186,11 @@
             };
 
             sketch.switchCanvasParent = function(stepIndex) {
-                var canvas = document.querySelector('.quantum-canvas');
                 if (stepIndex === 4) {
-                    canvas.parent('portrait-animation-container-step-4');
+                    sketch.canvas.parent('portrait-animation-container-step-4');
                     console.log('Canvas switched to portrait-animation-container-step-4');
                 } else if (stepIndex === 5) {
-                    canvas.parent('portrait-animation-container-step-5');
+                    sketch.canvas.parent('portrait-animation-container-step-5');
                     console.log('Canvas switched to portrait-animation-container-step-5');
                 }
             };
