@@ -133,7 +133,13 @@
 
             sketch.mouseMoved = function() {
                 if (window.currentStep === 4) {
-                    window.observeParticles(sketch.mouseX, sketch.mouseY);
+                    window.observeParticles(sketch, sketch.mouseX, sketch.mouseY);
+                }
+            };
+
+            sketch.mouseClicked = function() {
+                if (window.currentStep === 4) {
+                    window.clickParticles(sketch, sketch.mouseX, sketch.mouseY);
                 }
             };
 
