@@ -10,17 +10,22 @@ function initAudioContext() {
     return audioContext;
 }
 
-// Частоты нот для C минорной гаммы (C4, D#4, F4, G4, A#4)
+// Частоты нот для C минорной гаммы (C4, D#4, E4, F4, G4, A#4)
 window.noteFrequencies = {
     'C4': 261.63,
     'D#4': 311.13,
+    'E4': 329.63, // Добавлена E4 для аккорда в playStabilization
     'F4': 349.23,
     'G4': 392.00,
     'A#4': 466.16
 };
 
 // Воспроизведение одной ноты
-function playNote(frequency, type = 'sine', duration = 0.5, gainValue = 0.2) {
+window.playNote = function(frequency, type = 'sine', duration = 0.5, gainValue = 0.2) {
+    if (!Number.isFinite(frequency)) {
+        console.warn('playNote: Invalid frequency, using fallback 261.63');
+        frequency = 261.63; // Fallback to C4
+    }
     const ctx = initAudioContext();
     const oscillator = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -35,10 +40,15 @@ function playNote(frequency, type = 'sine', duration = 0.5, gainValue = 0.2) {
 
     oscillator.start();
     oscillator.stop(ctx.currentTime + duration);
-}
+};
 
 // Воспроизведение биений для интерференции
-function playInterference(frequency1 = 440, frequency2 = 445, duration = 1.0, gainValue = 0.15) {
+window.playInterference = function(frequency1 = 440, frequency2 = 445, duration = 1.0, gainValue = 0.15) {
+    if (!Number.isFinite(frequency1) || !Number.isFinite(frequency2)) {
+        console.warn('playInterference: Invalid frequency, using fallback 440/445');
+        frequency1 = 440;
+        frequency2 = 445;
+    }
     const ctx = initAudioContext();
     const oscillator1 = ctx.createOscillator();
     const oscillator2 = ctx.createOscillator();
@@ -59,10 +69,14 @@ function playInterference(frequency1 = 440, frequency2 = 445, duration = 1.0, ga
     oscillator2.start();
     oscillator1.stop(ctx.currentTime + duration);
     oscillator2.stop(ctx.currentTime + duration);
-}
+};
 
 // Воспроизведение импульса с ревербом для туннелирования
-function playTunneling(frequency, duration = 0.2, gainValue = 0.3) {
+window.playTunneling = function(frequency, duration = 0.2, gainValue = 0.3) {
+    if (!Number.isFinite(frequency)) {
+        console.warn('playTunneling: Invalid frequency, using fallback 440');
+        frequency = 440;
+    }
     const ctx = initAudioContext();
     const oscillator = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -89,10 +103,10 @@ function playTunneling(frequency, duration = 0.2, gainValue = 0.3) {
 
     oscillator.start();
     oscillator.stop(ctx.currentTime + duration);
-}
+};
 
 // Воспроизведение арпеджио для коллапса
-function playArpeggio(shape, duration = 0.5, gainValue = 0.2) {
+window.playArpeggio = function(shape, duration = 0.5, gainValue = 0.2) {
     const ctx = initAudioContext();
     const notes = {
         'ribbon': ['C4', 'E4', 'G4'],
@@ -101,10 +115,11 @@ function playArpeggio(shape, duration = 0.5, gainValue = 0.2) {
     }[shape] || ['C4', 'E4', 'G4'];
     
     notes.forEach((note, i) => {
+        const frequency = window.noteFrequencies[note] || 261.63; // Fallback to C4
         const oscillator = ctx.createOscillator();
         const gain = ctx.createGain();
         oscillator.type = 'sawtooth';
-        oscillator.frequency.setValueAtTime(window.noteFrequencies[note], ctx.currentTime + i * 0.15);
+        oscillator.frequency.setValueAtTime(frequency, ctx.currentTime + i * 0.15);
         gain.gain.setValueAtTime(gainValue, ctx.currentTime + i * 0.15);
         gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + duration / 3);
 
@@ -114,10 +129,10 @@ function playArpeggio(shape, duration = 0.5, gainValue = 0.2) {
         oscillator.start(ctx.currentTime + i * 0.15);
         oscillator.stop(ctx.currentTime + i * 0.15 + duration / 3);
     });
-}
+};
 
 // Воспроизведение звука для инициализации (гул)
-function playInitialization(duration = 2.0, gainValue = 0.1) {
+window.playInitialization = function(duration = 2.0, gainValue = 0.1) {
     const ctx = initAudioContext();
     const oscillator = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -132,17 +147,22 @@ function playInitialization(duration = 2.0, gainValue = 0.1) {
 
     oscillator.start();
     oscillator.stop(ctx.currentTime + duration);
-}
+};
 
 // Воспроизведение звука для стабилизации (аккорд)
-function playStabilization(duration = 1.5, gainValue = 0.15) {
+window.playStabilization = function(duration = 1.5, gainValue = 0.15) {
     const ctx = initAudioContext();
     const notes = ['C4', 'E4', 'G4'];
     notes.forEach(note => {
+        const frequency = window.noteFrequencies[note] || 261.63; // Fallback to C4
+        if (!Number.isFinite(frequency)) {
+            console.warn('playStabilization: Invalid frequency for note ' + note + ', using fallback 261.63');
+            return;
+        }
         const oscillator = ctx.createOscillator();
         const gain = ctx.createGain();
         oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(window.noteFrequencies[note], ctx.currentTime);
+        oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
         gain.gain.setValueAtTime(gainValue, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
 
@@ -152,13 +172,7 @@ function playStabilization(duration = 1.5, gainValue = 0.15) {
         oscillator.start();
         oscillator.stop(ctx.currentTime + duration);
     });
-}
+};
 
 // Экспортируем функции в глобальную область
 window.initAudioContext = initAudioContext;
-window.playNote = playNote;
-window.playInterference = playInterference;
-window.playTunneling = playTunneling;
-window.playArpeggio = playArpeggio;
-window.playInitialization = playInitialization;
-window.playStabilization = playStabilization;
