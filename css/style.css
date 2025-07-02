@@ -88,3 +88,21 @@ button:hover {
 #terminal-log-step-5 {
     display: block; /* Show on steps 4 and 5 */
 }
+
+.terminal-log div {
+    animation: fadeIn 1s ease-in;
+    margin-bottom: 5px;
+}
+
+.terminal-log div.tunneling {
+    color: #00ff00;
+}
+
+.terminal-log div.interference {
+    color: #00aaff;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
