@@ -72,7 +72,6 @@
         </div>
         <div class="animation-container">
             <img id="thumbnail-portrait" style="display: none;">
-            <img id="original-portrait" style="display: none;">
             <div id="portrait-animation-container-step-4" style="border: 2px dashed #0f0;"></div>
         </div>
     </section>
@@ -90,7 +89,6 @@
         </div>
         <div class="animation-container">
             <img id="thumbnail-portrait" style="display: none;">
-            <img id="original-portrait" style="display: none;">
             <div id="portrait-animation-container-step-5" style="border: 2px dashed #0f0;"></div>
         </div>
     </section>
@@ -163,18 +161,13 @@
 
         window.quantumSketch = new p5(sketch);
 
-        // Функция для управления отображением миниатюры и оригинального портрета
+        // Функция для управления отображением миниатюры
         function updateThumbnailsDisplay() {
             const thumbnails = document.querySelectorAll('#thumbnail-portrait');
-            const originals = document.querySelectorAll('#original-portrait');
             const isVisible = window.currentStep === 4 || window.currentStep === 5;
             thumbnails.forEach(thumbnail => {
                 thumbnail.style.display = isVisible ? 'block' : 'none';
                 console.log('Thumbnail display set to:', thumbnail.style.display, 'for step:', window.currentStep);
-            });
-            originals.forEach(original => {
-                original.style.display = isVisible ? 'block' : 'none';
-                console.log('Original portrait display set to:', original.style.display, 'for step:', window.currentStep);
             });
         }
 
@@ -197,17 +190,11 @@
                     console.log('Image loaded successfully, dimensions:', img.width, img.height);
                     window.img = img;
                     const thumbnails = document.querySelectorAll('#thumbnail-portrait');
-                    const originals = document.querySelectorAll('#original-portrait');
-                    console.log('Found thumbnails:', thumbnails.length, 'originals:', originals.length);
+                    console.log('Found thumbnails:', thumbnails.length);
                     thumbnails.forEach(thumbnail => {
                         thumbnail.src = URL.createObjectURL(file);
                         thumbnail.style.display = window.currentStep === 4 || window.currentStep === 5 ? 'block' : 'none';
                         console.log('Updated thumbnail src:', thumbnail.src, 'display:', thumbnail.style.display);
-                    });
-                    originals.forEach(original => {
-                        original.src = URL.createObjectURL(file);
-                        original.style.display = window.currentStep === 4 || window.currentStep === 5 ? 'block' : 'none';
-                        console.log('Updated original portrait src:', original.src, 'display:', original.style.display);
                     });
                     window.moveToNextStep(2);
                     input.remove();
