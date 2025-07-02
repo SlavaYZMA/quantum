@@ -1,122 +1,135 @@
-const translations = {
+console.log('globals.js loaded');
+
+window.noiseScale = 0.02;
+window.chaosFactor = 1.0;
+window.mouseInfluenceRadius = 50;
+window.language = 'ru';
+window.translations = {
     ru: {
-        step0_text: "Пожалуйста, выберите язык RU / ENG",
-        step1_title: "СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН",
-        step1_text1: "> Чему Шредингер может научить нас в области цифровой идентификации?",
-        step1_text2: "> Добро пожаловать в экспериментальную зону.",
-        step1_text3: "> Здесь наблюдение = вмешательство",
-        step2_title: "Шаг 1: Сканируйте лицо суперпозиции.",
-        step2_text1: "Вы можете загрузить изображение или выбрать вариант из архива.",
-        step2_text2: "> Изображение принято.",
-        step2_text3: "> Запускается волновая функция.",
-        step2_text4: "> Система готова к инициализации.",
-        step3_title: "Шаг 2: Инициализация",
-        step3_text1: "> Изображение преобразовано в пиксельную сетку.",
-        step3_text2: "> Каждому пикселю назначены параметры (x, y, brightness, color)",
-        step3_text3: "> На их основе построена волновая функция: ψ(x, y, t)",
-        step3_text4: "Уравнение эволюции:",
-        step3_text5: "iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)",
-        step3_text6: "> Потенциал V(x, y) формируется из визуальных характеристик изображения.",
-        step3_text7: "> Система переходит в режим временной симуляции.",
-        step3_text8: "> Портрет существует как совокупность возможных состояний.",
-        step4_title: "Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ",
-        step4_text1: "> Двигайте курсором по изображению.",
-        step4_text2: "> Каждый ваш жест запускает коллапс.",
-        step4_text3: "> Система реагирует. Наблюдаемый образ формируется здесь и сейчас.",
-        step5_title: "Шаг 4: ФИКСАЦИЯ",
-        step5_text1: "> Портрет — это процесс.",
-        step5_text2: "> Но ты можешь зафиксировать один миг.",
-        step5_text3: "> Это будет один из возможных тебя.",
-        step6_title: "Шаг 5: РЕАКЦИЯ СИСТЕМЫ",
-        step6_text1: "> Это не портрет.",
-        step6_text2: "> Это — реакция системы на тебя.",
-        step6_text3: "> Ты повлиял на исход.",
-        step7_title: "Заключение",
-        step7_text1: "Ты — не единственный наблюдатель.",
-        step7_text2: "Каждое наблюдение — это акт, формирующий образ.",
-        step7_text3: "Здесь ты — одновременно субъект и объект.",
-        continue: "Продолжить",
-        upload_image: "Загрузить изображение",
-        use_camera: "Включить камеру",
-        use_archive: "Выбрать из архива",
-        save_observation: "[ЗАПИСАТЬ НАБЛЮДЕНИЕ]",
-        share_observation: "[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]",
-        restart: "[↻ НАЧАТЬ СНАЧАЛА]",
-        archive: "[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]",
-        about_authors: "[ОБ АВТОРАХ]",
-        back: "Назад"
+        step0_text: 'Пожалуйста, выберите язык RU / ENG',
+        step1_title: 'Квантовый портрет',
+        step1_text1: 'Добро пожаловать в Квантовый портрет!',
+        step1_text2: 'Это интерактивное приложение позволяет создать уникальное квантовое представление вашего изображения.',
+        step1_text3: 'Нажмите "Продолжить", чтобы начать.',
+        continue: 'Продолжить',
+        back: 'Назад',
+        step2_title: 'Загрузка изображения',
+        step2_text1: 'Пожалуйста, выберите изображение для создания квантового портрета.',
+        upload_image: 'Загрузить изображение',
+        use_camera: 'Включить камеру',
+        use_archive: 'Выбрать из архива',
+        step2_text2: 'Изображение успешно загружено!',
+        step2_text3: 'Теперь оно будет преобразовано в квантовую форму.',
+        step2_text4: 'Нажмите "Продолжить", чтобы увидеть процесс.',
+        step3_title: 'Квантовая обработка',
+        step3_text1: 'Ваше изображение сейчас проходит квантовую декомпозицию.',
+        step3_text2: 'Мы используем принципы квантовой физики, такие как суперпозиция и запутанность.',
+        step3_text3: 'Каждая частица изображения находится в суперпозиции.',
+        step3_text4: 'Наблюдение вызывает коллапс волновой функции.',
+        step3_text5: 'Интерференция создаёт уникальные узоры.',
+        step3_text6: 'Квантовое туннелирование позволяет частицам перемещаться неожиданно.',
+        step3_text7: 'Запутанность связывает частицы на расстоянии.',
+        step3_text8: 'Нажмите "Продолжить", чтобы увидеть результат.',
+        step4_title: 'Квантовый портрет',
+        step4_text1: 'Ваш квантовый портрет готов!',
+        step4_text2: 'Наведите курсор на изображение, чтобы наблюдать квантовые эффекты.',
+        step4_text3: 'Кликните, чтобы вызвать коллапс волновой функции.',
+        step5_title: 'Наблюдение и сохранение',
+        step5_text1: 'Вы можете сохранить свой квантовый портрет.',
+        step5_text2: 'Введите название и нажмите "[ЗАПИСАТЬ НАБЛЮДЕНИЕ]".',
+        step5_text3: 'Или продолжите, чтобы поделиться результатом.',
+        save_observation: '[ЗАПИСАТЬ НАБЛЮДЕНИЕ]',
+        step6_title: 'Поделиться результатом',
+        step6_text1: 'Ваш квантовый портрет уникален!',
+        step6_text2: 'Поделитесь им с друзьями в Telegram.',
+        step6_text3: 'Нажмите "[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]" или продолжите.',
+        share_observation: '[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]',
+        step7_text1: 'Спасибо за создание квантового портрета!',
+        step7_text2: 'Вы можете начать заново или посетить архив.',
+        step7_text3: 'Узнайте больше о создателях в разделе "Об авторах".',
+        restart: '[↻ НАЧАТЬ СНАЧАЛА]',
+        archive: '[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]',
+        about_authors: '[ОБ АВТОРАХ]',
+        portrait_name_placeholder: 'Название портрета'
     },
-    eng: {
-        step0_text: "Please select language RU / ENG",
-        step1_title: "STATUS: OBSERVER CONNECTED",
-        step1_text1: "> What can Schrödinger teach us about digital identity?",
-        step1_text2: "> Welcome to the experimental zone.",
-        step1_text3: "> Here observation = interference",
-        step2_title: "Step 1: Scan the face of superposition.",
-        step2_text1: "You can upload an image or select one from the archive.",
-        step2_text2: "> Image received.",
-        step2_text3: "> Wave function initiated.",
-        step2_text4: "> System ready for initialization.",
-        step3_title: "Step 2: Initialization",
-        step3_text1: "> Image converted into a pixel grid.",
-        step3_text2: "> Each pixel assigned parameters (x, y, brightness, color).",
-        step3_text3: "> Wave function constructed: ψ(x, y, t).",
-        step3_text4: "Evolution equation:",
-        step3_text5: "iℏ ∂ψ/∂t = Ĥψ, where Ĥ = -½∇² + V(x, y)",
-        step3_text6: "> Potential V(x, y) derived from image visual characteristics.",
-        step3_text7: "> System enters time simulation mode.",
-        step3_text8: "> Portrait exists as a superposition of possible states.",
-        step4_title: "Step 3: BEGIN OBSERVATION",
-        step4_text1: "> Move your cursor over the image.",
-        step4_text2: "> Each gesture triggers a collapse.",
-        step4_text3: "> The system reacts. The observed image forms here and now.",
-        step5_title: "Step 4: FIXATION",
-        step5_text1: "> The portrait is a process.",
-        step5_text2: "> But you can fix a single moment.",
-        step5_text3: "> This will be one of the possible yous.",
-        step6_title: "Step 5: SYSTEM REACTION",
-        step6_text1: "> This is not a portrait.",
-        step6_text2: "> This is the system’s reaction to you.",
-        step6_text3: "> You influenced the outcome.",
-        step7_title: "Conclusion",
-        step7_text1: "You are not the only observer.",
-        step7_text2: "Each observation is an act that shapes the image.",
-        step7_text3: "Here, you are both subject and object.",
-        continue: "Continue",
-        upload_image: "Upload Image",
-        use_camera: "Use Camera",
-        use_archive: "Select from Archive",
-        save_observation: "[RECORD OBSERVATION]",
-        share_observation: "[SHARE OBSERVATION]",
-        restart: "[↻ START OVER]",
-        archive: "[⧉ GO TO OBSERVATION ARCHIVE]",
-        about_authors: "[ABOUT AUTHORS]",
-        back: "Back"
+    en: {
+        step0_text: 'Please select language RU / ENG',
+        step1_title: 'Quantum Portrait',
+        step1_text1: 'Welcome to Quantum Portrait!',
+        step1_text2: 'This interactive application lets you create a unique quantum representation of your image.',
+        step1_text3: 'Click "Continue" to start.',
+        continue: 'Continue',
+        back: 'Back',
+        step2_title: 'Upload Image',
+        step2_text1: 'Please select an image to create a quantum portrait.',
+        upload_image: 'Upload Image',
+        use_camera: 'Use Camera',
+        use_archive: 'Select from Archive',
+        step2_text2: 'Image uploaded successfully!',
+        step2_text3: 'It will now be transformed into a quantum form.',
+        step2_text4: 'Click "Continue" to see the process.',
+        step3_title: 'Quantum Processing',
+        step3_text1: 'Your image is undergoing quantum decomposition.',
+        step3_text2: 'We use principles of quantum physics, such as superposition and entanglement.',
+        step3_text3: 'Each particle of the image is in a superposition.',
+        step3_text4: 'Observation causes the wave function to collapse.',
+        step3_text5: 'Interference creates unique patterns.',
+        step3_text6: 'Quantum tunneling allows particles to move unexpectedly.',
+        step3_text7: 'Entanglement links particles across distances.',
+        step3_text8: 'Click "Continue" to see the result.',
+        step4_title: 'Quantum Portrait',
+        step4_text1: 'Your quantum portrait is ready!',
+        step4_text2: 'Hover over the image to observe quantum effects.',
+        step4_text3: 'Click to trigger wave function collapse.',
+        step5_title: 'Observation and Saving',
+        step5_text1: 'You can save your quantum portrait.',
+        step5_text2: 'Enter a name and click "[SAVE OBSERVATION]".',
+        step5_text3: 'Or continue to share the result.',
+        save_observation: '[SAVE OBSERVATION]',
+        step6_title: 'Share Your Result',
+        step6_text1: 'Your quantum portrait is unique!',
+        step6_text2: 'Share it with friends on Telegram.',
+        step6_text3: 'Click "[SHARE OBSERVATION]" or continue.',
+        share_observation: '[SHARE OBSERVATION]',
+        step7_text1: 'Thank you for creating a quantum portrait!',
+        step7_text2: 'You can start over or visit the archive.',
+        step7_text3: 'Learn more about the creators in the "About Authors" section.',
+        restart: '[↻ START OVER]',
+        archive: '[⧉ GO TO OBSERVATION ARCHIVE]',
+        about_authors: '[ABOUT AUTHORS]',
+        portrait_name_placeholder: 'Portrait Name'
     }
 };
 
-window.setLanguage = (lang) => {
-    console.log(`setLanguage called with: ${lang}`);
-    const elements = document.querySelectorAll('[data-i18n]');
-    console.log(`Language elements found: ${elements.length}`);
-    elements.forEach((element, index) => {
-        const key = element.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
-            element.textContent = translations[lang][key];
-            console.log(`Updated text at index ${index} (${key}): ${translations[lang][key]}`);
-        } else {
-            console.warn(`Translation missing for key: ${key} in language: ${lang}`);
-        }
-    });
+window.getTranslatedText = function(key) {
+    const lang = window.language || 'ru';
+    const text = window.translations[lang][key] || window.translations.ru[key] || key;
+    if (!window.translations[lang][key]) {
+        console.log('Translation missing for key: ' + key + ' in language: ' + lang);
+    }
+    return text;
 };
 
-window.setLanguageAndNext = (lang) => {
-    console.log(`setLanguageAndNext called with: ${lang}`);
+window.setLanguageAndNext = function(lang) {
+    console.log('setLanguageAndNext called with language: ' + lang);
     window.setLanguage(lang);
     window.moveToNextStep(1);
 };
 
-window.noiseScale = 0.01;
-window.chaosFactor = 1.0;
-window.mouseInfluenceRadius = 50;
-window.frame = 0;
+window.setLanguage = function(lang) {
+    console.log('setLanguage called with: ' + lang);
+    window.language = lang;
+    const elements = document.querySelectorAll('[data-i18n]');
+    console.log('Language elements found: ' + elements.length);
+    elements.forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        const text = window.getTranslatedText(key);
+        element.textContent = text;
+    });
+    const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+    placeholders.forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        const text = window.getTranslatedText(key);
+        element.placeholder = text;
+    });
+};
