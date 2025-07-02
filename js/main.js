@@ -75,6 +75,8 @@ function initializeSteps() {
     if (canvas) {
         canvas.style.display = 'none';
         console.log('Canvas hidden on initialization');
+    } else {
+        console.warn('Canvas not found during initialization, waiting for p5.js setup');
     }
 }
 
@@ -93,6 +95,11 @@ function showStep(stepIndex) {
 
     var canvas = document.querySelector('.quantum-canvas');
     if (stepIndex === 4 || stepIndex === 5) {
+        if (!canvas) {
+            console.warn('Canvas not found, waiting for p5.js to create it');
+            setTimeout(() => showStep(stepIndex), 100); // Retry after delay
+            return;
+        }
         try {
             var container = document.querySelector('#portrait-animation-container-step-' + stepIndex);
             if (canvas && container) {
