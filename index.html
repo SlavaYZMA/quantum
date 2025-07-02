@@ -48,7 +48,10 @@
         <div class="button-block">
             <button class="continue">Продолжить</button>
         </div>
-        <div id="portrait-animation-container-step-2-1" style="border: 2px dashed #0f0;"></div>
+        <div class="animation-container">
+            <div id="portrait-animation-container-step-2-1" style="border: 2px dashed #0f0;"></div>
+            <img id="thumbnail-portrait" style="display: none;">
+        </div>
     </section>
     <section id="step-3" class="step step-centered">
         <div class="step-title" data-i18n="step3_title">Шаг 2: Инициализация</div>
@@ -63,7 +66,10 @@
         <div class="button-block">
             <button class="continue">Продолжить</button>
         </div>
-        <div id="portrait-animation-container-step-3" style="border: 2px dashed #0f0;"></div>
+        <div class="animation-container">
+            <div id="portrait-animation-container-step-3" style="border: 2px dashed #0f0;"></div>
+            <img id="thumbnail-portrait" style="display: none;">
+        </div>
     </section>
     <section id="step-4" class="step step-centered">
         <div class="step-title" data-i18n="step4_title">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</div>
@@ -73,7 +79,10 @@
         <div class="button-block">
             <button class="continue">Продолжить</button>
         </div>
-        <div id="portrait-animation-container-step-4" style="border: 2px dashed #0f0;"></div>
+        <div class="animation-container">
+            <div id="portrait-animation-container-step-4" style="border: 2px dashed #0f0;"></div>
+            <img id="thumbnail-portrait" style="display: none;">
+        </div>
     </section>
     <section id="step-5" class="step step-centered">
         <div class="step-title" data-i18n="step5_title">Шаг 4: ФИКСАЦИЯ</div>
@@ -87,7 +96,10 @@
                 <button id="saveButton">Сохранить</button>
             </div>
         </div>
-        <div id="portrait-animation-container-step-5" style="border: 2px dashed #0f0;"></div>
+        <div class="animation-container">
+            <div id="portrait-animation-container-step-5" style="border: 2px dashed #0f0;"></div>
+            <img id="thumbnail-portrait" style="display: none;">
+        </div>
     </section>
     <section id="step-6" class="step step-centered">
         <div class="step-title" data-i18n="step6_title">Шаг 5: РЕАКЦИЯ СИСТЕМЫ</div>
@@ -97,7 +109,10 @@
         <div class="button-block">
             <button class="continue">Продолжить</button>
         </div>
-        <div id="portrait-animation-container-step-6" style="border: 2px dashed #0f0;"></div>
+        <div class="animation-container">
+            <div id="portrait-animation-container-step-6" style="border: 2px dashed #0f0;"></div>
+            <img id="thumbnail-portrait" style="display: none;">
+        </div>
     </section>
     <section id="step-7" class="step step-centered">
         <div class="step-title" data-i18n="step7_title">Заключение</div>
@@ -107,7 +122,10 @@
         <div class="button-block">
             <button class="continue">Завершить</button>
         </div>
-        <div id="portrait-animation-container-step-7" style="border: 2px dashed #0f0;"></div>
+        <div class="animation-container">
+            <div id="portrait-animation-container-step-7" style="border: 2px dashed #0f0;"></div>
+            <img id="thumbnail-portrait" style="display: none;">
+        </div>
     </section>
     <img id="saved-portrait" style="display: none; max-width: 400px; margin: 20px auto;">
 
@@ -163,6 +181,14 @@
                 if (e.target.files[0] && window.quantumSketch) {
                     window.quantumSketch.loadImage(URL.createObjectURL(e.target.files[0]), (img) => {
                         window.img = img;
+                        console.log('Image loaded, updating thumbnail');
+                        const thumbnail = document.querySelector('#thumbnail-portrait');
+                        if (thumbnail) {
+                            thumbnail.src = URL.createObjectURL(e.target.files[0]);
+                            thumbnail.style.display = 'block';
+                        } else {
+                            console.error('Thumbnail element not found');
+                        }
                         window.moveToNextStep(2);
                     }, () => {
                         console.error('Error loading image');
