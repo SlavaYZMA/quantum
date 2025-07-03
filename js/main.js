@@ -40,47 +40,47 @@ const archiveImages = [
 let cameraStream = null;
 
 // Canvas для фона с тенью
-let pulseCanvas, pulseCtx, mouseX = 0, mouseY = 0;
-function initPulseCanvas() {
-    pulseCanvas = document.getElementById('pulse-canvas');
-    if (!pulseCanvas) {
-        console.error('Pulse canvas not found');
+let resonanceCanvas, resonanceCtx, mouseX = 0, mouseY = 0;
+function initResonanceCanvas() {
+    resonanceCanvas = document.getElementById('resonance-canvas');
+    if (!resonanceCanvas) {
+        console.error('Resonance canvas not found');
         return;
     }
-    pulseCanvas.width = window.innerWidth;
-    pulseCanvas.height = window.innerHeight;
-    pulseCtx = pulseCanvas.getContext('2d');
-    animatePulse();
+    resonanceCanvas.width = window.innerWidth;
+    resonanceCanvas.height = window.innerHeight;
+    resonanceCtx = resonanceCanvas.getContext('2d');
+    animateResonance();
 }
 
 // Анимация тени
-function animatePulse() {
-    if (!pulseCtx) return;
-    pulseCtx.clearRect(0, 0, pulseCanvas.width, pulseCanvas.height);
+function animateResonance() {
+    if (!resonanceCtx) return;
+    resonanceCtx.clearRect(0, 0, resonanceCanvas.width, resonanceCanvas.height);
     
-    // Рисуем шум для эффекта "пульса"
-    for (let x = 0; x < pulseCanvas.width; x += 10) {
-        for (let y = 0; y < pulseCanvas.height; y += 10) {
+    // Рисуем шум для эффекта "резонанса"
+    for (let x = 0; x < resonanceCanvas.width; x += 10) {
+        for (let y = 0; y < resonanceCanvas.height; y += 10) {
             const dist = Math.hypot(x - mouseX, y - mouseY);
             const influence = Math.max(0, 1 - dist / window.mouseInfluenceRadius);
             const noise = Math.random() * window.noiseScale * influence;
-            pulseCtx.fillStyle = `rgba(139, 92, 246, ${0.3 + noise})`;
-            pulseCtx.beginPath();
-            pulseCtx.arc(x, y, 5, 0, Math.PI * 2);
-            pulseCtx.fill();
+            resonanceCtx.fillStyle = `rgba(167, 139, 250, ${0.3 + noise})`;
+            resonanceCtx.beginPath();
+            resonanceCtx.arc(x, y, 5 + 2 * Math.sin(Date.now() / 1000), 0, Math.PI * 2);
+            resonanceCtx.fill();
         }
     }
     
     // Рисуем силуэт человека
-    pulseCtx.fillStyle = `rgba(243, 232, 255, ${0.4 + 0.1 * Math.sin(Date.now() / 1000)})`;
-    pulseCtx.beginPath();
-    pulseCtx.moveTo(mouseX - 50, mouseY);
-    pulseCtx.quadraticCurveTo(mouseX, mouseY - 100, mouseX + 50, mouseY);
-    pulseCtx.quadraticCurveTo(mouseX + 25, mouseY + 50, mouseX, mouseY + 100);
-    pulseCtx.quadraticCurveTo(mouseX - 25, mouseY + 50, mouseX - 50, mouseY);
-    pulseCtx.fill();
+    resonanceCtx.fillStyle = `rgba(245, 243, 255, ${0.4 + 0.1 * Math.sin(Date.now() / 800)})`;
+    resonanceCtx.beginPath();
+    resonanceCtx.moveTo(mouseX - 50, mouseY);
+    resonanceCtx.quadraticCurveTo(mouseX, mouseY - 100, mouseX + 50, mouseY);
+    resonanceCtx.quadraticCurveTo(mouseX + 25, mouseY + 50, mouseX, mouseY + 100);
+    resonanceCtx.quadraticCurveTo(mouseX - 25, mouseY + 50, mouseX - 50, mouseY);
+    resonanceCtx.fill();
     
-    requestAnimationFrame(animatePulse);
+    requestAnimationFrame(animateResonance);
 }
 
 // Отслеживание мыши
@@ -90,14 +90,58 @@ document.addEventListener('mousemove', (e) => {
 });
 
 // Функция для ожидания инициализации quantumSketch
-function waitForQuantumSketch(callback) {
+function waitForQuantumSketch(callback, maxAttempts = 50, attempt = 0) {
     if (window.quantumSketch) {
         console.log('quantumSketch ready');
         callback();
+    } else if (attempt >= maxAttempts) {
+        console.error('quantumSketch initialization timed out');
+        alert('Система не готова. Попробуйте загрузить изображение через файл.');
     } else {
-        console.log('Waiting for quantumSketch initialization...');
-        setTimeout(() => waitForQuantumSketch(callback), 100);
+        console.log('Waiting for quantumSketch initialization... Attempt ' + (attempt + 1));
+        setTimeout(() => waitForQuantumSketch(callback, maxAttempts, attempt + 1), 100);
     }
+}
+
+// Функция для обработки загруженного файла
+function handleFileUpload(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const imageUrl = e.target.result;
+        processImage(imageUrl);
+    };
+    reader.onerror = function() {
+        console.error('Error reading file');
+        alert('Ошибка загрузки файла. Пожалуйста, попробуйте снова.');
+    };
+    reader.readAsDataURL(file);
+}
+
+// Функция для обработки изображения
+function processImage(imageUrl) {
+    waitForQuantumSketch(() => {
+        if (!window.quantumSketch) {
+            console.error('quantumSketch still not initialized');
+            alert('Система не готова. Пожалуйста, попробуйте снова.');
+            return;
+        }
+        window.quantumSketch.loadImage(imageUrl, function(img) {
+            console.log('Image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
+            window.img = img;
+            window.initializeParticles(img);
+            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+            console.log('Found thumbnails: ' + thumbnails.length);
+            thumbnails.forEach(function(thumbnail) {
+                thumbnail.src = imageUrl;
+                thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+                console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+            });
+            window.moveToNextStep(2.1);
+        }, function(err) {
+            console.error('Error loading image:', err);
+            alert('Ошибка обработки изображения. Пожалуйста, попробуйте снова.');
+        });
+    });
 }
 
 // Функция для typewriter-анимации
@@ -163,41 +207,13 @@ function showImageArchiveModal() {
             img.alt = 'Ошибка загрузки';
         };
         img.addEventListener('click', () => {
-            selectArchiveImage(src);
+            processImage(src);
             modal.style.display = 'none';
         });
         imageGrid.appendChild(img);
     });
 
     modal.style.display = 'flex';
-}
-
-// Функция для выбора изображения из архива
-function selectArchiveImage(src) {
-    console.log(`Attempting to load archive image: ${src}`);
-    waitForQuantumSketch(() => {
-        if (!window.quantumSketch) {
-            console.error('quantumSketch still not initialized');
-            alert('Система не готова. Пожалуйста, попробуйте снова.');
-            return;
-        }
-        window.quantumSketch.loadImage(src, function(img) {
-            console.log('Archive image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
-            window.img = img;
-            window.initializeParticles(img);
-            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-            console.log('Found thumbnails: ' + thumbnails.length);
-            thumbnails.forEach(function(thumbnail) {
-                thumbnail.src = src;
-                thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-                console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
-            });
-            window.moveToNextStep(2.1);
-        }, function(err) {
-            console.error(`Error loading archive image: ${src}, error: ${err}`);
-            alert('Ошибка загрузки изображения из архива. Пожалуйста, попробуйте снова.');
-        });
-    });
 }
 
 // Функция для запуска камеры
@@ -267,32 +283,9 @@ function capturePhoto() {
     console.log('Photo captured, dimensions: ' + canvas.width + ', ' + canvas.height);
 
     const imageUrl = canvas.toDataURL('image/png');
-
-    waitForQuantumSketch(() => {
-        if (!window.quantumSketch) {
-            console.error('quantumSketch still not initialized');
-            alert('Система не готова. Пожалуйста, попробуйте снова.');
-            return;
-        }
-        window.quantumSketch.loadImage(imageUrl, function(img) {
-            console.log('Captured image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
-            window.img = img;
-            window.initializeParticles(img);
-            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-            console.log('Found thumbnails: ' + thumbnails.length);
-            thumbnails.forEach(function(thumbnail) {
-                thumbnail.src = imageUrl;
-                thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-                console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
-            });
-            window.moveToNextStep(2.1);
-            stopCamera();
-            modal.style.display = 'none';
-        }, function(err) {
-            console.error('Error loading captured image:', err);
-            alert('Ошибка обработки фото. Пожалуйста, попробуйте снова.');
-        });
-    });
+    processImage(imageUrl);
+    stopCamera();
+    modal.style.display = 'none';
 }
 
 function initializeSteps() {
@@ -350,6 +343,17 @@ function initializeSteps() {
         console.warn('Camera button not found');
     }
 
+    const uploadInput = document.getElementById('uploadImage');
+    if (uploadInput) {
+        uploadInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                handleFileUpload(e.target.files[0]);
+            }
+        });
+    } else {
+        console.warn('Upload input not found');
+    }
+
     const closeModal = document.getElementById('close-modal');
     if (closeModal) {
         closeModal.addEventListener('click', () => {
@@ -386,8 +390,6 @@ function initializeSteps() {
     } else {
         console.warn('Canvas not found during initialization, waiting for p5.js setup');
     }
-
-    initPulseCanvas();
 }
 
 function showStep(stepIndex) {
@@ -430,4 +432,5 @@ window.setLanguageAndNext = function(language) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing steps');
     initializeSteps();
+    initResonanceCanvas();
 });
