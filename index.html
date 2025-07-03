@@ -141,6 +141,13 @@
             <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
+    <!-- Модальное окно для выбора изображений из архива -->
+    <div id="image-archive-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span id="close-modal" class="close">×</span>
+            <div class="image-grid" id="image-grid"></div>
+        </div>
+    </div>
 
     <script>
         window.quantumSketch = new p5(function(sketch) {
