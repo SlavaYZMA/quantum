@@ -1,12 +1,12 @@
-/* Импортируем шрифт с эффектом квантовой нестабильности */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
+/* Импортируем Space Mono для квантовой эстетики */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 
 body {
     margin: 0;
     padding: 0;
-    background: #0a0015;
-    color: #e0e0e0;
-    font-family: 'IBM Plex Mono', monospace;
+    background: #05000a;
+    color: #d4d4d8;
+    font-family: 'Space Mono', monospace;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Интерференционная текстура фона */
+/* Энтропийная текстура фона с радиальными градиентами */
 body::before {
     content: '';
     position: fixed;
@@ -23,11 +23,17 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="interference"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="R" yChannelSelector="G"/><feColorMatrix type="matrix" values="0 0 0 0 0.42 0 0 0 0 0.13 0 0 0 0 0.66 0 0 0 0.1 0"/></filter><rect width="100%" height="100%" filter="url(#interference)"/></svg>');
-    opacity: 0.15;
+    background: radial-gradient(circle at 20% 30%, rgba(107, 33, 168, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(96, 165, 250, 0.2) 0%, transparent 50%);
+    opacity: 0.3;
     pointer-events: none;
     z-index: -1;
-    animation: wavePulse 10s infinite ease-in-out;
+    animation: entropyPulse 12s infinite ease-in-out;
+}
+
+/* Интерактивность фона */
+body:hover::before {
+    transform: translate(5px, 5px);
 }
 
 .step {
@@ -46,30 +52,28 @@ body::before {
 }
 
 .text-block {
-    background: rgba(10, 0, 21, 0.7);
+    background: radial-gradient(circle, rgba(10, 0, 21, 0.8) 0%, rgba(5, 0, 10, 0.6) 100%);
     padding: 20px;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
-    animation: waveEdge 5s infinite ease-in-out;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(107, 33, 168, 0.3);
+    animation: quantumWave 6s infinite ease-in-out;
 }
 
 /* Квантовый эффект для текста */
 .text-block div {
     margin-bottom: 10px;
-    visibility: hidden;
-    color: #e0e0e0;
-    filter: blur(0.5px);
-    animation: quantumText 2s infinite alternate;
+    color: #d4d4d8;
+    animation: quantumFlicker 3s infinite alternate;
 }
 
 .text-block span.typewriter-text {
     display: inline;
-    color: #e0e0e0;
-    filter: blur(0.5px);
+    color: #d4d4d8;
 }
 
 .button-block {
@@ -80,49 +84,57 @@ body::before {
 }
 
 button {
-    background: rgba(10, 0, 21, 0.7);
+    background: radial-gradient(circle, rgba(10, 0, 21, 0.8) 0%, rgba(5, 0, 10, 0.6) 100%);
     border: none;
-    color: #e0e0e0;
-    font-family: 'IBM Plex Mono', monospace;
+    color: #d4d4d8;
+    font-family: 'Space Mono', monospace;
     padding: 12px 24px;
     cursor: pointer;
     font-size: 16px;
-    clip-path: polygon(10% 0, 100% 10%, 90% 100%, 0 90%);
-    position: relative;
-    transition: all 0.3s ease;
-    animation: waveEdge 4s infinite ease-in-out;
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(107, 33, 168, 0.3);
+    animation: quantumWave 4s infinite ease-in-out;
 }
 
 button:hover {
     filter: blur(1px);
-    transform: scale(1.05);
-    color: #6b21a8;
+    transform: scale(1.1);
+    color: #a78bfa;
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: rgba(10, 0, 21, 0.9);
-    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
-    animation: waveEdge 6s infinite ease-in-out;
+    background: radial-gradient(circle, rgba(10, 0, 21, 0.9) 0%, rgba(5, 0, 10, 0.7) 100%);
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(107, 33, 168, 0.3);
+    animation: quantumWave 5s infinite ease-in-out;
+}
+
+#thumbnail-portrait {
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(107, 33, 168, 0.3);
+    animation: quantumWave 4s infinite ease-in-out;
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: rgba(10, 0, 21, 0.8);
-    color: #e0e0e0;
-    font-family: 'IBM Plex Mono', monospace;
+    background: radial-gradient(circle, rgba(10, 0, 21, 0.8) 0%, rgba(5, 0, 10, 0.6) 100%);
+    color: #d4d4d8;
+    font-family: 'Space Mono', monospace;
     font-size: 12px;
     padding: 10px;
     overflow-y: auto;
     margin-left: 10px;
     line-height: 1.4;
     display: none;
-    position: relative;
-    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
-    animation: waveEdge 5s infinite ease-in-out;
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(107, 33, 168, 0.3);
+    animation: quantumWave 5s infinite ease-in-out;
 }
 
 #terminal-log-step-4,
@@ -131,19 +143,17 @@ button:hover {
 }
 
 .terminal-log div {
-    animation: quantumText 2s infinite alternate;
+    animation: quantumFlicker 3s infinite alternate;
     margin-bottom: 5px;
-    color: #e0e0e0;
+    color: #d4d4d8;
 }
 
 .terminal-log div.tunneling {
-    color: #e0e0e0;
-    filter: blur(0.7px);
+    color: #60a5fa;
 }
 
 .terminal-log div.interference {
-    color: #00aaff;
-    filter: blur(0.7px);
+    color: #a78bfa;
 }
 
 .modal {
@@ -153,36 +163,35 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(10, 0, 21, 0.9);
+    background: radial-gradient(circle, rgba(10, 0, 21, 0.9) 0%, rgba(5, 0, 10, 0.7) 100%);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background: rgba(10, 0, 21, 0.7);
+    background: radial-gradient(circle, rgba(10, 0, 21, 0.8) 0%, rgba(5, 0, 10, 0.6) 100%);
     padding: 20px;
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
-    position: relative;
-    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
-    animation: waveEdge 5s infinite ease-in-out;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(107, 33, 168, 0.3);
+    animation: quantumWave 5s infinite ease-in-out;
 }
 
 .close {
-    color: #e0e0e0;
+    color: #d4d4d8;
     font-size: 24px;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'Space Mono', monospace;
     position: absolute;
     top: 10px;
     right: 20px;
     cursor: pointer;
-    filter: blur(0.5px);
 }
 
 .close:hover {
-    color: #6b21a8;
+    color: #a78bfa;
     filter: blur(1px);
 }
 
@@ -196,9 +205,10 @@ button:hover {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(107, 33, 168, 0.3);
     cursor: pointer;
-    animation: waveEdge 4s infinite ease-in-out;
+    animation: quantumWave 4s infinite ease-in-out;
 }
 
 .archive-image:hover {
@@ -208,8 +218,9 @@ button:hover {
 
 #camera-video {
     max-width: 100%;
-    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
-    animation: waveEdge 4s infinite ease-in-out;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(107, 33, 168, 0.3);
+    animation: quantumWave 4s infinite ease-in-out;
 }
 
 #capture-photo {
@@ -217,34 +228,35 @@ button:hover {
 }
 
 input[type="text"] {
-    background: rgba(10, 0, 21, 0.7);
+    background: radial-gradient(circle, rgba(10, 0, 21, 0.8) 0%, rgba(5, 0, 10, 0.6) 100%);
     border: none;
-    color: #e0e0e0;
-    font-family: 'IBM Plex Mono', monospace;
+    color: #d4d4d8;
+    font-family: 'Space Mono', monospace;
     padding: 10px;
     font-size: 16px;
-    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
-    animation: waveEdge 4s infinite ease-in-out;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(107, 33, 168, 0.3);
+    animation: quantumWave 4s infinite ease-in-out;
 }
 
 input[type="text"]::placeholder {
-    color: rgba(224, 224, 224, 0.7);
-    filter: blur(0.5px);
+    color: rgba(212, 212, 216, 0.7);
 }
 
-@keyframes waveEdge {
-    0% { clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%); }
-    50% { clip-path: polygon(3% 2%, 98% 3%, 97% 98%, 2% 97%); }
-    100% { clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%); }
+@keyframes entropyPulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.5; }
+    100% { opacity: 0.3; }
 }
 
-@keyframes quantumText {
-    0% { filter: blur(0.5px); transform: translate(0, 0); }
-    100% { filter: blur(0.7px); transform: translate(1px, -1px); }
+@keyframes quantumWave {
+    0% { transform: scale(1); box-shadow: 0 0 20px rgba(107, 33, 168, 0.3); }
+    50% { transform: scale(1.02); box-shadow: 0 0 25px rgba(107, 33, 168, 0.5); }
+    100% { transform: scale(1); box-shadow: 0 0 20px rgba(107, 33, 168, 0.3); }
 }
 
-@keyframes wavePulse {
-    0% { opacity: 0.15; }
-    50% { opacity: 0.2; }
-    100% { opacity: 0.15; }
+@keyframes quantumFlicker {
+    0% { opacity: 1; filter: blur(0); }
+    50% { opacity: 0.8; filter: blur(0.5px); }
+    100% { opacity: 1; filter: blur(0); }
 }
