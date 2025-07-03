@@ -4,7 +4,7 @@
 body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(180deg, #010004 0%, #1e1b4b 50%, #5b21b6 100%);
+    background: linear-gradient(135deg, #010004 0%, #1e1b4b 40%, #5b21b6 100%);
     color: #e5e5e5;
     font-family: 'Share Tech Mono', monospace;
     display: flex;
@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Квантовое поле с интерференцией и неоновими вспышками */
+/* Живое квантовое поле с текстурой и хаотичными вспышками */
 body::before {
     content: '';
     position: fixed;
@@ -24,19 +24,19 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 25% 35%, rgba(229, 229, 255, 0.5) 0%, transparent 25%),
-        radial-gradient(circle at 75% 65%, rgba(0, 183, 235, 0.4) 0%, transparent 20%),
-        radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.3) 0%, transparent 15%),
-        linear-gradient(45deg, rgba(0, 255, 0, 0.4) 0%, rgba(255, 215, 0, 0.3) 50%, transparent 100%);
-    box-shadow: inset 0 0 150px rgba(255, 255, 255, 0.2), inset 0 0 80px rgba(91, 33, 182, 0.4);
-    filter: blur(5px);
+        radial-gradient(circle at 30% 40%, rgba(229, 229, 255, 0.6) 0%, transparent 20%),
+        radial-gradient(circle at 70% 60%, rgba(0, 183, 235, 0.5) 0%, transparent 15%),
+        radial-gradient(circle at 50% 30%, rgba(255, 0, 0, 0.4) 0%, transparent 18%),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.3) 0%, rgba(255, 215, 0, 0.2) 50%, transparent 100%);
+    box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.2), inset 0 0 100px rgba(91, 33, 182, 0.5);
+    filter: blur(6px) contrast(1.2);
     opacity: 0.7;
     pointer-events: none;
     z-index: -1;
-    animation: quantumPulseField 6s infinite ease-in-out;
+    animation: quantumChaos 5s infinite ease-in-out;
 }
 
-/* Интерференционные волны с невидимым спектром */
+/* Интерференционные волны с текстурным наложением */
 body::after {
     content: '';
     position: fixed;
@@ -45,16 +45,17 @@ body::after {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 60% 20%, rgba(255, 215, 0, 0.4) 0%, transparent 10%),
-        radial-gradient(circle at 30% 70%, rgba(0, 183, 235, 0.3) 0%, transparent 12%),
-        radial-gradient(circle at 80% 40%, rgba(255, 0, 0, 0.3) 0%, transparent 15%);
+        radial-gradient(circle at 55% 25%, rgba(255, 215, 0, 0.5) 0%, transparent 12%),
+        radial-gradient(circle at 20% 75%, rgba(0, 183, 235, 0.4) 0%, transparent 10%),
+        radial-gradient(circle at 85% 45%, rgba(255, 0, 0, 0.3) 0%, transparent 15%);
+    filter: blur(4px);
     opacity: 0.6;
     pointer-events: none;
     z-index: -2;
-    animation: quantumRipple 4s infinite ease-in-out;
+    animation: quantumFlux 4s infinite ease-in-out;
 }
 
-/* Хаотичные мерцающие точки с неоновыми оттенками */
+/* Хаотичные мерцающие точки с эффектом мазков */
 body::after::before {
     content: '';
     position: fixed;
@@ -63,27 +64,27 @@ body::after::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 45% 55%, rgba(229, 229, 255, 0.5) 0%, transparent 3%),
-        radial-gradient(circle at 20% 80%, rgba(0, 255, 0, 0.4) 0%, transparent 2%),
-        radial-gradient(circle at 90% 30%, rgba(255, 215, 0, 0.4) 0%, transparent 2%);
-    filter: blur(2px);
+        radial-gradient(circle at 40% 60%, rgba(229, 229, 255, 0.6) 0%, transparent 2%),
+        radial-gradient(circle at 25% 85%, rgba(0, 255, 0, 0.5) 0%, transparent 1.5%),
+        radial-gradient(circle at 90% 20%, rgba(255, 215, 0, 0.5) 0%, transparent 1.5%);
+    filter: blur(3px) contrast(1.3);
     opacity: 0.5;
     pointer-events: none;
     z-index: -3;
-    animation: quantumShimmer 3s infinite ease-in-out;
+    animation: quantumFlicker 2.5s infinite ease-in-out;
 }
 
-/* Интерактивность фона */
+/* Интерактивность фона с эффектом искажения */
 body:hover::before {
     opacity: 0.9;
-    transform: translate(3px, 3px);
-    box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.3), inset 0 0 100px rgba(0, 183, 235, 0.5);
-    filter: blur(6px) hue-rotate(30deg);
+    transform: translate(4px, 4px) rotate(1deg);
+    box-shadow: inset 0 0 250px rgba(255, 255, 255, 0.3), inset 0 0 120px rgba(0, 183, 235, 0.6);
+    filter: blur(7px) hue-rotate(45deg) brightness(1.5);
 }
 
-body:hover::after, body:hover::after::before {
+body:hover::after, body::after::before {
     opacity: 0.8;
-    filter: hue-rotate(20deg);
+    filter: blur(5px) hue-rotate(30deg) brightness(1.4);
 }
 
 .step {
@@ -431,67 +432,93 @@ input[type="text"]::placeholder {
     color: rgba(229, 229, 229, 0.7);
 }
 
-@keyframes quantumPulseField {
+@keyframes quantumChaos {
     0% {
-        background-position: 25% 35%, 75% 65%, 50% 50%, 0% 0%;
+        background-position: 30% 40%, 70% 60%, 50% 30%, 0% 0%;
         opacity: 0.7;
-        box-shadow: inset 0 0 150px rgba(255, 255, 255, 0.2), inset 0 0 80px rgba(91, 33, 182, 0.4);
-        filter: blur(5px) hue-rotate(0deg);
-    }
-    50% {
-        background-position: 30% 40%, 70% 60%, 55% 55%, 10% 10%;
-        opacity: 0.1;
-        box-shadow: inset 0 0 200px rgba(255, 215, 0, 0.3), inset 0 0 100px rgba(0, 183, 235, 0.5);
-        filter: blur(7px) hue-rotate(60deg);
-    }
-    100% {
-        background-position: 25% 35%, 75% 65%, 50% 50%, 0% 0%;
-        opacity: 0.7;
-        box-shadow: inset 0 0 150px rgba(255, 255, 255, 0.2), inset 0 0 80px rgba(91, 33, 182, 0.4);
-        filter: blur(5px) hue-rotate(0deg);
-    }
-}
-
-@keyframes quantumRipple {
-    0% {
-        background-position: 60% 20%, 30% 70%, 80% 40%;
-        opacity: 0.6;
-        transform: scale(1);
-    }
-    50% {
-        background-position: 65% 25%, 25% 65%, 85% 45%;
-        opacity: 0.2;
-        transform: scale(1.03);
-        filter: hue-rotate(45deg);
-    }
-    100% {
-        background-position: 60% 20%, 30% 70%, 80% 40%;
-        opacity: 0.6;
-        transform: scale(1);
-    }
-}
-
-@keyframes quantumShimmer {
-    0% {
-        background-position: 45% 55%, 20% 80%, 90% 30%;
-        opacity: 0.5;
+        box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.2), inset 0 0 100px rgba(91, 33, 182, 0.5);
+        filter: blur(6px) brightness(1) hue-rotate(0deg);
+        transform: translate(0, 0) rotate(0deg);
     }
     25% {
-        background-position: 50% 60%, 15% 75%, 95% 35%;
-        opacity: 0.8;
+        background-position: 35% 45%, 65% 55%, 55% 35%, 5% 5%;
+        opacity: 0.3;
+        filter: blur(8px) brightness(1.8) hue-rotate(30deg);
+        transform: translate(2px, 2px) rotate(0.5deg);
     }
     50% {
-        background-position: 40% 50%, 25% 85%, 85% 25%;
-        opacity: 0.3;
-        filter: hue-rotate(30deg);
+        background-position: 25% 35%, 75% 65%, 45% 25%, 10% 10%;
+        opacity: 0.1;
+        box-shadow: inset 0 0 250px rgba(255, 215, 0, 0.3), inset 0 0 120px rgba(0, 183, 235, 0.6);
+        filter: blur(7px) brightness(2) hue-rotate(60deg);
+        transform: translate(-2px, -2px) rotate(-0.5deg);
     }
     75% {
-        background-position: 45% 55%, 20% 80%, 90% 30%;
-        opacity: 0.6;
+        background-position: 32% 42%, 68% 58%, 52% 32%, 8% 8%;
+        opacity: 0.5;
+        filter: blur(6px) brightness(1.5) hue-rotate(45deg);
+        transform: translate(1px, 1px) rotate(0.3deg);
     }
     100% {
-        background-position: 45% 55%, 20% 80%, 90% 30%;
+        background-position: 30% 40%, 70% 60%, 50% 30%, 0% 0%;
+        opacity: 0.7;
+        box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.2), inset 0 0 100px rgba(91, 33, 182, 0.5);
+        filter: blur(6px) brightness(1) hue-rotate(0deg);
+        transform: translate(0, 0) rotate(0deg);
+    }
+}
+
+@keyframes quantumFlux {
+    0% {
+        background-position: 55% 25%, 20% 75%, 85% 45%;
+        opacity: 0.6;
+        transform: scale(1);
+        filter: blur(4px) brightness(1) hue-rotate(0deg);
+    }
+    50% {
+        background-position: 60% 30%, 15% 70%, 90% 50%;
+        opacity: 0.2;
+        transform: scale(1.04);
+        filter: blur(5px) brightness(1.7) hue-rotate(45deg);
+    }
+    100% {
+        background-position: 55% 25%, 20% 75%, 85% 45%;
+        opacity: 0.6;
+        transform: scale(1);
+        filter: blur(4px) brightness(1) hue-rotate(0deg);
+    }
+}
+
+@keyframes quantumFlicker {
+    0% {
+        background-position: 40% 60%, 25% 85%, 90% 20%;
         opacity: 0.5;
+        filter: blur(3px) brightness(1);
+    }
+    20% {
+        background-position: 45% 65%, 20% 80%, 95% 25%;
+        opacity: 0.8;
+        filter: blur(4px) brightness(2);
+    }
+    40% {
+        background-position: 35% 55%, 30% 90%, 85% 15%;
+        opacity: 0.3;
+        filter: blur(3px) brightness(1.5) hue-rotate(30deg);
+    }
+    60% {
+        background-position: 42% 62%, 22% 82%, 92% 22%;
+        opacity: 0.6;
+        filter: blur(4px) brightness(1.8);
+    }
+    80% {
+        background-position: 38% 58%, 28% 88%, 88% 18%;
+        opacity: 0.4;
+        filter: blur(3px) brightness(1.3) hue-rotate(15deg);
+    }
+    100% {
+        background-position: 40% 60%, 25% 85%, 90% 20%;
+        opacity: 0.5;
+        filter: blur(3px) brightness(1);
     }
 }
 
