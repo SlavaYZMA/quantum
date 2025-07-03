@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +7,13 @@
     <link rel="icon" href="data:;base64,=">
     <link rel="stylesheet" href="./css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <script src="./js/globals.js"></script>
     <script src="./js/particles.js"></script>
     <script src="./js/observer.js"></script>
+    <script src="./js/main.js"></script>
     <script src="./js/audio.js"></script>
     <script src="./js/textSteps.js"></script>
     <script src="./js/utils.js"></script>
-    <script src="./js/gestures.js"></script>
-    <script src="./js/main.js"></script>
 </head>
 <body>
     <section id="step-0" class="step">
@@ -94,7 +92,6 @@
         <div class="button-block">
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
-            <button id="trigger-collapse" data-i18n="trigger_collapse">[СИНХРОННЫЙ КОЛЛАПС]</button>
         </div>
     </section>
     <section id="step-5" class="step step-centered">
@@ -144,12 +141,14 @@
             <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
+    <!-- Модальное окно для выбора изображений из архива -->
     <div id="image-archive-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <span id="close-modal" class="close">×</span>
             <div class="image-grid" id="image-grid"></div>
         </div>
     </div>
+    <!-- Модальное окно для камеры -->
     <div id="camera-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <span id="close-camera-modal" class="close">×</span>
@@ -174,10 +173,7 @@
 
             sketch.draw = function() {
                 console.log('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
-                if (window.currentStep === undefined) {
-                    console.warn('currentStep is undefined, skipping draw');
-                    return;
-                }
+                sketch.background(0);
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     if (window.particles && window.particles.length > 0) {
                         window.updateParticles(sketch);
@@ -199,7 +195,7 @@
             sketch.mouseClicked = function() {
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     window.clickParticles(sketch, sketch.mouseX, sketch.mouseY);
-                    sketch.loop();
+                    sketch.loop(); // Ensure animation continues after click
                 }
             };
 
@@ -284,10 +280,27 @@
             console.log('About authors: navigated to about.html');
         });
 
-        document.getElementById('trigger-collapse').addEventListener('click', function() {
-            window.triggerFullCollapse();
-            console.log('Triggered full collapse of particles');
-        });
+        var originalMoveToNextStep = window.moveToNextStep;
+        window.moveToNextStep = function(stepIndex) {
+            console.log('moveToNextStep called with stepIndex: ' + stepIndex);
+            originalMoveToNextStep(stepIndex);
+            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+            thumbnails.forEach(function(thumbnail) {
+                thumbnail.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
+                console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + stepIndex);
+            });
+            if (stepIndex === 4 || stepIndex === 5) {
+                window.quantumSketch.switchCanvasParent(stepIndex);
+                window.quantumSketch.startAnimation();
+                window.terminalMessages = [];
+                window.terminalMessages.push(`[INIT] Quantum portrait animation started for step ${stepIndex}`);
+                window.updateTerminalLog();
+            } else {
+                window.quantumSketch.noLoop();
+                window.terminalMessages = [];
+                window.updateTerminalLog();
+            }
+        };
     </script>
 </body>
 </html>
