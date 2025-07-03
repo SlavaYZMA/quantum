@@ -1,12 +1,12 @@
-/* Импортируем Space Mono для квантовой эстетики */
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+/* Импортируем Overpass Mono для квантового разлома */
+@import url('https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;700&display=swap');
 
 body {
     margin: 0;
     padding: 0;
-    background: #05000a;
-    color: #d4d4d8;
-    font-family: 'Space Mono', monospace;
+    background: #030007;
+    color: #f5f5f5;
+    font-family: 'Overpass Mono', monospace;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Энтропийная текстура фона с радиальными градиентами */
+/* Текстура разлома с Perlin noise */
 body::before {
     content: '';
     position: fixed;
@@ -23,17 +23,17 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 20% 30%, rgba(107, 33, 168, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(96, 165, 250, 0.2) 0%, transparent 50%);
-    opacity: 0.3;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0.36 0 0 0 0 0.13 0 0 0 0 0.71 0 0 0 0.5 0"/></filter><rect width="100%" height="100%" filter="url(#noise)"/></svg>');
+    opacity: 0.6;
     pointer-events: none;
     z-index: -1;
-    animation: entropyPulse 12s infinite ease-in-out;
+    animation: fracturePulse 10s infinite ease-in-out;
 }
 
 /* Интерактивность фона */
 body:hover::before {
-    transform: translate(5px, 5px);
+    transform: translate(3px, 3px);
+    opacity: 0.7;
 }
 
 .step {
@@ -52,28 +52,29 @@ body:hover::before {
 }
 
 .text-block {
-    background: radial-gradient(circle, rgba(10, 0, 21, 0.8) 0%, rgba(5, 0, 10, 0.6) 100%);
+    background: rgba(3, 0, 7, 0.7);
     padding: 20px;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(107, 33, 168, 0.3);
-    animation: quantumWave 6s infinite ease-in-out;
+    clip-path: polygon(0% 10%, 90% 0%, 100% 90%, 10% 100%);
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5);
+    animation: fractureWave 5s infinite ease-in-out;
 }
 
-/* Квантовый эффект для текста */
+/* Квантовый разлом для текста */
 .text-block div {
     margin-bottom: 10px;
-    color: #d4d4d8;
-    animation: quantumFlicker 3s infinite alternate;
+    color: #f5f5f5;
+    animation: textFracture 4s infinite alternate;
+    clip-path: polygon(0% 20%, 80% 0%, 100% 80%, 20% 100%);
 }
 
-.text-block span.typewriter-text {
+.text-block span {
     display: inline;
-    color: #d4d4d8;
+    color: #f5f5f5;
 }
 
 .button-block {
@@ -84,57 +85,57 @@ body:hover::before {
 }
 
 button {
-    background: radial-gradient(circle, rgba(10, 0, 21, 0.8) 0%, rgba(5, 0, 10, 0.6) 100%);
+    background: rgba(3, 0, 7, 0.7);
     border: none;
-    color: #d4d4d8;
-    font-family: 'Space Mono', monospace;
+    color: #f5f5f5;
+    font-family: 'Overpass Mono', monospace;
     padding: 12px 24px;
     cursor: pointer;
     font-size: 16px;
-    border-radius: 50%;
-    box-shadow: 0 0 15px rgba(107, 33, 168, 0.3);
-    animation: quantumWave 4s infinite ease-in-out;
+    clip-path: polygon(10% 0%, 100% 10%, 90% 100%, 0% 90%);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5);
+    animation: fractureWave 3s infinite ease-in-out;
 }
 
 button:hover {
-    filter: blur(1px);
-    transform: scale(1.1);
-    color: #a78bfa;
+    clip-path: polygon(5% 5%, 95% 5%, 95% 95%, 5% 95%);
+    box-shadow: 0 0 20px rgba(91, 33, 182, 0.7);
+    color: #d8b4fe;
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(10, 0, 21, 0.9) 0%, rgba(5, 0, 10, 0.7) 100%);
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(107, 33, 168, 0.3);
-    animation: quantumWave 5s infinite ease-in-out;
+    background: rgba(3, 0, 7, 0.8);
+    clip-path: polygon(0% 10%, 90% 0%, 100% 90%, 10% 100%);
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5);
+    animation: fractureWave 4s infinite ease-in-out;
 }
 
 #thumbnail-portrait {
     width: 100px;
     height: 100px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(107, 33, 168, 0.3);
-    animation: quantumWave 4s infinite ease-in-out;
+    clip-path: polygon(10% 0%, 100% 10%, 90% 100%, 0% 90%);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5);
+    animation: fractureWave 3s infinite ease-in-out;
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: radial-gradient(circle, rgba(10, 0, 21, 0.8) 0%, rgba(5, 0, 10, 0.6) 100%);
-    color: #d4d4d8;
-    font-family: 'Space Mono', monospace;
+    background: rgba(3, 0, 7, 0.7);
+    color: #f5f5f5;
+    font-family: 'Overpass Mono', monospace;
     font-size: 12px;
     padding: 10px;
     overflow-y: auto;
     margin-left: 10px;
     line-height: 1.4;
     display: none;
-    border-radius: 20px;
-    box-shadow: 0 0 15px rgba(107, 33, 168, 0.3);
-    animation: quantumWave 5s infinite ease-in-out;
+    clip-path: polygon(0% 10%, 90% 0%, 100% 90%, 10% 100%);
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5);
+    animation: fractureWave 4s infinite ease-in-out;
 }
 
 #terminal-log-step-4,
@@ -143,9 +144,9 @@ button:hover {
 }
 
 .terminal-log div {
-    animation: quantumFlicker 3s infinite alternate;
+    animation: textFracture 4s infinite alternate;
     margin-bottom: 5px;
-    color: #d4d4d8;
+    color: #f5f5f5;
 }
 
 .terminal-log div.tunneling {
@@ -153,7 +154,7 @@ button:hover {
 }
 
 .terminal-log div.interference {
-    color: #a78bfa;
+    color: #d8b4fe;
 }
 
 .modal {
@@ -163,27 +164,27 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(10, 0, 21, 0.9) 0%, rgba(5, 0, 10, 0.7) 100%);
+    background: rgba(3, 0, 7, 0.9);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background: radial-gradient(circle, rgba(10, 0, 21, 0.8) 0%, rgba(5, 0, 10, 0.6) 100%);
+    background: rgba(3, 0, 7, 0.7);
     padding: 20px;
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(107, 33, 168, 0.3);
-    animation: quantumWave 5s infinite ease-in-out;
+    clip-path: polygon(0% 10%, 90% 0%, 100% 90%, 10% 100%);
+    box-shadow: 0 0 20px rgba(91, 33, 182, 0.5);
+    animation: fractureWave 5s infinite ease-in-out;
 }
 
 .close {
-    color: #d4d4d8;
+    color: #f5f5f5;
     font-size: 24px;
-    font-family: 'Space Mono', monospace;
+    font-family: 'Overpass Mono', monospace;
     position: absolute;
     top: 10px;
     right: 20px;
@@ -191,8 +192,8 @@ button:hover {
 }
 
 .close:hover {
-    color: #a78bfa;
-    filter: blur(1px);
+    color: #d8b4fe;
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.7);
 }
 
 .image-grid {
@@ -205,22 +206,22 @@ button:hover {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(107, 33, 168, 0.3);
+    clip-path: polygon(10% 0%, 100% 10%, 90% 100%, 0% 90%);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5);
     cursor: pointer;
-    animation: quantumWave 4s infinite ease-in-out;
+    animation: fractureWave 3s infinite ease-in-out;
 }
 
 .archive-image:hover {
-    filter: blur(1px);
-    transform: scale(1.05);
+    clip-path: polygon(5% 5%, 95% 5%, 95% 95%, 5% 95%);
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.7);
 }
 
 #camera-video {
     max-width: 100%;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(107, 33, 168, 0.3);
-    animation: quantumWave 4s infinite ease-in-out;
+    clip-path: polygon(10% 0%, 100% 10%, 90% 100%, 0% 90%);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5);
+    animation: fractureWave 3s infinite ease-in-out;
 }
 
 #capture-photo {
@@ -228,35 +229,35 @@ button:hover {
 }
 
 input[type="text"] {
-    background: radial-gradient(circle, rgba(10, 0, 21, 0.8) 0%, rgba(5, 0, 10, 0.6) 100%);
+    background: rgba(3, 0, 7, 0.7);
     border: none;
-    color: #d4d4d8;
-    font-family: 'Space Mono', monospace;
+    color: #f5f5f5;
+    font-family: 'Overpass Mono', monospace;
     padding: 10px;
     font-size: 16px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(107, 33, 168, 0.3);
-    animation: quantumWave 4s infinite ease-in-out;
+    clip-path: polygon(10% 0%, 100% 10%, 90% 100%, 0% 90%);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5);
+    animation: fractureWave 3s infinite ease-in-out;
 }
 
 input[type="text"]::placeholder {
-    color: rgba(212, 212, 216, 0.7);
+    color: rgba(245, 245, 245, 0.7);
 }
 
-@keyframes entropyPulse {
-    0% { opacity: 0.3; }
-    50% { opacity: 0.5; }
-    100% { opacity: 0.3; }
+@keyframes fracturePulse {
+    0% { opacity: 0.6; transform: translate(0, 0); }
+    50% { opacity: 0.8; transform: translate(2px, 2px); }
+    100% { opacity: 0.6; transform: translate(0, 0); }
 }
 
-@keyframes quantumWave {
-    0% { transform: scale(1); box-shadow: 0 0 20px rgba(107, 33, 168, 0.3); }
-    50% { transform: scale(1.02); box-shadow: 0 0 25px rgba(107, 33, 168, 0.5); }
-    100% { transform: scale(1); box-shadow: 0 0 20px rgba(107, 33, 168, 0.3); }
+@keyframes fractureWave {
+    0% { clip-path: polygon(0% 10%, 90% 0%, 100% 90%, 10% 100%); }
+    50% { clip-path: polygon(5% 5%, 95% 5%, 95% 95%, 5% 95%); }
+    100% { clip-path: polygon(0% 10%, 90% 0%, 100% 90%, 10% 100%); }
 }
 
-@keyframes quantumFlicker {
-    0% { opacity: 1; filter: blur(0); }
-    50% { opacity: 0.8; filter: blur(0.5px); }
-    100% { opacity: 1; filter: blur(0); }
+@keyframes textFracture {
+    0% { clip-path: polygon(0% 20%, 80% 0%, 100% 80%, 20% 100%); opacity: 1; }
+    50% { clip-path: polygon(10% 10%, 90% 10%, 90% 90%, 10% 90%); opacity: 0.7; }
+    100% { clip-path: polygon(0% 20%, 80% 0%, 100% 80%, 20% 100%); opacity: 1; }
 }
