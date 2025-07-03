@@ -1,26 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
     const buttons = document.querySelectorAll('button');
-    
+
     buttons.forEach(button => {
         const originalText = button.textContent;
-        const chars = originalText.split('');
-        
-        // Пропускаем короткие надписи (менее 3 символов)
-        if (chars.length < 3) return;
-        
-        setInterval(() => {
-            // Случайное перемешивание букв
-            let shuffled = [...chars];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            
-            // Применяем перемешанный текст на короткое время
+        let isShuffling = false;
+
+        // Функция для перестановки букв
+        function shuffleText() {
+            if (isShuffling) return;
+            isShuffling = true;
+
+            const chars = originalText.split('');
+            const shuffled = [...chars].sort(() => Math.random() - 0.5);
             button.textContent = shuffled.join('');
+
+            // Возвращаем оригинальный текст через 0.5 секунды
             setTimeout(() => {
                 button.textContent = originalText;
-            }, 100); // Восстанавливаем через 100 мс
-        }, 2000); // Перемешивание каждые 2 секунды
+                isShuffling = false;
+            }, 500);
+        }
+
+        // Запускаем перестановку каждые 2-3 секунды
+        setInterval(() => {
+            if (Math.random() > 0.3) shuffleText(); // 70% шанс перестановки
+        }, 2000 + Math.random() * 1000);
+
+        // Перестановка при наведении
+        button.addEventListener('mouseenter', () => {
+            shuffleText();
+        });
     });
 });
