@@ -36,6 +36,9 @@ const archiveImages = [
     '/public/images/image3.jpg'
 ];
 
+// Переменная для хранения видеопотока
+let cameraStream = null;
+
 // Функция для typewriter-анимации
 function typewriter(element, callback) {
     const divs = element.querySelectorAll('div');
@@ -98,7 +101,7 @@ function showImageArchiveModal() {
         img.alt = `Archive image ${index + 1}`;
         img.onerror = () => {
             console.error(`Failed to load image: ${src}`);
-            img.src = ''; // Очистить src, чтобы избежать бесконечных попыток загрузки
+            img.src = '';
             img.alt = 'Ошибка загрузки';
         };
         img.addEventListener('click', () => {
@@ -133,6 +136,79 @@ function selectArchiveImage(src) {
     }, function(err) {
         console.error(`Error loading archive image: ${src}, error: ${err}`);
         alert('Ошибка загрузки изображения из архива. Пожалуйста, попробуйте снова.');
+    });
+}
+
+// Функция для запуска камеры
+function startCamera() {
+    const modal = document.getElementById('camera-modal');
+    const video = document.getElementById('camera-video');
+    if (!modal || !video) {
+        console.error('Camera modal or video element not found');
+        return;
+    }
+
+    // Запрашиваем доступ к камере
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+            console.log('Camera access granted');
+            cameraStream = stream;
+            video.srcObject = stream;
+            modal.style.display = 'flex';
+        })
+        .catch((err) => {
+            console.error('Error accessing camera:', err);
+            alert('Не удалось получить доступ к камере. Пожалуйста, разрешите доступ или используйте другое устройство.');
+        });
+}
+
+// Функция для остановки камеры
+function stopCamera() {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+        console.log('Camera stream stopped');
+    }
+}
+
+// Функция для захвата фото
+function capturePhoto() {
+    const video = document.getElementById('camera-video');
+    const canvas = document.getElementById('camera-canvas');
+    const modal = document.getElementById('camera-modal');
+    if (!video || !canvas || !modal) {
+        console.error('Video, canvas, or modal not found');
+        return;
+    }
+
+    // Устанавливаем размеры canvas равными размерам видео
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Конвертируем canvas в изображение
+    const imageUrl = canvas.toDataURL('image/png');
+    console.log('Photo captured, dimensions: ' + canvas.width + ', ' + canvas.height);
+
+    // Загружаем изображение в p5.js
+    window.quantumSketch.loadImage(imageUrl, function(img) {
+        console.log('Captured image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
+        window.img = img;
+        window.initializeParticles(img);
+        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+        console.log('Found thumbnails: ' + thumbnails.length);
+        thumbnails.forEach(function(thumbnail) {
+            thumbnail.src = imageUrl;
+            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+        });
+        window.moveToNextStep(2.1);
+        stopCamera();
+        modal.style.display = 'none';
+    }, function(err) {
+        console.error('Error loading captured image:', err);
+        alert('Ошибка обработки фото. Пожалуйста, попробуйте снова.');
     });
 }
 
@@ -185,7 +261,15 @@ function initializeSteps() {
         console.warn('Archive button not found');
     }
 
-    // Инициализация кнопки закрытия модального окна
+    // Инициализация кнопки "Включить камеру"
+    const cameraButton = document.getElementById('useCamera');
+    if (cameraButton) {
+        cameraButton.addEventListener('click', startCamera);
+    } else {
+        console.warn('Camera button not found');
+    }
+
+    // Инициализация кнопки закрытия модального окна архива
     const closeModal = document.getElementById('close-modal');
     if (closeModal) {
         closeModal.addEventListener('click', () => {
@@ -194,6 +278,26 @@ function initializeSteps() {
                 modal.style.display = 'none';
             }
         });
+    }
+
+    // Инициализация кнопки закрытия модального окна камеры
+    const closeCameraModal = document.getElementById('close-camera-modal');
+    if (closeCameraModal) {
+        closeCameraModal.addEventListener('click', () => {
+            const modal = document.getElementById('camera-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                stopCamera();
+            }
+        });
+    }
+
+    // Инициализация кнопки захвата фото
+    const captureButton = document.getElementById('capture-photo');
+    if (captureButton) {
+        captureButton.addEventListener('click', capturePhoto);
+    } else {
+        console.warn('Capture photo button not found');
     }
 
     console.log('quantumSketch initialized: ' + !!window.quantumSketch);
