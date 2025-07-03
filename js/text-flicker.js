@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.textContent = shuffled.join('');
             setTimeout(() => {
                 button.textContent = originalText;
-            }, 200); // Восстанавливаем через 200 мс
-        }, 2000); // Перемешивание каждые 2 секунды
+            }, 150); // Восстанавливаем через 150 мс
+        }, 1500); // Перемешивание каждые 1.5 секунды
     });
 });
