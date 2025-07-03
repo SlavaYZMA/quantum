@@ -39,45 +39,6 @@ const archiveImages = [
 // Переменная для хранения видеопотока
 let cameraStream = null;
 
-// Функция для загрузки моделей face-api.js
-async function loadFaceApiModels() {
-    console.log('Loading face-api.js models...');
-    await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
-    await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
-    console.log('face-api.js models loaded');
-}
-
-// Функция для анализа лица
-async function detectFaceLandmarks(img, callback) {
-    console.log('Starting face detection');
-    const canvas = document.createElement('canvas');
-    canvas.width = img.width;
-    canvas.height = img.height;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img.elt, 0, 0, img.width, img.height);
-
-    const detections = await faceapi.detectSingleFace(canvas).withFaceLandmarks();
-    if (detections) {
-        const landmarks = detections.landmarks;
-        const leftEye = landmarks.getLeftEye();
-        const rightEye = landmarks.getRightEye();
-        const mouth = landmarks.getMouth();
-        const jawOutline = landmarks.getJawOutline();
-
-        const faceData = {
-            leftEye: { x: leftEye.reduce((sum, p) => sum + p.x, 0) / leftEye.length, y: leftEye.reduce((sum, p) => sum + p.y, 0) / leftEye.length },
-            rightEye: { x: rightEye.reduce((sum, p) => sum + p.x, 0) / rightEye.length, y: rightEye.reduce((sum, p) => sum + p.y, 0) / rightEye.length },
-            mouth: { x: mouth.reduce((sum, p) => sum + p.x, 0) / mouth.length, y: mouth.reduce((sum, p) => sum + p.y, 0) / mouth.length },
-            contour: jawOutline.map(p => ({ x: p.x, y: p.y }))
-        };
-        console.log('Face landmarks detected:', faceData);
-        callback(faceData);
-    } else {
-        console.warn('No face detected, using default landmarks');
-        callback(null);
-    }
-}
-
 // Функция для typewriter-анимации
 function typewriter(element, callback) {
     const divs = element.querySelectorAll('div');
@@ -162,18 +123,16 @@ function selectArchiveImage(src) {
     console.log(`Attempting to load archive image: ${src}`);
     window.quantumSketch.loadImage(src, function(img) {
         console.log('Archive image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
-        window.detectFaceLandmarks(img, function(landmarks) {
-            window.img = img;
-            window.initializeParticles(img, landmarks);
-            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-            console.log('Found thumbnails: ' + thumbnails.length);
-            thumbnails.forEach(function(thumbnail) {
-                thumbnail.src = src;
-                thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-                console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
-            });
-            window.moveToNextStep(2.1);
+        window.img = img;
+        window.initializeParticles(img);
+        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+        console.log('Found thumbnails: ' + thumbnails.length);
+        thumbnails.forEach(function(thumbnail) {
+            thumbnail.src = src;
+            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
         });
+        window.moveToNextStep(2.1);
     }, function(err) {
         console.error(`Error loading archive image: ${src}, error: ${err}`);
         alert('Ошибка загрузки изображения из архива. Пожалуйста, попробуйте снова.');
@@ -259,20 +218,18 @@ function capturePhoto() {
     // Загружаем изображение в p5.js
     window.quantumSketch.loadImage(imageUrl, function(img) {
         console.log('Captured image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
-        window.detectFaceLandmarks(img, function(landmarks) {
-            window.img = img;
-            window.initializeParticles(img, landmarks);
-            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-            console.log('Found thumbnails: ' + thumbnails.length);
-            thumbnails.forEach(function(thumbnail) {
-                thumbnail.src = imageUrl;
-                thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-                console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
-            });
-            window.moveToNextStep(2.1);
-            stopCamera();
-            modal.style.display = 'none';
+        window.img = img;
+        window.initializeParticles(img);
+        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+        console.log('Found thumbnails: ' + thumbnails.length);
+        thumbnails.forEach(function(thumbnail) {
+            thumbnail.src = imageUrl;
+            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
         });
+        window.moveToNextStep(2.1);
+        stopCamera();
+        modal.style.display = 'none';
     }, function(err) {
         console.error('Error loading captured image:', err);
         alert('Ошибка обработки фото. Пожалуйста, попробуйте снова.');
@@ -366,14 +323,6 @@ function initializeSteps() {
     } else {
         console.warn('Capture photo button not found');
     }
-
-    // Загрузка моделей face-api.js
-    loadFaceApiModels().then(() => {
-        console.log('face-api.js ready for face detection');
-    }).catch(err => {
-        console.error('Error loading face-api.js models:', err);
-        alert('Ошибка загрузки моделей для анализа лица. Некоторые функции могут быть недоступны.');
-    });
 
     console.log('quantumSketch initialized: ' + !!window.quantumSketch);
     var canvas = document.querySelector('#quantumCanvas');
