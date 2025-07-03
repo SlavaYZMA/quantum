@@ -1,12 +1,12 @@
-/* Импортируем современный моноширинный шрифт */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+/* Импортируем шрифт с эффектом квантовой нестабильности */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
 
 body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2a 100%);
-    color: #ffffff;
-    font-family: 'JetBrains Mono', monospace;
+    background: #0a0015;
+    color: #e0e0e0;
+    font-family: 'IBM Plex Mono', monospace;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Волнообразная текстура фона */
+/* Интерференционная текстура фона */
 body::before {
     content: '';
     position: fixed;
@@ -23,9 +23,11 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="wave"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G"/></filter><rect width="100%" height="100%" filter="url(#wave)" opacity="0.1"/></svg>');
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="interference"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="R" yChannelSelector="G"/><feColorMatrix type="matrix" values="0 0 0 0 0.42 0 0 0 0 0.13 0 0 0 0 0.66 0 0 0 0.1 0"/></filter><rect width="100%" height="100%" filter="url(#interference)"/></svg>');
+    opacity: 0.15;
     pointer-events: none;
     z-index: -1;
+    animation: wavePulse 10s infinite ease-in-out;
 }
 
 .step {
@@ -44,37 +46,30 @@ body::before {
 }
 
 .text-block {
-    background: rgba(10, 10, 26, 0.7);
+    background: rgba(10, 0, 21, 0.7);
     padding: 20px;
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #00ddeb, #d946ef) 1;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
-    box-shadow: 0 0 15px rgba(0, 221, 235, 0.3), 0 0 5px rgba(217, 70, 239, 0.2);
     position: relative;
-    overflow: hidden;
+    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
+    animation: waveEdge 5s infinite ease-in-out;
 }
 
-/* Глитч-эффект для текста */
+/* Квантовый эффект для текста */
 .text-block div {
     margin-bottom: 10px;
     visibility: hidden;
-    background: linear-gradient(90deg, #00ddeb, #ffffff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 
-        0 0 5px rgba(0, 221, 235, 0.5),
-        1px 1px 0 rgba(217, 70, 239, 0.3),
-        -1px -1px 0 rgba(0, 170, 255, 0.3);
+    color: #e0e0e0;
+    filter: blur(0.5px);
+    animation: quantumText 2s infinite alternate;
 }
 
 .text-block span.typewriter-text {
     display: inline;
-    background: linear-gradient(90deg, #00ddeb, #ffffff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #e0e0e0;
+    filter: blur(0.5px);
 }
 
 .button-block {
@@ -85,45 +80,40 @@ body::before {
 }
 
 button {
-    background: rgba(10, 10, 26, 0.7);
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #00ddeb, #d946ef) 1;
-    color: #ffffff;
-    font-family: 'JetBrains Mono', monospace;
-    padding: 10px 20px;
+    background: rgba(10, 0, 21, 0.7);
+    border: none;
+    color: #e0e0e0;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 12px 24px;
     cursor: pointer;
     font-size: 16px;
-    text-shadow: 0 0 5px rgba(0, 221, 235, 0.5);
-    box-shadow: 0 0 10px rgba(0, 221, 235, 0.3);
+    clip-path: polygon(10% 0, 100% 10%, 90% 100%, 0 90%);
     position: relative;
     transition: all 0.3s ease;
+    animation: waveEdge 4s infinite ease-in-out;
 }
 
 button:hover {
-    background: linear-gradient(45deg, #00ddeb, #d946ef);
-    color: #000;
-    box-shadow: 0 0 15px rgba(0, 221, 235, 0.7);
-    animation: pulse 1s infinite;
+    filter: blur(1px);
+    transform: scale(1.05);
+    color: #6b21a8;
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: rgba(10, 10, 26, 0.9);
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #00ddeb, #d946ef) 1;
-    box-shadow: 0 0 15px rgba(0, 221, 235, 0.3);
+    background: rgba(10, 0, 21, 0.9);
+    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
+    animation: waveEdge 6s infinite ease-in-out;
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: rgba(10, 10, 26, 0.8);
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #00ddeb, #d946ef) 1;
-    color: #ffffff;
-    font-family: 'JetBrains Mono', monospace;
+    background: rgba(10, 0, 21, 0.8);
+    color: #e0e0e0;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
     padding: 10px;
     overflow-y: auto;
@@ -131,18 +121,8 @@ button:hover {
     line-height: 1.4;
     display: none;
     position: relative;
-}
-
-/* Эффект волнового сканирования для терминала */
-.terminal-log::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #00ddeb, transparent);
-    animation: scanline 3s linear infinite;
+    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
+    animation: waveEdge 5s infinite ease-in-out;
 }
 
 #terminal-log-step-4,
@@ -151,23 +131,19 @@ button:hover {
 }
 
 .terminal-log div {
-    animation: fadeIn 1s ease-in;
+    animation: quantumText 2s infinite alternate;
     margin-bottom: 5px;
-    background: linear-gradient(90deg, #00ddeb, #ffffff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #e0e0e0;
 }
 
 .terminal-log div.tunneling {
-    background: linear-gradient(90deg, #00ddeb, #00aaff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #e0e0e0;
+    filter: blur(0.7px);
 }
 
 .terminal-log div.interference {
-    background: linear-gradient(90deg, #d946ef, #ffffff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #00aaff;
+    filter: blur(0.7px);
 }
 
 .modal {
@@ -177,40 +153,37 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(10, 10, 26, 0.9);
-    backdrop-filter: blur(5px);
+    background: rgba(10, 0, 21, 0.9);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background: rgba(10, 10, 26, 0.7);
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #00ddeb, #d946ef) 1;
+    background: rgba(10, 0, 21, 0.7);
     padding: 20px;
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
     position: relative;
-    box-shadow: 0 0 20px rgba(0, 221, 235, 0.5);
+    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
+    animation: waveEdge 5s infinite ease-in-out;
 }
 
 .close {
-    color: #ffffff;
+    color: #e0e0e0;
     font-size: 24px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'IBM Plex Mono', monospace;
     position: absolute;
     top: 10px;
     right: 20px;
     cursor: pointer;
-    text-shadow: 0 0 5px rgba(0, 221, 235, 0.5);
+    filter: blur(0.5px);
 }
 
 .close:hover {
-    background: linear-gradient(45deg, #00ddeb, #d946ef);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #6b21a8;
+    filter: blur(1px);
 }
 
 .image-grid {
@@ -223,22 +196,20 @@ button:hover {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #00ddeb, #d946ef) 1;
+    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 221, 235, 0.3);
+    animation: waveEdge 4s infinite ease-in-out;
 }
 
 .archive-image:hover {
-    border-image: linear-gradient(45deg, #d946ef, #00aaff) 1;
-    box-shadow: 0 0 15px rgba(0, 221, 235, 0.7);
+    filter: blur(1px);
+    transform: scale(1.05);
 }
 
 #camera-video {
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #00ddeb, #d946ef) 1;
     max-width: 100%;
-    box-shadow: 0 0 10px rgba(0, 221, 235, 0.3);
+    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
+    animation: waveEdge 4s infinite ease-in-out;
 }
 
 #capture-photo {
@@ -246,33 +217,34 @@ button:hover {
 }
 
 input[type="text"] {
-    background: rgba(10, 10, 26, 0.7);
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #00ddeb, #d946ef) 1;
-    color: #ffffff;
-    font-family: 'JetBrains Mono', monospace;
+    background: rgba(10, 0, 21, 0.7);
+    border: none;
+    color: #e0e0e0;
+    font-family: 'IBM Plex Mono', monospace;
     padding: 10px;
     font-size: 16px;
-    text-shadow: 0 0 5px rgba(0, 221, 235, 0.5);
+    clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%);
+    animation: waveEdge 4s infinite ease-in-out;
 }
 
 input[type="text"]::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-    text-shadow: none;
+    color: rgba(224, 224, 224, 0.7);
+    filter: blur(0.5px);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+@keyframes waveEdge {
+    0% { clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%); }
+    50% { clip-path: polygon(3% 2%, 98% 3%, 97% 98%, 2% 97%); }
+    100% { clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%); }
 }
 
-@keyframes scanline {
-    0% { top: 0; }
-    100% { top: 100%; }
+@keyframes quantumText {
+    0% { filter: blur(0.5px); transform: translate(0, 0); }
+    100% { filter: blur(0.7px); transform: translate(1px, -1px); }
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+@keyframes wavePulse {
+    0% { opacity: 0.15; }
+    50% { opacity: 0.2; }
+    100% { opacity: 0.15; }
 }
