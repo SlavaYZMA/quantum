@@ -181,15 +181,39 @@ function capturePhoto() {
         return;
     }
 
-    // Устанавливаем размеры canvas равными размерам видео
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    // Устанавливаем размеры canvas на 400x400
+    canvas.width = 400;
+    canvas.height = 400;
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Вычисляем размеры и позицию для масштабирования видео в квадрат 400x400
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+    let sx, sy, sWidth, sHeight;
+
+    // Сохраняем пропорции, вписывая видео в квадрат
+    const videoAspect = videoWidth / videoHeight;
+    const canvasAspect = 1; // 400/400
+    if (videoAspect > canvasAspect) {
+        // Видео шире, чем квадрат: обрезаем по бокам
+        sWidth = videoHeight * canvasAspect;
+        sHeight = videoHeight;
+        sx = (videoWidth - sWidth) / 2;
+        sy = 0;
+    } else {
+        // Видео выше, чем квадрат: обрезаем сверху и снизу
+        sWidth = videoWidth;
+        sHeight = videoWidth / canvasAspect;
+        sx = 0;
+        sy = (videoHeight - sHeight) / 2;
+    }
+
+    // Рисуем масштабированное изображение на canvas
+    ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
+    console.log('Photo captured, dimensions: ' + canvas.width + ', ' + canvas.height);
 
     // Конвертируем canvas в изображение
     const imageUrl = canvas.toDataURL('image/png');
-    console.log('Photo captured, dimensions: ' + canvas.width + ', ' + canvas.height);
 
     // Загружаем изображение в p5.js
     window.quantumSketch.loadImage(imageUrl, function(img) {
