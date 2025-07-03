@@ -174,6 +174,10 @@
 
             sketch.draw = function() {
                 console.log('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
+                if (window.currentStep === undefined) {
+                    console.warn('currentStep is undefined, skipping draw');
+                    return;
+                }
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     if (window.particles && window.particles.length > 0) {
                         window.updateParticles(sketch);
@@ -284,29 +288,6 @@
             window.triggerFullCollapse();
             console.log('Triggered full collapse of particles');
         });
-
-        var originalMoveToNextStep = window.moveToNextStep;
-        window.moveToNextStep = function(stepIndex) {
-            console.log('moveToNextStep called with stepIndex: ' + stepIndex);
-            originalMoveToNextStep(stepIndex);
-            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-            thumbnails.forEach(function(thumbnail) {
-                thumbnail.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
-                console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + stepIndex);
-            });
-            if (stepIndex === 4 || stepIndex === 5) {
-                window.quantumSketch.switchCanvasParent(stepIndex);
-                window.quantumSketch.startAnimation();
-                window.terminalMessages = [];
-                window.terminalMessages.push(`[INIT] Quantum portrait animation started for step ${stepIndex}`);
-                window.updateTerminalLog();
-                window.initializeGestures();
-            } else {
-                window.quantumSketch.noLoop();
-                window.terminalMessages = [];
-                window.updateTerminalLog();
-            }
-        };
     </script>
 </body>
 </html>
