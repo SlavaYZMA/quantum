@@ -295,5 +295,12 @@ function initializeSteps() {
     } else {
         console.warn('Capture photo button not found');
     }
+}
 
-    console.log('quantum
+// Инициализация приложения
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded, initializing steps');
+    initializeSteps();
+    // Инициализация текста (если требуется)
+    window.setLanguageAndNext('ru'); // Установить русский язык по умолчанию
+});
