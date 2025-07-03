@@ -1,12 +1,12 @@
-/* Импортируем Major Mono Display для зеркальной эстетики */
-@import url('https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap');
+/* Импортируем IBM Plex Mono для жидкой эстетики */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
 
 body {
     margin: 0;
     padding: 0;
-    background: #020005;
-    color: #e5e5e5;
-    font-family: 'Major Mono Display', monospace;
+    background: #010004;
+    color: #d4d4d8;
+    font-family: 'IBM Plex Mono', monospace;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Зеркальный фон с тенью человека */
+/* Жидкий зеркальный фон */
 body::before {
     content: '';
     position: fixed;
@@ -23,18 +23,18 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0.42 0 0 0 0 0.13 0 0 0 0 0.71 0 0 0 0.4 0"/></filter></defs><path d="M300,200 Q350,150 400,200 Q450,250 400,300 Q350,350 300,300 Q250,250 300,200 Z" fill="rgba(229,229,229,0.3)" filter="url(#noise)"/></svg>'),
-                      linear-gradient(45deg, rgba(107, 33, 182, 0.2) 0%, transparent 70%);
-    opacity: 0.7;
+    background: radial-gradient(circle at 50% 50%, rgba(212, 212, 216, 0.3) 0%, rgba(91, 33, 182, 0.2) 50%, transparent 80%);
+    filter: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="liquidNoise"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G"/></filter></svg>#liquidNoise');
+    opacity: 0.8;
     pointer-events: none;
     z-index: -1;
-    animation: mirrorPulse 8s infinite ease-in-out;
+    animation: liquidMirror 10s infinite ease-in-out;
 }
 
 /* Интерактивность фона */
 body:hover::before {
-    transform: translate(4px, 4px);
-    opacity: 0.8;
+    transform: translate(3px, 3px);
+    opacity: 0.9;
 }
 
 .step {
@@ -53,28 +53,29 @@ body:hover::before {
 }
 
 .text-block {
-    background: rgba(2, 0, 5, 0.7);
+    background: rgba(1, 0, 4, 0.7);
     padding: 20px;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 15px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 5s infinite ease-in-out;
+    border-radius: 30px;
+    filter: blur(1px);
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5);
+    animation: liquidWave 6s infinite ease-in-out;
 }
 
-/* Зеркальный эффект для текста */
+/* Жидкий эффект для текста */
 .text-block div {
     margin-bottom: 10px;
-    color: #e5e5e5;
-    animation: mirrorText 3s infinite alternate;
+    color: #d4d4d8;
+    animation: liquidText 4s infinite alternate;
 }
 
 .text-block span {
     display: inline;
-    color: #e5e5e5;
+    color: #d4d4d8;
 }
 
 .button-block {
@@ -85,57 +86,62 @@ body:hover::before {
 }
 
 button {
-    background: rgba(2, 0, 5, 0.7);
+    background: rgba(1, 0, 4, 0.7);
     border: none;
-    color: #e5e5e5;
-    font-family: 'Major Mono Display', monospace;
+    color: #d4d4d8;
+    font-family: 'IBM Plex Mono', monospace;
     padding: 12px 24px;
     cursor: pointer;
     font-size: 16px;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 10px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 3s infinite ease-in-out;
+    border-radius: 25px;
+    filter: blur(1px);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5);
+    animation: liquidWave 4s infinite ease-in-out;
 }
 
 button:hover {
-    transform: skew(5deg);
-    box-shadow: 0 0 20px rgba(107, 33, 182, 0.7);
-    color: #b794f4;
+    filter: blur(0.5px);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(91, 33, 182, 0.7);
+    color: #a78bfa;
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: rgba(2, 0, 5, 0.8);
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 15px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 4s infinite ease-in-out;
+    background: rgba(1, 0, 4, 0.8);
+    border-radius: 30px;
+    filter: blur(1px);
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5);
+    animation: liquidWave 5s infinite ease-in-out;
 }
 
 #thumbnail-portrait {
     width: 100px;
     height: 100px;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 10px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 3s infinite ease-in-out;
+    border-radius: 20px;
+    filter: blur(1px);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5);
+    animation: liquidWave 4s infinite ease-in-out;
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: rgba(2, 0, 5, 0.7);
-    color: #e5e5e5;
-    font-family: 'Major Mono Display', monospace;
+    background: rgba(1, 0, 4, 0.7);
+    color: #d4d4d8;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
     padding: 10px;
     overflow-y: auto;
     margin-left: 10px;
     line-height: 1.4;
     display: none;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 15px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 4s infinite ease-in-out;
+    border-radius: 30px;
+    filter: blur(1px);
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5);
+    animation: liquidWave 5s infinite ease-in-out;
 }
 
 #terminal-log-step-4,
@@ -144,9 +150,9 @@ button:hover {
 }
 
 .terminal-log div {
-    animation: mirrorText 3s infinite alternate;
+    animation: liquidText 4s infinite alternate;
     margin-bottom: 5px;
-    color: #e5e5e5;
+    color: #d4d4d8;
 }
 
 .terminal-log div.tunneling {
@@ -154,7 +160,7 @@ button:hover {
 }
 
 .terminal-log div.interference {
-    color: #b794f4;
+    color: #a78bfa;
 }
 
 .modal {
@@ -164,37 +170,39 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(2, 0, 5, 0.9);
+    background: rgba(1, 0, 4, 0.9);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background: rgba(2, 0, 5, 0.7);
+    background: rgba(1, 0, 4, 0.7);
     padding: 20px;
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 20px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 5s infinite ease-in-out;
+    border-radius: 30px;
+    filter: blur(1px);
+    box-shadow: 0 0 20px rgba(91, 33, 182, 0.5);
+    animation: liquidWave 5s infinite ease-in-out;
 }
 
 .close {
-    color: #e5e5e5;
+    color: #d4d4d8;
     font-size: 24px;
-    font-family: 'Major Mono Display', monospace;
+    font-family: 'IBM Plex Mono', monospace;
     position: absolute;
     top: 10px;
     right: 20px;
     cursor: pointer;
     z-index: 1001;
+    animation: liquidText 4s infinite alternate;
 }
 
 .close:hover {
-    color: #b794f4;
-    transform: skew(5deg);
+    color: #a78bfa;
+    filter: blur(0.5px);
 }
 
 .image-grid {
@@ -207,22 +215,24 @@ button:hover {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 10px rgba(107, 33, 182, 0.5);
+    border-radius: 20px;
+    filter: blur(1px);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5);
     cursor: pointer;
-    animation: mirrorWave 3s infinite ease-in-out;
+    animation: liquidWave 4s infinite ease-in-out;
 }
 
 .archive-image:hover {
-    transform: skew(5deg);
-    box-shadow: 0 0 15px rgba(107, 33, 182, 0.7);
+    filter: blur(0.5px);
+    transform: scale(1.05);
 }
 
 #camera-video {
     max-width: 100%;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 10px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 3s infinite ease-in-out;
+    border-radius: 20px;
+    filter: blur(1px);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5);
+    animation: liquidWave 4s infinite ease-in-out;
 }
 
 #capture-photo {
@@ -230,35 +240,36 @@ button:hover {
 }
 
 input[type="text"] {
-    background: rgba(2, 0, 5, 0.7);
+    background: rgba(1, 0, 4, 0.7);
     border: none;
-    color: #e5e5e5;
-    font-family: 'Major Mono Display', monospace;
+    color: #d4d4d8;
+    font-family: 'IBM Plex Mono', monospace;
     padding: 10px;
     font-size: 16px;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 10px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 3s infinite ease-in-out;
+    border-radius: 20px;
+    filter: blur(1px);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5);
+    animation: liquidWave 4s infinite ease-in-out;
 }
 
 input[type="text"]::placeholder {
-    color: rgba(229, 229, 229, 0.7);
+    color: rgba(212, 212, 216, 0.7);
 }
 
-@keyframes mirrorPulse {
-    0% { opacity: 0.7; transform: translate(0, 0); }
-    50% { opacity: 0.9; transform: translate(2px, 2px); }
-    100% { opacity: 0.7; transform: translate(0, 0); }
+@keyframes liquidMirror {
+    0% { filter: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="liquidNoise"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G"/></filter></svg>#liquidNoise') brightness(1); }
+    50% { filter: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="liquidNoise"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></svg>#liquidNoise') brightness(1.2); }
+    100% { filter: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="liquidNoise"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G"/></filter></svg>#liquidNoise') brightness(1); }
 }
 
-@keyframes mirrorWave {
-    0% { clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%); }
-    50% { clip-path: polygon(0% 5%, 100% 0%, 95% 100%, 5% 95%); }
-    100% { clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%); }
+@keyframes liquidWave {
+    0% { transform: translate(0, 0); filter: blur(1px); }
+    50% { transform: translate(2px, 2px); filter: blur(1.5px); }
+    100% { transform: translate(0, 0); filter: blur(1px); }
 }
 
-@keyframes mirrorText {
-    0% { transform: skew(0deg); filter: blur(0); opacity: 1; }
-    50% { transform: skew(3deg); filter: blur(0.5px); opacity: 0.8; }
-    100% { transform: skew(0deg); filter: blur(0); opacity: 1; }
+@keyframes liquidText {
+    0% { transform: translate(0, 0); filter: blur(0); opacity: 1; }
+    50% { transform: translate(1px, 1px); filter: blur(0.3px); opacity: 0.9; }
+    100% { transform: translate(0, 0); filter: blur(0); opacity: 1; }
 }
