@@ -34,26 +34,27 @@ body {
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
-    color: #0f0; /* Явный цвет для text-block */
+    color: #0f0;
+    font-family: 'Courier New', monospace;
 }
 
 .text-block div {
     margin-bottom: 10px;
     display: block;
-    opacity: 1; /* Гарантируем видимость div */
-    color: #0f0; /* Явный цвет текста */
-    font-family: 'Courier New', monospace; /* Явный шрифт */
+    opacity: 1;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
 }
 
 .text-block span.typewriter-word-container {
-    display: inline; /* Контейнер для слов */
+    display: inline;
 }
 
 .text-block span.typewriter-word {
     display: inline;
-    color: #0f0; /* Зелёный цвет */
-    opacity: 0; /* Начальная прозрачность */
-    transition: opacity 0.1s ease-in; /* Плавное появление слова */
+    color: #0f0;
+    opacity: 0;
+    transition: opacity 0.1s ease-in;
 }
 
 .button-block {
