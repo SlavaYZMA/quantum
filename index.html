@@ -16,7 +16,7 @@
     <script src="./js/utils.js"></script>
 </head>
 <body>
-    <canvas id="echo-canvas"></canvas>
+    <canvas id="resonance-canvas"></canvas>
     <section id="step-0" class="step">
         <div class="text-block" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</div>
         <div class="button-block">
@@ -42,7 +42,7 @@
             <div data-i18n="step2_text1"></div>
         </div>
         <div class="button-block">
-            <button id="uploadImage" data-i18n="upload_image">Загрузить изображение</button>
+            <input type="file" id="uploadImage" accept="image/*" data-i18n="upload_image">
             <button id="useCamera" data-i18n="use_camera">Включить камеру</button>
             <button id="useArchive" data-i18n="use_archive">Выбрать из архива</button>
             <button class="back" data-i18n="back">Назад</button>
