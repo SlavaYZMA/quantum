@@ -301,6 +301,5 @@ function initializeSteps() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM fully loaded, initializing steps');
     initializeSteps();
-    // Инициализация текста (если требуется)
-    window.setLanguageAndNext('ru'); // Установить русский язык по умолчанию
+    window.setLanguageAndNext('ru');
 });
