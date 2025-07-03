@@ -29,6 +29,13 @@ const stepTransitionsBack = {
     7: 6
 };
 
+// Список изображений в папке public/images/
+const archiveImages = [
+    '/images/image1.jpg',
+    '/images/image2.jpg',
+    '/images/image3.jpg'
+];
+
 // Функция для typewriter-анимации
 function typewriter(element, callback) {
     const divs = element.querySelectorAll('div');
@@ -59,7 +66,7 @@ function typewriter(element, callback) {
             if (charIndex < text.length) {
                 span.textContent += text[charIndex];
                 charIndex++;
-                // Случайная скорость: 10–100 мс на символ (ускорено и с большим разбросом)
+                // Случайная скорость: 5–95 мс на символ
                 const delay = 5 + Math.random() * 90;
                 setTimeout(typeChar, delay);
             } else {
@@ -70,6 +77,56 @@ function typewriter(element, callback) {
         typeChar();
     }
     typeNextDiv();
+}
+
+// Функция для отображения модального окна с изображениями
+function showImageArchiveModal() {
+    const modal = document.getElementById('image-archive-modal');
+    const imageGrid = document.getElementById('image-grid');
+    if (!modal || !imageGrid) {
+        console.error('Modal or image grid not found');
+        return;
+    }
+
+    // Очищаем сетку
+    imageGrid.innerHTML = '';
+    // Добавляем изображения
+    archiveImages.forEach((src, index) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.className = 'archive-image';
+        img.alt = `Archive image ${index + 1}`;
+        img.addEventListener('click', () => {
+            selectArchiveImage(src);
+            modal.style.display = 'none';
+        });
+        imageGrid.appendChild(img);
+    });
+
+    modal.style.display = 'flex';
+}
+
+// Функция для выбора изображения из архива
+function selectArchiveImage(src) {
+    if (!window.quantumSketch) {
+        console.error('quantumSketch not initialized');
+        return;
+    }
+    window.quantumSketch.loadImage(src, function(img) {
+        console.log('Archive image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
+        window.img = img;
+        window.initializeParticles(img);
+        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+        console.log('Found thumbnails: ' + thumbnails.length);
+        thumbnails.forEach(function(thumbnail) {
+            thumbnail.src = src;
+            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+        });
+        window.moveToNextStep(2.1);
+    }, function() {
+        console.error('Error loading archive image: ' + src);
+    });
 }
 
 function initializeSteps() {
@@ -112,6 +169,25 @@ function initializeSteps() {
             window.moveToNextStep(prevStep);
         });
     });
+
+    // Инициализация кнопки "Выбрать из архива"
+    const archiveButton = document.getElementById('useArchive');
+    if (archiveButton) {
+        archiveButton.addEventListener('click', showImageArchiveModal);
+    } else {
+        console.warn('Archive button not found');
+    }
+
+    // Инициализация кнопки закрытия модального окна
+    const closeModal = document.getElementById('close-modal');
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            const modal = document.getElementById('image-archive-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
 
     console.log('quantumSketch initialized: ' + !!window.quantumSketch);
     var canvas = document.querySelector('#quantumCanvas');
