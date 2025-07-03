@@ -274,11 +274,6 @@
             alert('Камера пока не поддерживается.');
         });
 
-        document.getElementById('useArchive').addEventListener('click', function() {
-            console.log('Archive button clicked - functionality not implemented');
-            alert('Архив пока не поддерживается.');
-        });
-
         var originalMoveToNextStep = window.moveToNextStep;
         window.moveToNextStep = function(stepIndex) {
             console.log('moveToNextStep called with stepIndex: ' + stepIndex);
