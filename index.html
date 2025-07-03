@@ -17,14 +17,14 @@
 </head>
 <body>
     <section id="step-0" class="step">
-        <div class="text-block typewriter" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</div>
+        <div class="text-block" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</div>
         <div class="button-block">
             <button onclick="window.setLanguageAndNext('ru')">RU</button>
             <button onclick="window.setLanguageAndNext('en')">ENG</button>
         </div>
     </section>
     <section id="step-1" class="step step-centered">
-        <div class="text-block typewriter">
+        <div class="text-block">
             <div data-i18n="step1_title"></div>
             <div data-i18n="step1_text1"></div>
             <div data-i18n="step1_text2"></div>
@@ -36,7 +36,7 @@
         </div>
     </section>
     <section id="step-2" class="step step-centered">
-        <div class="text-block typewriter">
+        <div class="text-block">
             <div data-i18n="step2_title"></div>
             <div data-i18n="step2_text1"></div>
         </div>
@@ -48,7 +48,7 @@
         </div>
     </section>
     <section id="step-2.1" class="step step-centered">
-        <div class="text-block typewriter">
+        <div class="text-block">
             <div data-i18n="step2_text2"></div>
             <div data-i18n="step2_text3"></div>
             <div data-i18n="step2_text4"></div>
@@ -59,7 +59,7 @@
         </div>
     </section>
     <section id="step-3" class="step step-centered">
-        <div class="text-block typewriter">
+        <div class="text-block">
             <div data-i18n="step3_title"></div>
             <div data-i18n="step3_text1"></div>
             <div data-i18n="step3_text2"></div>
@@ -76,14 +76,14 @@
         </div>
     </section>
     <section id="step-4" class="step step-centered">
-        <div class="text-block typewriter">
+        <div class="text-block">
             <div data-i18n="step4_title"></div>
             <div data-i18n="step4_text1"></div>
             <div data-i18n="step4_text2"></div>
             <div data-i18n="step4_text3"></div>
         </div>
         <div style="display: flex; justify-content: space-between; width: 100%;">
-            <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
+            <img id="thumbnail-portrait" class="thumbnail-portrait" />
             <div style="display: flex; flex-direction: row;">
                 <div id="portrait-animation-container-step-4"></div>
                 <div class="terminal-log" id="terminal-log-step-4"></div>
@@ -95,14 +95,14 @@
         </div>
     </section>
     <section id="step-5" class="step step-centered">
-        <div class="text-block typewriter">
+        <div class="text-block">
             <div data-i18n="step5_title"></div>
             <div data-i18n="step5_text1"></div>
             <div data-i18n="step5_text2"></div>
             <div data-i18n="step5_text3"></div>
         </div>
         <div style="display: flex; justify-content: space-between; width: 100%;">
-            <img id="thumbnail-portrait" style="display: none; width: 100px; height: 100px;" />
+            <img id="thumbnail-portrait" class="thumbnail-portrait" />
             <div style="display: flex; flex-direction: row;">
                 <div id="portrait-animation-container-step-5"></div>
                 <div class="terminal-log" id="terminal-log-step-5"></div>
@@ -116,7 +116,7 @@
         </div>
     </section>
     <section id="step-6" class="step step-centered">
-        <div class="text-block typewriter">
+        <div class="text-block">
             <div data-i18n="step6_title"></div>
             <div data-i18n="step6_text1"></div>
             <div data-i18n="step6_text2"></div>
@@ -129,7 +129,7 @@
         </div>
     </section>
     <section id="step-7" class="step step-centered">
-        <div class="text-block typewriter">
+        <div class="text-block">
             <div data-i18n="step7_text1"></div>
             <div data-i18n="step7_text2"></div>
             <div data-i18n="step7_text3"></div>
@@ -195,7 +195,7 @@
             sketch.mouseClicked = function() {
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     window.clickParticles(sketch, sketch.mouseX, sketch.mouseY);
-                    sketch.loop(); // Ensure animation continues after click
+                    sketch.loop();
                 }
             };
 
