@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(45deg, #000022, #000011);
+    background: #000;
     color: #0f0;
     font-family: 'Courier New', monospace;
     display: flex;
@@ -9,13 +9,6 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow: auto;
-    animation: pulseBackground 5s infinite ease-in-out;
-}
-
-@keyframes pulseBackground {
-    0% { background: linear-gradient(45deg, #000022, #000011); }
-    50% { background: linear-gradient(45deg, #000044, #000022); }
-    100% { background: linear-gradient(45deg, #000022, #000011); }
 }
 
 .step {
@@ -34,24 +27,23 @@ body {
 }
 
 .text-block {
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border: 2px solid #0f0;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
 }
 
 .text-block div {
     margin-bottom: 10px;
-    visibility: hidden;
+    visibility: hidden; /* Скрываем текст до начала анимации */
 }
 
 .text-block span.typewriter-text {
     display: inline;
-    color: #0f0;
+    color: #0f0; /* Зелёный цвет для соответствия эстетике */
 }
 
 .button-block {
@@ -69,29 +61,25 @@ button {
     padding: 10px 20px;
     cursor: pointer;
     font-size: 16px;
-    transition: all 0.3s ease;
 }
 
 button:hover {
     background: #0f0;
     color: #000;
-    box-shadow: 0 0 8px #0f0;
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: transparent;
+    background: #000;
     display: block;
-    position: relative;
-    overflow: hidden;
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0, 0, 0, 0.9);
     border: 2px solid #0f0;
     color: #0f0;
     font-family: 'Courier New', monospace;
@@ -101,7 +89,6 @@ button:hover {
     margin-left: 10px;
     line-height: 1.4;
     display: none;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
 }
 
 #terminal-log-step-4,
@@ -110,20 +97,16 @@ button:hover {
 }
 
 .terminal-log div {
-    animation: fadeIn 0.8s ease-in;
+    animation: fadeIn 1s ease-in;
     margin-bottom: 5px;
 }
 
 .terminal-log div.tunneling {
-    color: #ff00ff; /* Фиолетовый для туннелирования */
+    color: #00ff00;
 }
 
 .terminal-log div.interference {
-    color: #00aaff; /* Циан для интерференции */
-}
-
-.terminal-log div.entanglement {
-    color: #ffff00; /* Жёлтый для запутанности */
+    color: #00aaff;
 }
 
 .modal {
@@ -176,7 +159,6 @@ button:hover {
     object-fit: cover;
     border: 2px solid #0f0;
     cursor: pointer;
-    transition: border-color 0.3s ease;
 }
 
 .archive-image:hover {
