@@ -32,8 +32,9 @@ const stepTransitionsBack = {
 // Функция для typewriter-анимации на уровне слов
 function typewriter(element, callback) {
     const divs = element.querySelectorAll('div');
+    console.log(`Typewriter: Found ${divs.length} divs in text-block`);
     if (divs.length === 0) {
-        console.log('No divs found in text-block for typewriter animation');
+        console.warn('Typewriter: No divs found in text-block, skipping animation');
         if (callback) callback();
         return;
     }
@@ -41,16 +42,25 @@ function typewriter(element, callback) {
     let currentDivIndex = 0;
     function typeNextDiv() {
         if (currentDivIndex >= divs.length) {
-            console.log('Typewriter animation completed for all divs');
+            console.log('Typewriter: Animation completed for all divs');
             if (callback) callback();
             return;
         }
 
         const div = divs[currentDivIndex];
         const text = div.textContent.trim();
-        div.textContent = ''; // Очищаем текст
+        console.log(`Typewriter: Processing div ${currentDivIndex}, text: "${text}"`);
+        div.innerHTML = ''; // Очищаем содержимое
         div.style.display = 'block'; // Убедимся, что div виден
-        const words = text.split(/\s+/).filter(word => word.length > 0); // Разбиваем на слова
+        const words = text.split(/\s+/).filter(word => word.length > 0);
+        console.log(`Typewriter: Found ${words.length} words in div ${currentDivIndex}: ${words.join(', ')}`);
+        if (words.length === 0) {
+            console.warn(`Typewriter: No words found in div ${currentDivIndex}, skipping to next div`);
+            currentDivIndex++;
+            typeNextDiv();
+            return;
+        }
+
         const wordContainer = document.createElement('span');
         wordContainer.className = 'typewriter-word-container';
         div.appendChild(wordContainer);
@@ -58,6 +68,7 @@ function typewriter(element, callback) {
         let wordIndex = 0;
         function typeNextWord() {
             if (wordIndex >= words.length) {
+                console.log(`Typewriter: Completed words for div ${currentDivIndex}`);
                 currentDivIndex++;
                 typeNextDiv();
                 return;
@@ -69,6 +80,7 @@ function typewriter(element, callback) {
             wordSpan.textContent = word + (wordIndex < words.length - 1 ? ' ' : '');
             wordSpan.style.opacity = '0'; // Начальная прозрачность
             wordContainer.appendChild(wordSpan);
+            console.log(`Typewriter: Adding word "${word}" to div ${currentDivIndex}`);
 
             // Анимация появления слова
             setTimeout(() => {
@@ -147,16 +159,18 @@ function showStep(stepIndex) {
             // Запускаем typewriter-анимацию для text-block
             const textBlock = step.querySelector('.text-block');
             if (textBlock) {
-                // Очищаем и подготавливаем text-block
+                // Подготавливаем text-block
                 textBlock.querySelectorAll('div').forEach(div => {
                     div.textContent = div.textContent.trim(); // Удаляем лишние пробелы
                     div.innerHTML = ''; // Очищаем содержимое для новой анимации
+                    div.style.opacity = '1'; // Гарантируем видимость div
                 });
+                console.log(`showStep: Starting typewriter for step ${stepId}, text-block found`);
                 typewriter(textBlock, () => {
                     console.log('Typewriter animation finished for step ' + stepId);
                 });
             } else {
-                console.log('No text-block found for step ' + stepId);
+                console.warn('showStep: No text-block found for step ' + stepId);
             }
         }
     });
