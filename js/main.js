@@ -40,47 +40,47 @@ const archiveImages = [
 let cameraStream = null;
 
 // Canvas для фона с тенью
-let echoCanvas, echoCtx, mouseX = 0, mouseY = 0;
-function initEchoCanvas() {
-    echoCanvas = document.getElementById('echo-canvas');
-    if (!echoCanvas) {
-        console.error('Echo canvas not found');
+let pulseCanvas, pulseCtx, mouseX = 0, mouseY = 0;
+function initPulseCanvas() {
+    pulseCanvas = document.getElementById('pulse-canvas');
+    if (!pulseCanvas) {
+        console.error('Pulse canvas not found');
         return;
     }
-    echoCanvas.width = window.innerWidth;
-    echoCanvas.height = window.innerHeight;
-    echoCtx = echoCanvas.getContext('2d');
-    animateEcho();
+    pulseCanvas.width = window.innerWidth;
+    pulseCanvas.height = window.innerHeight;
+    pulseCtx = pulseCanvas.getContext('2d');
+    animatePulse();
 }
 
 // Анимация тени
-function animateEcho() {
-    if (!echoCtx) return;
-    echoCtx.clearRect(0, 0, echoCanvas.width, echoCanvas.height);
+function animatePulse() {
+    if (!pulseCtx) return;
+    pulseCtx.clearRect(0, 0, pulseCanvas.width, pulseCanvas.height);
     
-    // Рисуем шум для эффекта "эхо"
-    for (let x = 0; x < echoCanvas.width; x += 10) {
-        for (let y = 0; y < echoCanvas.height; y += 10) {
+    // Рисуем шум для эффекта "пульса"
+    for (let x = 0; x < pulseCanvas.width; x += 10) {
+        for (let y = 0; y < pulseCanvas.height; y += 10) {
             const dist = Math.hypot(x - mouseX, y - mouseY);
             const influence = Math.max(0, 1 - dist / window.mouseInfluenceRadius);
             const noise = Math.random() * window.noiseScale * influence;
-            echoCtx.fillStyle = `rgba(124, 58, 237, ${0.3 + noise})`;
-            echoCtx.beginPath();
-            echoCtx.arc(x, y, 5, 0, Math.PI * 2);
-            echoCtx.fill();
+            pulseCtx.fillStyle = `rgba(139, 92, 246, ${0.3 + noise})`;
+            pulseCtx.beginPath();
+            pulseCtx.arc(x, y, 5, 0, Math.PI * 2);
+            pulseCtx.fill();
         }
     }
     
     // Рисуем силуэт человека
-    echoCtx.fillStyle = 'rgba(228, 228, 231, 0.4)';
-    echoCtx.beginPath();
-    echoCtx.moveTo(mouseX - 50, mouseY);
-    echoCtx.quadraticCurveTo(mouseX, mouseY - 100, mouseX + 50, mouseY);
-    echoCtx.quadraticCurveTo(mouseX + 25, mouseY + 50, mouseX, mouseY + 100);
-    echoCtx.quadraticCurveTo(mouseX - 25, mouseY + 50, mouseX - 50, mouseY);
-    echoCtx.fill();
+    pulseCtx.fillStyle = `rgba(243, 232, 255, ${0.4 + 0.1 * Math.sin(Date.now() / 1000)})`;
+    pulseCtx.beginPath();
+    pulseCtx.moveTo(mouseX - 50, mouseY);
+    pulseCtx.quadraticCurveTo(mouseX, mouseY - 100, mouseX + 50, mouseY);
+    pulseCtx.quadraticCurveTo(mouseX + 25, mouseY + 50, mouseX, mouseY + 100);
+    pulseCtx.quadraticCurveTo(mouseX - 25, mouseY + 50, mouseX - 50, mouseY);
+    pulseCtx.fill();
     
-    requestAnimationFrame(animateEcho);
+    requestAnimationFrame(animatePulse);
 }
 
 // Отслеживание мыши
@@ -88,6 +88,17 @@ document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
 });
+
+// Функция для ожидания инициализации quantumSketch
+function waitForQuantumSketch(callback) {
+    if (window.quantumSketch) {
+        console.log('quantumSketch ready');
+        callback();
+    } else {
+        console.log('Waiting for quantumSketch initialization...');
+        setTimeout(() => waitForQuantumSketch(callback), 100);
+    }
+}
 
 // Функция для typewriter-анимации
 function typewriter(element, callback) {
@@ -163,26 +174,29 @@ function showImageArchiveModal() {
 
 // Функция для выбора изображения из архива
 function selectArchiveImage(src) {
-    if (!window.quantumSketch) {
-        console.error('quantumSketch not initialized');
-        return;
-    }
     console.log(`Attempting to load archive image: ${src}`);
-    window.quantumSketch.loadImage(src, function(img) {
-        console.log('Archive image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
-        window.img = img;
-        window.initializeParticles(img);
-        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-        console.log('Found thumbnails: ' + thumbnails.length);
-        thumbnails.forEach(function(thumbnail) {
-            thumbnail.src = src;
-            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+    waitForQuantumSketch(() => {
+        if (!window.quantumSketch) {
+            console.error('quantumSketch still not initialized');
+            alert('Система не готова. Пожалуйста, попробуйте снова.');
+            return;
+        }
+        window.quantumSketch.loadImage(src, function(img) {
+            console.log('Archive image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
+            window.img = img;
+            window.initializeParticles(img);
+            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+            console.log('Found thumbnails: ' + thumbnails.length);
+            thumbnails.forEach(function(thumbnail) {
+                thumbnail.src = src;
+                thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+                console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+            });
+            window.moveToNextStep(2.1);
+        }, function(err) {
+            console.error(`Error loading archive image: ${src}, error: ${err}`);
+            alert('Ошибка загрузки изображения из архива. Пожалуйста, попробуйте снова.');
         });
-        window.moveToNextStep(2.1);
-    }, function(err) {
-        console.error(`Error loading archive image: ${src}, error: ${err}`);
-        alert('Ошибка загрузки изображения из архива. Пожалуйста, попробуйте снова.');
     });
 }
 
@@ -254,23 +268,30 @@ function capturePhoto() {
 
     const imageUrl = canvas.toDataURL('image/png');
 
-    window.quantumSketch.loadImage(imageUrl, function(img) {
-        console.log('Captured image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
-        window.img = img;
-        window.initializeParticles(img);
-        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-        console.log('Found thumbnails: ' + thumbnails.length);
-        thumbnails.forEach(function(thumbnail) {
-            thumbnail.src = imageUrl;
-            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+    waitForQuantumSketch(() => {
+        if (!window.quantumSketch) {
+            console.error('quantumSketch still not initialized');
+            alert('Система не готова. Пожалуйста, попробуйте снова.');
+            return;
+        }
+        window.quantumSketch.loadImage(imageUrl, function(img) {
+            console.log('Captured image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
+            window.img = img;
+            window.initializeParticles(img);
+            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+            console.log('Found thumbnails: ' + thumbnails.length);
+            thumbnails.forEach(function(thumbnail) {
+                thumbnail.src = imageUrl;
+                thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+                console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+            });
+            window.moveToNextStep(2.1);
+            stopCamera();
+            modal.style.display = 'none';
+        }, function(err) {
+            console.error('Error loading captured image:', err);
+            alert('Ошибка обработки фото. Пожалуйста, попробуйте снова.');
         });
-        window.moveToNextStep(2.1);
-        stopCamera();
-        modal.style.display = 'none';
-    }, function(err) {
-        console.error('Error loading captured image:', err);
-        alert('Ошибка обработки фото. Пожалуйста, попробуйте снова.');
     });
 }
 
@@ -366,7 +387,7 @@ function initializeSteps() {
         console.warn('Canvas not found during initialization, waiting for p5.js setup');
     }
 
-    initEchoCanvas();
+    initPulseCanvas();
 }
 
 function showStep(stepIndex) {
