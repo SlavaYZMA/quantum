@@ -38,12 +38,18 @@ body {
 
 .text-block div {
     margin-bottom: 10px;
-    visibility: hidden; /* Скрываем текст до начала анимации */
+    display: block; /* Убедимся, что div виден */
 }
 
-.text-block span.typewriter-text {
+.text-block span.typewriter-word-container {
+    display: inline; /* Контейнер для слов в строке */
+}
+
+.text-block span.typewriter-word {
     display: inline;
     color: #0f0; /* Зелёный цвет для соответствия эстетике */
+    opacity: 0; /* Начальная прозрачность */
+    transition: opacity 0.1s ease-in; /* Плавное появление слова */
 }
 
 .button-block {
