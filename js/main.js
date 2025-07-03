@@ -29,7 +29,7 @@ const stepTransitionsBack = {
     7: 6
 };
 
-// Функция для typewriter-анимации
+// Функция для typewriter-анимации на уровне слов
 function typewriter(element, callback) {
     const divs = element.querySelectorAll('div');
     if (divs.length === 0) {
@@ -49,25 +49,37 @@ function typewriter(element, callback) {
         const div = divs[currentDivIndex];
         const text = div.textContent.trim();
         div.textContent = ''; // Очищаем текст
-        div.style.visibility = 'visible'; // Делаем div видимым
-        const span = document.createElement('span');
-        span.className = 'typewriter-text';
-        div.appendChild(span);
+        div.style.display = 'block'; // Убедимся, что div виден
+        const words = text.split(/\s+/).filter(word => word.length > 0); // Разбиваем на слова
+        const wordContainer = document.createElement('span');
+        wordContainer.className = 'typewriter-word-container';
+        div.appendChild(wordContainer);
 
-        let charIndex = 0;
-        function typeChar() {
-            if (charIndex < text.length) {
-                span.textContent += text[charIndex];
-                charIndex++;
-                // Случайная скорость: 50–150 мс на символ
-                const delay = 50 + Math.random() * 100;
-                setTimeout(typeChar, delay);
-            } else {
+        let wordIndex = 0;
+        function typeNextWord() {
+            if (wordIndex >= words.length) {
                 currentDivIndex++;
                 typeNextDiv();
+                return;
             }
+
+            const word = words[wordIndex];
+            const wordSpan = document.createElement('span');
+            wordSpan.className = 'typewriter-word';
+            wordSpan.textContent = word + (wordIndex < words.length - 1 ? ' ' : '');
+            wordSpan.style.opacity = '0'; // Начальная прозрачность
+            wordContainer.appendChild(wordSpan);
+
+            // Анимация появления слова
+            setTimeout(() => {
+                wordSpan.style.opacity = '1';
+                wordIndex++;
+                // Случайная задержка: 50–150 мс на слово
+                const delay = 50 + Math.random() * 100;
+                setTimeout(typeNextWord, delay);
+            }, 0);
         }
-        typeChar();
+        typeNextWord();
     }
     typeNextDiv();
 }
@@ -135,10 +147,10 @@ function showStep(stepIndex) {
             // Запускаем typewriter-анимацию для text-block
             const textBlock = step.querySelector('.text-block');
             if (textBlock) {
-                // Скрываем все div в text-block до начала анимации
+                // Очищаем и подготавливаем text-block
                 textBlock.querySelectorAll('div').forEach(div => {
-                    div.style.visibility = 'hidden';
                     div.textContent = div.textContent.trim(); // Удаляем лишние пробелы
+                    div.innerHTML = ''; // Очищаем содержимое для новой анимации
                 });
                 typewriter(textBlock, () => {
                     console.log('Typewriter animation finished for step ' + stepId);
