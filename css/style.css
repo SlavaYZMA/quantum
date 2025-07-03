@@ -1,12 +1,12 @@
-/* Импортируем Major Mono Display для зеркальной эстетики */
-@import url('https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap');
+/* Импортируем Orbitron для квантового эхо */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
 body {
     margin: 0;
     padding: 0;
-    background: #020005;
-    color: #e5e5e5;
-    font-family: 'Major Mono Display', monospace;
+    background: #010003;
+    color: #e4e4e7;
+    font-family: 'Orbitron', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,25 +15,13 @@ body {
     position: relative;
 }
 
-/* Зеркальный фон с тенью человека */
-body::before {
-    content: '';
+#echo-canvas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0.42 0 0 0 0 0.13 0 0 0 0 0.71 0 0 0 0.4 0"/></filter></defs><path d="M300,200 Q350,150 400,200 Q450,250 400,300 Q350,350 300,300 Q250,250 300,200 Z" fill="rgba(229,229,229,0.3)" filter="url(#noise)"/></svg>'),
-                      linear-gradient(45deg, rgba(107, 33, 182, 0.2) 0%, transparent 70%);
-    opacity: 0.7;
-    pointer-events: none;
     z-index: -1;
-    animation: mirrorPulse 8s infinite ease-in-out;
-}
-
-/* Интерактивность фона */
-body:hover::before {
-    transform: translate(4px, 4px);
     opacity: 0.8;
 }
 
@@ -53,28 +41,28 @@ body:hover::before {
 }
 
 .text-block {
-    background: rgba(2, 0, 5, 0.7);
+    background: rgba(1, 0, 3, 0.7);
     padding: 20px;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
-    position: relative;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 15px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 5s infinite ease-in-out;
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #7c3aed, #e4e4e7) 1;
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+    animation: echoPulse 4s infinite ease-in-out;
 }
 
-/* Зеркальный эффект для текста */
 .text-block div {
     margin-bottom: 10px;
-    color: #e5e5e5;
-    animation: mirrorText 3s infinite alternate;
+    color: #e4e4e7;
+    text-shadow: 0 0 5px rgba(124, 58, 237, 0.7);
+    animation: echoGlow 3s infinite alternate;
 }
 
-.text-block span {
+.text-block span.typewriter-text {
     display: inline;
-    color: #e5e5e5;
+    color: #e4e4e7;
 }
 
 .button-block {
@@ -85,57 +73,60 @@ body:hover::before {
 }
 
 button {
-    background: rgba(2, 0, 5, 0.7);
-    border: none;
-    color: #e5e5e5;
-    font-family: 'Major Mono Display', monospace;
+    background: rgba(1, 0, 3, 0.7);
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #7c3aed, #e4e4e7) 1;
+    color: #e4e4e7;
+    font-family: 'Orbitron', sans-serif;
     padding: 12px 24px;
     cursor: pointer;
     font-size: 16px;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 10px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 3s infinite ease-in-out;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+    animation: echoPulse 3s infinite ease-in-out;
 }
 
 button:hover {
-    transform: skew(5deg);
-    box-shadow: 0 0 20px rgba(107, 33, 182, 0.7);
-    color: #b794f4;
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.7);
+    color: #c4b5fd;
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: rgba(2, 0, 5, 0.8);
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 15px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 4s infinite ease-in-out;
+    background: rgba(1, 0, 3, 0.8);
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #7c3aed, #e4e4e7) 1;
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+    animation: echoPulse 4s infinite ease-in-out;
 }
 
 #thumbnail-portrait {
     width: 100px;
     height: 100px;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 10px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 3s infinite ease-in-out;
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #7c3aed, #e4e4e7) 1;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+    animation: echoPulse 3s infinite ease-in-out;
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: rgba(2, 0, 5, 0.7);
-    color: #e5e5e5;
-    font-family: 'Major Mono Display', monospace;
+    background: rgba(1, 0, 3, 0.7);
+    color: #e4e4e7;
+    font-family: 'Orbitron', sans-serif;
     font-size: 12px;
     padding: 10px;
     overflow-y: auto;
     margin-left: 10px;
     line-height: 1.4;
     display: none;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 15px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 4s infinite ease-in-out;
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #7c3aed, #e4e4e7) 1;
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+    animation: echoPulse 4s infinite ease-in-out;
 }
 
 #terminal-log-step-4,
@@ -144,9 +135,9 @@ button:hover {
 }
 
 .terminal-log div {
-    animation: mirrorText 3s infinite alternate;
+    animation: echoGlow 3s infinite alternate;
     margin-bottom: 5px;
-    color: #e5e5e5;
+    color: #e4e4e7;
 }
 
 .terminal-log div.tunneling {
@@ -154,7 +145,7 @@ button:hover {
 }
 
 .terminal-log div.interference {
-    color: #b794f4;
+    color: #c4b5fd;
 }
 
 .modal {
@@ -164,27 +155,28 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(2, 0, 5, 0.9);
+    background: rgba(1, 0, 3, 0.9);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background: rgba(2, 0, 5, 0.7);
+    background: rgba(1, 0, 3, 0.7);
     padding: 20px;
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 20px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 5s infinite ease-in-out;
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #7c3aed, #e4e4e7) 1;
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+    animation: echoPulse 5s infinite ease-in-out;
 }
 
 .close {
-    color: #e5e5e5;
+    color: #e4e4e7;
     font-size: 24px;
-    font-family: 'Major Mono Display', monospace;
+    font-family: 'Orbitron', sans-serif;
     position: absolute;
     top: 10px;
     right: 20px;
@@ -193,8 +185,8 @@ button:hover {
 }
 
 .close:hover {
-    color: #b794f4;
-    transform: skew(5deg);
+    color: #c4b5fd;
+    text-shadow: 0 0 10px rgba(124, 58, 237, 0.7);
 }
 
 .image-grid {
@@ -207,22 +199,23 @@ button:hover {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 10px rgba(107, 33, 182, 0.5);
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #7c3aed, #e4e4e7) 1;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
     cursor: pointer;
-    animation: mirrorWave 3s infinite ease-in-out;
+    animation: echoPulse 3s infinite ease-in-out;
 }
 
 .archive-image:hover {
-    transform: skew(5deg);
-    box-shadow: 0 0 15px rgba(107, 33, 182, 0.7);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.7);
 }
 
 #camera-video {
     max-width: 100%;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 10px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 3s infinite ease-in-out;
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #7c3aed, #e4e4e7) 1;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+    animation: echoPulse 3s infinite ease-in-out;
 }
 
 #capture-photo {
@@ -230,35 +223,30 @@ button:hover {
 }
 
 input[type="text"] {
-    background: rgba(2, 0, 5, 0.7);
-    border: none;
-    color: #e5e5e5;
-    font-family: 'Major Mono Display', monospace;
+    background: rgba(1, 0, 3, 0.7);
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #7c3aed, #e4e4e7) 1;
+    color: #e4e4e7;
+    font-family: 'Orbitron', sans-serif;
     padding: 10px;
     font-size: 16px;
-    clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%);
-    box-shadow: 0 0 10px rgba(107, 33, 182, 0.5);
-    animation: mirrorWave 3s infinite ease-in-out;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+    animation: echoPulse 3s infinite ease-in-out;
 }
 
 input[type="text"]::placeholder {
-    color: rgba(229, 229, 229, 0.7);
+    color: rgba(228, 228, 231, 0.7);
 }
 
-@keyframes mirrorPulse {
-    0% { opacity: 0.7; transform: translate(0, 0); }
-    50% { opacity: 0.9; transform: translate(2px, 2px); }
-    100% { opacity: 0.7; transform: translate(0, 0); }
+@keyframes echoPulse {
+    0% { box-shadow: 0 0 15px rgba(124, 58, 237, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(124, 58, 237, 0.7); }
+    100% { box-shadow: 0 0 15px rgba(124, 58, 237, 0.5); }
 }
 
-@keyframes mirrorWave {
-    0% { clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%); }
-    50% { clip-path: polygon(0% 5%, 100% 0%, 95% 100%, 5% 95%); }
-    100% { clip-path: polygon(5% 0%, 95% 5%, 100% 95%, 0% 90%); }
-}
-
-@keyframes mirrorText {
-    0% { transform: skew(0deg); filter: blur(0); opacity: 1; }
-    50% { transform: skew(3deg); filter: blur(0.5px); opacity: 0.8; }
-    100% { transform: skew(0deg); filter: blur(0); opacity: 1; }
+@keyframes echoGlow {
+    0% { text-shadow: 0 0 5px rgba(124, 58, 237, 0.7); opacity: 1; }
+    50% { text-shadow: 0 0 10px rgba(124, 58, 237, 0.9); opacity: 0.9; }
+    100% { text-shadow: 0 0 5px rgba(124, 58, 237, 0.7); opacity: 1; }
 }
