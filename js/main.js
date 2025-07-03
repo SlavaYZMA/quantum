@@ -29,6 +29,49 @@ const stepTransitionsBack = {
     7: 6
 };
 
+// Функция для typewriter-анимации
+function typewriter(element, callback) {
+    const divs = element.querySelectorAll('div');
+    if (divs.length === 0) {
+        console.log('No divs found in text-block for typewriter animation');
+        if (callback) callback();
+        return;
+    }
+
+    let currentDivIndex = 0;
+    function typeNextDiv() {
+        if (currentDivIndex >= divs.length) {
+            console.log('Typewriter animation completed for all divs');
+            if (callback) callback();
+            return;
+        }
+
+        const div = divs[currentDivIndex];
+        const text = div.textContent.trim();
+        div.textContent = ''; // Очищаем текст
+        div.style.visibility = 'visible'; // Делаем div видимым
+        const span = document.createElement('span');
+        span.className = 'typewriter-text';
+        div.appendChild(span);
+
+        let charIndex = 0;
+        function typeChar() {
+            if (charIndex < text.length) {
+                span.textContent += text[charIndex];
+                charIndex++;
+                // Случайная скорость: 50–150 мс на символ
+                const delay = 50 + Math.random() * 100;
+                setTimeout(typeChar, delay);
+            } else {
+                currentDivIndex++;
+                typeNextDiv();
+            }
+        }
+        typeChar();
+    }
+    typeNextDiv();
+}
+
 function initializeSteps() {
     console.log('initializeSteps: Found ' + document.querySelectorAll('.step').length + ' steps');
     var steps = document.querySelectorAll('.step');
@@ -89,6 +132,20 @@ function showStep(stepIndex) {
         step.style.display = isActive ? 'flex' : 'none';
         if (isActive) {
             console.log('Displaying step ' + stepId + ' with display: ' + step.style.display);
+            // Запускаем typewriter-анимацию для text-block
+            const textBlock = step.querySelector('.text-block');
+            if (textBlock) {
+                // Скрываем все div в text-block до начала анимации
+                textBlock.querySelectorAll('div').forEach(div => {
+                    div.style.visibility = 'hidden';
+                    div.textContent = div.textContent.trim(); // Удаляем лишние пробелы
+                });
+                typewriter(textBlock, () => {
+                    console.log('Typewriter animation finished for step ' + stepId);
+                });
+            } else {
+                console.log('No text-block found for step ' + stepId);
+            }
         }
     });
     window.currentStep = stepIndex;
