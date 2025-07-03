@@ -6,7 +6,7 @@ window.decompositionTimer = 0;
 window.mouseWave = { x: 0, y: 0, radius: 0, trail: [] };
 window.terminalMessages = [];
 window.globalMessageCooldown = 0;
-window.blocks = [];
+window.blocks = []; // Массив для блоков изображения
 
 // Варианты сообщений в научном стиле
 const messages = {
@@ -113,8 +113,6 @@ window.updateTerminalLog = function() {
         terminalDiv.innerHTML = window.terminalMessages.map(msg => 
             `<div class="${msg.includes('туннелирование') ? 'tunneling' : msg.includes('интерфери') ? 'interference' : ''}">${msg}</div>`
         ).join('');
-    } else {
-        console.warn('Terminal div not found for step ' + window.currentStep);
     }
 };
 
@@ -171,7 +169,6 @@ window.initializeParticles = function(img) {
                 });
             }
         }
-        console.log('Initialized ' + window.blocks.length + ' blocks');
 
         // Инициализация частиц
         for (var i = 0; i < numParticles; i++) {
@@ -211,7 +208,7 @@ window.initializeParticles = function(img) {
                     decompositionProgress: 0,
                     shape: ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)],
                     featureWeight: useFeature ? faceFeatures.find(f => Math.abs(f.x - x) < img.width * 0.1 && Math.abs(f.y - y) < img.height * 0.1)?.weight || 0.2 : 0.2,
-                    blockIndex: Math.min(window.blocks.length - 1, Math.floor(x / blockSize) + Math.floor(y / blockSize) * gridSize)
+                    blockIndex: Math.floor(x / blockSize) + Math.floor(y / blockSize) * gridSize // Индекс блока
                 });
 
                 window.quantumStates.push({
@@ -296,8 +293,8 @@ function drawMouseWave(sketch) {
 
 // Обновление частиц
 window.updateParticles = function(sketch) {
-    if (!window.quantumSketch || !window.particles || window.particles.length === 0 || !window.blocks) {
-        console.error('Cannot update particles: quantumSketch: ' + !!window.quantumSketch + ', particlesLength: ' + (window.particles ? window.particles.length : 0) + ', blocks: ' + (window.blocks ? window.blocks.length : 0));
+    if (!window.quantumSketch || !window.particles || window.particles.length === 0) {
+        console.error('Cannot update particles: quantumSketch: ' + !!window.quantumSketch + ', particlesLength: ' + (window.particles ? window.particles.length : 0));
         if (window.globalMessageCooldown <= 0) {
             window.terminalMessages.push(getRandomMessage('error', { index: 0 }));
             window.updateTerminalLog();
@@ -309,7 +306,7 @@ window.updateParticles = function(sketch) {
         console.log('updateParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
         return;
     }
-    console.log('updateParticles called, particles: ' + window.particles.length + ', blocks: ' + window.blocks.length + ', currentStep: ' + window.currentStep);
+    console.log('updateParticles called, particles: ' + window.particles.length + ', currentStep: ' + window.currentStep);
     let messageAddedThisFrame = false;
     if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
         window.terminalMessages.push(getRandomMessage('update'));
@@ -333,17 +330,21 @@ window.updateParticles = function(sketch) {
         window.decompositionTimer += 0.025;
         if (window.img) {
             sketch.push();
-            // Рисуем изображение фрагментами для видимых блоков
+            // Рисуем изображение только в видимых блоках
             window.blocks.forEach(block => {
                 if (block.visible && window.decompositionTimer >= block.hideTime) {
                     block.visible = false;
                 }
                 if (block.visible) {
-                    sketch.image(window.img, block.x, block.y, block.size, block.size, block.x, block.y, block.size, block.size);
+                    sketch.drawingContext.beginPath();
+                    sketch.drawingContext.rect(block.x, block.y, block.size, block.size);
+                    sketch.drawingContext.clip();
+                    sketch.image(window.img, 0, 0, 400, 400);
+                    sketch.drawingContext.restore();
                 }
             });
             sketch.pop();
-            // Подсчёт скрытых блоков
+            // Подсчёт скрытых блоков для сообщений
             let blocksHidden = window.blocks.filter(b => !b.visible).length;
             console.log('Decomposition: ' + blocksHidden + ' blocks hidden');
             if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
@@ -352,8 +353,6 @@ window.updateParticles = function(sketch) {
                 window.globalMessageCooldown = 180;
                 messageAddedThisFrame = true;
             }
-        } else {
-            console.warn('window.img not defined in updateParticles');
         }
     } else if (window.currentStep === 5) {
         if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
@@ -379,7 +378,7 @@ window.updateParticles = function(sketch) {
     window.particles.forEach(function(p, i) {
         try {
             var state = window.quantumStates[i];
-            var block = p.blockIndex >= 0 && p.blockIndex < window.blocks.length ? window.blocks[p.blockIndex] : null;
+            var block = window.blocks[p.blockIndex];
 
             // Квантовая декомпозиция с усиленным эффектом в скрытых блоках
             if (window.currentStep === 4 && window.decompositionTimer < 3) {
@@ -389,8 +388,9 @@ window.updateParticles = function(sketch) {
                 var dy = p.y - 200;
                 var dist = Math.sqrt(dx * dx + dy * dy);
                 var wave = Math.sin(dist * 0.06 + window.decompositionTimer * 3);
+                // Усиливаем эффект для частиц в скрытых блоках
                 if (block && !block.visible) {
-                    p.offsetX += wave * 15 * p.featureWeight * (dx / (dist + 1));
+                    p.offsetX += wave * 15 * p.featureWeight * (dx / (dist + 1)); // Увеличили амплитуду
                     p.offsetY += wave * 15 * p.featureWeight * (dy / (dist + 1));
                 } else {
                     p.offsetX += wave * 10 * p.featureWeight * (dx / (dist + 1));
@@ -555,7 +555,7 @@ window.updateParticles = function(sketch) {
 
             // Логирование первых 5 частиц
             if (i < 5) {
-                console.log('Particle ' + i + ' at x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2) + ', size: ' + p.size.toFixed(2) + ', shape: ' + p.shape + ', color: rgb(' + state.r + ', ' + state.g + ', ' + state.b + ', ' + state.a + '), blockIndex: ' + p.blockIndex);
+                console.log('Particle ' + i + ' at x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2) + ', size: ' + p.size.toFixed(2) + ', shape: ' + p.shape + ', color: rgb(' + state.r + ', ' + state.g + ', ' + state.b + ', ' + state.a + ')');
             }
         } catch (error) {
             console.error('Error updating particle ' + i + ': ' + error);
