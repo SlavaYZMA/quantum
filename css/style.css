@@ -5,7 +5,7 @@ body {
     margin: 0;
     padding: 0;
     background: #010004;
-    color: #e5e5ff;
+    color: #d1d1e6;
     font-family: 'Share Tech Mono', monospace;
     display: flex;
     justify-content: center;
@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Квантовое поле с резкими мазками Миелго */
+/* Квантовое поле с мягкими мазками Миелго */
 body::before {
     content: '';
     position: fixed;
@@ -23,16 +23,13 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: 
-        radial-gradient(circle at 30% 40%, #e5e5ff 5%, transparent 10%),
-        radial-gradient(circle at 70% 60%, #5b21b6 4%, transparent 8%),
-        radial-gradient(circle at 50% 30%, #ff0000 3%, transparent 6%);
-    box-shadow: inset 0 0 100px #5b21b6;
+    background-color: rgba(31, 22, 127, 0.4);
+    box-shadow: inset 0 0 80px rgba(209, 209, 230, 0.3);
     pointer-events: none;
     z-index: -1;
 }
 
-/* Резкие точки в стиле мазков */
+/* Текстурные акценты */
 body::after {
     content: '';
     position: fixed;
@@ -40,10 +37,7 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: 
-        radial-gradient(circle at 55% 25%, #e5e5ff 2%, transparent 4%),
-        radial-gradient(circle at 20% 75%, #ff0000 1.5%, transparent 3%),
-        radial-gradient(circle at 85% 45%, #5b21b6 1%, transparent 2%);
+    background-color: rgba(204, 51, 51, 0.3);
     pointer-events: none;
     z-index: -2;
 }
@@ -71,7 +65,7 @@ body::after {
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #5b21b6;
+    box-shadow: 0 0 15px rgba(209, 209, 230, 0.4), 0 0 10px rgba(63, 22, 127, 0.5);
     animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
 }
@@ -83,19 +77,19 @@ body::after {
     left: -5px;
     right: -5px;
     bottom: -5px;
-    background: #ff0000;
-    box-shadow: 0 0 15px #e5e5ff;
+    background-color: rgba(204, 51, 51, 0.4);
+    box-shadow: 0 0 10px rgba(209, 209, 230, 0.3);
     z-index: -1;
 }
 
 .text-block div {
     margin-bottom: 10px;
-    color: #e5e5ff;
+    color: #d1d1e6;
 }
 
 .text-block span {
     display: inline;
-    color: #e5e5ff;
+    color: #d1d1e6;
 }
 
 .button-block {
@@ -106,16 +100,16 @@ body::after {
     position: relative;
 }
 
-/* Кнопки как сгустки энергии с резкими краями */
+/* Кнопки как мягкие сгустки энергии */
 button {
     background: #1e1b4b;
     border: none;
-    color: #e5e5ff;
+    color: #d1d1e6;
     font-family: 'Share Tech Mono', monospace;
     padding: 15px 30px;
     cursor: pointer;
     font-size: 16px;
-    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #5b21b6;
+    box-shadow: 0 0 15px rgba(209, 209, 230, 0.4), 0 0 10px rgba(63, 22, 127, 0.5);
     position: relative;
     animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
@@ -128,24 +122,24 @@ button::before {
     left: -5px;
     right: -5px;
     bottom: -5px;
-    background: #ff0000;
-    box-shadow: 0 0 15px #e5e5ff;
+    background-color: rgba(204, 51, 51, 0.4);
+    box-shadow: 0 0 10px rgba(209, 209, 230, 0.3);
     z-index: -1;
 }
 
 button:hover {
-    background: #5b21b6;
-    color: #ff0000;
-    box-shadow: 0 0 30px #e5e5ff, 0 0 20px #ff0000;
+    background: #3f167f;
+    color: #cc3333;
+    box-shadow: 0 0 20px rgba(209, 209, 230, 0.5), 0 0 15px rgba(204, 51, 51, 0.5);
 }
 
 button span {
     display: inline-block;
-    color: #e5e5ff;
+    color: #d1d1e6;
 }
 
 button:hover span {
-    color: #ff0000;
+    color: #cc3333;
 }
 
 #portrait-animation-container-step-4,
@@ -153,7 +147,7 @@ button:hover span {
     width: 400px;
     height: 400px;
     background: #1e1b4b;
-    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #5b21b6;
+    box-shadow: 0 0 15px rgba(209, 209, 230, 0.4), 0 0 10px rgba(63, 22, 127, 0.5);
     position: relative;
     animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
@@ -167,15 +161,15 @@ button:hover span {
     left: -5px;
     right: -5px;
     bottom: -5px;
-    background: #ff0000;
-    box-shadow: 0 0 15px #e5e5ff;
+    background-color: rgba(204, 51, 51, 0.4);
+    box-shadow: 0 0 10px rgba(209, 209, 230, 0.3);
     z-index: -1;
 }
 
 #thumbnail-portrait {
     width: 100px;
     height: 100px;
-    box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
+    box-shadow: 0 0 10px rgba(209, 209, 230, 0.4), 0 0 8px rgba(63, 22, 127, 0.5);
     position: relative;
     animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
@@ -188,8 +182,8 @@ button:hover span {
     left: -3px;
     right: -3px;
     bottom: -3px;
-    background: #ff0000;
-    box-shadow: 0 0 10px #e5e5ff;
+    background-color: rgba(204, 51, 51, 0.4);
+    box-shadow: 0 0 8px rgba(209, 209, 230, 0.3);
     z-index: -1;
 }
 
@@ -197,7 +191,7 @@ button:hover span {
     width: 300px;
     height: 400px;
     background: #1e1b4b;
-    color: #e5e5ff;
+    color: #d1d1e6;
     font-family: 'Share Tech Mono', monospace;
     font-size: 12px;
     padding: 10px;
@@ -205,7 +199,7 @@ button:hover span {
     margin-left: 10px;
     line-height: 1.4;
     display: none;
-    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #5b21b6;
+    box-shadow: 0 0 15px rgba(209, 209, 230, 0.4), 0 0 10px rgba(63, 22, 127, 0.5);
     position: relative;
     animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
@@ -218,8 +212,8 @@ button:hover span {
     left: -5px;
     right: -5px;
     bottom: -5px;
-    background: #ff0000;
-    box-shadow: 0 0 15px #e5e5ff;
+    background-color: rgba(204, 51, 51, 0.4);
+    box-shadow: 0 0 10px rgba(209, 209, 230, 0.3);
     z-index: -1;
 }
 
@@ -230,15 +224,15 @@ button:hover span {
 
 .terminal-log div {
     margin-bottom: 5px;
-    color: #e5e5ff;
+    color: #d1d1e6;
 }
 
 .terminal-log div.tunneling {
-    color: #ff0000;
+    color: #cc3333;
 }
 
 .terminal-log div.interference {
-    color: #5b21b6;
+    color: #3f167f;
 }
 
 .modal {
@@ -260,7 +254,7 @@ button:hover span {
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
-    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #5b21b6;
+    box-shadow: 0 0 15px rgba(209, 209, 230, 0.4), 0 0 10px rgba(63, 22, 127, 0.5);
     position: relative;
     animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
@@ -273,13 +267,13 @@ button:hover span {
     left: -5px;
     right: -5px;
     bottom: -5px;
-    background: #ff0000;
-    box-shadow: 0 0 15px #e5e5ff;
+    background-color: rgba(204, 51, 51, 0.4);
+    box-shadow: 0 0 10px rgba(209, 209, 230, 0.3);
     z-index: -1;
 }
 
 .close {
-    color: #e5e5ff;
+    color: #d1d1e6;
     font-size: 24px;
     font-family: 'Share Tech Mono', monospace;
     position: absolute;
@@ -290,7 +284,7 @@ button:hover span {
 }
 
 .close:hover {
-    color: #ff0000;
+    color: #cc3333;
 }
 
 .image-grid {
@@ -303,7 +297,7 @@ button:hover span {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
+    box-shadow: 0 0 10px rgba(209, 209, 230, 0.4), 0 0 8px rgba(63, 22, 127, 0.5);
     position: relative;
     animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
@@ -316,18 +310,18 @@ button:hover span {
     left: -3px;
     right: -3px;
     bottom: -3px;
-    background: #ff0000;
-    box-shadow: 0 0 10px #e5e5ff;
+    background-color: rgba(204, 51, 51, 0.4);
+    box-shadow: 0 0 8px rgba(209, 209, 230, 0.3);
     z-index: -1;
 }
 
 .archive-image:hover {
-    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #ff0000;
+    box-shadow: 0 0 15px rgba(209, 209, 230, 0.5), 0 0 12px rgba(204, 51, 51, 0.5);
 }
 
 #camera-video {
     max-width: 100%;
-    box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
+    box-shadow: 0 0 10px rgba(209, 209, 230, 0.4), 0 0 8px rgba(63, 22, 127, 0.5);
     position: relative;
     animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
@@ -340,8 +334,8 @@ button:hover span {
     left: -3px;
     right: -3px;
     bottom: -3px;
-    background: #ff0000;
-    box-shadow: 0 0 10px #e5e5ff;
+    background-color: rgba(204, 51, 51, 0.4);
+    box-shadow: 0 0 8px rgba(209, 209, 230, 0.3);
     z-index: -1;
 }
 
@@ -352,11 +346,11 @@ button:hover span {
 input[type="text"] {
     background: #1e1b4b;
     border: none;
-    color: #e5e5ff;
+    color: #d1d1e6;
     font-family: 'Share Tech Mono', monospace;
     padding: 10px;
     font-size: 16px;
-    box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
+    box-shadow: 0 0 10px rgba(209, 209, 230, 0.4), 0 0 8px rgba(63, 22, 127, 0.5);
     position: relative;
     animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
@@ -369,23 +363,23 @@ input[type="text"]::before {
     left: -3px;
     right: -3px;
     bottom: -3px;
-    background: #ff0000;
-    box-shadow: 0 0 10px #e5e5ff;
+    background-color: rgba(204, 51, 51, 0.4);
+    box-shadow: 0 0 8px rgba(209, 209, 230, 0.3);
     z-index: -1;
 }
 
 input[type="text"]::placeholder {
-    color: #e5e5ff;
+    color: #d1d1e6;
 }
 
 @keyframes quantumPulse {
     0% {
-        box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
+        box-shadow: 0 0 10px rgba(209, 209, 230, 0.4), 0 0 8px rgba(63, 22, 127, 0.5);
     }
     50% {
-        box-shadow: 0 0 25px #e5e5ff, 0 0 20px #5b21b6;
+        box-shadow: 0 0 15px rgba(209, 209, 230, 0.5), 0 0 12px rgba(63, 22, 127, 0.6);
     }
     100% {
-        box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
+        box-shadow: 0 0 10px rgba(209, 209, 230, 0.4), 0 0 8px rgba(63, 22, 127, 0.5);
     }
 }
