@@ -148,6 +148,17 @@
             <div class="image-grid" id="image-grid"></div>
         </div>
     </div>
+    <!-- Модальное окно для камеры -->
+    <div id="camera-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span id="close-camera-modal" class="close">×</span>
+            <video id="camera-video" autoplay style="width: 100%; max-width: 640px; height: auto;"></video>
+            <canvas id="camera-canvas" style="display: none;"></canvas>
+            <div class="button-block">
+                <button id="capture-photo" data-i18n="capture_photo">Сделать фото</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         window.quantumSketch = new p5(function(sketch) {
@@ -267,11 +278,6 @@
         document.getElementById('aboutAuthors').addEventListener('click', function() {
             window.location.href = './about.html';
             console.log('About authors: navigated to about.html');
-        });
-
-        document.getElementById('useCamera').addEventListener('click', function() {
-            console.log('Camera button clicked - functionality not implemented');
-            alert('Камера пока не поддерживается.');
         });
 
         var originalMoveToNextStep = window.moveToNextStep;
