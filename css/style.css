@@ -165,6 +165,15 @@ button:hover {
     border-color: #00aaff;
 }
 
+#camera-video {
+    border: 2px solid #0f0;
+    max-width: 100%;
+}
+
+#capture-photo {
+    margin-top: 10px;
+}
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
