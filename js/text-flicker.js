@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const originalText = button.textContent;
         const chars = originalText.split('');
         
+        // Пропускаем короткие надписи (менее 3 символов)
+        if (chars.length < 3) return;
+        
         setInterval(() => {
             // Случайное перемешивание букв
             let shuffled = [...chars];
@@ -17,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.textContent = shuffled.join('');
             setTimeout(() => {
                 button.textContent = originalText;
-            }, 150); // Восстанавливаем через 150 мс
-        }, 1500); // Перемешивание каждые 1.5 секунды
+            }, 100); // Восстанавливаем через 100 мс
+        }, 2000); // Перемешивание каждые 2 секунды
     });
 });
