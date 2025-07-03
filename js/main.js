@@ -31,9 +31,9 @@ const stepTransitionsBack = {
 
 // Список изображений в папке public/images/
 const archiveImages = [
-    '/images/image1.jpg',
-    '/images/image2.jpg',
-    '/images/image3.jpg'
+    '/public/images/image1.jpg',
+    '/public/images/image2.jpg',
+    '/public/images/image3.jpg'
 ];
 
 // Функция для typewriter-анимации
@@ -96,6 +96,11 @@ function showImageArchiveModal() {
         img.src = src;
         img.className = 'archive-image';
         img.alt = `Archive image ${index + 1}`;
+        img.onerror = () => {
+            console.error(`Failed to load image: ${src}`);
+            img.src = ''; // Очистить src, чтобы избежать бесконечных попыток загрузки
+            img.alt = 'Ошибка загрузки';
+        };
         img.addEventListener('click', () => {
             selectArchiveImage(src);
             modal.style.display = 'none';
@@ -112,6 +117,7 @@ function selectArchiveImage(src) {
         console.error('quantumSketch not initialized');
         return;
     }
+    console.log(`Attempting to load archive image: ${src}`);
     window.quantumSketch.loadImage(src, function(img) {
         console.log('Archive image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
         window.img = img;
@@ -124,8 +130,9 @@ function selectArchiveImage(src) {
             console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
         });
         window.moveToNextStep(2.1);
-    }, function() {
-        console.error('Error loading archive image: ' + src);
+    }, function(err) {
+        console.error(`Error loading archive image: ${src}, error: ${err}`);
+        alert('Ошибка загрузки изображения из архива. Пожалуйста, попробуйте снова.');
     });
 }
 
