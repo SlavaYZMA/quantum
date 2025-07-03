@@ -1,119 +1,224 @@
 console.log('audio.js loaded');
 
-window.AudioContext = window.AudioContext || window.webkitAudioContext;
-let audioCtx = null;
-
-try {
-    audioCtx = new AudioContext();
-    console.log('AudioContext initialized');
-} catch (e) {
-    console.error('Failed to initialize AudioContext:', e);
+// Инициализация AudioContext
+let audioContext = null;
+function initAudioContext() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        console.log('AudioContext initialized');
+    }
+    return audioContext;
 }
 
+// Частоты нот для расширенной C минорной гаммы (C3–C5)
 window.noteFrequencies = {
+    'C3': 130.81,
+    'D#3': 155.56,
+    'E3': 164.81,
+    'F3': 174.61,
+    'G3': 196.00,
+    'A#3': 233.08,
     'C4': 261.63,
     'D#4': 311.13,
+    'E4': 329.63,
     'F4': 349.23,
     'G4': 392.00,
     'A#4': 466.16,
-    'spiral': 523.25, // C5
-    'wave': 587.33,   // D5
-    'fractal': 659.25,// E5
-    'ellipse': 698.46 // F5
+    'C5': 523.25
 };
 
-window.playNote = function(frequency, type = 'sine', gainValue = 0.5, duration = 0.2) {
-    if (!audioCtx) return;
-    let oscillator = audioCtx.createOscillator();
-    let gainNode = audioCtx.createGain();
+// Воспроизведение одной ноты с LFO модуляцией
+window.playNote = function(frequency, type = 'sine', duration = 0.5, gainValue = 0.2) {
+    if (!Number.isFinite(frequency)) {
+        console.warn('playNote: Invalid frequency, using fallback 261.63');
+        frequency = 261.63; // Fallback to C4
+    }
+    const ctx = initAudioContext();
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const lfo = ctx.createOscillator(); // Низкочастотный осциллятор для модуляции
+    const lfoGain = ctx.createGain();
+
     oscillator.type = type;
-    oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-    gainNode.gain.setValueAtTime(gainValue, audioCtx.currentTime);
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.currentTime ? audioCtx.destination : null);
+    oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+    
+    // Настройка LFO (лёгкая пульсация частоты)
+    lfo.type = 'sine';
+    lfo.frequency.setValueAtTime(5, ctx.currentTime); // 5 Гц для мягкой модуляции
+    lfoGain.gain.setValueAtTime(frequency * 0.05, ctx.currentTime); // Амплитуда модуляции 5%
+    lfo.connect(lfoGain);
+    lfoGain.connect(oscillator.frequency);
+    lfo.start();
+    lfo.stop(ctx.currentTime + duration);
+
+    gain.gain.setValueAtTime(gainValue, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
     oscillator.start();
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-    oscillator.stop(audioCtx.currentTime + duration);
+    oscillator.stop(ctx.currentTime + duration);
 };
 
-window.playInitialization = function() {
-    if (!audioCtx) return;
-    window.playNote(261.63, 'sine', 0.3, 0.5);
-    setTimeout(() => window.playNote(392.00, 'sine', 0.3, 0.5), 200);
-};
+// Воспроизведение биений для интерференции с модуляцией
+window.playInterference = function(frequency1 = 440, frequency2 = 445, duration = 1.0, gainValue = 0.15) {
+    if (!Number.isFinite(frequency1) || !Number.isFinite(frequency2)) {
+        console.warn('playInterference: Invalid frequency, using fallback 440/445');
+        frequency1 = 440;
+        frequency2 = 445;
+    }
+    const ctx = initAudioContext();
+    const oscillator1 = ctx.createOscillator();
+    const oscillator2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const lfo = ctx.createOscillator(); // LFO для интерференции
+    const lfoGain = ctx.createGain();
 
-window.playTransition = function() {
-    if (!audioCtx) return;
-    window.playNote(349.23, 'triangle', 0.4, 0.6);
-    setTimeout(() => window.playNote(466.16, 'triangle', 0.4, 0.6), 300);
-};
-
-window.playStabilization = function() {
-    if (!audioCtx) return;
-    window.playNote(392.00, 'sine', 0.5, 0.7);
-    setTimeout(() => window.playNote(523.25, 'sine', 0.5, 0.7), 400);
-};
-
-window.playCollapse = function() {
-    if (!audioCtx) return;
-    let oscillator = audioCtx.createOscillator();
-    let gainNode = audioCtx.createGain();
-    oscillator.type = 'sawtooth';
-    oscillator.frequency.setValueAtTime(220, audioCtx.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.8);
-    gainNode.gain.setValueAtTime(0.6, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8);
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.currentTime ? audioCtx.destination : null);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.8);
-};
-
-window.playInterference = function(freq1, freq2, gainValue = 0.3, duration = 0.15) {
-    if (!audioCtx) return;
-    let oscillator1 = audioCtx.createOscillator();
-    let oscillator2 = audioCtx.createOscillator();
-    let gainNode = audioCtx.createGain();
     oscillator1.type = 'sine';
     oscillator2.type = 'sine';
-    oscillator1.frequency.setValueAtTime(freq1, audioCtx.currentTime);
-    oscillator2.frequency.setValueAtTime(freq2, audioCtx.currentTime);
-    gainNode.gain.setValueAtTime(gainValue, audioCtx.currentTime);
-    oscillator1.connect(gainNode);
-    oscillator2.connect(gainNode);
-    gainNode.connect(audioCtx.currentTime ? audioCtx.destination : null);
+    oscillator1.frequency.setValueAtTime(frequency1, ctx.currentTime);
+    oscillator2.frequency.setValueAtTime(frequency2, ctx.currentTime);
+
+    // LFO для дрожания тона
+    lfo.type = 'sine';
+    lfo.frequency.setValueAtTime(3, ctx.currentTime); // 3 Гц для тонкой модуляции
+    lfoGain.gain.setValueAtTime(frequency1 * 0.03, ctx.currentTime); // Амплитуда 3%
+    lfo.connect(lfoGain);
+    lfoGain.connect(oscillator1.frequency);
+    lfo.start();
+    lfo.stop(ctx.currentTime + duration);
+
+    gain.gain.setValueAtTime(gainValue, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+
+    oscillator1.connect(gain);
+    oscillator2.connect(gain);
+    gain.connect(ctx.destination);
+
     oscillator1.start();
     oscillator2.start();
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-    oscillator1.stop(audioCtx.currentTime + duration);
-    oscillator2.stop(audioCtx.currentTime + duration);
+    oscillator1.stop(ctx.currentTime + duration);
+    oscillator2.stop(ctx.currentTime + duration);
 };
 
-window.playTunneling = function(frequency, gainValue = 0.2, duration = 0.3) {
-    if (!audioCtx) return;
-    let oscillator = audioCtx.createOscillator();
-    let gainNode = audioCtx.createGain();
-    oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-    gainNode.gain.setValueAtTime(gainValue, audioCtx.currentTime);
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.currentTime ? audioCtx.destination : null);
+// Воспроизведение импульса с ревербом для туннелирования
+window.playTunneling = function(frequency, duration = 0.2, gainValue = 0.3) {
+    if (!Number.isFinite(frequency)) {
+        console.warn('playTunneling: Invalid frequency, using fallback 440');
+        frequency = 440;
+    }
+    const ctx = initAudioContext();
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const convolver = ctx.createConvolver();
+
+    // Случайный выбор тембра для разнообразия
+    const types = ['square', 'sawtooth', 'triangle'];
+    oscillator.type = types[Math.floor(Math.random() * types.length)];
+
+    oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+
+    // Увеличенный реверб с шумовым хвостом
+    const sampleRate = ctx.sampleRate;
+    const bufferSize = sampleRate * 0.7; // Увеличено до 0.7 сек
+    const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sampleRate * 0.15)) * (1 + Math.random() * 0.2); // Шумовой хвост
+    }
+    convolver.buffer = buffer;
+
+    gain.gain.setValueAtTime(gainValue, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+
+    oscillator.connect(gain);
+    gain.connect(convolver);
+    convolver.connect(ctx.destination);
+
     oscillator.start();
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-    oscillator.stop(audioCtx.currentTime + duration);
+    oscillator.stop(ctx.currentTime + duration);
 };
 
-window.playArpeggio = function(shape) {
-    if (!audioCtx) return;
-    let freqs = {
-        'spiral': [523.25, 659.25, 783.99],
-        'wave': [587.33, 698.46, 880.00],
-        'fractal': [659.25, 783.99, 987.77],
-        'ellipse': [698.46, 880.00, 1046.50]
-    }[shape];
-    let time = audioCtx.currentTime;
-    freqs.forEach((freq, i) => {
-        window.playNote(freq, 'triangle', 0.4, 0.2);
-        setTimeout(() => window.playNote(freq, 'triangle', 0.4, 0.2), i * 150);
+// Воспроизведение арпеджио для коллапса с вариациями
+window.playArpeggio = function(shape, duration = 0.5, gainValue = 0.2) {
+    const ctx = initAudioContext();
+    const notes = {
+        'ribbon': ['C4', 'E4', 'G4'],
+        'ellipse': ['D#4', 'F4', 'A#4'],
+        'cluster': ['G4', 'C4', 'F4']
+    }[shape] || ['C4', 'E4', 'G4'];
+    
+    notes.forEach((note, i) => {
+        const frequency = window.noteFrequencies[note] || 261.63; // Fallback to C4
+        const noteDuration = duration / 3 + Math.random() * 0.3; // Случайная длительность 0.3–0.6 сек
+        const noteGain = gainValue * (0.8 + Math.random() * 0.2); // Случайная громкость 0.15–0.25
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(frequency, ctx.currentTime + i * 0.15);
+        gain.gain.setValueAtTime(noteGain, ctx.currentTime + i * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + noteDuration);
+
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+
+        oscillator.start(ctx.currentTime + i * 0.15);
+        oscillator.stop(ctx.currentTime + i * 0.15 + noteDuration);
     });
 };
+
+// Воспроизведение звука для инициализации (гул с двумя осцилляторами)
+window.playInitialization = function(duration = 2.0, gainValue = 0.1) {
+    const ctx = initAudioContext();
+    const oscillator1 = ctx.createOscillator();
+    const oscillator2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    oscillator1.type = 'sine';
+    oscillator2.type = 'sine';
+    oscillator1.frequency.setValueAtTime(150, ctx.currentTime); // Основной гул
+    oscillator2.frequency.setValueAtTime(80, ctx.currentTime); // Низкий субтон
+    gain.gain.setValueAtTime(gainValue, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+
+    oscillator1.connect(gain);
+    oscillator2.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator1.start();
+    oscillator2.start();
+    oscillator1.stop(ctx.currentTime + duration);
+    oscillator2.stop(ctx.currentTime + duration);
+};
+
+// Воспроизведение звука для стабилизации (аккорд с панорамированием)
+window.playStabilization = function(duration = 1.5, gainValue = 0.15) {
+    const ctx = initAudioContext();
+    const notes = ['C4', 'E4', 'G4'];
+    notes.forEach((note, i) => {
+        const frequency = window.noteFrequencies[note] || 261.63; // Fallback to C4
+        if (!Number.isFinite(frequency)) {
+            console.warn('playStabilization: Invalid frequency for note ' + note + ', using fallback 261.63');
+            return;
+        }
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const panner = ctx.createStereoPanner(); // Панорамирование
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+        gain.gain.setValueAtTime(gainValue, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        panner.pan.setValueAtTime(i === 0 ? -0.5 : i === 1 ? 0 : 0.5, ctx.currentTime); // Разделение нот по стерео
+
+        oscillator.connect(gain);
+        gain.connect(panner);
+        panner.connect(ctx.destination);
+
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + duration);
+    });
+};
+
+// Экспортируем функции в глобальную область
+window.initAudioContext = initAudioContext;
