@@ -34,20 +34,24 @@ body {
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
+    color: #0f0; /* Явный цвет для text-block */
 }
 
 .text-block div {
     margin-bottom: 10px;
-    display: block; /* Убедимся, что div виден */
+    display: block;
+    opacity: 1; /* Гарантируем видимость div */
+    color: #0f0; /* Явный цвет текста */
+    font-family: 'Courier New', monospace; /* Явный шрифт */
 }
 
 .text-block span.typewriter-word-container {
-    display: inline; /* Контейнер для слов в строке */
+    display: inline; /* Контейнер для слов */
 }
 
 .text-block span.typewriter-word {
     display: inline;
-    color: #0f0; /* Зелёный цвет для соответствия эстетике */
+    color: #0f0; /* Зелёный цвет */
     opacity: 0; /* Начальная прозрачность */
     transition: opacity 0.1s ease-in; /* Плавное появление слова */
 }
@@ -85,7 +89,7 @@ button:hover {
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.8);
     border: 2px solid #0f0;
     color: #0f0;
     font-family: 'Courier New', monospace;
