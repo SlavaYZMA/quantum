@@ -60,7 +60,7 @@ function typewriter(element, callback) {
                 span.textContent += text[charIndex];
                 charIndex++;
                 // Случайная скорость: 10–100 мс на символ (ускорено и с большим разбросом)
-                const delay = 10 + Math.random() * 90;
+                const delay = 5 + Math.random() * 90;
                 setTimeout(typeChar, delay);
             } else {
                 currentDivIndex++;
