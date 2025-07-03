@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Квантовое поле с рваными мазками Миелго */
+/* Квантовое поле с резкими мазками Миелго */
 body::before {
     content: '';
     position: fixed;
@@ -23,20 +23,16 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
-        radial-gradient(circle at 20% 30%, #ff0000 5%, transparent 10%),
-        radial-gradient(circle at 80% 70%, #5b21b6 5%, transparent 8%),
-        radial-gradient(circle at 50% 40%, #e5e5ff 5%, transparent 7%);
-    clip-path: polygon(0 10%, 90% 0, 100% 80%, 20% 100%, 10% 50%);
-    box-shadow: 0 0 50px #ff0000, 0 0 30px #5b21b6;
-    filter: contrast(3);
-    opacity: 1;
+    background-image: 
+        radial-gradient(circle at 30% 40%, #e5e5ff 5%, transparent 10%),
+        radial-gradient(circle at 70% 60%, #5b21b6 4%, transparent 8%),
+        radial-gradient(circle at 50% 30%, #ff0000 3%, transparent 6%);
+    box-shadow: inset 0 0 100px #5b21b6;
     pointer-events: none;
     z-index: -1;
-    animation: quantumRip 1.5s infinite steps(6);
 }
 
-/* Хаотичные волны с резкими краями */
+/* Резкие точки в стиле мазков */
 body::after {
     content: '';
     position: fixed;
@@ -44,43 +40,12 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
-        radial-gradient(circle at 60% 20%, #e5e5ff 3%, transparent 6%),
-        radial-gradient(circle at 30% 80%, #5b21b6 3%, transparent 5%),
-        radial-gradient(circle at 90% 50%, #ff0000 3%, transparent 4%);
-    clip-path: polygon(10% 0, 100% 30%, 70% 100%, 20% 90%);
-    filter: contrast(3);
-    opacity: 1;
+    background-image: 
+        radial-gradient(circle at 55% 25%, #e5e5ff 2%, transparent 4%),
+        radial-gradient(circle at 20% 75%, #ff0000 1.5%, transparent 3%),
+        radial-gradient(circle at 85% 45%, #5b21b6 1%, transparent 2%);
     pointer-events: none;
     z-index: -2;
-    animation: quantumScream 1.2s infinite linear;
-}
-
-/* Рваные мазки Миелго */
-body::after::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #1e1b4b;
-    clip-path: polygon(0 15%, 95% 5%, 85% 95%, 15% 85%, 5% 50%);
-    filter: contrast(3);
-    opacity: 1;
-    pointer-events: none;
-    z-index: -3;
-    animation: quantumFracture 0.8s infinite steps(8);
-}
-
-/* Резкая интерактивность фона */
-body:hover::before {
-    box-shadow: 0 0 80px #e5e5ff, 0 0 50px #5b21b6;
-    filter: contrast(3) brightness(2);
-}
-
-body:hover::after, body::after::before {
-    filter: contrast(3) brightness(2);
 }
 
 .step {
@@ -99,16 +64,15 @@ body:hover::after, body::after::before {
 }
 
 .text-block {
-    background: #010004;
+    background: #1e1b4b;
     padding: 20px;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    border-radius: 10px 30px 5px 25px;
-    box-shadow: 0 0 30px #ff0000, 0 0 20px #5b21b6;
-    animation: quantumRip 1.5s infinite steps(6), quantumScream 1.2s infinite linear;
+    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #5b21b6;
+    animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
 }
 
@@ -119,19 +83,14 @@ body:hover::after, body::after::before {
     left: -5px;
     right: -5px;
     bottom: -5px;
-    border-radius: 15px 35px 10px 30px;
-    background: #e5e5ff;
-    clip-path: polygon(5% 10%, 90% 0, 95% 85%, 15% 95%);
-    filter: contrast(3);
-    opacity: 0.9;
+    background: #ff0000;
+    box-shadow: 0 0 15px #e5e5ff;
     z-index: -1;
-    animation: quantumFracture 0.8s infinite steps(8);
 }
 
 .text-block div {
     margin-bottom: 10px;
     color: #e5e5ff;
-    animation: quantumTextGlitch 1s infinite steps(5);
 }
 
 .text-block span {
@@ -147,20 +106,18 @@ body:hover::after, body::after::before {
     position: relative;
 }
 
-/* Кнопки как рваные сгустки энергии */
+/* Кнопки как сгустки энергии с резкими краями */
 button {
-    background: #5b21b6;
+    background: #1e1b4b;
     border: none;
     color: #e5e5ff;
     font-family: 'Share Tech Mono', monospace;
     padding: 15px 30px;
     cursor: pointer;
     font-size: 16px;
-    border-radius: 10px 30px 5px 25px;
-    box-shadow: 0 0 30px #ff0000, 0 0 20px #e5e5ff;
+    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #5b21b6;
     position: relative;
-    animation: quantumRip 1.5s infinite steps(6), quantumScream 1.2s infinite linear;
-    transform-origin: center;
+    animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
 }
 
@@ -171,56 +128,34 @@ button::before {
     left: -5px;
     right: -5px;
     bottom: -5px;
-    border-radius: 15px 35px 10px 30px;
     background: #ff0000;
-    clip-path: polygon(5% 10%, 90% 0, 95% 85%, 15% 95%);
-    filter: contrast(3);
-    opacity: 0.9;
+    box-shadow: 0 0 15px #e5e5ff;
     z-index: -1;
-    animation: quantumFracture 0.8s infinite steps(8);
-}
-
-button::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #1e1b4b;
-    clip-path: polygon(0 15%, 85% 5%, 90% 90%, 10% 80%);
-    filter: contrast(3);
-    opacity: 0.8;
-    z-index: -1;
-    animation: quantumFracture 0.9s infinite steps(8);
 }
 
 button:hover {
-    transform: scale(1.1) skew(5deg);
-    background: #ff0000;
-    box-shadow: 0 0 40px #e5e5ff, 0 0 30px #5b21b6;
-    color: #e5e5ff;
+    background: #5b21b6;
+    color: #ff0000;
+    box-shadow: 0 0 30px #e5e5ff, 0 0 20px #ff0000;
 }
 
 button span {
     display: inline-block;
     color: #e5e5ff;
-    animation: quantumTextGlitch 1s infinite steps(5);
 }
 
 button:hover span {
-    color: #e5e5ff;
+    color: #ff0000;
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: #010004;
-    border-radius: 10px 30px 5px 25px;
-    box-shadow: 0 0 30px #ff0000, 0 0 20px #5b21b6;
+    background: #1e1b4b;
+    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #5b21b6;
     position: relative;
-    animation: quantumRip 1.5s infinite steps(6), quantumScream 1.2s infinite linear;
+    animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
 }
 
@@ -232,22 +167,17 @@ button:hover span {
     left: -5px;
     right: -5px;
     bottom: -5px;
-    border-radius: 15px 35px 10px 30px;
-    background: #e5e5ff;
-    clip-path: polygon(5% 10%, 90% 0, 95% 85%, 15% 95%);
-    filter: contrast(3);
-    opacity: 0.9;
+    background: #ff0000;
+    box-shadow: 0 0 15px #e5e5ff;
     z-index: -1;
-    animation: quantumFracture 0.8s infinite steps(8);
 }
 
 #thumbnail-portrait {
     width: 100px;
     height: 100px;
-    border-radius: 10px 30px 5px 25px;
-    box-shadow: 0 0 20px #ff0000, 0 0 15px #5b21b6;
+    box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
     position: relative;
-    animation: quantumRip 1.5s infinite steps(6), quantumScream 1.2s infinite linear;
+    animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
 }
 
@@ -258,19 +188,15 @@ button:hover span {
     left: -3px;
     right: -3px;
     bottom: -3px;
-    border-radius: 15px 35px 10px 30px;
-    background: #e5e5ff;
-    clip-path: polygon(5% 10%, 90% 0, 95% 85%, 15% 95%);
-    filter: contrast(3);
-    opacity: 0.9;
+    background: #ff0000;
+    box-shadow: 0 0 10px #e5e5ff;
     z-index: -1;
-    animation: quantumFracture 0.8s infinite steps(8);
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: #010004;
+    background: #1e1b4b;
     color: #e5e5ff;
     font-family: 'Share Tech Mono', monospace;
     font-size: 12px;
@@ -279,10 +205,9 @@ button:hover span {
     margin-left: 10px;
     line-height: 1.4;
     display: none;
-    border-radius: 10px 30px 5px 25px;
-    box-shadow: 0 0 30px #ff0000, 0 0 20px #5b21b6;
+    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #5b21b6;
     position: relative;
-    animation: quantumRip 1.5s infinite steps(6), quantumScream 1.2s infinite linear;
+    animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
 }
 
@@ -293,13 +218,9 @@ button:hover span {
     left: -5px;
     right: -5px;
     bottom: -5px;
-    border-radius: 15px 35px 10px 30px;
-    background: #e5e5ff;
-    clip-path: polygon(5% 10%, 90% 0, 95% 85%, 15% 95%);
-    filter: contrast(3);
-    opacity: 0.9;
+    background: #ff0000;
+    box-shadow: 0 0 15px #e5e5ff;
     z-index: -1;
-    animation: quantumFracture 0.8s infinite steps(8);
 }
 
 #terminal-log-step-4,
@@ -310,7 +231,6 @@ button:hover span {
 .terminal-log div {
     margin-bottom: 5px;
     color: #e5e5ff;
-    animation: quantumTextGlitch 1s infinite steps(5);
 }
 
 .terminal-log div.tunneling {
@@ -340,10 +260,9 @@ button:hover span {
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
-    border-radius: 10px 30px 5px 25px;
-    box-shadow: 0 0 30px #ff0000, 0 0 20px #e5e5ff;
+    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #5b21b6;
     position: relative;
-    animation: quantumRip 1.5s infinite steps(6), quantumScream 1.2s infinite linear;
+    animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
 }
 
@@ -354,13 +273,9 @@ button:hover span {
     left: -5px;
     right: -5px;
     bottom: -5px;
-    border-radius: 15px 35px 10px 30px;
-    background: #5b21b6;
-    clip-path: polygon(5% 10%, 90% 0, 95% 85%, 15% 95%);
-    filter: contrast(3);
-    opacity: 0.9;
+    background: #ff0000;
+    box-shadow: 0 0 15px #e5e5ff;
     z-index: -1;
-    animation: quantumFracture 0.8s infinite steps(8);
 }
 
 .close {
@@ -372,12 +287,10 @@ button:hover span {
     right: 20px;
     cursor: pointer;
     z-index: 1001;
-    animation: quantumTextGlitch 1s infinite steps(5);
 }
 
 .close:hover {
     color: #ff0000;
-    transform: scale(1.2) skew(10deg);
 }
 
 .image-grid {
@@ -390,10 +303,9 @@ button:hover span {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    border-radius: 10px 30px 5px 25px;
-    box-shadow: 0 0 20px #ff0000, 0 0 15px #5b21b6;
+    box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
     position: relative;
-    animation: quantumRip 1.5s infinite steps(6), quantumScream 1.2s infinite linear;
+    animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
 }
 
@@ -404,26 +316,20 @@ button:hover span {
     left: -3px;
     right: -3px;
     bottom: -3px;
-    border-radius: 15px 35px 10px 30px;
-    background: #e5e5ff;
-    clip-path: polygon(5% 10%, 90% 0, 95% 85%, 15% 95%);
-    filter: contrast(3);
-    opacity: 0.9;
+    background: #ff0000;
+    box-shadow: 0 0 10px #e5e5ff;
     z-index: -1;
-    animation: quantumFracture 0.8s infinite steps(8);
 }
 
 .archive-image:hover {
-    transform: scale(1.05) skew(5deg);
-    box-shadow: 0 0 30px #e5e5ff, 0 0 20px #5b21b6;
+    box-shadow: 0 0 20px #e5e5ff, 0 0 15px #ff0000;
 }
 
 #camera-video {
     max-width: 100%;
-    border-radius: 10px 30px 5px 25px;
-    box-shadow: 0 0 20px #ff0000, 0 0 15px #5b21b6;
+    box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
     position: relative;
-    animation: quantumRip 1.5s infinite steps(6), quantumScream 1.2s infinite linear;
+    animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
 }
 
@@ -434,13 +340,9 @@ button:hover span {
     left: -3px;
     right: -3px;
     bottom: -3px;
-    border-radius: 15px 35px 10px 30px;
-    background: #e5e5ff;
-    clip-path: polygon(5% 10%, 90% 0, 95% 85%, 15% 95%);
-    filter: contrast(3);
-    opacity: 0.9;
+    background: #ff0000;
+    box-shadow: 0 0 10px #e5e5ff;
     z-index: -1;
-    animation: quantumFracture 0.8s infinite steps(8);
 }
 
 #capture-photo {
@@ -454,10 +356,9 @@ input[type="text"] {
     font-family: 'Share Tech Mono', monospace;
     padding: 10px;
     font-size: 16px;
-    border-radius: 10px 30px 5px 25px;
-    box-shadow: 0 0 20px #ff0000, 0 0 15px #5b21b6;
+    box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
     position: relative;
-    animation: quantumRip 1.5s infinite steps(6), quantumScream 1.2s infinite linear;
+    animation: quantumPulse 2s infinite ease-in-out;
     z-index: 10;
 }
 
@@ -468,121 +369,23 @@ input[type="text"]::before {
     left: -3px;
     right: -3px;
     bottom: -3px;
-    border-radius: 15px 35px 10px 30px;
-    background: #5b21b6;
-    clip-path: polygon(5% 10%, 90% 0, 95% 85%, 15% 95%);
-    filter: contrast(3);
-    opacity: 0.9;
+    background: #ff0000;
+    box-shadow: 0 0 10px #e5e5ff;
     z-index: -1;
-    animation: quantumFracture 0.8s infinite steps(8);
 }
 
 input[type="text"]::placeholder {
     color: #e5e5ff;
-    animation: quantumTextGlitch 1s infinite steps(5);
 }
 
-@keyframes quantumRip {
+@keyframes quantumPulse {
     0% {
-        border-radius: 10px 30px 5px 25px;
-        transform: translate(0, 0) skew(0deg);
-        clip-path: polygon(0 10%, 90% 0, 100% 80%, 20% 100%);
-    }
-    20% {
-        border-radius: 15px 25px 10px 20px;
-        transform: translate(8px, -8px) skew(10deg);
-        clip-path: polygon(5% 15%, 85% 5%, 95% 85%, 15% 95%);
-    }
-    40% {
-        border-radius: 20px 15px 25px 10px;
-        transform: translate(-8px, 8px) skew(-10deg);
-        clip-path: polygon(10% 5%, 95% 10%, 90% 90%, 10% 85%);
-    }
-    60% {
-        border-radius: 25px 10px 20px 15px;
-        transform: translate(5px, 5px) skew(5deg);
-        clip-path: polygon(0 20%, 80% 0, 100% 75%, 25% 95%);
-    }
-    80% {
-        border-radius: 15px 20px 10px 25px;
-        transform: translate(-5px, -5px) skew(-5deg);
-        clip-path: polygon(5% 10%, 90% 5%, 95% 80%, 20% 90%);
-    }
-    100% {
-        border-radius: 10px 30px 5px 25px;
-        transform: translate(0, 0) skew(0deg);
-        clip-path: polygon(0 10%, 90% 0, 100% 80%, 20% 100%);
-    }
-}
-
-@keyframes quantumScream {
-    0% {
-        opacity: 1;
-        box-shadow: 0 0 30px #ff0000, 0 0 20px #5b21b6;
-        filter: contrast(3) brightness(1);
+        box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
     }
     50% {
-        opacity: 0.6;
-        box-shadow: 0 0 50px #e5e5ff, 0 0 30px #5b21b6;
-        filter: contrast(3) brightness(2);
+        box-shadow: 0 0 25px #e5e5ff, 0 0 20px #5b21b6;
     }
     100% {
-        opacity: 1;
-        box-shadow: 0 0 30px #ff0000, 0 0 20px #5b21b6;
-        filter: contrast(3) brightness(1);
-    }
-}
-
-@keyframes quantumFracture {
-    0% {
-        clip-path: polygon(0 10%, 90% 0, 100% 80%, 20% 100%);
-        transform: translate(0, 0) rotate(0deg);
-    }
-    20% {
-        clip-path: polygon(5% 15%, 85% 5%, 95% 85%, 15% 95%);
-        transform: translate(5px, -5px) rotate(3deg);
-    }
-    40% {
-        clip-path: polygon(10% 5%, 95% 10%, 90% 90%, 10% 85%);
-        transform: translate(-5px, 5px) rotate(-3deg);
-    }
-    60% {
-        clip-path: polygon(0 20%, 80% 0, 100% 75%, 25% 95%);
-        transform: translate(3px, 3px) rotate(2deg);
-    }
-    80% {
-        clip-path: polygon(5% 10%, 90% 5%, 95% 80%, 20% 90%);
-        transform: translate(-3px, -3px) rotate(-2deg);
-    }
-    100% {
-        clip-path: polygon(0 10%, 90% 0, 100% 80%, 20% 100%);
-        transform: translate(0, 0) rotate(0deg);
-    }
-}
-
-@keyframes quantumTextGlitch {
-    0% {
-        transform: translate(0, 0) skew(0deg);
-        opacity: 1;
-    }
-    20% {
-        transform: translate(2px, -2px) skew(5deg);
-        opacity: 0.8;
-    }
-    40% {
-        transform: translate(-2px, 2px) skew(-5deg);
-        opacity: 0.6;
-    }
-    60% {
-        transform: translate(1px, 1px) skew(3deg);
-        opacity: 0.9;
-    }
-    80% {
-        transform: translate(-1px, -1px) skew(-3deg);
-        opacity: 0.7;
-    }
-    100% {
-        transform: translate(0, 0) skew(0deg);
-        opacity: 1;
+        box-shadow: 0 0 15px #e5e5ff, 0 0 10px #5b21b6;
     }
 }
