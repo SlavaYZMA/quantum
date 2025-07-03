@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Дышащее квантовое поле */
+/* Квантовая интерференция с кольцами, волнами и точками */
 body::before {
     content: '';
     position: fixed;
@@ -24,21 +24,41 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
-        linear-gradient(135deg, rgba(229, 229, 229, 0.5) 0%, rgba(91, 33, 182, 0.4) 50%, transparent 80%),
-        radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.2) 0%, transparent 40%);
-    box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.3), inset 0 0 50px rgba(91, 33, 182, 0.2);
-    opacity: 0.9;
+        radial-gradient(circle at 20% 30%, rgba(91, 33, 182, 0.4) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255, 0, 0, 0.3) 0%, transparent 30%),
+        linear-gradient(135deg, rgba(91, 33, 182, 0.5) 0%, rgba(255, 0, 0, 0.4) 50%, transparent 80%);
+    box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.2), inset 0 0 50px rgba(91, 33, 182, 0.3);
+    opacity: 0.8;
     pointer-events: none;
     z-index: -1;
-    animation: breathingField 10s infinite ease-in-out;
+    animation: interferenceWave 8s infinite ease-in-out;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3) 0%, transparent 20%),
+        radial-gradient(circle at 30% 80%, rgba(91, 33, 182, 0.2) 0%, transparent 15%);
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: -1;
+    animation: quantumSparkle 5s infinite ease-in-out;
 }
 
 /* Интерактивность фона */
 body:hover::before {
-    transform: translate(3px, 3px);
-    opacity: 1;
-    box-shadow: inset 0 0 120px rgba(255, 255, 255, 0.4), inset 0 0 60px rgba(91, 33, 182, 0.3);
+    opacity: 0.9;
+    transform: translate(2px, 2px);
+    box-shadow: inset 0 0 120px rgba(255, 255, 255, 0.3), inset 0 0 60px rgba(91, 33, 182, 0.4);
+}
+
+body:hover::after {
+    opacity: 0.7;
 }
 
 .step {
@@ -387,21 +407,44 @@ input[type="text"]::placeholder {
     color: rgba(229, 229, 229, 0.7);
 }
 
-@keyframes breathingField {
+@keyframes interferenceWave {
     0% {
-        background-position: 30% 20%, 0% 0%, 70% 60%;
-        box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.3), inset 0 0 50px rgba(91, 33, 182, 0.2);
-        opacity: 0.9;
+        background-position: 20% 30%, 80% 70%, 0% 0%;
+        opacity: 0.8;
+        box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.2), inset 0 0 50px rgba(91, 33, 182, 0.3);
     }
     50% {
-        background-position: 35% 25%, 10% 10%, 65% 55%;
-        box-shadow: inset 0 0 120px rgba(255, 255, 255, 0.4), inset 0 0 60px rgba(91, 33, 182, 0.3);
-        opacity: 1;
+        background-position: 25% 35%, 75% 65%, 10% 10%;
+        opacity: 0.4;
+        box-shadow: inset 0 0 120px rgba(255, 255, 255, 0.3), inset 0 0 60px rgba(255, 0, 0, 0.4);
     }
     100% {
-        background-position: 30% 20%, 0% 0%, 70% 60%;
-        box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.3), inset 0 0 50px rgba(91, 33, 182, 0.2);
-        opacity: 0.9;
+        background-position: 20% 30%, 80% 70%, 0% 0%;
+        opacity: 0.8;
+        box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.2), inset 0 0 50px rgba(91, 33, 182, 0.3);
+    }
+}
+
+@keyframes quantumSparkle {
+    0% {
+        background-position: 50% 50%, 30% 80%;
+        opacity: 0.6;
+    }
+    25% {
+        background-position: 55% 55%, 35% 85%;
+        opacity: 0.8;
+    }
+    50% {
+        background-position: 45% 45%, 25% 75%;
+        opacity: 0.4;
+    }
+    75% {
+        background-position: 50% 50%, 30% 80%;
+        opacity: 0.7;
+    }
+    100% {
+        background-position: 50% 50%, 30% 80%;
+        opacity: 0.6;
     }
 }
 
