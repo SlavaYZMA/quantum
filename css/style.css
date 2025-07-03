@@ -132,7 +132,7 @@ body:hover::after, body::after::before {
 .text-block div {
     margin-bottom: 10px;
     color: #e5e5e5;
-    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
+    text-shadow: 0 0 5px rgba(91, 33, 182, 0.5), 0 0 10px rgba(0, 183, 235, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
     animation: quantumText 3s infinite alternate;
 }
 
@@ -149,7 +149,7 @@ body:hover::after, body::after::before {
     position: relative;
 }
 
-/* Кнопки как облака энергии с чётким текстом */
+/* Кнопки как облака энергии */
 button {
     background: linear-gradient(45deg, rgba(229, 229, 255, 0.4), rgba(0, 183, 235, 0.3), rgba(255, 0, 0, 0.3), rgba(0, 255, 0, 0.2), rgba(255, 215, 0, 0.2));
     border: none;
@@ -161,6 +161,7 @@ button {
     border-radius: 20px;
     box-shadow: 0 0 20px rgba(229, 229, 255, 0.5), 0 0 15px rgba(0, 183, 235, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
     position: relative;
+    filter: blur(2px);
     animation: cloudShift 4s infinite ease-in-out, quantumPulseButton 3s infinite ease-in-out;
     transform-origin: center;
     z-index: 10;
@@ -198,16 +199,14 @@ button::after {
 button:hover {
     transform: scale(1.1) rotate(2deg);
     box-shadow: 0 0 30px rgba(229, 229, 255, 0.7), 0 0 20px rgba(0, 183, 235, 0.6), 0 0 35px rgba(255, 215, 0, 0.5);
+    filter: blur(1.5px) brightness(1.8) hue-rotate(30deg);
     color: #00ff00;
 }
 
 button span {
     display: inline-block;
-    color: #e5e5e5;
-}
-
-button:hover span {
-    color: #00ff00;
+    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4);
+    animation: quantumTextButton 3s infinite alternate;
 }
 
 #portrait-animation-container-step-4,
@@ -297,7 +296,7 @@ button:hover span {
 }
 
 .terminal-log div {
-    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
+    text-shadow: 0 0 5px rgba(91, 33, 182, 0.5), 0 0 10px rgba(0, 183, 235, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
     animation: quantumText 3s infinite alternate;
     margin-bottom: 5px;
     color: #e5e5e5;
@@ -422,7 +421,7 @@ button:hover span {
     background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
     opacity: 0.5;
     z-index: -1;
-    animation: cloudGlow 2.5s infinite ease-in-out;
+    animation: quantumWave 2.5s infinite ease-in-out;
 }
 
 #capture-photo {
@@ -618,14 +617,17 @@ input[type="text"]::placeholder {
 @keyframes quantumPulseButton {
     0% {
         opacity: 0.7;
+        filter: blur(2px) brightness(1) hue-rotate(0deg);
         box-shadow: 0 0 20px rgba(229, 229, 255, 0.5), 0 0 15px rgba(0, 183, 235, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
     }
     50% {
         opacity: 0.9;
+        filter: blur(1.5px) brightness(1.5) hue-rotate(45deg);
         box-shadow: 0 0 30px rgba(229, 229, 255, 0.7), 0 0 20px rgba(0, 183, 235, 0.6), 0 0 35px rgba(255, 215, 0, 0.5);
     }
     100% {
         opacity: 0.7;
+        filter: blur(2px) brightness(1) hue-rotate(0deg);
         box-shadow: 0 0 20px rgba(229, 229, 255, 0.5), 0 0 15px rgba(0, 183, 235, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
     }
 }
@@ -660,5 +662,20 @@ input[type="text"]::placeholder {
     100% {
         background-position: 0% 0%;
         opacity: 0.5;
+    }
+}
+
+@keyframes quantumTextButton {
+    0% {
+        transform: scale(1);
+        text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4);
+    }
+    50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 10px rgba(229, 229, 255, 0.7), 0 0 15px rgba(0, 183, 235, 0.5);
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4);
     }
 }
