@@ -30,32 +30,57 @@ const stepTransitionsBack = {
 };
 
 // Функция для typewriter-анимации на уровне слов
-function typewriter(element, callback) {
+function typewriter(element, stepId, callback) {
     const divs = element.querySelectorAll('div');
-    console.log(`Typewriter: Found ${divs.length} divs in text-block`);
+    console.log(`Typewriter: Found ${divs.length} divs in text-block for step ${stepId}`);
     if (divs.length === 0) {
-        console.warn('Typewriter: No divs found in text-block, skipping animation');
+        console.warn(`Typewriter: No divs found in text-block for step ${stepId}, skipping animation`);
         if (callback) callback();
         return;
     }
 
+    // Маппинг ID текстов для каждого шага на основе globals.js
+    const textIdsByStep = {
+        '1': ['step1_text1', 'step1_text2', 'step1_text3'],
+        '2': ['step2_text1', 'step2_text2', 'step2_text3', 'step2_text4'],
+        '3': ['step3_text1', 'step3_text2', 'step3_text3', 'step3_text4', 'step3_text5', 'step3_text6', 'step3_text7', 'step3_text8'],
+        '4': ['step4_text1', 'step4_text2', 'step4_text3'],
+        '5': ['step5_text1', 'step5_text2', 'step5_text3'],
+        '6': ['step6_text1', 'step6_text2', 'step6_text3'],
+        '7': ['step7_text1', 'step7_text2', 'step7_text3']
+    };
+
+    const textIds = textIdsByStep[stepId] || [];
+    console.log(`Typewriter: Expected text IDs for step ${stepId}: ${textIds.join(', ')}`);
+
     let currentDivIndex = 0;
     function typeNextDiv() {
         if (currentDivIndex >= divs.length) {
-            console.log('Typewriter: Animation completed for all divs');
+            console.log(`Typewriter: Animation completed for all divs in step ${stepId}`);
             if (callback) callback();
             return;
         }
 
         const div = divs[currentDivIndex];
-        const text = div.textContent.trim();
-        console.log(`Typewriter: Processing div ${currentDivIndex}, text: "${text}"`);
+        // Пытаемся получить текст из соответствующего ID или fallback
+        const textId = textIds[currentDivIndex];
+        let text = '';
+        if (textId) {
+            const textElement = document.getElementById(textId);
+            text = textElement ? textElement.textContent.trim() : div.textContent.trim();
+            console.log(`Typewriter: Using text from ID ${textId}: "${text}"`);
+        } else {
+            text = div.textContent.trim();
+            console.log(`Typewriter: No text ID for div ${currentDivIndex}, using div text: "${text}"`);
+        }
+
         div.innerHTML = ''; // Очищаем содержимое
-        div.style.display = 'block'; // Убедимся, что div виден
+        div.style.display = 'block';
+        div.style.opacity = '1'; // Гарантируем видимость
         const words = text.split(/\s+/).filter(word => word.length > 0);
         console.log(`Typewriter: Found ${words.length} words in div ${currentDivIndex}: ${words.join(', ')}`);
         if (words.length === 0) {
-            console.warn(`Typewriter: No words found in div ${currentDivIndex}, skipping to next div`);
+            console.warn(`Typewriter: No words found in div ${currentDivIndex} for step ${stepId}, skipping to next div`);
             currentDivIndex++;
             typeNextDiv();
             return;
@@ -68,7 +93,7 @@ function typewriter(element, callback) {
         let wordIndex = 0;
         function typeNextWord() {
             if (wordIndex >= words.length) {
-                console.log(`Typewriter: Completed words for div ${currentDivIndex}`);
+                console.log(`Typewriter: Completed words for div ${currentDivIndex} in step ${stepId}`);
                 currentDivIndex++;
                 typeNextDiv();
                 return;
@@ -78,16 +103,14 @@ function typewriter(element, callback) {
             const wordSpan = document.createElement('span');
             wordSpan.className = 'typewriter-word';
             wordSpan.textContent = word + (wordIndex < words.length - 1 ? ' ' : '');
-            wordSpan.style.opacity = '0'; // Начальная прозрачность
+            wordSpan.style.opacity = '0';
             wordContainer.appendChild(wordSpan);
-            console.log(`Typewriter: Adding word "${word}" to div ${currentDivIndex}`);
+            console.log(`Typewriter: Adding word "${word}" to div ${currentDivIndex} in step ${stepId}`);
 
-            // Анимация появления слова
             setTimeout(() => {
                 wordSpan.style.opacity = '1';
                 wordIndex++;
-                // Случайная задержка: 50–150 мс на слово
-                const delay = 50 + Math.random() * 100;
+                const delay = 50 + Math.random() * 100; // Случайная задержка 50–150 мс
                 setTimeout(typeNextWord, delay);
             }, 0);
         }
@@ -156,19 +179,21 @@ function showStep(stepIndex) {
         step.style.display = isActive ? 'flex' : 'none';
         if (isActive) {
             console.log('Displaying step ' + stepId + ' with display: ' + step.style.display);
-            // Запускаем typewriter-анимацию для text-block
+            // Запускаем typewriter-анимацию для text-block с задержкой
             const textBlock = step.querySelector('.text-block');
             if (textBlock) {
-                // Подготавливаем text-block
                 textBlock.querySelectorAll('div').forEach(div => {
-                    div.textContent = div.textContent.trim(); // Удаляем лишние пробелы
-                    div.innerHTML = ''; // Очищаем содержимое для новой анимации
-                    div.style.opacity = '1'; // Гарантируем видимость div
+                    div.innerHTML = ''; // Очищаем содержимое
+                    div.style.opacity = '1'; // Гарантируем видимость
                 });
-                console.log(`showStep: Starting typewriter for step ${stepId}, text-block found`);
-                typewriter(textBlock, () => {
-                    console.log('Typewriter animation finished for step ' + stepId);
-                });
+                console.log(`showStep: Waiting for text to load for step ${stepId}`);
+                // Задержка 500 мс для загрузки текста
+                setTimeout(() => {
+                    console.log(`showStep: Starting typewriter for step ${stepId}, text-block found`);
+                    typewriter(textBlock, stepId, () => {
+                        console.log('Typewriter animation finished for step ' + stepId);
+                    });
+                }, 500);
             } else {
                 console.warn('showStep: No text-block found for step ' + stepId);
             }
@@ -185,7 +210,7 @@ window.moveToNextStep = function(stepIndex) {
 window.setLanguageAndNext = function(language) {
     console.log('setLanguageAndNext called with language: ' + language);
     window.setLanguage(language);
-    setTimeout(() => window.moveToNextStep(1), 100); // Delay to ensure text is loaded
+    setTimeout(() => window.moveToNextStep(1), 500); // Увеличено до 500 мс
 };
 
 document.addEventListener('DOMContentLoaded', function() {
