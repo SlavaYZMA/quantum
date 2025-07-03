@@ -39,6 +39,56 @@ const archiveImages = [
 // Переменная для хранения видеопотока
 let cameraStream = null;
 
+// Canvas для фона с тенью
+let echoCanvas, echoCtx, mouseX = 0, mouseY = 0;
+function initEchoCanvas() {
+    echoCanvas = document.getElementById('echo-canvas');
+    if (!echoCanvas) {
+        console.error('Echo canvas not found');
+        return;
+    }
+    echoCanvas.width = window.innerWidth;
+    echoCanvas.height = window.innerHeight;
+    echoCtx = echoCanvas.getContext('2d');
+    animateEcho();
+}
+
+// Анимация тени
+function animateEcho() {
+    if (!echoCtx) return;
+    echoCtx.clearRect(0, 0, echoCanvas.width, echoCanvas.height);
+    
+    // Рисуем шум для эффекта "эхо"
+    for (let x = 0; x < echoCanvas.width; x += 10) {
+        for (let y = 0; y < echoCanvas.height; y += 10) {
+            const dist = Math.hypot(x - mouseX, y - mouseY);
+            const influence = Math.max(0, 1 - dist / window.mouseInfluenceRadius);
+            const noise = Math.random() * window.noiseScale * influence;
+            echoCtx.fillStyle = `rgba(124, 58, 237, ${0.3 + noise})`;
+            echoCtx.beginPath();
+            echoCtx.arc(x, y, 5, 0, Math.PI * 2);
+            echoCtx.fill();
+        }
+    }
+    
+    // Рисуем силуэт человека
+    echoCtx.fillStyle = 'rgba(228, 228, 231, 0.4)';
+    echoCtx.beginPath();
+    echoCtx.moveTo(mouseX - 50, mouseY);
+    echoCtx.quadraticCurveTo(mouseX, mouseY - 100, mouseX + 50, mouseY);
+    echoCtx.quadraticCurveTo(mouseX + 25, mouseY + 50, mouseX, mouseY + 100);
+    echoCtx.quadraticCurveTo(mouseX - 25, mouseY + 50, mouseX - 50, mouseY);
+    echoCtx.fill();
+    
+    requestAnimationFrame(animateEcho);
+}
+
+// Отслеживание мыши
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
 // Функция для typewriter-анимации
 function typewriter(element, callback) {
     const divs = element.querySelectorAll('div');
@@ -58,8 +108,8 @@ function typewriter(element, callback) {
 
         const div = divs[currentDivIndex];
         const text = div.textContent.trim();
-        div.textContent = ''; // Очищаем текст
-        div.style.visibility = 'visible'; // Делаем div видимым
+        div.textContent = '';
+        div.style.visibility = 'visible';
         const span = document.createElement('span');
         span.className = 'typewriter-text';
         div.appendChild(span);
@@ -69,7 +119,6 @@ function typewriter(element, callback) {
             if (charIndex < text.length) {
                 span.textContent += text[charIndex];
                 charIndex++;
-                // Случайная скорость: 5–95 мс на символ
                 const delay = 5 + Math.random() * 90;
                 setTimeout(typeChar, delay);
             } else {
@@ -91,9 +140,7 @@ function showImageArchiveModal() {
         return;
     }
 
-    // Очищаем сетку
     imageGrid.innerHTML = '';
-    // Добавляем изображения
     archiveImages.forEach((src, index) => {
         const img = document.createElement('img');
         img.src = src;
@@ -148,7 +195,6 @@ function startCamera() {
         return;
     }
 
-    // Запрашиваем доступ к камере
     navigator.mediaDevices.getUserMedia({ video: true })
         .then((stream) => {
             console.log('Camera access granted');
@@ -181,41 +227,33 @@ function capturePhoto() {
         return;
     }
 
-    // Устанавливаем размеры canvas на 400x400
     canvas.width = 400;
     canvas.height = 400;
     const ctx = canvas.getContext('2d');
 
-    // Вычисляем размеры и позицию для масштабирования видео в квадрат 400x400
     const videoWidth = video.videoWidth;
     const videoHeight = video.videoHeight;
     let sx, sy, sWidth, sHeight;
 
-    // Сохраняем пропорции, вписывая видео в квадрат
     const videoAspect = videoWidth / videoHeight;
-    const canvasAspect = 1; // 400/400
+    const canvasAspect = 1;
     if (videoAspect > canvasAspect) {
-        // Видео шире, чем квадрат: обрезаем по бокам
         sWidth = videoHeight * canvasAspect;
         sHeight = videoHeight;
         sx = (videoWidth - sWidth) / 2;
         sy = 0;
     } else {
-        // Видео выше, чем квадрат: обрезаем сверху и снизу
         sWidth = videoWidth;
         sHeight = videoWidth / canvasAspect;
         sx = 0;
         sy = (videoHeight - sHeight) / 2;
     }
 
-    // Рисуем масштабированное изображение на canvas
     ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
     console.log('Photo captured, dimensions: ' + canvas.width + ', ' + canvas.height);
 
-    // Конвертируем canvas в изображение
     const imageUrl = canvas.toDataURL('image/png');
 
-    // Загружаем изображение в p5.js
     window.quantumSketch.loadImage(imageUrl, function(img) {
         console.log('Captured image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
         window.img = img;
@@ -277,7 +315,6 @@ function initializeSteps() {
         });
     });
 
-    // Инициализация кнопки "Выбрать из архива"
     const archiveButton = document.getElementById('useArchive');
     if (archiveButton) {
         archiveButton.addEventListener('click', showImageArchiveModal);
@@ -285,7 +322,6 @@ function initializeSteps() {
         console.warn('Archive button not found');
     }
 
-    // Инициализация кнопки "Включить камеру"
     const cameraButton = document.getElementById('useCamera');
     if (cameraButton) {
         cameraButton.addEventListener('click', startCamera);
@@ -293,7 +329,6 @@ function initializeSteps() {
         console.warn('Camera button not found');
     }
 
-    // Инициализация кнопки закрытия модального окна архива
     const closeModal = document.getElementById('close-modal');
     if (closeModal) {
         closeModal.addEventListener('click', () => {
@@ -304,7 +339,6 @@ function initializeSteps() {
         });
     }
 
-    // Инициализация кнопки закрытия модального окна камеры
     const closeCameraModal = document.getElementById('close-camera-modal');
     if (closeCameraModal) {
         closeCameraModal.addEventListener('click', () => {
@@ -316,7 +350,6 @@ function initializeSteps() {
         });
     }
 
-    // Инициализация кнопки захвата фото
     const captureButton = document.getElementById('capture-photo');
     if (captureButton) {
         captureButton.addEventListener('click', capturePhoto);
@@ -332,6 +365,8 @@ function initializeSteps() {
     } else {
         console.warn('Canvas not found during initialization, waiting for p5.js setup');
     }
+
+    initEchoCanvas();
 }
 
 function showStep(stepIndex) {
@@ -343,13 +378,11 @@ function showStep(stepIndex) {
         step.style.display = isActive ? 'flex' : 'none';
         if (isActive) {
             console.log('Displaying step ' + stepId + ' with display: ' + step.style.display);
-            // Запускаем typewriter-анимацию для text-block
             const textBlock = step.querySelector('.text-block');
             if (textBlock) {
-                // Скрываем все div в text-block до начала анимации
                 textBlock.querySelectorAll('div').forEach(div => {
                     div.style.visibility = 'hidden';
-                    div.textContent = div.textContent.trim(); // Удаляем лишние пробелы
+                    div.textContent = div.textContent.trim();
                 });
                 typewriter(textBlock, () => {
                     console.log('Typewriter animation finished for step ' + stepId);
@@ -370,7 +403,7 @@ window.moveToNextStep = function(stepIndex) {
 window.setLanguageAndNext = function(language) {
     console.log('setLanguageAndNext called with language: ' + language);
     window.setLanguage(language);
-    setTimeout(() => window.moveToNextStep(1), 100); // Delay to ensure text is loaded
+    setTimeout(() => window.moveToNextStep(1), 100);
 };
 
 document.addEventListener('DOMContentLoaded', function() {
