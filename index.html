@@ -7,7 +7,6 @@
     <link rel="icon" href="data:;base64,=">
     <link rel="stylesheet" href="./css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/face-api.min.js"></script>
     <script src="./js/globals.js"></script>
     <script src="./js/particles.js"></script>
     <script src="./js/observer.js"></script>
@@ -234,22 +233,19 @@
                 var file = e.target.files[0];
                 window.quantumSketch.loadImage(URL.createObjectURL(file), function(img) {
                     console.log('Image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
-                    window.detectFaceLandmarks(img, function(landmarks) {
-                        window.img = img;
-                        window.initializeParticles(img, landmarks);
-                        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-                        console.log('Found thumbnails: ' + thumbnails.length);
-                        thumbnails.forEach(function(thumbnail) {
-                            thumbnail.src = URL.createObjectURL(file);
-                            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-                            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
-                        });
-                        window.moveToNextStep(2.1);
-                        input.remove();
+                    window.img = img;
+                    window.initializeParticles(img);
+                    var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+                    console.log('Found thumbnails: ' + thumbnails.length);
+                    thumbnails.forEach(function(thumbnail) {
+                        thumbnail.src = URL.createObjectURL(file);
+                        thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+                        console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
                     });
+                    window.moveToNextStep(2.1);
+                    input.remove();
                 }, function() {
                     console.error('Error loading image');
-                    alert('Ошибка загрузки изображения. Пожалуйста, попробуйте снова.');
                     input.remove();
                 });
             };
