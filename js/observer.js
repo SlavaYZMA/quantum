@@ -1,29 +1,36 @@
-window.recordObservation = () => {
+console.log('observer.js loaded');
+
+window.recordObservation = function() {
     if (window.quantumSketch && !window.isPaused) {
         window.isPaused = true;
         window.quantumSketch.noLoop();
         let canvas = window.quantumSketch.canvas;
-        let dataURL = canvas.toDataURL();
-        const savedPortrait = document.getElementById('saved-portrait');
-        if (savedPortrait) {
-            savedPortrait.src = dataURL;
-            savedPortrait.style.display = 'block';
-            window.fixationCount = 1;
-        } else {
-            console.error('Saved portrait element not found');
-        }
+        let dataURL = canvas.toDataURL('image/png');
+        const portraitName = document.getElementById('portraitName').value || 'quantum_portrait';
+        window.terminalMessages.push(`[OBSERVATION] Portrait recorded as ${portraitName}`);
+        window.updateTerminalLog();
+        // Сохраняем изображение
+        window.quantumSketch.saveCanvas(portraitName, 'png');
+        console.log('Observation recorded with name: ' + portraitName);
     } else {
         console.error('quantumSketch not available or animation is paused');
+        window.terminalMessages.push('[ERROR] Failed to record observation: system not ready');
+        window.updateTerminalLog();
     }
 };
 
-window.shareToArchive = () => {
+window.shareToArchive = function() {
     const portraitName = document.getElementById('portraitName');
-    const savedPortrait = document.getElementById('saved-portrait');
-    if (portraitName && portraitName.value && savedPortrait && savedPortrait.src) {
-        alert('Изображение сохранено в архиве под названием: ' + portraitName.value);
-        showStep(7);
+    if (portraitName && portraitName.value) {
+        window.terminalMessages.push(`[SHARE] Observation ${portraitName.value} shared to archive`);
+        window.updateTerminalLog();
+        window.open('https://t.me/quantum_portrait_channel', '_blank');
+        console.log('Share to archive: opened Telegram channel');
+        window.moveToNextStep(7);
     } else {
-        alert('Введите название портрета или убедитесь, что изображение сохранено!');
+        console.error('Portrait name not provided');
+        window.terminalMessages.push('[ERROR] Please enter a portrait name to share');
+        window.updateTerminalLog();
+        alert('Введите название портрета!');
     }
 };
