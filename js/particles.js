@@ -5,7 +5,7 @@ window.quantumStates = [];
 window.decompositionTimer = 0;
 window.mouseWave = { x: 0, y: 0, radius: 0, trail: [] };
 window.terminalMessages = [];
-window.globalMessageCooldown = 0; // Глобальный кулдаун для всех сообщений
+window.globalMessageCooldown = 0;
 
 // Варианты сообщений в научном стиле
 const messages = {
@@ -30,9 +30,9 @@ const messages = {
         "Эволюция квантовой системы портрета. Частицы изменяют состояния."
     ],
     decomposition: [
-        "Квантовая декомпозиция портрета: прозрачность изображения ${imgAlpha}/255.",
-        "Изображение подвергается квантовой декогеренции: прозрачность ${imgAlpha}/255.",
-        "Декомпозиция портрета в квантовое поле: прозрачность достигла ${imgAlpha}/255."
+        "${scatteredParticles} частиц портрета распалось в квантовое поле.",
+        "Квантовая декогеренция: ${scatteredParticles} частиц потеряли когерентность.",
+        "Декомпозиция портрета: ${scatteredParticles} фрагментов в квантовом состоянии."
     ],
     stabilized: [
         "Квантовая система портрета стабилизирована. Волновые функции фиксированы.",
@@ -91,17 +91,17 @@ const messages = {
     ]
 };
 
-// Функция для выбора случайного сообщения из массива
+// Функция для выбора случайного сообщения
 function getRandomMessage(type, params = {}) {
     let msgArray = messages[type];
     let msg = msgArray[Math.floor(Math.random() * msgArray.length)];
     for (let key in params) {
         msg = msg.replace(`\${${key}}`, params[key]);
     }
-    return `[${new Date().toLocaleTimeString()}] ${msg}`; // Добавлены временные метки
+    return `[${new Date().toLocaleTimeString()}] ${msg}`;
 }
 
-// Обновление терминального лога с сообщениями для зрителя
+// Обновление терминального лога
 window.updateTerminalLog = function() {
     const maxMessages = 10;
     while (window.terminalMessages.length > maxMessages) {
@@ -142,38 +142,21 @@ window.initializeParticles = function(img) {
             window.updateTerminalLog();
             return;
         }
-        var numParticles = 250;
+        var gridSize = 50; // Сетка 50x50 = 2500 частиц
+        var cellWidth = img.width / gridSize;
+        var cellHeight = img.height / gridSize;
         var validParticles = 0;
 
-        // Ключевые точки лица (глаза, нос, рот)
-        var faceFeatures = [
-            { x: img.width * 0.35, y: img.height * 0.3, weight: 0.4 }, // Левый глаз
-            { x: img.width * 0.65, y: img.height * 0.3, weight: 0.4 }, // Правый глаз
-            { x: img.width * 0.5, y: img.height * 0.5, weight: 0.3 }, // Нос
-            { x: img.width * 0.5, y: img.height * 0.7, weight: 0.3 }  // Рот
-        ];
-
-        for (var i = 0; i < numParticles; i++) {
-            var x, y, brightness;
-            var useFeature = Math.random() < 0.6;
-            if (useFeature) {
-                var feature = faceFeatures[Math.floor(Math.random() * faceFeatures.length)];
-                x = feature.x + (Math.random() - 0.5) * img.width * 0.15;
-                y = feature.y + (Math.random() - 0.5) * img.height * 0.15;
-            } else {
-                do {
-                    x = Math.random() * img.width;
-                    y = Math.random() * img.height;
-                    var index = (Math.floor(x) + Math.floor(y) * img.width) * 4;
-                    brightness = (img.pixels[index] + img.pixels[index + 1] + img.pixels[index + 2]) / 3;
-                } while (brightness < 50 && Math.random() > 0.2);
-            }
-            if (x >= 0 && x < img.width && y >= 0 && y < img.height) {
+        for (var i = 0; i < gridSize; i++) {
+            for (var j = 0; j < gridSize; j++) {
+                var x = (i + 0.5) * cellWidth;
+                var y = (j + 0.5) * cellHeight;
                 var index = (Math.floor(x) + Math.floor(y) * img.width) * 4;
                 var r = img.pixels[index] || 255;
                 var g = img.pixels[index + 1] || 255;
                 var b = img.pixels[index + 2] || 255;
                 var a = img.pixels[index + 3] || 255;
+                var brightness = (r + g + b) / 3;
 
                 window.particles.push({
                     x: x * 400 / img.width,
@@ -182,23 +165,22 @@ window.initializeParticles = function(img) {
                     baseY: y * 400 / img.height,
                     offsetX: 0,
                     offsetY: 0,
-                    size: 3 + brightness / 255 * 3,
+                    size: 8, // Размер частицы ~8 пикселей
                     phase: Math.random() * 2 * Math.PI,
-                    frequency: 0.01,
-                    entangledPartner: Math.random() < 0.2 ? Math.floor(Math.random() * numParticles) : null,
+                    frequency: 0.02,
+                    entangledPartner: Math.random() < 0.3 ? Math.floor(Math.random() * gridSize * gridSize) : null,
                     collapsed: false,
-                    decompositionProgress: 0,
-                    shape: ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)],
-                    featureWeight: useFeature ? faceFeatures.find(f => Math.abs(f.x - x) < img.width * 0.1 && Math.abs(f.y - y) < img.height * 0.1)?.weight || 0.1 : 0.1
+                    hideTime: Math.random() * 3, // Случайное время распада (0–3 сек)
+                    shape: ['square', 'circle'][Math.floor(Math.random() * 2)], // Простые формы для шага 4
+                    featureWeight: brightness / 255 // Используем яркость вместо ключевых точек
                 });
 
                 window.quantumStates.push({
                     r: r,
                     g: g,
                     b: b,
-                    a: 0,
+                    a: 255,
                     probability: 1.0,
-                    decoherenceTimer: 0,
                     tunnelFlash: 0,
                     interferencePhase: Math.random() * 2 * Math.PI,
                     entanglementFlash: 0
@@ -229,15 +211,26 @@ function drawShape(sketch, x, y, size, shape, rotation, r, g, b, a, featureWeigh
     sketch.push();
     sketch.translate(x, y);
     sketch.rotate(rotation);
-    sketch.fill(r, g, b, a);
-    if (shape === 'ribbon') {
+    // Создаём градиент для "объёмности"
+    let gradient = sketch.drawingContext.createRadialGradient(0, 0, 0, 0, 0, size);
+    gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${a / 255})`);
+    gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+    sketch.drawingContext.fillStyle = gradient;
+    // Добавляем тень для глубины
+    sketch.drawingContext.shadowBlur = 10 * (1 + featureWeight);
+    sketch.drawingContext.shadowColor = 'rgba(255, 255, 255, 0.5)';
+    if (shape === 'square') {
+        sketch.square(-size / 2, -size / 2, size);
+    } else if (shape === 'circle') {
+        sketch.ellipse(0, 0, size, size);
+    } else if (shape === 'ribbon') {
         sketch.beginShape();
-        sketch.vertex(-size * 1.2 * (1 + featureWeight), size * 0.3);
-        sketch.quadraticVertex(0, size * 0.4, size * 1.2 * (1 + featureWeight), size * 0.3);
-        sketch.quadraticVertex(0, -size * 0.4, -size * 1.2 * (1 + featureWeight), -size * 0.3);
+        sketch.vertex(-size * 1.2, size * 0.3);
+        sketch.quadraticVertex(0, size * 0.4, size * 1.2, size * 0.3);
+        sketch.quadraticVertex(0, -size * 0.4, -size * 1.2, -size * 0.3);
         sketch.endShape(sketch.CLOSE);
     } else if (shape === 'ellipse') {
-        sketch.ellipse(0, 0, size * 1.5 * (1 + featureWeight), size * 0.5);
+        sketch.ellipse(0, 0, size * 1.5, size * 0.5);
     } else if (shape === 'cluster') {
         for (let i = 0; i < 5; i++) {
             let dx = (Math.random() - 0.5) * size * 0.5;
@@ -245,6 +238,7 @@ function drawShape(sketch, x, y, size, shape, rotation, r, g, b, a, featureWeigh
             sketch.ellipse(dx, dy, size * 0.3, size * 0.3);
         }
     }
+    sketch.drawingContext.shadowBlur = 0; // Сбрасываем тень
     sketch.pop();
 }
 
@@ -262,7 +256,6 @@ function drawMouseWave(sketch) {
     sketch.strokeWeight(2);
     sketch.ellipse(window.mouseWave.x, window.mouseWave.y, window.mouseWave.radius * 2);
     
-    // Шлейф
     window.mouseWave.trail.forEach((point, i) => {
         let alpha = 100 * (1 - i / window.mouseWave.trail.length);
         sketch.stroke(200, 200, 200, alpha);
@@ -277,7 +270,7 @@ window.updateParticles = function(sketch) {
         if (window.globalMessageCooldown <= 0) {
             window.terminalMessages.push(getRandomMessage('error', { index: 0 }));
             window.updateTerminalLog();
-            window.globalMessageCooldown = 300; // ~5 секунд
+            window.globalMessageCooldown = 180;
         }
         return;
     }
@@ -286,11 +279,11 @@ window.updateParticles = function(sketch) {
         return;
     }
     console.log('updateParticles called, particles: ' + window.particles.length + ', currentStep: ' + window.currentStep);
-    let messageAddedThisFrame = false; // Флаг для ограничения одного сообщения за кадр
+    let messageAddedThisFrame = false;
     if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
         window.terminalMessages.push(getRandomMessage('update'));
         window.updateTerminalLog();
-        window.globalMessageCooldown = 300; // ~5 секунд
+        window.globalMessageCooldown = 180;
         messageAddedThisFrame = true;
     }
     window.globalMessageCooldown--;
@@ -304,32 +297,12 @@ window.updateParticles = function(sketch) {
     sketch.drawingContext.fillStyle = gradient;
     sketch.rect(0, 0, 400, 400);
 
-    // Квантовая декомпозиция только на шаге 4
-    if (window.currentStep === 4 && window.decompositionTimer < 4) {
-        window.decompositionTimer += 0.015;
-        if (window.img) {
-            var imgAlpha = Math.max(0, 255 * (1 - window.decompositionTimer / 4));
-            sketch.tint(255, imgAlpha);
-            sketch.image(window.img, 0, 0, 400, 400);
-            console.log('Decomposition: Image alpha ' + imgAlpha.toFixed(0));
-            if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                window.terminalMessages.push(getRandomMessage('decomposition', { imgAlpha: imgAlpha.toFixed(0) }));
-                window.updateTerminalLog();
-                window.globalMessageCooldown = 300; // ~5 секунд
-                messageAddedThisFrame = true;
-            }
-        }
-    } else if (window.currentStep === 5) {
-        // На шаге 5 частицы активны, но без декомпозиции
-        if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-            window.terminalMessages.push(getRandomMessage('stabilized'));
-            window.updateTerminalLog();
-            if (typeof window.playStabilization === 'function') {
-                window.playStabilization();
-            }
-            window.globalMessageCooldown = 300; // ~5 секунд
-            messageAddedThisFrame = true;
-        }
+    // Счётчик распавшихся частиц
+    let scatteredParticles = 0;
+
+    // Квантовая декомпозиция на шаге 4
+    if (window.currentStep === 4) {
+        window.decompositionTimer += 0.015; // ~3 секунды для полного распада
     }
 
     // Обновление волнового пакета мыши
@@ -339,91 +312,91 @@ window.updateParticles = function(sketch) {
         if (window.mouseWave.trail.length > 10) window.mouseWave.trail.shift();
     }
 
-    // Список событий для приоритизации (интерференция и туннелирование имеют больший вес)
     let potentialMessages = [];
 
     window.particles.forEach(function(p, i) {
         try {
             var state = window.quantumStates[i];
 
-            // Квантовая декомпозиция с "взрывным" эффектом только на шаге 4
-            if (window.currentStep === 4 && window.decompositionTimer < 4) {
-                p.decompositionProgress = Math.min(1, p.decompositionProgress + 0.015);
-                state.a = Math.floor(p.decompositionProgress * 255);
-                var dx = p.x - 200;
-                var dy = p.y - 200;
-                var dist = Math.sqrt(dx * dx + dy * dy);
-                var wave = Math.sin(dist * 0.04 + window.decompositionTimer * 2);
-                p.offsetX += wave * 6 * p.featureWeight * (dx / (dist + 1));
-                p.offsetY += wave * 6 * p.featureWeight * (dy / (dist + 1));
-                if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                    potentialMessages.push({ type: 'scatter', params: {} });
-                }
-            } else {
-                state.a = 255; // Keep particles "alive" on steps 4 and 5
-            }
-
-            // Суперпозиция и неопределённость
+            // Суперпозиция: лёгкое дрожание
             var n = sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale, window.frame * 0.015);
             if (!p.collapsed) {
-                p.phase += p.frequency * p.featureWeight;
-                p.offsetX = Math.cos(p.phase) * 6 * n * window.chaosFactor;
-                p.offsetY = Math.sin(p.phase) * 6 * n * window.chaosFactor;
-                p.size = (3 + 2 * n * state.probability) * (1 + p.featureWeight * 0.5);
-                if (Math.random() < 0.015 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                    p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
+                p.phase += p.frequency;
+                p.offsetX = Math.cos(p.phase) * 4 * n * window.chaosFactor;
+                p.offsetY = Math.sin(p.phase) * 4 * n * window.chaosFactor;
+                p.size = 8 * (1 + 0.3 * Math.sin(window.frame * 0.1)) * (1 + p.featureWeight * 0.5);
+                if (Math.random() < 0.01 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                    p.shape = ['square', 'circle', 'ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 5)];
                     potentialMessages.push({ type: 'superposition', params: { shape: p.shape } });
                     if (typeof window.playNote === 'function' && window.noteFrequencies) {
                         const notes = ['C4', 'D#4', 'F4', 'G4', 'A#4'];
                         const note = notes[Math.floor(Math.random() * notes.length)];
-                        const freq = window.noteFrequencies[note] || 261.63; // Fallback to C4
+                        const freq = window.noteFrequencies[note] || 261.63;
                         window.playNote(freq, 'sine', 0.5, 0.2);
                     }
                 }
             } else {
-                p.offsetX *= 0.9; // Замедление движения при коллапсе
+                p.offsetX *= 0.9;
                 p.offsetY *= 0.9;
+                p.size = 10; // Фиксированный размер при коллапсе
             }
 
-            // Влияние мыши как волнового пакета
+            // Квантовая декомпозиция на шаге 4
+            if (window.currentStep === 4 && window.decompositionTimer < 3) {
+                if (window.decompositionTimer >= p.hideTime) {
+                    // "Взрывной" разлёт
+                    var dx = p.x - 200;
+                    var dy = p.y - 200;
+                    var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                    var angle = Math.random() * 2 * Math.PI;
+                    var wave = Math.sin(dist * 0.06 + window.decompositionTimer * 3) * 15;
+                    p.offsetX += Math.cos(angle) * wave * p.featureWeight;
+                    p.offsetY += Math.sin(angle) * wave * p.featureWeight;
+                    state.a = Math.max(0, 255 * (1 - (window.decompositionTimer - p.hideTime) / (3 - p.hideTime)));
+                    p.size = Math.max(0, 8 * (1 - (window.decompositionTimer - p.hideTime) / (3 - p.hideTime)));
+                    scatteredParticles++;
+                    if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                        potentialMessages.push({ type: 'scatter', params: {} });
+                    }
+                }
+            } else if (window.currentStep === 5) {
+                // На шаге 5 частицы свободны
+                var angle = Math.random() * 2 * Math.PI;
+                var wave = Math.sin(window.frame * 0.05 + p.phase) * 10;
+                p.offsetX += Math.cos(angle) * wave * window.chaosFactor;
+                p.offsetY += Math.sin(angle) * wave * window.chaosFactor;
+                state.a = 255;
+                p.size = 8 * (1 + 0.3 * Math.sin(window.frame * 0.1));
+                scatteredParticles++;
+            }
+
+            // Влияние мыши
             if (window.currentStep === 4 || window.currentStep === 5) {
                 var dx = p.x - window.mouseWave.x;
                 var dy = p.y - window.mouseWave.y;
                 var distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < window.mouseInfluenceRadius && distance > 0 && !p.collapsed && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                if (distance < window.mouseInfluenceRadius && distance > 0 && !p.collapsed) {
                     var influence = (window.mouseInfluenceRadius - distance) / window.mouseInfluenceRadius;
-                    p.offsetX += dx * influence * 0.1;
-                    p.offsetY += dy * influence * 0.1;
-                    potentialMessages.push({ type: 'mouseInfluence', params: {} });
+                    p.offsetX += dx * influence * 0.2;
+                    p.offsetY += dy * influence * 0.2;
+                    p.size = 10 * (1 + influence); // Увеличение при наблюдении
+                    state.a = 255;
+                    if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                        potentialMessages.push({ type: 'mouseInfluence', params: {} });
+                    }
                 }
             }
 
-            // Притяжение к ключевым точкам лица
-            if (p.featureWeight > 0.1 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                p.offsetX += (p.baseX - p.x) * 0.06 * p.featureWeight;
-                p.offsetY += (p.baseY - p.y) * 0.06 * p.featureWeight;
-                potentialMessages.push({ type: 'featureAttraction', params: {} });
-            }
-
-            // Цвета, приближенные к портрету
-            if (!p.collapsed) {
-                state.r = Math.min(255, Math.max(0, state.r + (n - 0.5) * 5));
-                state.g = Math.min(255, Math.max(0, state.g + (n - 0.5) * 5));
-                state.b = Math.min(255, Math.max(0, state.b + (n - 0.5) * 5));
-            }
-
             // Интерференция
-            var interference = 0;
             window.particles.forEach(function(other, j) {
                 if (i !== j) {
                     var dx = p.x - other.x;
                     var dy = p.y - other.y;
                     var distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 60 && p.featureWeight > 0.1 && other.featureWeight > 0.1) {
-                        var wave = Math.sin(distance * 0.07 + state.interferencePhase + window.frame * 0.025);
-                        interference += wave * 0.08;
-                        if (Math.random() < 0.001 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                            sketch.stroke(state.r, state.g, state.b, 25);
+                    if (distance < 80 && p.featureWeight > 0.2 && other.featureWeight > 0.2) {
+                        var wave = Math.sin(distance * 0.07 + state.interferencePhase + window.frame * 0.04);
+                        if (Math.random() < 0.005 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                            sketch.stroke(state.r, state.g, state.b, 50 * Math.abs(wave));
                             sketch.line(p.x, p.y, other.x, other.y);
                             potentialMessages.push({ type: 'interference', params: {} });
                             if (typeof window.playInterference === 'function') {
@@ -433,8 +406,6 @@ window.updateParticles = function(sketch) {
                     }
                 }
             });
-            p.offsetX += interference * 5;
-            p.offsetY += interference * 5;
 
             // Отталкивание от краёв
             var margin = 20;
@@ -444,11 +415,11 @@ window.updateParticles = function(sketch) {
             if (p.y > 400 - margin) p.offsetY -= (p.y - (400 - margin)) * 0.1;
 
             // Квантовое туннелирование
-            if (Math.random() < 0.002 && !p.collapsed) {
+            if (Math.random() < 0.005 && !p.collapsed) {
                 var oldX = p.x, oldY = p.y;
                 p.x = Math.random() * 400;
                 p.y = Math.random() * 400;
-                state.tunnelFlash = 25;
+                state.tunnelFlash = 40;
                 sketch.stroke(state.r, state.g, state.b, 80);
                 sketch.line(oldX, oldY, p.x, p.y);
                 sketch.noFill();
@@ -462,32 +433,28 @@ window.updateParticles = function(sketch) {
                         window.playTunneling(freq, 0.2, 0.3);
                     }
                 }
-            } else {
-                sketch.noStroke();
             }
 
-            // Запутанность и нелокальность
-            if (p.entangledPartner !== null && window.particles[p.entangledPartner] && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+            // Запутанность
+            if (p.entangledPartner !== null && window.particles[p.entangledPartner] && !p.collapsed) {
                 var partner = window.particles[p.entangledPartner];
                 var partnerState = window.quantumStates[p.entangledPartner];
                 state.r = partnerState.r = (state.r + partnerState.r) / 2;
                 state.g = partnerState.g = (state.g + partnerState.g) / 2;
                 state.b = partnerState.b = (state.b + partnerState.b) / 2;
-                if (p.collapsed && !partner.collapsed) {
-                    partnerState.a = 255;
-                    partner.size = 4;
-                    partner.collapsed = true;
-                    partner.shape = p.shape;
-                    state.entanglementFlash = 15;
-                    console.log('Non-locality: Particle ' + p.entangledPartner + ' flashed due to ' + i);
+                p.shape = partner.shape;
+                if (Math.random() < 0.005 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                    state.entanglementFlash = 20;
+                    sketch.stroke(state.r, state.g, state.b, 50);
+                    sketch.line(p.x, p.y, partner.x, partner.y);
                     potentialMessages.push({ type: 'entanglement', params: {} });
                     if (typeof window.playNote === 'function' && window.noteFrequencies) {
-                        const freq = window.noteFrequencies['C4'] || 261.63; // Fallback to C4
+                        const freq = window.noteFrequencies['C4'] || 261.63;
                         window.playNote(freq, 'sine', 0.5, 0.2);
                     }
                 }
                 if (state.entanglementFlash > 0) {
-                    sketch.stroke(state.r, state.g, state.b, state.entanglementFlash * 10);
+                    sketch.stroke(state.r, state.g, state.b, state.entanglementFlash * 5);
                     sketch.line(p.x, p.y, partner.x, partner.y);
                     state.entanglementFlash--;
                 }
@@ -499,9 +466,7 @@ window.updateParticles = function(sketch) {
 
             // Отрисовка частицы
             if (p.size > 0) {
-                sketch.fill(state.r, state.g, state.b, state.a / 5);
-                sketch.ellipse(p.x, p.y, p.size + 6, p.size + 6);
-                drawShape(sketch, p.x, p.y, p.size, p.shape, p.phase, state.r, state.g, state.b, state.a, p.featureWeight);
+                drawShape(sketch, p.x, p.y, p.size, p.shape, Math.sin(window.frame * 0.05) * 0.2, state.r, state.g, state.b, state.a, p.featureWeight);
                 if (state.tunnelFlash > 0) {
                     sketch.fill(state.r, state.g, state.b, state.tunnelFlash * 5);
                     sketch.ellipse(p.x, p.y, p.size + 5, p.size + 5);
@@ -509,7 +474,7 @@ window.updateParticles = function(sketch) {
                 }
             }
 
-            // Логирование первых 5 частиц (в консоль, не в терминал)
+            // Логирование первых 5 частиц
             if (i < 5) {
                 console.log('Particle ' + i + ' at x: ' + p.x.toFixed(2) + ', y: ' + p.y.toFixed(2) + ', size: ' + p.size.toFixed(2) + ', shape: ' + p.shape + ', color: rgb(' + state.r + ', ' + state.g + ', ' + state.b + ', ' + state.a + ')');
             }
@@ -521,16 +486,34 @@ window.updateParticles = function(sketch) {
         }
     });
 
-    // Выбор сообщения с приоритетом для интерференции и туннелирования
+    // Сообщение о декомпозиции
+    if (window.currentStep === 4 && window.decompositionTimer < 3 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+        window.terminalMessages.push(getRandomMessage('decomposition', { scatteredParticles }));
+        window.updateTerminalLog();
+        window.globalMessageCooldown = 180;
+        messageAddedThisFrame = true;
+    }
+
+    // Сообщение о стабилизации на шаге 5
+    if (window.currentStep === 5 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+        window.terminalMessages.push(getRandomMessage('stabilized'));
+        window.updateTerminalLog();
+        if (typeof window.playStabilization === 'function') {
+            window.playStabilization();
+        }
+        window.globalMessageCooldown = 180;
+        messageAddedThisFrame = true;
+    }
+
+    // Выбор сообщения с приоритетом
     if (potentialMessages.length > 0 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-        // Приоритет: туннелирование > интерференция > запутанность > остальные
         let selectedMessage = potentialMessages.find(msg => msg.type === 'tunneling') ||
                              potentialMessages.find(msg => msg.type === 'interference') ||
                              potentialMessages.find(msg => msg.type === 'entanglement') ||
                              potentialMessages[Math.floor(Math.random() * potentialMessages.length)];
         window.terminalMessages.push(getRandomMessage(selectedMessage.type, selectedMessage.params));
         window.updateTerminalLog();
-        window.globalMessageCooldown = 300; // ~5 секунд
+        window.globalMessageCooldown = 180;
         messageAddedThisFrame = true;
     }
 
@@ -545,7 +528,7 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
         if (window.globalMessageCooldown <= 0) {
             window.terminalMessages.push(getRandomMessage('error', { index: 0 }));
             window.updateTerminalLog();
-            window.globalMessageCooldown = 300; // ~5 секунд
+            window.globalMessageCooldown = 180;
         }
         return;
     }
@@ -557,21 +540,21 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
     if (window.globalMessageCooldown <= 0) {
         window.terminalMessages.push(getRandomMessage('mouseInfluence'));
         window.updateTerminalLog();
-        window.globalMessageCooldown = 300; // ~5 секунд
+        window.globalMessageCooldown = 180;
     }
     window.mouseWave.x = mouseX;
     window.mouseWave.y = mouseY;
     window.mouseWave.radius = window.mouseInfluenceRadius;
 };
 
-// Реакция частиц на клик (коллапс/восстановление)
+// Реакция частиц на клик
 window.clickParticles = function(sketch, mouseX, mouseY) {
     if (!window.particles || !window.quantumStates || window.particles.length === 0) {
         console.error('clickParticles: No particles or quantum states available');
         if (window.globalMessageCooldown <= 0) {
             window.terminalMessages.push(getRandomMessage('error', { index: 0 }));
             window.updateTerminalLog();
-            window.globalMessageCooldown = 300; // ~5 секунд
+            window.globalMessageCooldown = 180;
         }
         return;
     }
@@ -592,8 +575,8 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                 if (!p.collapsed) {
                     p.collapsed = true;
                     state.a = 255;
-                    p.size = 4;
-                    p.shape = ['ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 3)];
+                    p.size = 10;
+                    p.shape = ['square', 'circle', 'ribbon', 'ellipse', 'cluster'][Math.floor(Math.random() * 5)];
                     sketch.fill(state.r, state.g, state.b, 180);
                     sketch.ellipse(p.x, p.y, 12, 12);
                     console.log('Particle ' + i + ' collapsed, shape: ' + p.shape + ', alpha: ' + state.a);
@@ -602,21 +585,21 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     if (typeof window.playArpeggio === 'function') {
                         window.playArpeggio(p.shape);
                     }
-                    window.globalMessageCooldown = 300; // ~5 секунд
+                    window.globalMessageCooldown = 180;
                     messageAddedThisFrame = true;
                 } else {
                     p.collapsed = false;
                     p.phase = Math.random() * 2 * Math.PI;
                     state.a = 255;
-                    p.size = 3 + (sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale) * 2);
+                    p.size = 8 * (1 + 0.3 * Math.sin(window.frame * 0.1));
                     console.log('Particle ' + i + ' restored to superposition, shape: ' + p.shape + ', alpha: ' + state.a);
                     window.terminalMessages.push(getRandomMessage('superpositionRestore'));
                     window.updateTerminalLog();
                     if (typeof window.playNote === 'function' && window.noteFrequencies) {
-                        const freq = window.noteFrequencies['C4'] || 261.63; // Fallback to C4
+                        const freq = window.noteFrequencies['C4'] || 261.63;
                         window.playNote(freq, 'sine', 0.5, 0.2);
                     }
-                    window.globalMessageCooldown = 300; // ~5 секунд
+                    window.globalMessageCooldown = 180;
                     messageAddedThisFrame = true;
                 }
             }
@@ -625,7 +608,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
             if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                 window.terminalMessages.push(getRandomMessage('error', { index: i }));
                 window.updateTerminalLog();
-                window.globalMessageCooldown = 300; // ~5 секунд
+                window.globalMessageCooldown = 180;
                 messageAddedThisFrame = true;
             }
         }
