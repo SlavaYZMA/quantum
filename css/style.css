@@ -38,6 +38,12 @@ body {
 
 .text-block div {
     margin-bottom: 10px;
+    visibility: hidden; /* Скрываем текст до начала анимации */
+}
+
+.text-block span.typewriter-text {
+    display: inline;
+    color: #0f0; /* Зелёный цвет для соответствия эстетике */
 }
 
 .button-block {
@@ -67,6 +73,7 @@ button:hover {
     width: 400px;
     height: 400px;
     background: #000;
+    display: block;
 }
 
 .terminal-log {
@@ -81,12 +88,12 @@ button:hover {
     overflow-y: auto;
     margin-left: 10px;
     line-height: 1.4;
-    display: none; /* Hidden by default, shown on steps 4 and 5 */
+    display: none;
 }
 
 #terminal-log-step-4,
 #terminal-log-step-5 {
-    display: block; /* Show on steps 4 and 5 */
+    display: block;
 }
 
 .terminal-log div {
