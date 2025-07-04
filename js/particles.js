@@ -859,7 +859,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     messageAddedThisFrame = true;
                 }
             }
-        } to catch (error) {
+        } catch (error) {
             console.error('Error clicking particle ' + i + ': ' + error);
             if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                 window.terminalMessages.push(getRandomMessage('error', { index: i }));
