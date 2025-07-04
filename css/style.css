@@ -1,11 +1,11 @@
-/* Импортируем Share Tech Mono для органично-квантовой эстетики */
+/* Импортируем Share Tech Mono для квантовой эстетики */
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
 body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #1A2A1E 0%, #3E4A3C 40%, #6B4E31 100%);
-    color: #E8DDB5;
+    background: linear-gradient(135deg, #010004 0%, #1e1b4b 40%, #5b21b6 100%);
+    color: #e5e5e5;
     font-family: 'Share Tech Mono', monospace;
     display: flex;
     justify-content: center;
@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Текучая смолистая текстура с эффектом глубокой воды */
+/* Живое квантовое поле с текстурой и хаотичными вспышками */
 body::before {
     content: '';
     position: fixed;
@@ -24,57 +24,19 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 20% 30%, rgba(74, 112, 67, 0.5) 0%, transparent 25%),
-        radial-gradient(circle at 80% 70%, rgba(255, 177, 7constexpr
-
-System: ### Обновление стиля страницы
-
-Я переработаю `style.css`, чтобы воплотить твоё видение «интимной, липкой, органической» квантовой природы с текстурами, напоминающими латекс, смолу и мёд, в неоново-минеральных тонах (оливковый, янтарь, нефрит, слюда, мутный коралл, выцветший бирюзовый). Сохраним квантовый вайб, добавим текучие, полупрозрачные текстуры и усилим дискомфорт в анимациях кнопок для контраста. Все эффекты из `particles.js` (спиральная миграция, вихревая сингулярность, запутанность, туннелирование) и исправления мигания терминала останутся без изменений.
-
----
-
-### Обновлённый `style.css`
-
-<xaiArtifact artifact_id="b779a016-a62f-4915-8c8c-2bfb91940e31" artifact_version_id="cd5002d6-402a-445c-9af0-5e773f1fae63" title="style.css" contentType="text/css">
-/* Импортируем Share Tech Mono для органично-квантовой эстетики */
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
-body {
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #1A2A1E 0%, #3E4A3C 40%, #6B4E31 100%); /* Оливковый, нефрит, янтарь */
-    color: #E8DDB5; /* Мягкий минеральный тон */
-    font-family: 'Share Tech Mono', monospace;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow: auto;
-    position: relative;
-}
-
-/* Текучая смолистая текстура с эффектом глубокой воды */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(circle at 20% 30%, rgba(74, 112, 67, 0.5) 0%, transparent 25%), /* Нефрит */
-        radial-gradient(circle at 80% 70%, rgba(255, 177, 7, 0.4) 0%, transparent 20%), /* Янтарь */
-        radial-gradient(circle at 50% 50%, rgba(240, 128, 128, 0.3) 0%, transparent 15%), /* Мутный коралл */
-        linear-gradient(90deg, rgba(102, 178, 178, 0.2) 0%, rgba(176, 168, 185, 0.3) 50%, transparent 100%); /* Выцветший бирюзовый, слюда */
-    box-shadow: inset 0 0 150px rgba(255, 202, 40, 0.3), inset 0 0 80px rgba(38, 166, 154, 0.4); /* Неоновый янтарь, бирюза */
-    filter: blur(8px) contrast(1.1);
-    opacity: 0.6;
+        radial-gradient(circle at 30% 40%, rgba(229, 229, 255, 0.6) 0%, transparent 20%),
+        radial-gradient(circle at 70% 60%, rgba(0, 183, 235, 0.5) 0%, transparent 15%),
+        radial-gradient(circle at 50% 30%, rgba(255, 0, 0, 0.4) 0%, transparent 18%),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.3) 0%, rgba(255, 215, 0, 0.2) 50%, transparent 100%);
+    box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.2), inset 0 0 100px rgba(91, 33, 182, 0.5);
+    filter: blur(6px) contrast(1.2);
+    opacity: 0.7;
     pointer-events: none;
     z-index: -1;
-    animation: organicFlow 8s infinite ease-in-out;
+    animation: quantumChaos 5s infinite ease-in-out;
 }
 
-/* Полупрозрачные органические слои, как в смоле */
+/* Интерференционные волны с текстурным наложением */
 body::after {
     content: '';
     position: fixed;
@@ -83,17 +45,17 @@ body::after {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 60% 20%, rgba(255, 202, 40, 0.4) 0%, transparent 15%), /* Неоновый янтарь */
-        radial-gradient(circle at 30% 80%, rgba(102, 178, 178, 0.3) 0%, transparent 12%), /* Выцветший бирюзовый */
-        radial-gradient(circle at 90% 40%, rgba(176, 168, 185, 0.3) 0%, transparent 18%); /* Слюда */
-    filter: blur(5px);
-    opacity: 0.5;
+        radial-gradient(circle at 55% 25%, rgba(255, 215, 0, 0.5) 0%, transparent 12%),
+        radial-gradient(circle at 20% 75%, rgba(0, 183, 235, 0.4) 0%, transparent 10%),
+        radial-gradient(circle at 85% 45%, rgba(255, 0, 0, 0.3) 0%, transparent 15%);
+    filter: blur(4px);
+    opacity: 0.6;
     pointer-events: none;
     z-index: -2;
-    animation: resinGlow 6s infinite ease-in-out;
+    animation: quantumFlux 4s infinite ease-in-out;
 }
 
-/* Капли и блики, как в мёде */
+/* Хаотичные мерцающие точки с эффектом мазков */
 body::after::before {
     content: '';
     position: fixed;
@@ -102,27 +64,27 @@ body::after::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 45% 65%, rgba(240, 128, 128, 0.5) 0%, transparent 3%), /* Мутный коралл */
-        radial-gradient(circle at 25% 85%, rgba(74, 112, 67, 0.4) 0%, transparent 2%), /* Нефрит */
-        radial-gradient(circle at 85% 25%, rgba(255, 177, 7, 0.4) 0%, transparent 2.5%); /* Янтарь */
-    filter: blur(4px) contrast(1.2);
-    opacity: 0.4;
+        radial-gradient(circle at 40% 60%, rgba(229, 229, 255, 0.6) 0%, transparent 2%),
+        radial-gradient(circle at 25% 85%, rgba(0, 255, 0, 0.5) 0%, transparent 1.5%),
+        radial-gradient(circle at 90% 20%, rgba(255, 215, 0, 0.5) 0%, transparent 1.5%);
+    filter: blur(3px) contrast(1.3);
+    opacity: 0.5;
     pointer-events: none;
     z-index: -3;
-    animation: honeyDrip 4s infinite ease-in-out;
+    animation: quantumFlicker 2.5s infinite ease-in-out;
 }
 
-/* Интерактивность фона, как движение света в воде */
+/* Интерактивность фона с эффектом искажения */
 body:hover::before {
-    opacity: 0.8;
-    transform: translate(5px, 5px) rotate(2deg);
-    box-shadow: inset 0 0 200px rgba(255, 202, 40, 0.4), inset 0 0 100px rgba(38, 166, 154, 0.5);
-    filter: blur(10px) hue-rotate(30deg) brightness(1.6);
+    opacity: 0.9;
+    transform: translate(4px, 4px) rotate(1deg);
+    box-shadow: inset 0 0 250px rgba(255, 255, 255, 0.3), inset 0 0 120px rgba(0, 183, 235, 0.6);
+    filter: blur(7px) hue-rotate(45deg) brightness(1.5);
 }
 
 body:hover::after, body::after::before {
-    opacity: 0.7;
-    filter: blur(6px) hue-rotate(20deg) brightness(1.5);
+    opacity: 0.8;
+    filter: blur(5px) hue-rotate(30deg) brightness(1.4);
 }
 
 .step {
@@ -141,43 +103,42 @@ body:hover::after, body::after::before {
 }
 
 .text-block {
-    background: rgba(26, 42, 30, 0.7); /* Тёмный оливковый */
+    background: rgba(1, 0, 4, 0.7);
     padding: 20px;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(38, 166, 154, 0.3), 0 0 25px rgba(240, 128, 128, 0.2);
-    animation: cocoonPulse 5s infinite ease-in-out;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
+    animation: quantumPulse 4s infinite ease-in-out;
 }
 
-/* Эффект кокона */
 .text-block::before {
     content: '';
     position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(38, 166, 154, 0.4) 0%, transparent 70%); /* Неоновая бирюза */
-    opacity: 0.6;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
+    opacity: 0.5;
     z-index: -1;
-    animation: liquidWave 4s infinite ease-in-out;
+    animation: quantumWave 3s infinite ease-in-out;
 }
 
 .text-block div {
     margin-bottom: 10px;
-    color: #E8DDB5;
-    text-shadow: 0 0 5px rgba(255, 202, 40, 0.5), 0 0 10px rgba(38, 166, 154, 0.4);
-    animation: organicText 3s infinite alternate;
+    color: #e5e5e5;
+    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
+    animation: quantumText 3s infinite alternate;
 }
 
 .text-block span {
     display: inline;
-    color: #E8DDB5;
+    color: #e5e5e5;
 }
 
 .button-block {
@@ -188,19 +149,19 @@ body:hover::after, body::after::before {
     position: relative;
 }
 
-/* Кнопки как нестабильные органические капли */
+/* Кнопки как облака энергии с чётким текстом */
 button {
-    background: linear-gradient(45deg, rgba(255, 202, 40, 0.5), rgba(38, 166, 154, 0.4), rgba(240, 128, 128, 0.3), rgba(74, 112, 67, 0.3), rgba(176, 168, 185, 0.2));
+    background: linear-gradient(45deg, rgba(229, 229, 255, 0.4), rgba(0, 183, 235, 0.3), rgba(255, 0, 0, 0.3), rgba(0, 255, 0, 0.2), rgba(255, 215, 0, 0.2));
     border: none;
-    color: #E8DDB5;
+    color: #e5e5e5;
     font-family: 'Share Tech Mono', monospace;
     padding: 15px 30px;
     cursor: pointer;
     font-size: 16px;
-    border-radius: 25px;
-    box-shadow: 0 0 25px rgba(255, 202, 40, 0.5), 0 0 20px rgba(38, 166, 154, 0.4), 0 0 30px rgba(240, 128, 128, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(229, 229, 255, 0.5), 0 0 15px rgba(0, 183, 235, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
     position: relative;
-    animation: organicShift 3s infinite ease-in-out, stickyPulse 2.5s infinite ease-in-out;
+    animation: cloudShift 4s infinite ease-in-out, quantumPulseButton 3s infinite ease-in-out;
     transform-origin: center;
     z-index: 10;
 }
@@ -208,16 +169,16 @@ button {
 button::before {
     content: '';
     position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    border-radius: 30px;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 202, 40, 0.4) 0%, transparent 70%);
-    filter: blur(6px);
-    opacity: 0.7;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 25px;
+    background: radial-gradient(circle at 50% 50%, rgba(229, 229, 255, 0.3) 0%, transparent 70%);
+    filter: blur(5px);
+    opacity: 0.6;
     z-index: -1;
-    animation: resinGlow 4s infinite ease-in-out;
+    animation: cloudGlow 3.5s infinite ease-in-out;
 }
 
 button::after {
@@ -227,83 +188,82 @@ button::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, rgba(74, 112, 67, 0.3), rgba(240, 128, 128, 0.2), transparent);
-    filter: blur(4px) contrast(1.3);
-    opacity: 0.6;
+    background: linear-gradient(90deg, rgba(0, 255, 0, 0.2), rgba(255, 0, 0, 0.2), transparent);
+    filter: blur(3px) contrast(1.2);
+    opacity: 0.5;
     z-index: -1;
-    animation: stickyTexture 5s infinite ease-in-out;
+    animation: cloudTexture 5s infinite ease-in-out;
 }
 
 button:hover {
-    transform: scale(1.15) skew(5deg, 5deg);
-    box-shadow: 0 0 35px rgba(255, 202, 40, 0.7), 0 0 25px rgba(38, 166, 154, 0.6), 0 0 40px rgba(240, 128, 128, 0.5);
-    color: #26A69A; /* Неоновая бирюза */
+    transform: scale(1.1) rotate(2deg);
+    box-shadow: 0 0 30px rgba(229, 229, 255, 0.7), 0 0 20px rgba(0, 183, 235, 0.6), 0 0 35px rgba(255, 215, 0, 0.5);
+    color: #00ff00;
 }
 
 button span {
     display: inline-block;
-    color: #E8DDB5;
-    animation: textTwitch 1.5s infinite ease-in-out;
+    color: #e5e5e5;
 }
 
 button:hover span {
-    color: #26A69A;
+    color: #00ff00;
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: rgba(26, 42, 30, 0.8); /* Оливковый */
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(38, 166, 154, 0.3), 0 0 25px rgba(240, 128, 128, 0.2);
+    background: rgba(1, 0, 4, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
     position: relative;
-    animation: cocoonPulse 5s infinite ease-in-out;
+    animation: quantumPulse 4s infinite ease-in-out;
 }
 
 #portrait-animation-container-step-4::before,
 #portrait-animation-container-step-5::before {
     content: '';
     position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(38, 166, 154, 0.4) 0%, transparent 70%);
-    opacity: 0.6;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
+    opacity: 0.5;
     z-index: -1;
-    animation: liquidWave 4s infinite ease-in-out;
+    animation: quantumWave 3s infinite ease-in-out;
 }
 
 #thumbnail-portrait {
     width: 100px;
     height: 100px;
-    border-radius: 20px;
-    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(38, 166, 154, 0.3), 0 0 20px rgba(240, 128, 128, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5), 0 0 8px rgba(255, 255, 255, 0.3), 0 0 15px rgba(96, 165, 250, 0.2);
     position: relative;
-    animation: cocoonPulse 4s infinite ease-in-out;
+    animation: quantumPulse 3s infinite ease-in-out;
 }
 
 #thumbnail-portrait::before {
     content: '';
     position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(38, 166, 154, 0.4) 0%, transparent 70%);
-    opacity: 0.6;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
+    opacity: 0.5;
     z-index: -1;
-    animation: liquidWave 3s infinite ease-in-out;
+    animation: quantumWave 2.5s infinite ease-in-out;
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: rgba(26, 42, 30, 0.7); /* Оливковый */
-    color: #E8DDB5;
+    background: rgba(1, 0, 4, 0.7);
+    color: #e5e5e5;
     font-family: 'Share Tech Mono', monospace;
     font-size: 12px;
     padding: 10px;
@@ -311,26 +271,25 @@ button:hover span {
     margin-left: 10px;
     line-height: 1.4;
     display: none;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(38, 166, 154, 0.3), 0 0 25px rgba(240, 128, 128, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
     position: relative;
-    animation: cocoonPulse 5s infinite ease-in-out;
+    animation: quantumPulse 4s infinite ease-in-out;
     will-change: contents;
 }
 
-/* Эффект капель вокруг терминала */
 .terminal-log::before {
     content: '';
     position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.4) 0%, transparent 70%); /* Янтарь */
-    opacity: 0.6;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
+    opacity: 0.5;
     z-index: -1;
-    animation: liquidWave 4s infinite ease-in-out;
+    animation: quantumWave 3s infinite ease-in-out;
 }
 
 #terminal-log-step-4,
@@ -339,30 +298,30 @@ button:hover span {
 }
 
 .terminal-log div {
-    text-shadow: 0 0 5px rgba(255, 202, 40, 0.5), 0 0 10px rgba(38, 166, 154, 0.4);
+    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4);
     margin-bottom: 5px;
-    color: #E8DDB5;
+    color: #e5e5e5;
     will-change: contents;
 }
 
 .terminal-log div.tunneling {
-    color: #26A69A; /* Неоновая бирюза */
-    text-shadow: 0 0 5px rgba(38, 166, 154, 0.5);
+    color: #00b7eb;
+    text-shadow: 0 0 5px rgba(0, 183, 235, 0.5);
 }
 
 .terminal-log div.interference {
-    color: #B0A8B9; /* Слюда */
-    text-shadow: 0 0 5px rgba(176, 168, 185, 0.5);
+    color: #a78bfa;
+    text-shadow: 0 0 5px rgba(167, 139, 250, 0.5);
 }
 
 .terminal-log div.entanglement {
-    color: #F08080; /* Мутный коралл */
-    text-shadow: 0 0 5px rgba(240, 128, 128, 0.5);
+    color: #d1d1e6;
+    text-shadow: 0 0 5px rgba(209, 209, 230, 0.5);
 }
 
 .terminal-log div.vortex {
-    color: #6B4E31; /* Янтарь */
-    text-shadow: 0 0 5px rgba(255, 177, 7, 0.5);
+    color: #3f167f;
+    text-shadow: 0 0 5px rgba(63, 22, 127, 0.5);
 }
 
 .modal {
@@ -372,40 +331,40 @@ button:hover span {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(26, 42, 30, 0.9); /* Оливковый */
+    background: rgba(1, 0, 4, 0.9);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background: rgba(26, 42, 30, 0.7);
+    background: rgba(1, 0, 4, 0.7);
     padding: 20px;
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(38, 166, 154, 0.3), 0 0 25px rgba(240, 128, 128, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(91, 33, 182, 0.5), 0 0 15px rgba(255, 255, 255, 0.3), 0 0 25px rgba(96, 165, 250, 0.2);
     position: relative;
-    animation: cocoonPulse 5s infinite ease-in-out;
+    animation: quantumPulse 4s infinite ease-in-out;
 }
 
 .modal-content::before {
     content: '';
     position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(38, 166, 154, 0.4) 0%, transparent 70%);
-    opacity: 0.6;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
+    opacity: 0.5;
     z-index: -1;
-    animation: liquidWave 4s infinite ease-in-out;
+    animation: quantumWave 3s infinite ease-in-out;
 }
 
 .close {
-    color: #E8DDB5;
+    color: #e5e5e5;
     font-size: 24px;
     font-family: 'Share Tech Mono', monospace;
     position: absolute;
@@ -413,13 +372,13 @@ button:hover span {
     right: 20px;
     cursor: pointer;
     z-index: 1001;
-    text-shadow: 0 0 5px rgba(255, 202, 40, 0.5), 0 0 10px rgba(38, 166, 154, 0.4);
-    animation: organicText 3s infinite alternate;
+    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4);
+    animation: quantumText 3s infinite alternate;
 }
 
 .close:hover {
-    color: #26A69A;
-    transform: scale(1.15) skew(5deg, 5deg);
+    color: #00ff00;
+    transform: scale(1.1);
 }
 
 .image-grid {
@@ -432,51 +391,51 @@ button:hover span {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    border-radius: 20px;
-    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(38, 166, 154, 0.3), 0 0 20px rgba(240, 128, 128, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5), 0 0 8px rgba(255, 255, 255, 0.3), 0 0 15px rgba(96, 165, 250, 0.2);
     position: relative;
-    animation: cocoonPulse 4s infinite ease-in-out;
+    animation: quantumPulse 3s infinite ease-in-out;
 }
 
 .archive-image::before {
     content: '';
     position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(38, 166, 154, 0.4) 0%, transparent 70%);
-    opacity: 0.6;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
+    opacity: 0.5;
     z-index: -1;
-    animation: liquidWave 3s infinite ease-in-out;
+    animation: quantumWave 2.5s infinite ease-in-out;
 }
 
 .archive-image:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(255, 177, 7, 0.6), 0 0 15px rgba(38, 166, 154, 0.5), 0 0 25px rgba(240, 128, 128, 0.4);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.7), 0 0 12px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 215, 0, 0.3);
 }
 
 #camera-video {
     max-width: 100%;
-    border-radius: 20px;
-    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(38, 166, 154, 0.3), 0 0 20px rgba(240, 128, 128, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5), 0 0 8px rgba(255, 255, 255, 0.3), 0 0 15px rgba(96, 165, 250, 0.2);
     position: relative;
-    animation: cocoonPulse 4s infinite ease-in-out;
+    animation: quantumPulse 3s infinite ease-in-out;
 }
 
 #camera-video::before {
     content: '';
     position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(38, 166, 154, 0.4) 0%, transparent 70%);
-    opacity: 0.6;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
+    opacity: 0.5;
     z-index: -1;
-    animation: liquidWave 3s infinite ease-in-out;
+    animation: cloudGlow 2.5s infinite ease-in-out;
 }
 
 #capture-photo {
@@ -484,209 +443,235 @@ button:hover span {
 }
 
 input[type="text"] {
-    background: rgba(26, 42, 30, 0.7);
+    background: rgba(1, 0, 4, 0.7);
     border: none;
-    color: #E8DDB5;
+    color: #e5e5e5;
     font-family: 'Share Tech Mono', monospace;
     padding: 10px;
     font-size: 16px;
-    border-radius: 20px;
-    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(38, 166, 154, 0.3), 0 0 20px rgba(240, 128, 128, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5), 0 0 8px rgba(255, 255, 255, 0.3), 0 0 15px rgba(96, 165, 250, 0.2);
     position: relative;
-    animation: cocoonPulse 4s infinite ease-in-out;
+    animation: quantumPulse 3s infinite ease-in-out;
 }
 
 input[type="text"]::before {
     content: '';
     position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(38, 166, 154, 0.4) 0%, transparent 70%);
-    opacity: 0.6;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
+    opacity: 0.5;
     z-index: -1;
-    animation: liquidWave 3s infinite ease-in-out;
+    animation: quantumWave 2.5s infinite ease-in-out;
 }
 
 input[type="text"]::placeholder {
-    color: rgba(232, 221, 181, 0.7);
+    color: rgba(229, 229, 229, 0.7);
 }
 
-/* Анимации */
-@keyframes organicFlow {
+@keyframes quantumChaos {
     0% {
-        background-position: 20% 30%, 80% 70%, 50% 50%, 0% 0%;
-        opacity: 0.6;
-        filter: blur(8px) brightness(1) hue-rotate(0deg);
+        background-position: 30% 40%, 70% 60%, 50% 30%, 0% 0%;
+        opacity: 0.7;
+        box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.2), inset 0 0 100px rgba(91, 33, 182, 0.5);
+        filter: blur(6px) brightness(1) hue-rotate(0deg);
         transform: translate(0, 0) rotate(0deg);
     }
-    50% {
-        background-position: 25% 35%, 75% 65%, 55% 55%, 10% 10%;
-        opacity: 0.4;
-        filter: blur(10px) brightness(1.5) hue-rotate(20deg);
-        transform: translate(3px, 3px) rotate(1deg);
-    }
-    100% {
-        background-position: 20% 30%, 80% 70%, 50% 50%, 0% 0%;
-        opacity: 0.6;
-        filter: blur(8px) brightness(1) hue-rotate(0deg);
-        transform: translate(0, 0) rotate(0deg);
-    }
-}
-
-@keyframes resinGlow {
-    0% {
-        background-position: 60% 20%, 30% 80%, 90% 40%;
-        opacity: 0.5;
-        transform: scale(1);
-        filter: blur(5px) brightness(1);
-    }
-    50% {
-        background-position: 65% 25%, 25% 75%, 85% 35%;
+    25% {
+        background-position: 35% 45%, 65% 55%, 55% 35%, 5% 5%;
         opacity: 0.3;
-        transform: scale(1.03);
-        filter: blur(6px) brightness(1.4) hue-rotate(15deg);
+        filter: blur(8px) brightness(1.8) hue-rotate(30deg);
+        transform: translate(2px, 2px) rotate(0.5deg);
     }
-    100% {
-        background-position: 60% 20%, 30% 80%, 90% 40%;
+    50% {
+        background-position: 25% 35%, 75% 65%, 45% 25%, 10% 10%;
+        opacity: 0.1;
+        box-shadow: inset 0 0 250px rgba(255, 215, 0, 0.3), inset 0 0 120px rgba(0, 183, 235, 0.6);
+        filter: blur(7px) brightness(2) hue-rotate(60deg);
+        transform: translate(-2px, -2px) rotate(-0.5deg);
+    }
+    75% {
+        background-position: 32% 42%, 68% 58%, 52% 32%, 8% 8%;
         opacity: 0.5;
-        transform: scale(1);
-        filter: blur(5px) brightness(1);
-    }
-}
-
-@keyframes honeyDrip {
-    0% {
-        background-position: 45% 65%, 25% 85%, 85% 25%;
-        opacity: 0.4;
-        filter: blur(4px) brightness(1);
-    }
-    50% {
-        background-position: 50% 70%, 20% 80%, 90% 30%;
-        opacity: 0.6;
-        filter: blur(5px) brightness(1.3) hue-rotate(10deg);
+        filter: blur(6px) brightness(1.5) hue-rotate(45deg);
+        transform: translate(1px, 1px) rotate(0.3deg);
     }
     100% {
-        background-position: 45% 65%, 25% 85%, 85% 25%;
-        opacity: 0.4;
-        filter: blur(4px) brightness(1);
+        background-position: 30% 40%, 70% 60%, 50% 30%, 0% 0%;
+        opacity: 0.7;
+        box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.2), inset 0 0 100px rgba(91, 33, 182, 0.5);
+        filter: blur(6px) brightness(1) hue-rotate(0deg);
+        transform: translate(0, 0) rotate(0deg);
     }
 }
 
-@keyframes cocoonPulse {
+@keyframes quantumFlux {
     0% {
-        box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(38, 166, 154, 0.3), 0 0 25px rgba(240, 128, 128, 0.2);
+        background-position: 55% 25%, 20% 75%, 85% 45%;
+        opacity: 0.6;
+        transform: scale(1);
+        filter: blur(4px) brightness(1) hue-rotate(0deg);
     }
     50% {
-        box-shadow: 0 0 25px rgba(255, 177, 7, 0.5), 0 0 20px rgba(38, 166, 154, 0.4), 0 0 30px rgba(240, 128, 128, 0.3);
+        background-position: 60% 30%, 15% 70%, 90% 50%;
+        opacity: 0.2;
+        transform: scale(1.04);
+        filter: blur(5px) brightness(1.7) hue-rotate(45deg);
     }
     100% {
-        box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(38, 166, 154, 0.3), 0 0 25px rgba(240, 128, 128, 0.2);
+        background-position: 55% 25%, 20% 75%, 85% 45%;
+        opacity: 0.6;
+        transform: scale(1);
+        filter: blur(4px) brightness(1) hue-rotate(0deg);
     }
 }
 
-@keyframes liquidWave {
+@keyframes quantumFlicker {
     0% {
-        transform: scale(1);
-        opacity: 0.6;
+        background-position: 40% 60%, 25% 85%, 90% 20%;
+        opacity: 0.5;
+        filter: blur(3px) brightness(1);
     }
-    50% {
-        transform: scale(1.03);
+    20% {
+        background-position: 45% 65%, 20% 80%, 95% 25%;
         opacity: 0.8;
+        filter: blur(4px) brightness(2);
+    }
+    40% {
+        background-position: 35% 55%, 30% 90%, 85% 15%;
+        opacity: 0.3;
+        filter: blur(3px) brightness(1.5) hue-rotate(30deg);
+    }
+    60% {
+        background-position: 42% 62%, 22% 82%, 92% 22%;
+        opacity: 0.6;
+        filter: blur(4px) brightness(1.8);
+    }
+    80% {
+        background-position: 38% 58%, 28% 88%, 88% 18%;
+        opacity: 0.4;
+        filter: blur(3px) brightness(1.3) hue-rotate(15deg);
     }
     100% {
-        transform: scale(1);
-        opacity: 0.6;
+        background-position: 40% 60%, 25% 85%, 90% 20%;
+        opacity: 0.5;
+        filter: blur(3px) brightness(1);
     }
 }
 
-@keyframes organicText {
+@keyframes quantumPulse {
+    0% {
+        box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(91, 33, 182, 0.7), 0 0 15px rgba(255, 255, 255, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
+    }
+}
+
+@keyframes quantumWave {
     0% {
         transform: scale(1);
-        text-shadow: 0 0 5px rgba(255, 202, 40, 0.5), 0 0 10px rgba(38, 166, 154, 0.4);
+        opacity: 0.5;
     }
     50% {
         transform: scale(1.02);
-        text-shadow: 0 0 8px rgba(255, 202, 40, 0.6), 0 0 12px rgba(38, 166, 154, 0.5);
+        opacity: 0.7;
     }
     100% {
         transform: scale(1);
-        text-shadow: 0 0 5px rgba(255, 202, 40, 0.5), 0 0 10px rgba(38, 166, 154, 0.4);
+        opacity: 0.5;
     }
 }
 
-@keyframes organicShift {
+@keyframes quantumText {
     0% {
-        border-radius: 25px 15px 30px 20px;
-        transform: translate(0, 0) skew(0deg, 0deg);
-    }
-    25% {
-        border-radius: 20px 30px 15px 25px;
-        transform: translate(3px, -3px) skew(8deg, 8deg);
+        transform: scale(1);
+        text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
     }
     50% {
-        border-radius: 30px 20px 25px 15px;
-        transform: translate(-3px, 3px) skew(-8deg, -8deg);
-    }
-    75% {
-        border-radius: 15px 25px 20px 30px;
-        transform: translate(2px, 2px) skew(5deg, 5deg);
+        transform: scale(1.03);
+        text-shadow: 0 0 10px rgba(229, 229, 255, 0.7), 0 0 15px rgba(0, 183, 235, 0.5), 0 0 20px rgba(255, 215, 0, 0.3);
     }
     100% {
-        border-radius: 25px 15px 30px 20px;
-        transform: translate(0, 0) skew(0deg, 0deg);
+        transform: scale(1);
+        text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
     }
 }
 
-@keyframes stickyPulse {
+@keyframes cloudShift {
+    0% {
+        border-radius: 20px 30px 15px 25px;
+        transform: translate(0, 0) scale(1);
+    }
+    25% {
+        border-radius: 25px 15px 30px 20px;
+        transform: translate(2px, -2px) scale(1.02);
+    }
+    50% {
+        border-radius: 15px 25px 20px 30px;
+        transform: translate(-2px, 2px) scale(0.98);
+    }
+    75% {
+        border-radius: 30px 20px 25px 15px;
+        transform: translate(1px, 1px) scale(1.01);
+    }
+    100% {
+        border-radius: 20px 30px 15px 25px;
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+@keyframes quantumPulseButton {
     0% {
         opacity: 0.7;
-        box-shadow: 0 0 25px rgba(255, 202, 40, 0.5), 0 0 20px rgba(38, 166, 154, 0.4), 0 0 30px rgba(240, 128, 128, 0.3);
+        box-shadow: 0 0 20px rgba(229, 229, 255, 0.5), 0 0 15px rgba(0, 183, 235, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
     }
     50% {
         opacity: 0.9;
-        box-shadow: 0 0 35px rgba(255, 202, 40, 0.7), 0 0 25px rgba(38, 166, 154, 0.6), 0 0 40px rgba(240, 128, 128, 0.5);
+        box-shadow: 0 0 30px rgba(229, 229, 255, 0.7), 0 0 20px rgba(0, 183, 235, 0.6), 0 0 35px rgba(255, 215, 0, 0.5);
     }
     100% {
         opacity: 0.7;
-        box-shadow: 0 0 25px rgba(255, 202, 40, 0.5), 0 0 20px rgba(38, 166, 154, 0.4), 0 0 30px rgba(240, 128, 128, 0.3);
+        box-shadow: 0 0 20px rgba(229, 229, 255, 0.5), 0 0 15px rgba(0, 183, 235, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
     }
 }
 
-@keyframes stickyTexture {
+@keyframes cloudGlow {
+    0% {
+        opacity: 0.6;
+        transform: scale(1);
+        filter: blur(5px);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.03);
+        filter: blur(4px) brightness(1.3);
+    }
+    100% {
+        opacity: 0.6;
+        transform: scale(1);
+        filter: blur(5px);
+    }
+}
+
+@keyframes cloudTexture {
     0% {
         background-position: 0% 0%;
-        opacity: 0.6;
+        opacity: 0.5;
     }
     50% {
         background-position: 100% 100%;
-        opacity: 0.4;
+        opacity: 0.3;
     }
     100% {
         background-position: 0% 0%;
-        opacity: 0.6;
-    }
-}
-
-@keyframes textTwitch {
-    0% {
-        transform: translate(0, 0) skew(0deg, 0deg);
-    }
-    20% {
-        transform: translate(2px, -1px) skew(3deg, 3deg);
-    }
-    40% {
-        transform: translate(-1px, 2px) skew(-3deg, -3deg);
-    }
-    60% {
-        transform: translate(1px, 1px) skew(2deg, 2deg);
-    }
-    80% {
-        transform: translate(-2px, -2px) skew(-2deg, -2deg);
-    }
-    100% {
-        transform: translate(0, 0) skew(0deg, 0deg);
+        opacity: 0.5;
     }
 }
