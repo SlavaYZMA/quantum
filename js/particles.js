@@ -1,7 +1,7 @@
 console.log('particles.js loaded');
 
 window.particles = [];
-window.blocks = []; // Массив для блоков
+window.blocks = [];
 window.quantumStates = [];
 window.decompositionTimer = 0;
 window.mouseWave = { x: 0, y: 0, radius: 0, trail: [] };
@@ -31,7 +31,7 @@ const messages = {
         "Частицы и блоки портрета изменяют квантовые состояния."
     ],
     decomposition: [
-        "Квантовый разрыв портрета: фрагментация на ${blockCount} блоков, прозрачность ${imgAlpha}/255.",
+        "Квантовая декомпозиция портрета: фрагментация на ${blockCount} блоков, прозрачность ${imgAlpha}/255.",
         "Декомпозиция портрета: блоки и частицы в состоянии ${imgAlpha}/255.",
         "Разрыв портрета в квантовом поле: прозрачность ${imgAlpha}/255."
     ],
@@ -67,7 +67,7 @@ const messages = {
     ],
     tunneling: [
         "Фрагмент портрета туннелировал через квантовый барьер.",
-        "Квантовое туннелирование: фрагмент переместился в новое состояние.",
+        "Квантовая туннелирование: фрагмент переместился в новое состояние.",
         "Блок/частица портрета осуществила квантовое туннелирование."
     ],
     entanglement: [
@@ -144,8 +144,8 @@ window.initializeParticles = function(img) {
             window.updateTerminalLog();
             return;
         }
-        var numParticles = 150; // Меньше частиц для баланса с блоками
-        var numBlocks = 50; // Количество блоков
+        var numParticles = 150;
+        var numBlocks = 50;
         var validParticles = 0;
         var validBlocks = 0;
 
@@ -839,7 +839,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                 messageAddedThisFrame = true;
             }
         }
-   迄今
+    });
 
     // Блоки
     window.blocks.forEach(function(b, i) {
