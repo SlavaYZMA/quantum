@@ -275,6 +275,7 @@ button:hover span {
     box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
     position: relative;
     animation: quantumPulse 4s infinite ease-in-out;
+    will-change: contents;
 }
 
 .terminal-log::before {
@@ -297,18 +298,30 @@ button:hover span {
 }
 
 .terminal-log div {
-    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
-    animation: quantumText 3s infinite alternate;
+    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4);
     margin-bottom: 5px;
     color: #e5e5e5;
+    will-change: contents;
 }
 
 .terminal-log div.tunneling {
     color: #00b7eb;
+    text-shadow: 0 0 5px rgba(0, 183, 235, 0.5);
 }
 
 .terminal-log div.interference {
     color: #a78bfa;
+    text-shadow: 0 0 5px rgba(167, 139, 250, 0.5);
+}
+
+.terminal-log div.entanglement {
+    color: #d1d1e6;
+    text-shadow: 0 0 5px rgba(209, 209, 230, 0.5);
+}
+
+.terminal-log div.vortex {
+    color: #3f167f;
+    text-shadow: 0 0 5px rgba(63, 22, 127, 0.5);
 }
 
 .modal {
