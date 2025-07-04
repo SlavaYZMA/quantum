@@ -4,8 +4,8 @@
 body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #3C4F2F 0%, #FFB107 40%, #D96B6B 100%); /* Оливковый, янтарь, мутный коралл */
-    color: #F5E6CC; /* Мягкий кремовый для текста */
+    background: linear-gradient(135deg, #3C4F2F 0%, #FFB107 40%, #D96B6B 100%);
+    color: #F5E6CC;
     font-family: 'Share Tech Mono', monospace;
     display: flex;
     justify-content: center;
@@ -24,10 +24,10 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 20% 30%, rgba(0, 168, 107, 0.5) 0%, transparent 25%), /* Нефрит */
-        radial-gradient(circle at 80% 70%, rgba(128, 203, 196, 0.4) 0%, transparent 20%), /* Выцветший бирюзовый */
-        radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 15%); /* Мутный коралл */
-    box-shadow: inset 0 0 150px rgba(255, 177, 7, 0.3), inset 0 0 80px rgba(60, 79, 47, 0.4); /* Янтарь и оливковый */
+        radial-gradient(circle at 20% 30%, rgba(0, 168, 107, 0.5) 0%, transparent 25%),
+        radial-gradient(circle at 80% 70%, rgba(128, 203, 196, 0.4) 0%, transparent 20%),
+        radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 15%);
+    box-shadow: inset 0 0 150px rgba(255, 177, 7, 0.3), inset 0 0 80px rgba(60, 79, 47, 0.4);
     filter: blur(8px) contrast(1.1) opacity(0.7);
     opacity: 0.6;
     pointer-events: none;
@@ -44,9 +44,9 @@ body::after {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 60% 20%, rgba(255, 177, 7, 0.4) 0%, transparent 15%), /* Янтарь */
-        radial-gradient(circle at 30% 80%, rgba(0, 168, 107, 0.3) 0%, transparent 12%), /* Нефрит */
-        radial-gradient(circle at 90% 40%, rgba(128, 203, 196, 0.3) 0%, transparent 10%); /* Выцветший бирюзовый */
+        radial-gradient(circle at 60% 20%, rgba(255, 177, 7, 0.4) 0%, transparent 15%),
+        radial-gradient(circle at 30% 80%, rgba(0, 168, 107, 0.3) 0%, transparent 12%),
+        radial-gradient(circle at 90% 40%, rgba(128, 203, 196, 0.3) 0%, transparent 10%);
     filter: blur(10px) opacity(0.6);
     opacity: 0.5;
     pointer-events: none;
@@ -63,9 +63,9 @@ body::after::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 35% 65%, rgba(255, 177, 7, 0.5) 0%, transparent 2%), /* Янтарь */
-        radial-gradient(circle at 20% 90%, rgba(0, 168, 107, 0.4) 0%, transparent 1.5%), /* Нефрит */
-        radial-gradient(circle at 85% 25%, rgba(217, 107, 107, 0.4) 0%, transparent 1.5%); /* Мутный коралл */
+        radial-gradient(circle at 35% 65%, rgba(255, 177, 7, 0.5) 0%, transparent 2%),
+        radial-gradient(circle at 20% 90%, rgba(0, 168, 107, 0.4) 0%, transparent 1.5%),
+        radial-gradient(circle at 85% 25%, rgba(217, 107, 107, 0.4) 0%, transparent 1.5%);
     filter: blur(4px) contrast(1.2);
     opacity: 0.4;
     pointer-events: none;
@@ -102,29 +102,46 @@ body:hover::after, body::after::before {
 }
 
 .text-block {
-    background: rgba(60, 79, 47, 0.6); /* Оливковый с прозрачностью */
+    background: rgba(60, 79, 47, 0.5); /* Прозрачный оливковый */
     padding: 20px;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
-    animation: cocoonPulse 5s infinite ease-in-out;
+    border-radius: 30px 15px 25px 20px; /* Асимметричные края */
+    box-shadow: 0 0 25px rgba(255, 177, 7, 0.5), 0 0 20px rgba(128, 203, 196, 0.4), 0 0 30px rgba(217, 107, 107, 0.3);
+    animation: cocoonPulse 4.5s infinite ease-in-out;
+    backdrop-filter: blur(5px); /* Мутное стекло */
 }
 
 .text-block::before {
     content: '';
     position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%); /* Янтарное свечение */
-    opacity: 0.6;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 35px 20px 30px 25px;
+    background: radial-gradient(circle at 40% 60%, rgba(255, 177, 7, 0.4) 0%, transparent 50%), 
+                radial-gradient(circle at 70% 30%, rgba(0, 168, 107, 0.3) 0%, transparent 40%);
+    opacity: 0.7;
     z-index: -1;
+    animation: resinDrip 5s infinite ease-in-out;
+}
+
+.text-block::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 40px 25px 35px 30px;
+    background: radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 60%);
+    filter: blur(8px);
+    opacity: 0.6;
+    z-index: -2;
     animation: waterGlow 4s infinite ease-in-out;
 }
 
@@ -148,16 +165,15 @@ body:hover::after, body::after::before {
     position: relative;
 }
 
-/* Кнопки как липкие, органические капли */
 button {
-    background: linear-gradient(45deg, rgba(255, 177, 7, 0.5), rgba(0, 168, 107, 0.4), rgba(217, 107, 107, 0.3), rgba(128, 203, 196, 0.3)); /* Янтарь, нефрит, коралл, бирюза */
+    background: linear-gradient(45deg, rgba(255, 177, 7, 0.5), rgba(0, 168, 107, 0.4), rgba(217, 107, 107, 0.3), rgba(128, 203, 196, 0.3));
     border: none;
     color: #F5E6CC;
     font-family: 'Share Tech Mono', monospace;
     padding: 15px 30px;
     cursor: pointer;
     font-size: 16px;
-    border-radius: 25px 15px 20px 30px; /* Асимметричные края для дискомфорта */
+    border-radius: 25px 15px 20px 30px;
     box-shadow: 0 0 20px rgba(255, 177, 7, 0.5), 0 0 15px rgba(0, 168, 107, 0.4), 0 0 25px rgba(217, 107, 107, 0.3);
     position: relative;
     animation: stickyShift 3.5s infinite ease-in-out, organicPulseButton 2.5s infinite ease-in-out;
@@ -195,9 +211,9 @@ button::after {
 }
 
 button:hover {
-    transform: scale(1.15) rotate(3deg) translate(2px, -2px); /* Усиленный дискомфорт */
+    transform: scale(1.15) rotate(3deg) translate(2px, -2px);
     box-shadow: 0 0 30px rgba(255, 177, 7, 0.7), 0 0 20px rgba(128, 203, 196, 0.6), 0 0 35px rgba(217, 107, 107, 0.5);
-    color: #FFCA28; /* Неоново-янтарный */
+    color: #FFCA28;
 }
 
 button span {
@@ -213,55 +229,90 @@ button:hover span {
 #portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: rgba(60, 79, 47, 0.7); /* Оливковый с прозрачностью */
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
+    background: rgba(60, 79, 47, 0.5);
+    border-radius: 35px 20px 30px 25px;
+    box-shadow: 0 0 25px rgba(255, 177, 7, 0.5), 0 0 20px rgba(128, 203, 196, 0.4), 0 0 30px rgba(217, 107, 107, 0.3);
     position: relative;
-    animation: cocoonPulse 5s infinite ease-in-out;
+    animation: cocoonPulse 4.5s infinite ease-in-out;
+    backdrop-filter: blur(5px);
 }
 
 #portrait-animation-container-step-4::before,
 #portrait-animation-container-step-5::before {
     content: '';
     position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
-    opacity: 0.6;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 40px 25px 35px 30px;
+    background: radial-gradient(circle at 40% 60%, rgba(255, 177, 7, 0.4) 0%, transparent 50%), 
+                radial-gradient(circle at 70% 30%, rgba(0, 168, 107, 0.3) 0%, transparent 40%);
+    opacity: 0.7;
     z-index: -1;
+    animation: resinDrip 5s infinite ease-in-out;
+}
+
+#portrait-animation-container-step-4::after,
+#portrait-animation-container-step-5::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 45px 30px 40px 35px;
+    background: radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 60%);
+    filter: blur(8px);
+    opacity: 0.6;
+    z-index: -2;
     animation: waterGlow 4s infinite ease-in-out;
 }
 
 #thumbnail-portrait {
     width: 100px;
     height: 100px;
-    border-radius: 20px;
-    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(128, 203, 196, 0.3), 0 0 20px rgba(217, 107, 107, 0.2);
+    border-radius: 30px 15px 25px 20px;
+    box-shadow: 0 0 20px rgba(255, 177, 7, 0.5), 0 0 15px rgba(128, 203, 196, 0.4), 0 0 25px rgba(217, 107, 107, 0.3);
     position: relative;
-    animation: cocoonPulse 3.5s infinite ease-in-out;
+    animation: cocoonPulse 4s infinite ease-in-out;
+    backdrop-filter: blur(5px);
 }
 
 #thumbnail-portrait::before {
     content: '';
     position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
-    opacity: 0.6;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 35px 20px 30px 25px;
+    background: radial-gradient(circle at 40% 60%, rgba(255, 177, 7, 0.4) 0%, transparent 50%), 
+                radial-gradient(circle at 70% 30%, rgba(0, 168, 107, 0.3) 0%, transparent 40%);
+    opacity: 0.7;
     z-index: -1;
-    animation: waterGlow 3s infinite ease-in-out;
+    animation: resinDrip 4.5s infinite ease-in-out;
+}
+
+#thumbnail-portrait::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 40px 25px 35px 30px;
+    background: radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 60%);
+    filter: blur(8px);
+    opacity: 0.6;
+    z-index: -2;
+    animation: waterGlow 3.5s infinite ease-in-out;
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: rgba(60, 79, 47, 0.6); /* Оливковый с прозрачностью */
+    background: rgba(60, 79, 47, 0.5);
     color: #F5E6CC;
     font-family: 'Share Tech Mono', monospace;
     font-size: 12px;
@@ -270,24 +321,41 @@ button:hover span {
     margin-left: 10px;
     line-height: 1.4;
     display: none;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
+    border-radius: 35px 20px 30px 25px;
+    box-shadow: 0 0 25px rgba(255, 177, 7, 0.5), 0 0 20px rgba(128, 203, 196, 0.4), 0 0 30px rgba(217, 107, 107, 0.3);
     position: relative;
-    animation: cocoonPulse 5s infinite ease-in-out;
+    animation: cocoonPulse 4.5s infinite ease-in-out;
+    backdrop-filter: blur(5px);
     will-change: contents;
 }
 
 .terminal-log::before {
     content: '';
     position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
-    opacity: 0.6;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 40px 25px 35px 30px;
+    background: radial-gradient(circle at 40% 60%, rgba(255, 177, 7, 0.4) 0%, transparent 50%), 
+                radial-gradient(circle at 70% 30%, rgba(0, 168, 107, 0.3) 0%, transparent 40%);
+    opacity: 0.7;
     z-index: -1;
+    animation: resinDrip 5s infinite ease-in-out;
+}
+
+.terminal-log::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 45px 30px 40px 35px;
+    background: radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 60%);
+    filter: blur(8px);
+    opacity: 0.6;
+    z-index: -2;
     animation: waterGlow 4s infinite ease-in-out;
 }
 
@@ -304,22 +372,22 @@ button:hover span {
 }
 
 .terminal-log div.tunneling {
-    color: #80CBC4; /* Выцветший бирюзовый */
+    color: #80CBC4;
     text-shadow: 0 0 5px rgba(128, 203, 196, 0.5);
 }
 
 .terminal-log div.interference {
-    color: #D96B6B; /* Мутный коралл */
+    color: #D96B6B;
     text-shadow: 0 0 5px rgba(217, 107, 107, 0.5);
 }
 
 .terminal-log div.entanglement {
-    color: #F5E6CC; /* Кремовый */
+    color: #F5E6CC;
     text-shadow: 0 0 5px rgba(255, 177, 7, 0.5);
 }
 
 .terminal-log div.vortex {
-    color: #00A86B; /* Нефрит */
+    color: #00A86B;
     text-shadow: 0 0 5px rgba(0, 168, 107, 0.5);
 }
 
@@ -330,35 +398,52 @@ button:hover span {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(60, 79, 47, 0.8); /* Оливковый с прозрачностью */
+    background: rgba(60, 79, 47, 0.8);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background: rgba(60, 79, 47, 0.6);
+    background: rgba(60, 79, 47, 0.5);
     padding: 20px;
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
+    border-radius: 35px 20px 30px 25px;
+    box-shadow: 0 0 25px rgba(255, 177, 7, 0.5), 0 0 20px rgba(128, 203, 196, 0.4), 0 0 30px rgba(217, 107, 107, 0.3);
     position: relative;
-    animation: cocoonPulse 5s infinite ease-in-out;
+    animation: cocoonPulse 4.5s infinite ease-in-out;
+    backdrop-filter: blur(5px);
 }
 
 .modal-content::before {
     content: '';
     position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
-    opacity: 0.6;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 40px 25px 35px 30px;
+    background: radial-gradient(circle at 40% 60%, rgba(255, 177, 7, 0.4) 0%, transparent 50%), 
+                radial-gradient(circle at 70% 30%, rgba(0, 168, 107, 0.3) 0%, transparent 40%);
+    opacity: 0.7;
     z-index: -1;
+    animation: resinDrip 5s infinite ease-in-out;
+}
+
+.modal-content::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 45px 30px 40px 35px;
+    background: radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 60%);
+    filter: blur(8px);
+    opacity: 0.6;
+    z-index: -2;
     animation: waterGlow 4s infinite ease-in-out;
 }
 
@@ -390,51 +475,85 @@ button:hover span {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    border-radius: 20px;
-    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(128, 203, 196, 0.3), 0 0 20px rgba(217, 107, 107, 0.2);
+    border-radius: 30px 15px 25px 20px;
+    box-shadow: 0 0 20px rgba(255, 177, 7, 0.5), 0 0 15px rgba(128, 203, 196, 0.4), 0 0 25px rgba(217, 107, 107, 0.3);
     position: relative;
-    animation: cocoonPulse 3.5s infinite ease-in-out;
+    animation: cocoonPulse 4s infinite ease-in-out;
+    backdrop-filter: blur(5px);
 }
 
 .archive-image::before {
     content: '';
     position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
-    opacity: 0.6;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 35px 20px 30px 25px;
+    background: radial-gradient(circle at 40% 60%, rgba(255, 177, 7, 0.4) 0%, transparent 50%), 
+                radial-gradient(circle at 70% 30%, rgba(0, 168, 107, 0.3) 0%, transparent 40%);
+    opacity: 0.7;
     z-index: -1;
-    animation: waterGlow 3s infinite ease-in-out;
+    animation: resinDrip 4.5s infinite ease-in-out;
+}
+
+.archive-image::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 40px 25px 35px 30px;
+    background: radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 60%);
+    filter: blur(8px);
+    opacity: 0.6;
+    z-index: -2;
+    animation: waterGlow 3.5s infinite ease-in-out;
 }
 
 .archive-image:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(255, 177, 7, 0.7), 0 0 15px rgba(128, 203, 196, 0.6), 0 0 25px rgba(217, 107, 107, 0.5);
+    box-shadow: 0 0 25px rgba(255, 177, 7, 0.7), 0 0 20px rgba(128, 203, 196, 0.6), 0 0 30px rgba(217, 107, 107, 0.5);
 }
 
 #camera-video {
     max-width: 100%;
-    border-radius: 20px;
-    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(128, 203, 196, 0.3), 0 0 20px rgba(217, 107, 107, 0.2);
+    border-radius: 30px 15px 25px 20px;
+    box-shadow: 0 0 20px rgba(255, 177, 7, 0.5), 0 0 15px rgba(128, 203, 196, 0.4), 0 0 25px rgba(217, 107, 107, 0.3);
     position: relative;
-    animation: cocoonPulse 3.5s infinite ease-in-out;
+    animation: cocoonPulse 4s infinite ease-in-out;
+    backdrop-filter: blur(5px);
 }
 
 #camera-video::before {
     content: '';
     position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
-    opacity: 0.6;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 35px 20px 30px 25px;
+    background: radial-gradient(circle at 40% 60%, rgba(255, 177, 7, 0.4) 0%, transparent 50%), 
+                radial-gradient(circle at 70% 30%, rgba(0, 168, 107, 0.3) 0%, transparent 40%);
+    opacity: 0.7;
     z-index: -1;
-    animation: waterGlow 3s infinite ease-in-out;
+    animation: resinDrip 4.5s infinite ease-in-out;
+}
+
+#camera-video::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 40px 25px 35px 30px;
+    background: radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 60%);
+    filter: blur(8px);
+    opacity: 0.6;
+    z-index: -2;
+    animation: waterGlow 3.5s infinite ease-in-out;
 }
 
 #capture-photo {
@@ -442,30 +561,47 @@ button:hover span {
 }
 
 input[type="text"] {
-    background: rgba(60, 79, 47, 0.6);
+    background: rgba(60, 79, 47, 0.5);
     border: none;
     color: #F5E6CC;
     font-family: 'Share Tech Mono', monospace;
     padding: 10px;
     font-size: 16px;
-    border-radius: 20px;
-    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(128, 203, 196, 0.3), 0 0 20px rgba(217, 107, 107, 0.2);
+    border-radius: 30px 15px 25px 20px;
+    box-shadow: 0 0 20px rgba(255, 177, 7, 0.5), 0 0 15px rgba(128, 203, 196, 0.4), 0 0 25px rgba(217, 107, 107, 0.3);
     position: relative;
-    animation: cocoonPulse 3.5s infinite ease-in-out;
+    animation: cocoonPulse 4s infinite ease-in-out;
+    backdrop-filter: blur(5px);
 }
 
 input[type="text"]::before {
     content: '';
     position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 24px;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
-    opacity: 0.6;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 35px 20px 30px 25px;
+    background: radial-gradient(circle at 40% 60%, rgba(255, 177, 7, 0.4) 0%, transparent 50%), 
+                radial-gradient(circle at 70% 30%, rgba(0, 168, 107, 0.3) 0%, transparent 40%);
+    opacity: 0.7;
     z-index: -1;
-    animation: waterGlow 3s infinite ease-in-out;
+    animation: resinDrip 4.5s infinite ease-in-out;
+}
+
+input[type="text"]::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 40px 25px 35px 30px;
+    background: radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 60%);
+    filter: blur(8px);
+    opacity: 0.6;
+    z-index: -2;
+    animation: waterGlow 3.5s infinite ease-in-out;
 }
 
 input[type="text"]::placeholder {
@@ -564,16 +700,20 @@ input[type="text"]::placeholder {
 
 @keyframes cocoonPulse {
     0% {
-        box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
-        transform: scale(1);
+        box-shadow: 0 0 25px rgba(255, 177, 7, 0.5), 0 0 20px rgba(128, 203, 196, 0.4), 0 0 30px rgba(217, 107, 107, 0.3);
+        transform: scale(1) translate(0, 0);
     }
-    50% {
-        box-shadow: 0 0 25px rgba(255, 177, 7, 0.6), 0 0 20px rgba(128, 203, 196, 0.5), 0 0 30px rgba(217, 107, 107, 0.4);
-        transform: scale(1.03);
+    30% {
+        box-shadow: 0 0 30px rgba(255, 177, 7, 0.6), 0 0 25px rgba(128, 203, 196, 0.5), 0 0 35px rgba(217, 107, 107, 0.4);
+        transform: scale(1.02) translate(2px, -1px);
+    }
+    60% {
+        box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
+        transform: scale(0.98) translate(-1px, 2px);
     }
     100% {
-        box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
-        transform: scale(1);
+        box-shadow: 0 0 25px rgba(255, 177, 7, 0.5), 0 0 20px rgba(128, 203, 196, 0.4), 0 0 30px rgba(217, 107, 107, 0.3);
+        transform: scale(1) translate(0, 0);
     }
 }
 
@@ -581,17 +721,55 @@ input[type="text"]::placeholder {
     0% {
         transform: scale(1);
         opacity: 0.6;
-        filter: blur(6px);
+        filter: blur(8px) brightness(1);
+    }
+    20% {
+        transform: scale(1.03);
+        opacity: 0.8;
+        filter: blur(7px) brightness(1.2);
     }
     50% {
-        transform: scale(1.04);
-        opacity: 0.8;
-        filter: blur(5px) brightness(1.2);
+        transform: scale(1.05);
+        opacity: 0.9;
+        filter: blur(6px) brightness(1.3);
+    }
+    80% {
+        transform: scale(1.02);
+        opacity: 0.7;
+        filter: blur(8px) brightness(1.1);
     }
     100% {
         transform: scale(1);
         opacity: 0.6;
-        filter: blur(6px);
+        filter: blur(8px) brightness(1);
+    }
+}
+
+@keyframes resinDrip {
+    0% {
+        transform: scale(1) translate(0, 0);
+        border-radius: 35px 20px 30px 25px;
+        opacity: 0.7;
+    }
+    25% {
+        transform: scale(1.02) translate(2px, -2px);
+        border-radius: 40px 15px 35px 20px;
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(0.98) translate(-2px, 2px);
+        border-radius: 30px 25px 20px 35px;
+        opacity: 0.6;
+    }
+    75% {
+        transform: scale(1.01) translate(1px, 1px);
+        border-radius: 25px 35px 15px 30px;
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1) translate(0, 0);
+        border-radius: 35px 20px 30px 25px;
+        opacity: 0.7;
     }
 }
 
