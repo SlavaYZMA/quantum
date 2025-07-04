@@ -11,8 +11,8 @@ window.globalMessageCooldown = 0;
 // Варианты сообщений в научном стиле
 const messages = {
     initialize: [
-        "Инициализация квантового разбиения портрета. Формирование фрагментов.",
-        "Квантовая система активирована. Подготовка сетки разбиения.",
+        "Инициализация квантового разбиения портрета. Портрет видим.",
+        "Квантовая система активирована. Подготовка к фрагментации.",
         "Начало декомпозиции портрета на квантовые фрагменты."
     ],
     initializeSuccess: [
@@ -30,25 +30,30 @@ const messages = {
         "Квантовая динамика: блоки и частицы взаимодействуют.",
         "Обновление волновых функций фрагментов портрета."
     ],
+    decompositionStart: [
+        "Инициировано квантовое разбиение портрета: фаза ${phase}.",
+        "Фрагментация портрета начата: сетка формируется.",
+        "Разрыв портрета на квантовые фрагменты: фаза ${phase}."
+    ],
     decomposition: [
-        "Квантовое разбиение: ${blockCount} блоков, фаза ${phase}.",
-        "Фрагментация портрета: ${blockCount} блоков в движении.",
-        "Разрыв портрета на ${blockCount} квантовых фрагментов."
+        "Квантовое разбиение: ${blockCount} блоков, прогресс ${progress}%.",
+        "Фрагментация портрета: ${blockCount} блоков, фаза ${phase}.",
+        "Разрыв портрета: ${blockCount} фрагментов, прогресс ${progress}%."
     ],
     stabilized: [
         "Квантовая система стабилизирована. Фрагменты зафиксированы.",
         "Стабилизация квантовых фрагментов завершена.",
-        "Фрагменты портрета достигли квантового равновесия."
+        "Фрагменты портрета в квантовом равновесии."
     ],
     scatter: [
         "Фрагменты рассеиваются в квантовом поле.",
         "Квантовая энтропия возрастает. Фрагменты разлетаются.",
-        "Фрагменты портрета увеличивают квантовую неопределённость."
+        "Фрагменты увеличивают квантовую неопределённость."
     ],
     superposition: [
         "Фрагмент в суперпозиции: амплитуда ψ=${amplitude}.",
-        "Квантовая суперпозиция фрагмента: состояние ψ=${amplitude}.",
-        "Фрагмент портрета в суперпозиции: |ψ|²=${probability}."
+        "Квантовая суперпозиция: состояние ψ=${amplitude}.",
+        "Фрагмент в суперпозиции: |ψ|²=${probability}."
     ],
     mouseInfluence: [
         "Наблюдение вызывает коллапс волновой функции фрагментов.",
@@ -56,9 +61,9 @@ const messages = {
         "Квантовая интерференция инициирована наблюдением."
     ],
     interference: [
-        "Интерференция волновых функций фрагментов формирует узоры.",
-        "Квантовая интерференция создаёт структуру портрета.",
-        "Волновая интерференция фрагментов: амплитуда ${amplitude}."
+        "Интерференция волновых функций формирует узоры.",
+        "Квантовая интерференция: амплитуда ${amplitude}.",
+        "Волновая интерференция фрагментов: ${amplitude}."
     ],
     tunneling: [
         "Фрагмент туннелировал с вероятностью P=${probability}.",
@@ -68,22 +73,22 @@ const messages = {
     entanglement: [
         "Запутанные фрагменты демонстрируют квантовую корреляцию.",
         "Квантовая запутанность синхронизирует фрагменты.",
-        "Фрагменты портрета связаны квантовой запутанностью."
+        "Фрагменты связаны квантовой запутанностью."
     ],
     collapse: [
-        "Коллапс волновой функции фрагмента: позиция (${x}, ${y}).",
-        "Наблюдение зафиксировало фрагмент в состоянии (${x}, ${y}).",
-        "Квантовая система: фрагмент коллапсировал."
+        "Коллапс волновой функции: позиция (${x}, ${y}).",
+        "Наблюдение зафиксировало фрагмент: (${x}, ${y}).",
+        "Фрагмент коллапсировал в квантовом поле."
     ],
     superpositionRestore: [
-        "Фрагмент восстановлен в суперпозицию: |ψ|²=${probability}.",
-        "Квантовая неопределённость фрагмента восстановлена.",
+        "Фрагмент восстановлен: |ψ|²=${probability}.",
+        "Квантовая неопределённость восстановлена.",
         "Фрагмент вернулся в суперпозицию."
     ],
     error: [
         "Квантовая ошибка: фрагмент ${index} не обновлён.",
         "Аномалия: фрагмент ${index} не изменил состояние.",
-        "Ошибка в квантовой системе: фрагмент ${index}."
+        "Ошибка: фрагмент ${index} не обработан."
     ]
 };
 
@@ -182,7 +187,7 @@ window.initializeParticles = function(img) {
                         r: r,
                         g: g,
                         b: b,
-                        a: 255,
+                        a: 0, // Блоки невидимы до разбиения
                         probability: 1.0,
                         decoherenceTimer: 0,
                         tunnelFlash: 0,
@@ -222,7 +227,7 @@ window.initializeParticles = function(img) {
                             r: pr,
                             g: pg,
                             b: pb,
-                            a: 255,
+                            a: 0, // Частицы невидимы до разбиения
                             probability: 1.0,
                             decoherenceTimer: 0,
                             tunnelFlash: 0,
@@ -343,15 +348,41 @@ window.updateParticles = function(sketch) {
     sketch.drawingContext.fillStyle = '#010004';
     sketch.rect(0, 0, 400, 400);
 
+    // Отображение портрета в начале шага 4
+    if (window.currentStep === 4 && window.decompositionTimer < 1 && window.img) {
+        sketch.image(window.img, 0, 0, 400, 400);
+    }
+
     // Квантовая декомпозиция на шаге 4
-    if (window.currentStep === 4 && window.decompositionTimer < 4) {
+    if (window.currentStep === 4) {
         window.decompositionTimer += 0.015;
-        console.log('Decomposition: Phase ' + window.decompositionTimer.toFixed(2));
-        if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-            window.terminalMessages.push(getRandomMessage('decomposition', { blockCount: window.blocks.length, phase: window.decompositionTimer.toFixed(2) }));
-            window.updateTerminalLog();
-            window.globalMessageCooldown = 300;
-            messageAddedThisFrame = true;
+        if (window.decompositionTimer >= 1 && window.decompositionTimer < 4) {
+            if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame && window.decompositionTimer < 1.015) {
+                window.terminalMessages.push(getRandomMessage('decompositionStart', { phase: window.decompositionTimer.toFixed(2) }));
+                window.updateTerminalLog();
+                window.globalMessageCooldown = 300;
+                messageAddedThisFrame = true;
+            }
+            let progress = ((window.decompositionTimer - 1) / 3 * 100).toFixed(0);
+            if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                window.terminalMessages.push(getRandomMessage('decomposition', { blockCount: window.blocks.length, progress, phase: window.decompositionTimer.toFixed(2) }));
+                window.updateTerminalLog();
+                window.globalMessageCooldown = 300;
+                messageAddedThisFrame = true;
+            }
+        }
+        // Плавное появление блоков и частиц
+        window.blocks.forEach((b, i) => {
+            let state = window.quantumStates[i];
+            state.a = Math.min(255, state.a + (window.decompositionTimer >= 1 ? 255 * 0.015 : 0));
+        });
+        window.particles.forEach((p, i) => {
+            let state = window.quantumStates[window.blocks.length + i];
+            state.a = Math.min(255, state.a + (window.decompositionTimer >= 1 ? 255 * 0.015 : 0));
+        });
+        // Скрытие портрета после разбиения
+        if (window.decompositionTimer >= 4 && window.img) {
+            sketch.image(window.img, 0, 0, 400, 400, 0, 0, 0, 0); // Пустое изображение
         }
     } else if (window.currentStep === 5) {
         if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
@@ -363,6 +394,8 @@ window.updateParticles = function(sketch) {
             window.globalMessageCooldown = 300;
             messageAddedThisFrame = true;
         }
+        window.blocks.forEach((b, i) => window.quantumStates[i].a = 255);
+        window.particles.forEach((p, i) => window.quantumStates[window.blocks.length + i].a = 255);
     }
 
     // Обновление мыши
@@ -380,9 +413,8 @@ window.updateParticles = function(sketch) {
             var state = window.quantumStates[i];
 
             // Квантовая декомпозиция
-            if (window.currentStep === 4 && window.decompositionTimer < 4) {
+            if (window.currentStep === 4 && window.decompositionTimer >= 1 && window.decompositionTimer < 4) {
                 b.decompositionProgress = Math.min(1, b.decompositionProgress + 0.015);
-                state.a = 255;
                 var dx = b.x - 200;
                 var dy = b.y - 200;
                 var dist = Math.sqrt(dx * dx + dy * dy) + 1;
@@ -392,8 +424,6 @@ window.updateParticles = function(sketch) {
                 if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     potentialMessages.push({ type: 'scatter', params: {} });
                 }
-            } else {
-                state.a = 255;
             }
 
             // Волновая функция (суперпозиция)
@@ -530,9 +560,8 @@ window.updateParticles = function(sketch) {
             var state = window.quantumStates[window.blocks.length + i];
 
             // Квантовая декомпозиция
-            if (window.currentStep === 4 && window.decompositionTimer < 4) {
+            if (window.currentStep === 4 && window.decompositionTimer >= 1 && window.decompositionTimer < 4) {
                 p.decompositionProgress = Math.min(1, p.decompositionProgress + 0.015);
-                state.a = 255;
                 var dx = p.x - 200;
                 var dy = p.y - 200;
                 var dist = Math.sqrt(dx * dx + dy * dy) + 1;
@@ -542,8 +571,6 @@ window.updateParticles = function(sketch) {
                 if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     potentialMessages.push({ type: 'scatter', params: {} });
                 }
-            } else {
-                state.a = 255;
             }
 
             // Волновая функция (суперпозиция)
