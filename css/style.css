@@ -4,8 +4,8 @@
 body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #010004 0%, #1e1b4b 40%, #5b21b6 100%);
-    color: #e5e5e5;
+    background: linear-gradient(135deg, #3C4F2F 0%, #FFB107 40%, #D96B6B 100%); /* Оливковый, янтарь, мутный коралл */
+    color: #F5E6CC; /* Мягкий кремовый для текста */
     font-family: 'Share Tech Mono', monospace;
     display: flex;
     justify-content: center;
@@ -15,7 +15,7 @@ body {
     position: relative;
 }
 
-/* Живое квантовое поле с текстурой и хаотичными вспышками */
+/* Органический фон с липкой, смолистой текстурой */
 body::before {
     content: '';
     position: fixed;
@@ -24,19 +24,18 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 30% 40%, rgba(229, 229, 255, 0.6) 0%, transparent 20%),
-        radial-gradient(circle at 70% 60%, rgba(0, 183, 235, 0.5) 0%, transparent 15%),
-        radial-gradient(circle at 50% 30%, rgba(255, 0, 0, 0.4) 0%, transparent 18%),
-        linear-gradient(90deg, rgba(0, 255, 0, 0.3) 0%, rgba(255, 215, 0, 0.2) 50%, transparent 100%);
-    box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.2), inset 0 0 100px rgba(91, 33, 182, 0.5);
-    filter: blur(6px) contrast(1.2);
-    opacity: 0.7;
+        radial-gradient(circle at 20% 30%, rgba(0, 168, 107, 0.5) 0%, transparent 25%), /* Нефрит */
+        radial-gradient(circle at 80% 70%, rgba(128, 203, 196, 0.4) 0%, transparent 20%), /* Выцветший бирюзовый */
+        radial-gradient(circle at 50% 50%, rgba(217, 107, 107, 0.3) 0%, transparent 15%); /* Мутный коралл */
+    box-shadow: inset 0 0 150px rgba(255, 177, 7, 0.3), inset 0 0 80px rgba(60, 79, 47, 0.4); /* Янтарь и оливковый */
+    filter: blur(8px) contrast(1.1) opacity(0.7);
+    opacity: 0.6;
     pointer-events: none;
     z-index: -1;
-    animation: quantumChaos 5s infinite ease-in-out;
+    animation: organicFlow 6s infinite ease-in-out;
 }
 
-/* Интерференционные волны с текстурным наложением */
+/* Вязкие волны, как в глубокой воде */
 body::after {
     content: '';
     position: fixed;
@@ -45,17 +44,17 @@ body::after {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 55% 25%, rgba(255, 215, 0, 0.5) 0%, transparent 12%),
-        radial-gradient(circle at 20% 75%, rgba(0, 183, 235, 0.4) 0%, transparent 10%),
-        radial-gradient(circle at 85% 45%, rgba(255, 0, 0, 0.3) 0%, transparent 15%);
-    filter: blur(4px);
-    opacity: 0.6;
+        radial-gradient(circle at 60% 20%, rgba(255, 177, 7, 0.4) 0%, transparent 15%), /* Янтарь */
+        radial-gradient(circle at 30% 80%, rgba(0, 168, 107, 0.3) 0%, transparent 12%), /* Нефрит */
+        radial-gradient(circle at 90% 40%, rgba(128, 203, 196, 0.3) 0%, transparent 10%); /* Выцветший бирюзовый */
+    filter: blur(10px) opacity(0.6);
+    opacity: 0.5;
     pointer-events: none;
     z-index: -2;
-    animation: quantumFlux 4s infinite ease-in-out;
+    animation: viscousWave 5s infinite ease-in-out;
 }
 
-/* Хаотичные мерцающие точки с эффектом мазков */
+/* Мерцающие частицы, как в смоле */
 body::after::before {
     content: '';
     position: fixed;
@@ -64,27 +63,27 @@ body::after::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 40% 60%, rgba(229, 229, 255, 0.6) 0%, transparent 2%),
-        radial-gradient(circle at 25% 85%, rgba(0, 255, 0, 0.5) 0%, transparent 1.5%),
-        radial-gradient(circle at 90% 20%, rgba(255, 215, 0, 0.5) 0%, transparent 1.5%);
-    filter: blur(3px) contrast(1.3);
-    opacity: 0.5;
+        radial-gradient(circle at 35% 65%, rgba(255, 177, 7, 0.5) 0%, transparent 2%), /* Янтарь */
+        radial-gradient(circle at 20% 90%, rgba(0, 168, 107, 0.4) 0%, transparent 1.5%), /* Нефрит */
+        radial-gradient(circle at 85% 25%, rgba(217, 107, 107, 0.4) 0%, transparent 1.5%); /* Мутный коралл */
+    filter: blur(4px) contrast(1.2);
+    opacity: 0.4;
     pointer-events: none;
     z-index: -3;
-    animation: quantumFlicker 2.5s infinite ease-in-out;
+    animation: resinFlicker 3s infinite ease-in-out;
 }
 
-/* Интерактивность фона с эффектом искажения */
+/* Интерактивность фона с эффектом вязкого тока */
 body:hover::before {
-    opacity: 0.9;
-    transform: translate(4px, 4px) rotate(1deg);
-    box-shadow: inset 0 0 250px rgba(255, 255, 255, 0.3), inset 0 0 120px rgba(0, 183, 235, 0.6);
-    filter: blur(7px) hue-rotate(45deg) brightness(1.5);
+    opacity: 0.8;
+    transform: translate(3px, 3px) rotate(0.5deg);
+    box-shadow: inset 0 0 200px rgba(255, 177, 7, 0.4), inset 0 0 100px rgba(128, 203, 196, 0.5);
+    filter: blur(9px) hue-rotate(20deg) brightness(1.3);
 }
 
 body:hover::after, body::after::before {
-    opacity: 0.8;
-    filter: blur(5px) hue-rotate(30deg) brightness(1.4);
+    opacity: 0.7;
+    filter: blur(11px) hue-rotate(15deg) brightness(1.2);
 }
 
 .step {
@@ -103,42 +102,42 @@ body:hover::after, body::after::before {
 }
 
 .text-block {
-    background: rgba(1, 0, 4, 0.7);
+    background: rgba(60, 79, 47, 0.6); /* Оливковый с прозрачностью */
     padding: 20px;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
-    animation: quantumPulse 4s infinite ease-in-out;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
+    animation: cocoonPulse 5s infinite ease-in-out;
 }
 
 .text-block::before {
     content: '';
     position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 18px;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
-    opacity: 0.5;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%); /* Янтарное свечение */
+    opacity: 0.6;
     z-index: -1;
-    animation: quantumWave 3s infinite ease-in-out;
+    animation: waterGlow 4s infinite ease-in-out;
 }
 
 .text-block div {
     margin-bottom: 10px;
-    color: #e5e5e5;
-    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
-    animation: quantumText 3s infinite alternate;
+    color: #F5E6CC;
+    text-shadow: 0 0 5px rgba(255, 177, 7, 0.5), 0 0 10px rgba(128, 203, 196, 0.4);
+    animation: organicText 3.5s infinite alternate;
 }
 
 .text-block span {
     display: inline;
-    color: #e5e5e5;
+    color: #F5E6CC;
 }
 
 .button-block {
@@ -149,19 +148,19 @@ body:hover::after, body::after::before {
     position: relative;
 }
 
-/* Кнопки как облака энергии с чётким текстом */
+/* Кнопки как липкие, органические капли */
 button {
-    background: linear-gradient(45deg, rgba(229, 229, 255, 0.4), rgba(0, 183, 235, 0.3), rgba(255, 0, 0, 0.3), rgba(0, 255, 0, 0.2), rgba(255, 215, 0, 0.2));
+    background: linear-gradient(45deg, rgba(255, 177, 7, 0.5), rgba(0, 168, 107, 0.4), rgba(217, 107, 107, 0.3), rgba(128, 203, 196, 0.3)); /* Янтарь, нефрит, коралл, бирюза */
     border: none;
-    color: #e5e5e5;
+    color: #F5E6CC;
     font-family: 'Share Tech Mono', monospace;
     padding: 15px 30px;
     cursor: pointer;
     font-size: 16px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(229, 229, 255, 0.5), 0 0 15px rgba(0, 183, 235, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
+    border-radius: 25px 15px 20px 30px; /* Асимметричные края для дискомфорта */
+    box-shadow: 0 0 20px rgba(255, 177, 7, 0.5), 0 0 15px rgba(0, 168, 107, 0.4), 0 0 25px rgba(217, 107, 107, 0.3);
     position: relative;
-    animation: cloudShift 4s infinite ease-in-out, quantumPulseButton 3s infinite ease-in-out;
+    animation: stickyShift 3.5s infinite ease-in-out, organicPulseButton 2.5s infinite ease-in-out;
     transform-origin: center;
     z-index: 10;
 }
@@ -169,16 +168,16 @@ button {
 button::before {
     content: '';
     position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 25px;
-    background: radial-gradient(circle at 50% 50%, rgba(229, 229, 255, 0.3) 0%, transparent 70%);
-    filter: blur(5px);
-    opacity: 0.6;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 30px 20px 25px 35px;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.4) 0%, transparent 60%);
+    filter: blur(6px);
+    opacity: 0.7;
     z-index: -1;
-    animation: cloudGlow 3.5s infinite ease-in-out;
+    animation: stickyGlow 4s infinite ease-in-out;
 }
 
 button::after {
@@ -188,82 +187,82 @@ button::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, rgba(0, 255, 0, 0.2), rgba(255, 0, 0, 0.2), transparent);
-    filter: blur(3px) contrast(1.2);
-    opacity: 0.5;
+    background: linear-gradient(90deg, rgba(0, 168, 107, 0.3), rgba(217, 107, 107, 0.2), transparent);
+    filter: blur(4px) contrast(1.1);
+    opacity: 0.6;
     z-index: -1;
-    animation: cloudTexture 5s infinite ease-in-out;
+    animation: resinTexture 5s infinite ease-in-out;
 }
 
 button:hover {
-    transform: scale(1.1) rotate(2deg);
-    box-shadow: 0 0 30px rgba(229, 229, 255, 0.7), 0 0 20px rgba(0, 183, 235, 0.6), 0 0 35px rgba(255, 215, 0, 0.5);
-    color: #00ff00;
+    transform: scale(1.15) rotate(3deg) translate(2px, -2px); /* Усиленный дискомфорт */
+    box-shadow: 0 0 30px rgba(255, 177, 7, 0.7), 0 0 20px rgba(128, 203, 196, 0.6), 0 0 35px rgba(217, 107, 107, 0.5);
+    color: #FFCA28; /* Неоново-янтарный */
 }
 
 button span {
     display: inline-block;
-    color: #e5e5e5;
+    color: #F5E6CC;
 }
 
 button:hover span {
-    color: #00ff00;
+    color: #FFCA28;
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: rgba(1, 0, 4, 0.8);
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
+    background: rgba(60, 79, 47, 0.7); /* Оливковый с прозрачностью */
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
     position: relative;
-    animation: quantumPulse 4s infinite ease-in-out;
+    animation: cocoonPulse 5s infinite ease-in-out;
 }
 
 #portrait-animation-container-step-4::before,
 #portrait-animation-container-step-5::before {
     content: '';
     position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 18px;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
-    opacity: 0.5;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
+    opacity: 0.6;
     z-index: -1;
-    animation: quantumWave 3s infinite ease-in-out;
+    animation: waterGlow 4s infinite ease-in-out;
 }
 
 #thumbnail-portrait {
     width: 100px;
     height: 100px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5), 0 0 8px rgba(255, 255, 255, 0.3), 0 0 15px rgba(96, 165, 250, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(128, 203, 196, 0.3), 0 0 20px rgba(217, 107, 107, 0.2);
     position: relative;
-    animation: quantumPulse 3s infinite ease-in-out;
+    animation: cocoonPulse 3.5s infinite ease-in-out;
 }
 
 #thumbnail-portrait::before {
     content: '';
     position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
-    border-radius: 18px;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
-    opacity: 0.5;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
+    opacity: 0.6;
     z-index: -1;
-    animation: quantumWave 2.5s infinite ease-in-out;
+    animation: waterGlow 3s infinite ease-in-out;
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: rgba(1, 0, 4, 0.7);
-    color: #e5e5e5;
+    background: rgba(60, 79, 47, 0.6); /* Оливковый с прозрачностью */
+    color: #F5E6CC;
     font-family: 'Share Tech Mono', monospace;
     font-size: 12px;
     padding: 10px;
@@ -271,25 +270,25 @@ button:hover span {
     margin-left: 10px;
     line-height: 1.4;
     display: none;
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
     position: relative;
-    animation: quantumPulse 4s infinite ease-in-out;
+    animation: cocoonPulse 5s infinite ease-in-out;
     will-change: contents;
 }
 
 .terminal-log::before {
     content: '';
     position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 18px;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
-    opacity: 0.5;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
+    opacity: 0.6;
     z-index: -1;
-    animation: quantumWave 3s infinite ease-in-out;
+    animation: waterGlow 4s infinite ease-in-out;
 }
 
 #terminal-log-step-4,
@@ -298,30 +297,30 @@ button:hover span {
 }
 
 .terminal-log div {
-    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4);
+    text-shadow: 0 0 5px rgba(255, 177, 7, 0.5), 0 0 10px rgba(128, 203, 196, 0.4);
     margin-bottom: 5px;
-    color: #e5e5e5;
+    color: #F5E6CC;
     will-change: contents;
 }
 
 .terminal-log div.tunneling {
-    color: #00b7eb;
-    text-shadow: 0 0 5px rgba(0, 183, 235, 0.5);
+    color: #80CBC4; /* Выцветший бирюзовый */
+    text-shadow: 0 0 5px rgba(128, 203, 196, 0.5);
 }
 
 .terminal-log div.interference {
-    color: #a78bfa;
-    text-shadow: 0 0 5px rgba(167, 139, 250, 0.5);
+    color: #D96B6B; /* Мутный коралл */
+    text-shadow: 0 0 5px rgba(217, 107, 107, 0.5);
 }
 
 .terminal-log div.entanglement {
-    color: #d1d1e6;
-    text-shadow: 0 0 5px rgba(209, 209, 230, 0.5);
+    color: #F5E6CC; /* Кремовый */
+    text-shadow: 0 0 5px rgba(255, 177, 7, 0.5);
 }
 
 .terminal-log div.vortex {
-    color: #3f167f;
-    text-shadow: 0 0 5px rgba(63, 22, 127, 0.5);
+    color: #00A86B; /* Нефрит */
+    text-shadow: 0 0 5px rgba(0, 168, 107, 0.5);
 }
 
 .modal {
@@ -331,40 +330,40 @@ button:hover span {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(1, 0, 4, 0.9);
+    background: rgba(60, 79, 47, 0.8); /* Оливковый с прозрачностью */
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background: rgba(1, 0, 4, 0.7);
+    background: rgba(60, 79, 47, 0.6);
     padding: 20px;
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(91, 33, 182, 0.5), 0 0 15px rgba(255, 255, 255, 0.3), 0 0 25px rgba(96, 165, 250, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
     position: relative;
-    animation: quantumPulse 4s infinite ease-in-out;
+    animation: cocoonPulse 5s infinite ease-in-out;
 }
 
 .modal-content::before {
     content: '';
     position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 18px;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
-    opacity: 0.5;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
+    opacity: 0.6;
     z-index: -1;
-    animation: quantumWave 3s infinite ease-in-out;
+    animation: waterGlow 4s infinite ease-in-out;
 }
 
 .close {
-    color: #e5e5e5;
+    color: #F5E6CC;
     font-size: 24px;
     font-family: 'Share Tech Mono', monospace;
     position: absolute;
@@ -372,13 +371,13 @@ button:hover span {
     right: 20px;
     cursor: pointer;
     z-index: 1001;
-    text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4);
-    animation: quantumText 3s infinite alternate;
+    text-shadow: 0 0 5px rgba(255, 177, 7, 0.5), 0 0 10px rgba(128, 203, 196, 0.4);
+    animation: organicText 3.5s infinite alternate;
 }
 
 .close:hover {
-    color: #00ff00;
-    transform: scale(1.1);
+    color: #FFCA28;
+    transform: scale(1.15);
 }
 
 .image-grid {
@@ -391,51 +390,51 @@ button:hover span {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5), 0 0 8px rgba(255, 255, 255, 0.3), 0 0 15px rgba(96, 165, 250, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(128, 203, 196, 0.3), 0 0 20px rgba(217, 107, 107, 0.2);
     position: relative;
-    animation: quantumPulse 3s infinite ease-in-out;
+    animation: cocoonPulse 3.5s infinite ease-in-out;
 }
 
 .archive-image::before {
     content: '';
     position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
-    border-radius: 18px;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
-    opacity: 0.5;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
+    opacity: 0.6;
     z-index: -1;
-    animation: quantumWave 2.5s infinite ease-in-out;
+    animation: waterGlow 3s infinite ease-in-out;
 }
 
 .archive-image:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(91, 33, 182, 0.7), 0 0 12px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 215, 0, 0.3);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 177, 7, 0.7), 0 0 15px rgba(128, 203, 196, 0.6), 0 0 25px rgba(217, 107, 107, 0.5);
 }
 
 #camera-video {
     max-width: 100%;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5), 0 0 8px rgba(255, 255, 255, 0.3), 0 0 15px rgba(96, 165, 250, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(128, 203, 196, 0.3), 0 0 20px rgba(217, 107, 107, 0.2);
     position: relative;
-    animation: quantumPulse 3s infinite ease-in-out;
+    animation: cocoonPulse 3.5s infinite ease-in-out;
 }
 
 #camera-video::before {
     content: '';
     position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
-    border-radius: 18px;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
-    opacity: 0.5;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
+    opacity: 0.6;
     z-index: -1;
-    animation: cloudGlow 2.5s infinite ease-in-out;
+    animation: waterGlow 3s infinite ease-in-out;
 }
 
 #capture-photo {
@@ -443,235 +442,244 @@ button:hover span {
 }
 
 input[type="text"] {
-    background: rgba(1, 0, 4, 0.7);
+    background: rgba(60, 79, 47, 0.6);
     border: none;
-    color: #e5e5e5;
+    color: #F5E6CC;
     font-family: 'Share Tech Mono', monospace;
     padding: 10px;
     font-size: 16px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(91, 33, 182, 0.5), 0 0 8px rgba(255, 255, 255, 0.3), 0 0 15px rgba(96, 165, 250, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(255, 177, 7, 0.4), 0 0 10px rgba(128, 203, 196, 0.3), 0 0 20px rgba(217, 107, 107, 0.2);
     position: relative;
-    animation: quantumPulse 3s infinite ease-in-out;
+    animation: cocoonPulse 3.5s infinite ease-in-out;
 }
 
 input[type="text"]::before {
     content: '';
     position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
-    border-radius: 18px;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 183, 235, 0.3) 0%, transparent 70%);
-    opacity: 0.5;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 177, 7, 0.3) 0%, transparent 60%);
+    opacity: 0.6;
     z-index: -1;
-    animation: quantumWave 2.5s infinite ease-in-out;
+    animation: waterGlow 3s infinite ease-in-out;
 }
 
 input[type="text"]::placeholder {
-    color: rgba(229, 229, 229, 0.7);
+    color: rgba(245, 230, 204, 0.7);
 }
 
-@keyframes quantumChaos {
+@keyframes organicFlow {
     0% {
-        background-position: 30% 40%, 70% 60%, 50% 30%, 0% 0%;
-        opacity: 0.7;
-        box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.2), inset 0 0 100px rgba(91, 33, 182, 0.5);
-        filter: blur(6px) brightness(1) hue-rotate(0deg);
+        background-position: 20% 30%, 80% 70%, 50% 50%;
+        opacity: 0.6;
+        box-shadow: inset 0 0 150px rgba(255, 177, 7, 0.3), inset 0 0 80px rgba(60, 79, 47, 0.4);
+        filter: blur(8px) brightness(1) hue-rotate(0deg);
         transform: translate(0, 0) rotate(0deg);
     }
     25% {
-        background-position: 35% 45%, 65% 55%, 55% 35%, 5% 5%;
-        opacity: 0.3;
-        filter: blur(8px) brightness(1.8) hue-rotate(30deg);
-        transform: translate(2px, 2px) rotate(0.5deg);
+        background-position: 25% 35%, 75% 65%, 55% 55%;
+        opacity: 0.4;
+        filter: blur(9px) brightness(1.2) hue-rotate(10deg);
+        transform: translate(2px, 2px) rotate(0.3deg);
     }
     50% {
-        background-position: 25% 35%, 75% 65%, 45% 25%, 10% 10%;
-        opacity: 0.1;
-        box-shadow: inset 0 0 250px rgba(255, 215, 0, 0.3), inset 0 0 120px rgba(0, 183, 235, 0.6);
-        filter: blur(7px) brightness(2) hue-rotate(60deg);
-        transform: translate(-2px, -2px) rotate(-0.5deg);
+        background-position: 15% 25%, 85% 75%, 45% 45%;
+        opacity: 0.3;
+        box-shadow: inset 0 0 200px rgba(255, 177, 7, 0.4), inset 0 0 100px rgba(128, 203, 196, 0.5);
+        filter: blur(10px) brightness(1.4) hue-rotate(20deg);
+        transform: translate(-2px, -2px) rotate(-0.3deg);
     }
     75% {
-        background-position: 32% 42%, 68% 58%, 52% 32%, 8% 8%;
+        background-position: 22% 32%, 78% 68%, 52% 52%;
         opacity: 0.5;
-        filter: blur(6px) brightness(1.5) hue-rotate(45deg);
-        transform: translate(1px, 1px) rotate(0.3deg);
+        filter: blur(8px) brightness(1.3) hue-rotate(15deg);
+        transform: translate(1px, 1px) rotate(0.2deg);
     }
     100% {
-        background-position: 30% 40%, 70% 60%, 50% 30%, 0% 0%;
-        opacity: 0.7;
-        box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.2), inset 0 0 100px rgba(91, 33, 182, 0.5);
-        filter: blur(6px) brightness(1) hue-rotate(0deg);
+        background-position: 20% 30%, 80% 70%, 50% 50%;
+        opacity: 0.6;
+        box-shadow: inset 0 0 150px rgba(255, 177, 7, 0.3), inset 0 0 80px rgba(60, 79, 47, 0.4);
+        filter: blur(8px) brightness(1) hue-rotate(0deg);
         transform: translate(0, 0) rotate(0deg);
     }
 }
 
-@keyframes quantumFlux {
+@keyframes viscousWave {
     0% {
-        background-position: 55% 25%, 20% 75%, 85% 45%;
-        opacity: 0.6;
+        background-position: 60% 20%, 30% 80%, 90% 40%;
+        opacity: 0.5;
         transform: scale(1);
-        filter: blur(4px) brightness(1) hue-rotate(0deg);
+        filter: blur(10px) brightness(1) hue-rotate(0deg);
     }
     50% {
-        background-position: 60% 30%, 15% 70%, 90% 50%;
-        opacity: 0.2;
-        transform: scale(1.04);
-        filter: blur(5px) brightness(1.7) hue-rotate(45deg);
+        background-position: 65% 25%, 25% 75%, 95% 45%;
+        opacity: 0.3;
+        transform: scale(1.05);
+        filter: blur(11px) brightness(1.3) hue-rotate(15deg);
     }
     100% {
-        background-position: 55% 25%, 20% 75%, 85% 45%;
-        opacity: 0.6;
+        background-position: 60% 20%, 30% 80%, 90% 40%;
+        opacity: 0.5;
         transform: scale(1);
-        filter: blur(4px) brightness(1) hue-rotate(0deg);
+        filter: blur(10px) brightness(1) hue-rotate(0deg);
     }
 }
 
-@keyframes quantumFlicker {
+@keyframes resinFlicker {
     0% {
-        background-position: 40% 60%, 25% 85%, 90% 20%;
-        opacity: 0.5;
-        filter: blur(3px) brightness(1);
+        background-position: 35% 65%, 20% 90%, 85% 25%;
+        opacity: 0.4;
+        filter: blur(4px) brightness(1);
     }
     20% {
-        background-position: 45% 65%, 20% 80%, 95% 25%;
-        opacity: 0.8;
-        filter: blur(4px) brightness(2);
+        background-position: 40% 70%, 15% 85%, 90% 30%;
+        opacity: 0.6;
+        filter: blur(5px) brightness(1.3);
     }
     40% {
-        background-position: 35% 55%, 30% 90%, 85% 15%;
+        background-position: 30% 60%, 25% 95%, 80% 20%;
         opacity: 0.3;
-        filter: blur(3px) brightness(1.5) hue-rotate(30deg);
+        filter: blur(4px) brightness(1.2) hue-rotate(10deg);
     }
     60% {
-        background-position: 42% 62%, 22% 82%, 92% 22%;
-        opacity: 0.6;
-        filter: blur(4px) brightness(1.8);
+        background-position: 38% 68%, 17% 87%, 88% 28%;
+        opacity: 0.5;
+        filter: blur(5px) brightness(1.4);
     }
     80% {
-        background-position: 38% 58%, 28% 88%, 88% 18%;
+        background-position: 33% 63%, 22% 92%, 83% 23%;
         opacity: 0.4;
-        filter: blur(3px) brightness(1.3) hue-rotate(15deg);
+        filter: blur(4px) brightness(1.2) hue-rotate(5deg);
     }
     100% {
-        background-position: 40% 60%, 25% 85%, 90% 20%;
-        opacity: 0.5;
-        filter: blur(3px) brightness(1);
+        background-position: 35% 65%, 20% 90%, 85% 25%;
+        opacity: 0.4;
+        filter: blur(4px) brightness(1);
     }
 }
 
-@keyframes quantumPulse {
+@keyframes cocoonPulse {
     0% {
-        box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
+        box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
+        transform: scale(1);
     }
     50% {
-        box-shadow: 0 0 20px rgba(91, 33, 182, 0.7), 0 0 15px rgba(255, 255, 255, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
-    }
-    100% {
-        box-shadow: 0 0 15px rgba(91, 33, 182, 0.5), 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(96, 165, 250, 0.2);
-    }
-}
-
-@keyframes quantumWave {
-    0% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-    50% {
-        transform: scale(1.02);
-        opacity: 0.7;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-}
-
-@keyframes quantumText {
-    0% {
-        transform: scale(1);
-        text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
-    }
-    50% {
+        box-shadow: 0 0 25px rgba(255, 177, 7, 0.6), 0 0 20px rgba(128, 203, 196, 0.5), 0 0 30px rgba(217, 107, 107, 0.4);
         transform: scale(1.03);
-        text-shadow: 0 0 10px rgba(229, 229, 255, 0.7), 0 0 15px rgba(0, 183, 235, 0.5), 0 0 20px rgba(255, 215, 0, 0.3);
     }
     100% {
+        box-shadow: 0 0 20px rgba(255, 177, 7, 0.4), 0 0 15px rgba(128, 203, 196, 0.3), 0 0 25px rgba(217, 107, 107, 0.2);
         transform: scale(1);
-        text-shadow: 0 0 5px rgba(229, 229, 255, 0.5), 0 0 10px rgba(0, 183, 235, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
     }
 }
 
-@keyframes cloudShift {
+@keyframes waterGlow {
     0% {
-        border-radius: 20px 30px 15px 25px;
+        transform: scale(1);
+        opacity: 0.6;
+        filter: blur(6px);
+    }
+    50% {
+        transform: scale(1.04);
+        opacity: 0.8;
+        filter: blur(5px) brightness(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+        filter: blur(6px);
+    }
+}
+
+@keyframes organicText {
+    0% {
+        transform: scale(1) translate(0, 0);
+        text-shadow: 0 0 5px rgba(255, 177, 7, 0.5), 0 0 10px rgba(128, 203, 196, 0.4);
+    }
+    50% {
+        transform: scale(1.02) translate(1px, -1px);
+        text-shadow: 0 0 8px rgba(255, 177, 7, 0.7), 0 0 12px rgba(128, 203, 196, 0.5);
+    }
+    100% {
+        transform: scale(1) translate(0, 0);
+        text-shadow: 0 0 5px rgba(255, 177, 7, 0.5), 0 0 10px rgba(128, 203, 196, 0.4);
+    }
+}
+
+@keyframes stickyShift {
+    0% {
+        border-radius: 25px 15px 20px 30px;
         transform: translate(0, 0) scale(1);
     }
     25% {
-        border-radius: 25px 15px 30px 20px;
-        transform: translate(2px, -2px) scale(1.02);
+        border-radius: 30px 20px 15px 35px;
+        transform: translate(3px, -2px) scale(1.03);
     }
     50% {
-        border-radius: 15px 25px 20px 30px;
-        transform: translate(-2px, 2px) scale(0.98);
+        border-radius: 15px 30px 25px 20px;
+        transform: translate(-3px, 2px) scale(0.97);
     }
     75% {
-        border-radius: 30px 20px 25px 15px;
-        transform: translate(1px, 1px) scale(1.01);
+        border-radius: 20px 25px 30px 15px;
+        transform: translate(2px, 1px) scale(1.02);
     }
     100% {
-        border-radius: 20px 30px 15px 25px;
+        border-radius: 25px 15px 20px 30px;
         transform: translate(0, 0) scale(1);
     }
 }
 
-@keyframes quantumPulseButton {
+@keyframes organicPulseButton {
     0% {
         opacity: 0.7;
-        box-shadow: 0 0 20px rgba(229, 229, 255, 0.5), 0 0 15px rgba(0, 183, 235, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
+        box-shadow: 0 0 20px rgba(255, 177, 7, 0.5), 0 0 15px rgba(0, 168, 107, 0.4), 0 0 25px rgba(217, 107, 107, 0.3);
+        transform: translate(0, 0);
     }
     50% {
         opacity: 0.9;
-        box-shadow: 0 0 30px rgba(229, 229, 255, 0.7), 0 0 20px rgba(0, 183, 235, 0.6), 0 0 35px rgba(255, 215, 0, 0.5);
+        box-shadow: 0 0 30px rgba(255, 177, 7, 0.7), 0 0 20px rgba(0, 168, 107, 0.6), 0 0 35px rgba(217, 107, 107, 0.5);
+        transform: translate(2px, -2px);
     }
     100% {
         opacity: 0.7;
-        box-shadow: 0 0 20px rgba(229, 229, 255, 0.5), 0 0 15px rgba(0, 183, 235, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
+        box-shadow: 0 0 20px rgba(255, 177, 7, 0.5), 0 0 15px rgba(0, 168, 107, 0.4), 0 0 25px rgba(217, 107, 107, 0.3);
+        transform: translate(0, 0);
     }
 }
 
-@keyframes cloudGlow {
+@keyframes stickyGlow {
     0% {
-        opacity: 0.6;
+        opacity: 0.7;
         transform: scale(1);
-        filter: blur(5px);
+        filter: blur(6px);
     }
     50% {
-        opacity: 0.8;
-        transform: scale(1.03);
-        filter: blur(4px) brightness(1.3);
+        opacity: 0.9;
+        transform: scale(1.04);
+        filter: blur(5px) brightness(1.2);
     }
     100% {
-        opacity: 0.6;
+        opacity: 0.7;
         transform: scale(1);
-        filter: blur(5px);
+        filter: blur(6px);
     }
 }
 
-@keyframes cloudTexture {
+@keyframes resinTexture {
     0% {
         background-position: 0% 0%;
-        opacity: 0.5;
+        opacity: 0.6;
     }
     50% {
         background-position: 100% 100%;
-        opacity: 0.3;
+        opacity: 0.4;
     }
     100% {
         background-position: 0% 0%;
-        opacity: 0.5;
+        opacity: 0.6;
     }
 }
