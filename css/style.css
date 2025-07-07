@@ -22,12 +22,14 @@ body::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at calc(5% + (random() * 90%)) calc(5% + (random() * 90%)), rgba(255, 0, 0, 0.5) 1px, transparent 2px),
-        radial-gradient(circle at calc(95% - (random() * 90%)) calc(95% - (random() * 90%)), rgba(0, 255, 0, 0.5) 2px, transparent 3px),
-        radial-gradient(circle at calc(50% + (random() * 40%)) calc(50% + (random() * 40%)), rgba(0, 0, 255, 0.5) calc(1px + random() * 3px), transparent calc(2px + random() * 2px)),
-        linear-gradient(calc(random() * 360deg), rgba(255, 165, 0, 0.5) 1px, transparent 2px),
-        linear-gradient(calc(random() * 360deg), rgba(75, 0, 130, 0.5) calc(1px + random() * 3px), transparent calc(2px + random() * 2px));
-    animation: chaoticFlow 8s infinite step-start;
+        radial-gradient(circle at 5% 5%, rgba(255, 0, 0, 0.7) 1px, transparent 2px),
+        radial-gradient(circle at 95% 95%, rgba(0, 255, 0, 0.7) 2px, transparent 3px),
+        radial-gradient(circle at 20% 80%, rgba(0, 0, 255, 0.7) 1.5px, transparent 2.5px),
+        linear-gradient(45deg, rgba(255, 165, 0, 0.7) 1px, transparent 2px),
+        linear-gradient(135deg, rgba(75, 0, 130, 0.7) 2px, transparent 3px),
+        radial-gradient(circle at 70% 30%, rgba(255, 99, 71, 0.7) 1px, transparent 2px),
+        linear-gradient(90deg, rgba(255, 0, 255, 0.7) 1.5px, transparent 2.5px);
+    animation: chaoticFlow 6s infinite step-start;
 }
 
 body::after {
@@ -40,12 +42,13 @@ body::after {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at calc(15% + (random() * 70%)) calc(85% - (random() * 70%)), rgba(255, 20, 147, 0.5) calc(1px + random() * 3px), transparent calc(2px + random() * 2px)),
-        radial-gradient(circle at calc(85% - (random() * 70%)) calc(15% + (random() * 70%)), rgba(0, 100, 0, 0.5) 2px, transparent 3px),
-        linear-gradient(calc(random() * 360deg), rgba(255, 215, 0, 0.5) calc(1px + random() * 3px), transparent calc(2px + random() * 2px)),
-        linear-gradient(calc(random() * 360deg), rgba(138, 43, 226, 0.5) 1px, transparent 2px),
-        radial-gradient(circle at calc(30% + (random() * 40%)) calc(70% - (random() * 40%)), rgba(0, 191, 255, 0.5) calc(1px + random() * 3px), transparent calc(2px + random() * 2px));
-    animation: chaoticFlow 10s infinite step-start reverse;
+        radial-gradient(circle at 15% 85%, rgba(255, 20, 147, 0.7) 2px, transparent 3px),
+        radial-gradient(circle at 85% 15%, rgba(0, 100, 0, 0.7) 1px, transparent 2px),
+        linear-gradient(60deg, rgba(255, 215, 0, 0.7) 2px, transparent 3px),
+        linear-gradient(180deg, rgba(138, 43, 226, 0.7) 1.5px, transparent 2.5px),
+        radial-gradient(circle at 40% 60%, rgba(0, 191, 255, 0.7) 1px, transparent 2px),
+        linear-gradient(30deg, rgba(0, 255, 127, 0.7) 2px, transparent 3px);
+    animation: chaoticFlow 8s infinite step-start reverse;
 }
 
 body > div::before {
@@ -58,18 +61,23 @@ body > div::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at calc(70% - (random() * 60%)) calc(30% + (random() * 60%)), rgba(255, 99, 71, 0.5) calc(1px + random() * 3px), transparent calc(2px + random() * 2px)),
-        linear-gradient(calc(random() * 360deg), rgba(255, 0, 255, 0.5) 1px, transparent 2px),
-        radial-gradient(circle at calc(40% + (random() * 50%)) calc(90% - (random() * 50%)), rgba(0, 255, 127, 0.5) calc(1px + random() * 3px), transparent calc(2px + random() * 2px));
-    animation: chaoticFlow 12s infinite step-start;
+        radial-gradient(circle at 50% 50%, rgba(255, 69, 0, 0.7) 1.5px, transparent 2.5px),
+        linear-gradient(120deg, rgba(255, 140, 0, 0.7) 1px, transparent 2px),
+        radial-gradient(circle at 90% 10%, rgba(0, 128, 0, 0.7) 2px, transparent 3px);
+    animation: chaoticFlow 10s infinite step-start;
 }
 
 @keyframes chaoticFlow {
     0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
-    20% { transform: translate(calc(random() * 100px - 50px), calc(random() * 100px - 50px)) scale(calc(0.9 + random() * 0.2)); opacity: calc(0.5 + random() * 0.5); }
-    40% { transform: translate(calc(random() * 100px - 50px), calc(random() * 100px - 50px)) scale(calc(0.9 + random() * 0.2)); opacity: calc(0.5 + random() * 0.5); }
-    60% { transform: translate(calc(random() * 100px - 50px), calc(random() * 100px - 50px)) scale(calc(0.9 + random() * 0.2)); opacity: calc(0.5 + random() * 0.5); }
-    80% { transform: translate(calc(random() * 100px - 50px), calc(random() * 100px - 50px)) scale(calc(0.9 + random() * 0.2)); opacity: calc(0.5 + random() * 0.5); }
+    10% { transform: translate(20px, -15px) scale(1.1); opacity: 0.6; }
+    20% { transform: translate(-30px, 10px) scale(0.9); opacity: 0.7; }
+    30% { transform: translate(15px, -20px) scale(1.05); opacity: 0.5; }
+    40% { transform: translate(-25px, 5px) scale(0.95); opacity: 0.9; }
+    50% { transform: translate(10px, -10px) scale(1.1); opacity: 0.4; }
+    60% { transform: translate(-15px, 15px) scale(0.9); opacity: 0.8; }
+    70% { transform: translate(25px, -5px) scale(1.05); opacity: 0.6; }
+    80% { transform: translate(-10px, 20px) scale(0.95); opacity: 0.7; }
+    90% { transform: translate(30px, -10px) scale(1.1); opacity: 0.5; }
     100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
 }
 
