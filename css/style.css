@@ -10,16 +10,10 @@ body {
     min-height: 100vh;
     overflow: hidden;
     position: relative;
-    /* Уберите или проверьте, не конфликтует ли с particles.js/p5.js */
 }
 
-/* Отключаем CSS-анимацию фона, если particles.js или p5.js управляют частицами */
-body::before,
-body::after,
-body > div::before {
-    content: none; /* Временно отключено для проверки */
-    /* Если хотите вернуть, раскомментируйте и проверьте совместимость */
-    /*
+body::before {
+    content: '';
     position: fixed;
     top: 0;
     left: 0;
@@ -27,7 +21,64 @@ body > div::before {
     height: 100%;
     pointer-events: none;
     z-index: -1;
-    */
+    background: 
+        radial-gradient(circle at 10% 10%, rgba(255, 0, 0, 0.5) 4px, transparent 4px),
+        linear-gradient(45deg, rgba(0, 255, 0, 0.5) 6px, transparent 6px),
+        polygon(50% 0%, 70% 20%, 30% 20% 10px, transparent 10px),
+        linear-gradient(90deg, rgba(0, 0, 255, 0.5) 8px, transparent 8px),
+        polygon(50% 100%, 70% 80%, 30% 80% 12px, transparent 12px);
+    background-size: 100px 100px, 120px 120px, 150px 150px, 80px 80px, 130px 130px;
+    background-position: 0 0, 20px 30px, 40px 50px, 60px 70px, 80px 90px;
+    animation: chaoticParticles 5s infinite step-end;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background: 
+        radial-gradient(circle at 90% 90%, rgba(255, 165, 0, 0.5) 10px, transparent 10px),
+        polygon(50% 0%, 60% 10%, 40% 10% 15px, transparent 15px),
+        linear-gradient(135deg, rgba(75, 0, 130, 0.5) 12px, transparent 12px),
+        polygon(50% 100%, 80% 90%, 20% 90% 20px, transparent 20px),
+        linear-gradient(60deg, rgba(0, 255, 255, 0.5) 7px, transparent 7px);
+    background-size: 110px 110px, 140px 140px, 90px 90px, 160px 160px, 100px 100px;
+    background-position: 10px 20px, 30px 40px, 50px 60px, 70px 80px, 90px 10px;
+    animation: chaoticParticles 6s infinite step-end reverse;
+}
+
+body > div::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background: 
+        polygon(50% 50%, 70% 70%, 30% 70% 4px, transparent 4px),
+        linear-gradient(90deg, rgba(255, 20, 147, 0.5) 16px, transparent 16px),
+        radial-gradient(circle at 30% 30%, rgba(0, 100, 0, 0.5) 18px, transparent 18px),
+        polygon(50% 0%, 60% 20%, 40% 20% 20px, transparent 20px),
+        linear-gradient(45deg, rgba(255, 215, 0, 0.5) 14px, transparent 14px);
+    background-size: 120px 120px, 130px 130px, 90px 90px, 150px 150px, 110px 110px;
+    background-position: 15px 25px, 35px 45px, 55px 65px, 75px 85px, 95px 5px;
+    animation: chaoticParticles 7s infinite step-end;
+}
+
+@keyframes chaoticParticles {
+    0% { transform: translate(0, 0); background-position: 0 0, 20px 30px, 40px 50px, 60px 70px, 80px 90px; }
+    20% { transform: translate(50px, -40px); background-position: 10px 10px, 30px 50px, 70px 20px, 90px 60px, 5px 80px; }
+    40% { transform: translate(-30px, 60px); background-position: 40px 40px, 60px 10px, 20px 70px, 80px 30px, 15px 90px; }
+    60% { transform: translate(20px, -20px); background-position: 70px 60px, 10px 80px, 50px 30px, 30px 90px, 90px 10px; }
+    80% { transform: translate(-40px, 30px); background-position: 30px 20px, 50px 70px, 90px 40px, 10px 50px, 60px 80px; }
+    100% { transform: translate(0, 0); background-position: 0 0, 20px 30px, 40px 50px, 60px 70px, 80px 90px; }
 }
 
 .step {
@@ -81,8 +132,8 @@ button {
     font-family: Arial, sans-serif;
     font-size: 16px;
     position: relative;
-    animation: changeShape 5s infinite steps(5, end), changeColor 4s infinite steps(4, end);
-    transition: none;
+    animation: changeShape 5s infinite step-end, changeColor 4s infinite step-end;
+    transition: transform 0s;
 }
 
 button:nth-child(1) {
@@ -115,8 +166,8 @@ button:hover {
 @keyframes changeShape {
     0% { border-radius: 50%; }
     25% { border-radius: 15px; }
-    50% { border-radius: 10px; }
-    75% { border-radius: 30px; }
+    50% { border-radius: 0px; }
+    75% { border-radius: 10px; }
     100% { border-radius: 50%; }
 }
 
