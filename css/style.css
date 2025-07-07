@@ -22,17 +22,17 @@ body::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 5% 5%, rgba(255, 182, 193, 0.8) 2px, rgba(0, 255, 127, 0.8) 4px, rgba(255, 215, 0, 0.8) 6px, transparent 8px),
-        radial-gradient(circle at 95% 95%, rgba(192, 255, 62, 0.8) 3px, rgba(135, 206, 235, 0.8) 5px, rgba(255, 165, 0, 0.8) 7px, transparent 9px),
-        radial-gradient(circle at 20% 80%, rgba(255, 182, 193, 0.8) 4px, rgba(0, 191, 255, 0.8) 6px, rgba(255, 215, 0, 0.8) 8px, transparent 10px),
-        radial-gradient(circle at 70% 30%, rgba(192, 255, 62, 0.8) 2px, rgba(255, 165, 0, 0.8) 4px, rgba(135, 206, 235, 0.8) 6px, transparent 8px),
-        conic-gradient(at 40% 60%, rgba(255, 0, 0, 0.6), rgba(0, 255, 0, 0.6), rgba(0, 0, 255, 0.6), rgba(255, 255, 0, 0.6), rgba(255, 0, 255, 0.6), rgba(0, 255, 255, 0.6), rgba(255, 0, 0, 0.6)) 5px,
-        radial-gradient(circle at 85% 15%, rgba(192, 192, 192, 0.8) 3px, rgba(255, 215, 0, 0.8) 5px, rgba(0, 191, 255, 0.8) 7px, transparent 9px),
-        radial-gradient(circle at 10% 90%, rgba(255, 182, 193, 0.7) 4px, rgba(135, 206, 235, 0.7) 6px, rgba(255, 165, 0, 0.7) 8px, transparent 10px),
-        conic-gradient(at 60% 40%, rgba(255, 215, 0, 0.6), rgba(0, 255, 127, 0.6), rgba(75, 0, 130, 0.6), rgba(255, 69, 0, 0.6)) 4px,
-        radial-gradient(circle at 30% 70%, rgba(192, 255, 62, 0.8) 2px, rgba(0, 100, 0, 0.8) 4px, rgba(138, 43, 226, 0.8) 6px, transparent 8px),
-        radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.8) 3px, rgba(0, 255, 0, 0.8) 5px, rgba(0, 0, 255, 0.8) 7px, transparent 9px);
-    animation: chaoticFlow 6s infinite;
+        radial-gradient(circle at 5% 5%, rgba(255, 159, 172, 0.8) 2px, rgba(135, 206, 235, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 95% 95%, rgba(0, 128, 0, 0.8) 3px, rgba(0, 191, 255, 0.8) 5px, transparent 7px),
+        radial-gradient(circle at 20% 80%, rgba(192, 192, 192, 0.8) 4px, rgba(255, 215, 0, 0.8) 6px, transparent 8px),
+        radial-gradient(circle at 70% 30%, rgba(255, 182, 193, 0.8) 2px, rgba(135, 206, 250, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 40% 60%, rgba(47, 79, 79, 0.8) 3px, rgba(0, 255, 255, 0.8) 5px, transparent 7px),
+        radial-gradient(circle at 85% 15%, rgba(211, 211, 211, 0.8) 4px, rgba(255, 165, 0, 0.8) 6px, transparent 8px),
+        radial-gradient(circle at 10% 90%, rgba(255, 192, 203, 0.8) 2px, rgba(173, 216, 230, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 60% 40%, rgba(34, 139, 34, 0.8) 3px, rgba(72, 209, 204, 0.8) 5px, transparent 7px),
+        radial-gradient(circle at 30% 70%, rgba(192, 192, 192, 0.8) 4px, rgba(255, 215, 0, 0.8) 6px, transparent 8px),
+        radial-gradient(circle at 50% 50%, rgba(245, 245, 220, 0.8) 3px, rgba(255, 182, 193, 0.8) 5px, transparent 7px);
+    animation: iridescentFlow 6s infinite;
 }
 
 body::after {
@@ -45,17 +45,17 @@ body::after {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 15% 85%, rgba(255, 182, 193, 0.8) 3px, rgba(0, 191, 255, 0.8) 5px, rgba(255, 215, 0, 0.8) 7px, transparent 9px),
-        radial-gradient(circle at 85% 15%, rgba(192, 255, 62, 0.8) 2px, rgba(135, 206, 235, 0.8) 4px, rgba(255, 165, 0, 0.8) 6px, transparent 8px),
-        radial-gradient(circle at 30% 70%, rgba(255, 0, 0, 0.8) 4px, rgba(0, 255, 127, 0.8) 6px, rgba(75, 0, 130, 0.8) 8px, transparent 10px),
-        conic-gradient(at 60% 40%, rgba(255, 69, 0, 0.6), rgba(255, 140, 0, 0.6), rgba(0, 128, 0, 0.6), rgba(0, 255, 255, 0.6)) 5px,
-        radial-gradient(circle at 10% 90%, rgba(192, 192, 192, 0.8) 3px, rgba(255, 0, 255, 0.8) 5px, rgba(138, 43, 226, 0.8) 7px, transparent 9px),
-        radial-gradient(circle at 75% 25%, rgba(255, 182, 193, 0.7) 2px, rgba(0, 100, 0, 0.7) 4px, rgba(255, 165, 0, 0.7) 6px, transparent 8px),
-        radial-gradient(circle at 45% 55%, rgba(135, 206, 235, 0.8) 4px, rgba(255, 215, 0, 0.8) 6px, rgba(0, 191, 255, 0.8) 8px, transparent 10px),
-        conic-gradient(at 20% 20%, rgba(255, 0, 0, 0.6), rgba(0, 255, 0, 0.6), rgba(0, 0, 255, 0.6)) 4px,
-        radial-gradient(circle at 80% 80%, rgba(255, 69, 0, 0.8) 3px, rgba(0, 255, 127, 0.8) 5px, rgba(255, 0, 255, 0.8) 7px, transparent 9px),
-        radial-gradient(circle at 50% 10%, rgba(192, 255, 62, 0.8) 2px, rgba(75, 0, 130, 0.8) 4px, rgba(255, 140, 0, 0.8) 6px, transparent 8px);
-    animation: chaoticFlow 8s infinite;
+        radial-gradient(circle at 15% 85%, rgba(0, 191, 255, 0.8) 3px, rgba(255, 20, 147, 0.8) 5px, transparent 7px),
+        radial-gradient(circle at 85% 15%, rgba(0, 255, 127, 0.8) 2px, rgba(0, 100, 0, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 30% 70%, rgba(255, 69, 0, 0.8) 4px, rgba(255, 215, 0, 0.8) 6px, transparent 8px),
+        radial-gradient(circle at 60% 40%, rgba(255, 140, 0, 0.8) 3px, rgba(138, 43, 226, 0.8) 5px, transparent 7px),
+        radial-gradient(circle at 10% 90%, rgba(0, 128, 0, 0.8) 2px, rgba(0, 191, 255, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 75% 25%, rgba(255, 0, 255, 0.8) 4px, rgba(255, 99, 71, 0.8) 6px, transparent 8px),
+        radial-gradient(circle at 45% 55%, rgba(75, 0, 130, 0.8) 3px, rgba(0, 255, 127, 0.8) 5px, transparent 7px),
+        radial-gradient(circle at 20% 20%, rgba(255, 165, 0, 0.8) 2px, rgba(0, 0, 255, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 80% 80%, rgba(0, 255, 0, 0.8) 4px, rgba(255, 182, 193, 0.8) 6px, transparent 8px),
+        radial-gradient(circle at 50% 10%, rgba(135, 206, 235, 0.8) 3px, rgba(255, 20, 147, 0.8) 5px, transparent 7px);
+    animation: iridescentFlow 8s infinite reverse;
 }
 
 body > div::before {
@@ -68,30 +68,25 @@ body > div::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 25% 25%, rgba(255, 20, 147, 0.8) 3px, rgba(0, 100, 0, 0.8) 5px, rgba(255, 215, 0, 0.8) 7px, transparent 9px),
-        radial-gradient(circle at 75% 75%, rgba(138, 43, 226, 0.8) 2px, rgba(0, 191, 255, 0.8) 4px, rgba(255, 165, 0, 0.8) 6px, transparent 8px),
-        conic-gradient(at 90% 10%, rgba(255, 0, 0, 0.6), rgba(0, 255, 0, 0.6), rgba(0, 0, 255, 0.6), rgba(255, 255, 0, 0.6)) 5px,
-        radial-gradient(circle at 15% 65%, rgba(192, 192, 192, 0.8) 4px, rgba(255, 140, 0, 0.8) 6px, rgba(0, 128, 0, 0.8) 8px, transparent 10px),
-        radial-gradient(circle at 40% 20%, rgba(255, 182, 193, 0.7) 3px, rgba(135, 206, 235, 0.7) 5px, rgba(255, 69, 0, 0.7) 7px, transparent 9px),
-        radial-gradient(circle at 70% 50%, rgba(0, 255, 127, 0.8) 2px, rgba(255, 0, 255, 0.8) 4px, rgba(75, 0, 130, 0.8) 6px, transparent 8px),
-        conic-gradient(at 30% 40%, rgba(255, 215, 0, 0.6), rgba(0, 191, 255, 0.6), rgba(255, 165, 0, 0.6)) 4px,
-        radial-gradient(circle at 85% 70%, rgba(192, 255, 62, 0.8) 3px, rgba(138, 43, 226, 0.8) 5px, rgba(0, 100, 0, 0.8) 7px, transparent 9px),
-        radial-gradient(circle at 50% 80%, rgba(255, 0, 0, 0.8) 2px, rgba(0, 255, 0, 0.8) 4px, rgba(0, 0, 255, 0.8) 6px, transparent 8px),
-        radial-gradient(circle at 10% 30%, rgba(255, 140, 0, 0.8) 4px, rgba(135, 206, 235, 0.8) 6px, rgba(255, 69, 0, 0.8) 8px, transparent 10px);
-    animation: chaoticFlow 10s infinite;
+        radial-gradient(circle at 25% 25%, rgba(255, 20, 147, 0.8) 3px, rgba(0, 100, 0, 0.8) 5px, transparent 7px),
+        radial-gradient(circle at 75% 75%, rgba(0, 191, 255, 0.8) 2px, rgba(255, 215, 0, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 90% 10%, rgba(138, 43, 226, 0.8) 4px, rgba(0, 255, 127, 0.8) 6px, transparent 8px),
+        radial-gradient(circle at 15% 65%, rgba(255, 69, 0, 0.8) 3px, rgba(255, 140, 0, 0.8) 5px, transparent 7px),
+        radial-gradient(circle at 40% 20%, rgba(0, 128, 0, 0.8) 2px, rgba(255, 0, 255, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 70% 50%, rgba(255, 99, 71, 0.8) 4px, rgba(75, 0, 130, 0.8) 6px, transparent 8px),
+        radial-gradient(circle at 30% 40%, rgba(255, 165, 0, 0.8) 3px, rgba(0, 0, 255, 0.8) 5px, transparent 7px),
+        radial-gradient(circle at 85% 70%, rgba(255, 182, 193, 0.8) 2px, rgba(135, 206, 235, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 50% 80%, rgba(255, 0, 0, 0.8) 4px, rgba(0, 255, 0, 0.8) 6px, transparent 8px),
+        radial-gradient(circle at 10% 30%, rgba(192, 192, 192, 0.8) 3px, rgba(255, 215, 0, 0.8) 5px, transparent 7px);
+    animation: iridescentFlow 10s infinite;
 }
 
-@keyframes chaoticFlow {
+@keyframes iridescentFlow {
     0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
-    10% { transform: translate(30px, -20px) scale(1.2); opacity: 0.6; }
-    20% { transform: translate(-40px, 15px) scale(0.9); opacity: 0.7; }
-    30% { transform: translate(25px, -30px) scale(1.15); opacity: 0.5; }
-    40% { transform: translate(-35px, 10px) scale(0.95); opacity: 0.9; }
-    50% { transform: translate(20px, -15px) scale(1.2); opacity: 0.4; }
-    60% { transform: translate(-25px, 25px) scale(0.9); opacity: 0.8; }
-    70% { transform: translate(35px, -10px) scale(1.15); opacity: 0.6; }
-    80% { transform: translate(-15px, 30px) scale(0.95); opacity: 0.7; }
-    90% { transform: translate(40px, -20px) scale(1.2); opacity: 0.5; }
+    20% { transform: translate(30px, -20px) scale(1.2); opacity: 0.6; }
+    40% { transform: translate(-40px, 15px) scale(0.9); opacity: 0.7; }
+    60% { transform: translate(25px, -30px) scale(1.15); opacity: 0.5; }
+    80% { transform: translate(-35px, 10px) scale(0.95); opacity: 0.9; }
     100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
 }
 
@@ -146,9 +141,9 @@ button {
     font-family: Arial, sans-serif;
     font-size: 16px;
     position: relative;
-    background: linear-gradient(45deg, rgba(255, 182, 193, 0.9), rgba(0, 255, 127, 0.9), rgba(255, 215, 0, 0.9), rgba(135, 206, 235, 0.9));
-    animation: buttonColorShift 8s infinite;
+    animation: iridescentButton 8s infinite, changeShape 10s infinite step-start;
     transition: transform 0.3s ease;
+    background: linear-gradient(45deg, rgba(255, 159, 172, 0.8), rgba(0, 128, 0, 0.8), rgba(192, 192, 192, 0.8));
 }
 
 button:nth-child(1) {
@@ -167,7 +162,7 @@ button:nth-child(3) {
 }
 
 button span {
-    color: #000000;
+    color: #FFFFFF;
     filter: invert(1);
 }
 
@@ -175,12 +170,20 @@ button:hover {
     transform: scale(1.1);
 }
 
-@keyframes buttonColorShift {
-    0% { background: linear-gradient(45deg, rgba(255, 182, 193, 0.9), rgba(0, 255, 127, 0.9), rgba(255, 215, 0, 0.9), rgba(135, 206, 235, 0.9)); }
-    25% { background: linear-gradient(45deg, rgba(192, 255, 62, 0.9), rgba(255, 165, 0, 0.9), rgba(0, 191, 255, 0.9), rgba(75, 0, 130, 0.9)); }
-    50% { background: linear-gradient(45deg, rgba(255, 0, 0, 0.9), rgba(0, 255, 0, 0.9), rgba(0, 0, 255, 0.9), rgba(255, 255, 0, 0.9)); step-start; }
-    75% { background: linear-gradient(45deg, rgba(192, 192, 192, 0.9), rgba(255, 140, 0, 0.9), rgba(0, 128, 0, 0.9), rgba(255, 0, 255, 0.9)); }
-    100% { background: linear-gradient(45deg, rgba(255, 182, 193, 0.9), rgba(0, 255, 127, 0.9), rgba(255, 215, 0, 0.9), rgba(135, 206, 235, 0.9)); }
+@keyframes iridescentButton {
+    0% { background: linear-gradient(45deg, rgba(255, 159, 172, 0.8), rgba(0, 128, 0, 0.8), rgba(192, 192, 192, 0.8)); }
+    25% { background: linear-gradient(90deg, rgba(0, 191, 255, 0.8), rgba(255, 215, 0, 0.8), rgba(135, 206, 235, 0.8)); }
+    50% { background: linear-gradient(135deg, rgba(47, 79, 79, 0.8), rgba(255, 0, 255, 0.8), rgba(211, 211, 211, 0.8)); }
+    75% { background: linear-gradient(180deg, rgba(255, 69, 0, 0.8), rgba(0, 255, 127, 0.8), rgba(245, 245, 220, 0.8)); }
+    100% { background: linear-gradient(45deg, rgba(255, 159, 172, 0.8), rgba(0, 128, 0, 0.8), rgba(192, 192, 192, 0.8)); }
+}
+
+@keyframes changeShape {
+    0% { border-radius: 50%; }
+    25% { border-radius: 15px; }
+    50% { border-radius: 10px; }
+    75% { border-radius: 25px; }
+    100% { border-radius: 50%; }
 }
 
 #portrait-animation-container-step-4,
