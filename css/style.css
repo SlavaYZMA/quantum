@@ -22,21 +22,16 @@ body::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 4% 6%, rgba(255, 159, 172, 0.5) 0.5px, rgba(135, 206, 235, 0.6) 1px, transparent 2px),
-        radial-gradient(circle at 93% 89%, rgba(0, 128, 0, 0.4) 0.5px, rgba(0, 191, 255, 0.7) 1px, transparent 1.5px),
-        radial-gradient(ellipse at 12% 84%, rgba(0, 0, 255, 0.6) 1px, rgba(255, 215, 0, 0.5) 1.5px, transparent 2px),
-        radial-gradient(circle at 67% 33%, rgba(192, 192, 192, 0.7) 0.5px, rgba(255, 165, 0, 0.8) 1px, transparent 1.5px),
-        radial-gradient(ellipse at 41% 59%, rgba(47, 79, 79, 0.5) 1px, rgba(0, 255, 255, 0.6) 1.5px, transparent 2px),
-        radial-gradient(circle at 86% 18%, rgba(255, 99, 71, 0.8) 0.5px, rgba(75, 0, 130, 0.4) 1px, transparent 1.5px),
-        radial-gradient(ellipse at 7% 92%, rgba(255, 192, 203, 0.6) 1px, rgba(173, 216, 230, 0.7) 1.5px, transparent 2px),
-        radial-gradient(circle at 61% 39%, rgba(34, 139, 34, 0.5) 0.5px, rgba(72, 209, 204, 0.8) 1px, transparent 2px),
-        radial-gradient(ellipse at 26% 74%, rgba(255, 215, 0, 0.7) 1px, rgba(138, 43, 226, 0.6) 1.5px, transparent 2px),
-        radial-gradient(circle at 54% 46%, rgba(245, 245, 220, 0.8) 0.5px, rgba(255, 182, 193, 0.5) 1px, transparent 1.5px),
-        radial-gradient(ellipse at 15% 85%, rgba(0, 191, 255, 0.6) 1px, rgba(255, 20, 147, 0.7) 1.5px, transparent 2px),
-        radial-gradient(circle at 90% 10%, rgba(0, 255, 127, 0.4) 0.5px, rgba(0, 100, 0, 0.8) 1px, transparent 1.5px),
-        radial-gradient(ellipse at 30% 70%, rgba(255, 69, 0, 0.5) 1px, rgba(255, 215, 0, 0.6) 1.5px, transparent 2px),
-        radial-gradient(circle at 70% 30%, rgba(255, 140, 0, 0.7) 0.5px, rgba(138, 43, 226, 0.8) 1px, transparent 2px),
-        radial-gradient(ellipse at 50% 50%, rgba(75, 0, 130, 0.6) 1px, rgba(0, 255, 127, 0.5) 1.5px, transparent 2px);
+        radial-gradient(circle at 5% 8%, rgba(255, 159, 172, 0.5) 0.5px, rgba(135, 206, 235, 0.6) 1px, transparent 1.5px) translate(2px, -1px),
+        radial-gradient(circle at 88% 92%, rgba(0, 128, 0, 0.4) 1px, rgba(0, 191, 255, 0.7) 1.5px, transparent 2px) translate(-3px, 2px),
+        radial-gradient(ellipse at 15% 75%, rgba(0, 0, 255, 0.6) 0.5px, rgba(255, 215, 0, 0.5) 1.5px, transparent 2px) translate(1px, -2px),
+        radial-gradient(circle at 67% 33%, rgba(192, 192, 192, 0.7) 1px, rgba(255, 165, 0, 0.8) 1.5px, transparent 2px) translate(-2px, 1px),
+        radial-gradient(ellipse at 41% 59%, rgba(47, 79, 79, 0.5) 0.5px, rgba(0, 255, 255, 0.6) 1px, transparent 1.5px) translate(3px, -1px),
+        radial-gradient(circle at 86% 18%, rgba(255, 99, 71, 0.8) 1.5px, rgba(75, 0, 130, 0.4) 2px, transparent 2.5px) translate(-1px, 2px),
+        radial-gradient(ellipse at 7% 92%, rgba(255, 192, 203, 0.6) 0.5px, rgba(173, 216, 230, 0.7) 1px, transparent 1.5px) translate(2px, -3px),
+        radial-gradient(circle at 61% 39%, rgba(34, 139, 34, 0.5) 1px, rgba(72, 209, 204, 0.8) 1.5px, transparent 2px) translate(-2px, 1px),
+        radial-gradient(ellipse at 26% 74%, rgba(255, 215, 0, 0.7) 0.5px, rgba(138, 43, 226, 0.6) 1.5px, transparent 2px) translate(1px, -2px),
+        radial-gradient(circle at 54% 46%, rgba(245, 245, 220, 0.8) 1px, rgba(255, 182, 193, 0.5) 1.5px, transparent 2px) translate(-3px, 2px);
     animation: iridescentFlow 6s infinite;
 }
 
@@ -50,21 +45,16 @@ body::after {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(ellipse at 16% 83%, rgba(0, 191, 255, 0.7) 0.5px, rgba(255, 20, 147, 0.6) 1px, transparent 1.5px),
-        radial-gradient(circle at 88% 11%, rgba(0, 255, 127, 0.5) 1px, rgba(0, 100, 0, 0.8) 1.5px, transparent 2px),
-        radial-gradient(ellipse at 31% 69%, rgba(255, 69, 0, 0.6) 0.5px, rgba(255, 215, 0, 0.7) 1px, transparent 1.5px),
-        radial-gradient(circle at 57% 43%, rgba(255, 140, 0, 0.8) 1px, rgba(138, 43, 226, 0.5) 1.5px, transparent 2px),
-        radial-gradient(ellipse at 8% 90%, rgba(0, 128, 0, 0.4) 0.5px, rgba(0, 191, 255, 0.6) 1px, transparent 1.5px),
-        radial-gradient(circle at 72% 26%, rgba(255, 0, 255, 0.7) 1px, rgba(255, 99, 71, 0.8) 1.5px, transparent 2px),
-        radial-gradient(ellipse at 44% 56%, rgba(75, 0, 130, 0.5) 0.5px, rgba(0, 255, 127, 0.6) 1px, transparent 2px),
-        radial-gradient(circle at 21% 19%, rgba(255, 165, 0, 0.8) 1px, rgba(0, 0, 255, 0.7) 1.5px, transparent 2px),
-        radial-gradient(ellipse at 81% 77%, rgba(0, 255, 0, 0.6) 0.5px, rgba(255, 182, 193, 0.5) 1px, transparent 1.5px),
-        radial-gradient(circle at 49% 13%, rgba(135, 206, 235, 0.7) 1px, rgba(255, 20, 147, 0.8) 1.5px, transparent 2px),
-        radial-gradient(ellipse at 19% 87%, rgba(255, 69, 0, 0.5) 0.5px, rgba(255, 140, 0, 0.6) 1px, transparent 1.5px),
-        radial-gradient(circle at 95% 5%, rgba(192, 192, 192, 0.8) 1px, rgba(255, 215, 0, 0.4) 1.5px, transparent 2px),
-        radial-gradient(ellipse at 35% 65%, rgba(0, 191, 255, 0.6) 0.5px, rgba(255, 99, 71, 0.7) 1px, transparent 1.5px),
-        radial-gradient(circle at 60% 40%, rgba(255, 165, 0, 0.5) 1px, rgba(0, 128, 0, 0.8) 1.5px, transparent 2px),
-        radial-gradient(ellipse at 10% 90%, rgba(255, 0, 0, 0.7) 0.5px, rgba(0, 255, 0, 0.6) 1px, transparent 2px);
+        radial-gradient(ellipse at 16% 83%, rgba(0, 191, 255, 0.7) 0.5px, rgba(255, 20, 147, 0.6) 1px, transparent 1.5px) translate(2px, -1px),
+        radial-gradient(circle at 88% 11%, rgba(0, 255, 127, 0.5) 1px, rgba(0, 100, 0, 0.8) 1.5px, transparent 2px) translate(-3px, 2px),
+        radial-gradient(ellipse at 31% 69%, rgba(255, 69, 0, 0.6) 0.5px, rgba(255, 215, 0, 0.7) 1px, transparent 1.5px) translate(1px, -2px),
+        radial-gradient(circle at 57% 43%, rgba(255, 140, 0, 0.8) 1px, rgba(138, 43, 226, 0.5) 1.5px, transparent 2px) translate(-2px, 1px),
+        radial-gradient(ellipse at 8% 90%, rgba(0, 128, 0, 0.4) 0.5px, rgba(0, 191, 255, 0.6) 1px, transparent 1.5px) translate(3px, -1px),
+        radial-gradient(circle at 72% 26%, rgba(255, 0, 255, 0.7) 1.5px, rgba(255, 99, 71, 0.8) 2px, transparent 2.5px) translate(-1px, 2px),
+        radial-gradient(ellipse at 44% 56%, rgba(75, 0, 130, 0.5) 0.5px, rgba(0, 255, 127, 0.6) 1px, transparent 2px) translate(2px, -3px),
+        radial-gradient(circle at 21% 19%, rgba(255, 165, 0, 0.8) 1px, rgba(0, 0, 255, 0.7) 1.5px, transparent 2px) translate(-2px, 1px),
+        radial-gradient(ellipse at 81% 77%, rgba(0, 255, 0, 0.6) 0.5px, rgba(255, 182, 193, 0.5) 1px, transparent 1.5px) translate(1px, -2px),
+        radial-gradient(circle at 49% 13%, rgba(135, 206, 235, 0.7) 1px, rgba(255, 20, 147, 0.8) 1.5px, transparent 2px) translate(-3px, 2px);
     animation: iridescentFlow 8s infinite reverse;
 }
 
@@ -78,21 +68,16 @@ body > div::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 22% 28%, rgba(255, 20, 147, 0.6) 0.5px, rgba(0, 100, 0, 0.7) 1px, transparent 1.5px),
-        radial-gradient(ellipse at 76% 74%, rgba(0, 191, 255, 0.5) 1px, rgba(255, 215, 0, 0.8) 1.5px, transparent 2px),
-        radial-gradient(circle at 87% 9%, rgba(138, 43, 226, 0.7) 0.5px, rgba(0, 255, 127, 0.6) 1px, transparent 1.5px),
-        radial-gradient(ellipse at 14% 66%, rgba(255, 69, 0, 0.8) 1px, rgba(255, 140, 0, 0.5) 1.5px, transparent 2px),
-        radial-gradient(circle at 39% 21%, rgba(0, 128, 0, 0.4) 0.5px, rgba(255, 0, 255, 0.6) 1px, transparent 1.5px),
-        radial-gradient(ellipse at 71% 49%, rgba(255, 99, 71, 0.7) 1px, rgba(75, 0, 130, 0.8) 1.5px, transparent 2px),
-        radial-gradient(circle at 29% 41%, rgba(255, 165, 0, 0.5) 0.5px, rgba(0, 0, 255, 0.6) 1px, transparent 2px),
-        radial-gradient(ellipse at 84% 69%, rgba(255, 182, 193, 0.6) 1px, rgba(135, 206, 235, 0.7) 1.5px, transparent 2px),
-        radial-gradient(circle at 51% 83%, rgba(255, 0, 0, 0.8) 0.5px, rgba(0, 255, 0, 0.5) 1px, transparent 1.5px),
-        radial-gradient(ellipse at 11% 29%, rgba(192, 192, 192, 0.7) 1px, rgba(255, 215, 0, 0.6) 1.5px, transparent 2px),
-        radial-gradient(circle at 63% 35%, rgba(0, 191, 255, 0.5) 0.5px, rgba(255, 20, 147, 0.8) 1px, transparent 1.5px),
-        radial-gradient(ellipse at 5% 95%, rgba(255, 99, 71, 0.6) 1px, rgba(173, 216, 230, 0.7) 1.5px, transparent 2px),
-        radial-gradient(circle at 45% 55%, rgba(255, 69, 0, 0.8) 0.5px, rgba(0, 255, 127, 0.4) 1px, transparent 2px),
-        radial-gradient(ellipse at 80% 20%, rgba(0, 128, 0, 0.7) 1px, rgba(255, 165, 0, 0.6) 1.5px, transparent 2px),
-        radial-gradient(circle at 25% 75%, rgba(135, 206, 235, 0.5) 0.5px, rgba(255, 0, 255, 0.8) 1px, transparent 1.5px);
+        radial-gradient(circle at 22% 28%, rgba(255, 20, 147, 0.6) 0.5px, rgba(0, 100, 0, 0.7) 1px, transparent 1.5px) translate(2px, -1px),
+        radial-gradient(ellipse at 76% 74%, rgba(0, 191, 255, 0.5) 1px, rgba(255, 215, 0, 0.8) 1.5px, transparent 2px) translate(-3px, 2px),
+        radial-gradient(circle at 87% 9%, rgba(138, 43, 226, 0.7) 0.5px, rgba(0, 255, 127, 0.6) 1px, transparent 1.5px) translate(1px, -2px),
+        radial-gradient(ellipse at 14% 66%, rgba(255, 69, 0, 0.8) 1px, rgba(255, 140, 0, 0.5) 1.5px, transparent 2px) translate(-2px, 1px),
+        radial-gradient(circle at 39% 21%, rgba(0, 128, 0, 0.4) 0.5px, rgba(255, 0, 255, 0.6) 1px, transparent 1.5px) translate(3px, -1px),
+        radial-gradient(ellipse at 71% 49%, rgba(255, 99, 71, 0.7) 1px, rgba(75, 0, 130, 0.8) 1.5px, transparent 2px) translate(-1px, 2px),
+        radial-gradient(circle at 29% 41%, rgba(255, 165, 0, 0.5) 0.5px, rgba(0, 0, 255, 0.6) 1px, transparent 2px) translate(2px, -3px),
+        radial-gradient(ellipse at 84% 69%, rgba(255, 182, 193, 0.6) 1px, rgba(135, 206, 235, 0.7) 1.5px, transparent 2px) translate(-2px, 1px),
+        radial-gradient(circle at 51% 83%, rgba(255, 0, 0, 0.8) 0.5px, rgba(0, 255, 0, 0.5) 1px, transparent 1.5px) translate(1px, -2px),
+        radial-gradient(ellipse at 11% 29%, rgba(192, 192, 192, 0.7) 1px, rgba(255, 215, 0, 0.6) 1.5px, transparent 2px) translate(-3px, 2px);
     animation: iridescentFlow 10s infinite;
 }
 
