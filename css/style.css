@@ -22,13 +22,12 @@ body::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 5% 5%, rgba(255, 0, 0, 0.7) 1px, transparent 2px),
-        radial-gradient(circle at 95% 95%, rgba(0, 255, 0, 0.7) 2px, transparent 3px),
-        radial-gradient(circle at 20% 80%, rgba(0, 0, 255, 0.7) 1.5px, transparent 2.5px),
-        linear-gradient(45deg, rgba(255, 165, 0, 0.7) 1px, transparent 2px),
-        linear-gradient(135deg, rgba(75, 0, 130, 0.7) 2px, transparent 3px),
-        radial-gradient(circle at 70% 30%, rgba(255, 99, 71, 0.7) 1px, transparent 2px),
-        linear-gradient(90deg, rgba(255, 0, 255, 0.7) 1.5px, transparent 2.5px);
+        radial-gradient(circle at 5% 5%, rgba(255, 0, 0, 0.8) 2px, transparent 4px),
+        radial-gradient(circle at 95% 95%, rgba(0, 255, 0, 0.8) 3px, transparent 5px),
+        radial-gradient(circle at 20% 80%, rgba(0, 0, 255, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 70% 30%, rgba(255, 165, 0, 0.8) 2px, transparent 4px),
+        radial-gradient(circle at 40% 60%, rgba(75, 0, 130, 0.8) 3px, transparent 5px),
+        radial-gradient(circle at 85% 15%, rgba(255, 99, 71, 0.8) 4px, transparent 6px);
     animation: chaoticFlow 6s infinite step-start;
 }
 
@@ -42,12 +41,12 @@ body::after {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 15% 85%, rgba(255, 20, 147, 0.7) 2px, transparent 3px),
-        radial-gradient(circle at 85% 15%, rgba(0, 100, 0, 0.7) 1px, transparent 2px),
-        linear-gradient(60deg, rgba(255, 215, 0, 0.7) 2px, transparent 3px),
-        linear-gradient(180deg, rgba(138, 43, 226, 0.7) 1.5px, transparent 2.5px),
-        radial-gradient(circle at 40% 60%, rgba(0, 191, 255, 0.7) 1px, transparent 2px),
-        linear-gradient(30deg, rgba(0, 255, 127, 0.7) 2px, transparent 3px);
+        radial-gradient(circle at 15% 85%, rgba(255, 20, 147, 0.8) 3px, transparent 5px),
+        radial-gradient(circle at 85% 15%, rgba(0, 100, 0, 0.8) 2px, transparent 4px),
+        radial-gradient(circle at 30% 70%, rgba(255, 215, 0, 0.8) 4px, transparent 6px),
+        radial-gradient(circle at 60% 40%, rgba(138, 43, 226, 0.8) 3px, transparent 5px),
+        radial-gradient(circle at 10% 90%, rgba(0, 191, 255, 0.8) 2px, transparent 4px),
+        radial-gradient(circle at 50% 50%, rgba(0, 255, 127, 0.8) 4px, transparent 6px);
     animation: chaoticFlow 8s infinite step-start reverse;
 }
 
@@ -61,23 +60,23 @@ body > div::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 50% 50%, rgba(255, 69, 0, 0.7) 1.5px, transparent 2.5px),
-        linear-gradient(120deg, rgba(255, 140, 0, 0.7) 1px, transparent 2px),
-        radial-gradient(circle at 90% 10%, rgba(0, 128, 0, 0.7) 2px, transparent 3px);
+        radial-gradient(circle at 25% 25%, rgba(255, 69, 0, 0.8) 3px, transparent 5px),
+        radial-gradient(circle at 75% 75%, rgba(255, 140, 0, 0.8) 2px, transparent 4px),
+        radial-gradient(circle at 90% 10%, rgba(0, 128, 0, 0.8) 4px, transparent 6px);
     animation: chaoticFlow 10s infinite step-start;
 }
 
 @keyframes chaoticFlow {
     0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
-    10% { transform: translate(20px, -15px) scale(1.1); opacity: 0.6; }
-    20% { transform: translate(-30px, 10px) scale(0.9); opacity: 0.7; }
-    30% { transform: translate(15px, -20px) scale(1.05); opacity: 0.5; }
-    40% { transform: translate(-25px, 5px) scale(0.95); opacity: 0.9; }
-    50% { transform: translate(10px, -10px) scale(1.1); opacity: 0.4; }
-    60% { transform: translate(-15px, 15px) scale(0.9); opacity: 0.8; }
-    70% { transform: translate(25px, -5px) scale(1.05); opacity: 0.6; }
-    80% { transform: translate(-10px, 20px) scale(0.95); opacity: 0.7; }
-    90% { transform: translate(30px, -10px) scale(1.1); opacity: 0.5; }
+    10% { transform: translate(30px, -20px) scale(1.2); opacity: 0.6; }
+    20% { transform: translate(-40px, 15px) scale(0.9); opacity: 0.7; }
+    30% { transform: translate(25px, -30px) scale(1.15); opacity: 0.5; }
+    40% { transform: translate(-35px, 10px) scale(0.95); opacity: 0.9; }
+    50% { transform: translate(20px, -15px) scale(1.2); opacity: 0.4; }
+    60% { transform: translate(-25px, 25px) scale(0.9); opacity: 0.8; }
+    70% { transform: translate(35px, -10px) scale(1.15); opacity: 0.6; }
+    80% { transform: translate(-15px, 30px) scale(0.95); opacity: 0.7; }
+    90% { transform: translate(40px, -20px) scale(1.2); opacity: 0.5; }
     100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
 }
 
