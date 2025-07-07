@@ -10,7 +10,6 @@ body {
     min-height: 100vh;
     overflow: hidden;
     position: relative;
-    z-index: 0;
 }
 
 body::before {
@@ -23,10 +22,13 @@ body::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 15% 25%, rgba(255, 0, 0, 0.5) 6px, transparent 6px),
-        linear-gradient(45deg, rgba(0, 255, 0, 0.5) 12px, transparent 12px),
-        polygon(50% 0%, 70% 20%, 30% 20% 8px, transparent 8px);
-    animation: randomMove1 5s infinite step-end;
+        radial-gradient(circle at 5% 5%, rgba(255, 0, 0, 0.3) 1px, transparent 2px),
+        radial-gradient(circle at 95% 95%, rgba(0, 255, 0, 0.3) 2px, transparent 3px),
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 255, 0.3) 1.5px, transparent 2.5px),
+        linear-gradient(45deg, rgba(255, 165, 0, 0.3) 1px, transparent 2px),
+        linear-gradient(135deg, rgba(75, 0, 130, 0.3) 2px, transparent 3px);
+    background-size: 50px 50px, 60px 60px, 70px 70px, 40px 40px, 80px 80px;
+    animation: chaoticFlow 15s infinite linear;
 }
 
 body::after {
@@ -37,12 +39,15 @@ body::after {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: -2;
+    z-index: -1;
     background: 
-        radial-gradient(circle at 85% 75%, rgba(0, 0, 255, 0.5) 10px, transparent 10px),
-        linear-gradient(135deg, rgba(255, 165, 0, 0.5) 15px, transparent 15px),
-        polygon(50% 100%, 80% 80%, 20% 80% 20px, transparent 20px);
-    animation: randomMove2 6s infinite step-end reverse;
+        radial-gradient(circle at 15% 85%, rgba(255, 20, 147, 0.3) 1px, transparent 2px),
+        radial-gradient(circle at 85% 15%, rgba(0, 100, 0, 0.3) 2px, transparent 3px),
+        radial-gradient(circle at 30% 70%, rgba(255, 215, 0, 0.3) 1.5px, transparent 2.5px),
+        linear-gradient(90deg, rgba(138, 43, 226, 0.3) 1px, transparent 2px),
+        linear-gradient(180deg, rgba(0, 191, 255, 0.3) 2px, transparent 3px);
+    background-size: 55px 55px, 65px 65px, 75px 75px, 45px 45px, 85px 85px;
+    animation: chaoticFlow 18s infinite linear reverse;
 }
 
 body > div::before {
@@ -53,64 +58,21 @@ body > div::before {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: -3;
+    z-index: -1;
     background: 
-        radial-gradient(circle at 30% 60%, rgba(75, 0, 130, 0.5) 4px, transparent 4px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.5) 18px, transparent 18px),
-        polygon(50% 50%, 60% 70%, 40% 70% 16px, transparent 16px);
-    animation: randomMove3 7s infinite step-end;
+        radial-gradient(circle at 70% 30%, rgba(255, 99, 71, 0.3) 1px, transparent 2px),
+        linear-gradient(60deg, rgba(255, 0, 255, 0.3) 1.5px, transparent 2.5px),
+        radial-gradient(circle at 40% 90%, rgba(0, 255, 127, 0.3) 2px, transparent 3px);
+    background-size: 50px 50px, 70px 70px, 60px 60px;
+    animation: chaoticFlow 20s infinite linear;
 }
 
-body::before::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -4;
-    background: 
-        radial-gradient(circle at 70% 40%, rgba(255, 20, 147, 0.5) 14px, transparent 14px),
-        linear-gradient(60deg, rgba(0, 100, 0, 0.5) 7px, transparent 7px),
-        polygon(50% 0%, 90% 20%, 10% 20% 12px, transparent 12px);
-    animation: randomMove4 8s infinite step-end;
-}
-
-@keyframes randomMove1 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
-    20% { transform: translate(60px, -50px) scale(1.2); opacity: 0; }
-    40% { transform: translate(-40px, 70px) scale(0.8); opacity: 0.6; }
-    60% { transform: translate(30px, -30px) scale(1.1); opacity: 1; }
-    80% { transform: translate(-20px, 40px) scale(0.9); opacity: 0.4; }
-    100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
-}
-
-@keyframes randomMove2 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
-    20% { transform: translate(-70px, 60px) scale(1.3); opacity: 0; }
-    40% { transform: translate(50px, -40px) scale(0.7); opacity: 0.5; }
-    60% { transform: translate(-30px, 20px) scale(1.0); opacity: 1; }
-    80% { transform: translate(40px, -50px) scale(0.8); opacity: 0.3; }
-    100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
-}
-
-@keyframes randomMove3 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0.9; }
-    20% { transform: translate(40px, 30px) scale(1.1); opacity: 0; }
-    40% { transform: translate(-60px, -20px) scale(0.9); opacity: 0.7; }
-    60% { transform: translate(20px, 50px) scale(1.2); opacity: 1; }
-    80% { transform: translate(-50px, 10px) scale(0.6); opacity: 0.2; }
-    100% { transform: translate(0, 0) scale(1); opacity: 0.9; }
-}
-
-@keyframes randomMove4 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
-    20% { transform: translate(-30px, -60px) scale(1.0); opacity: 0; }
-    40% { transform: translate(70px, 40px) scale(0.8); opacity: 0.8; }
-    60% { transform: translate(-20px, -30px) scale(1.3); opacity: 1; }
-    80% { transform: translate(50px, 20px) scale(0.7); opacity: 0.4; }
-    100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+@keyframes chaoticFlow {
+    0% { transform: translate(0, 0) scale(1); background-position: 0 0, 20px 20px, 40px 40px, 60px 60px, 80px 80px; }
+    25% { transform: translate(30px, -20px) scale(1.1); background-position: 10px 10px, 30px 30px, 50px 50px, 70px 70px, 90px 90px; }
+    50% { transform: translate(-25px, 15px) scale(0.9); background-position: 20px 20px, 40px 40px, 60px 60px, 80px 80px, 100px 100px; }
+    75% { transform: translate(20px, -10px) scale(1.05); background-position: 15px 15px, 35px 35px, 55px 55px, 75px 75px, 95px 95px; }
+    100% { transform: translate(0, 0) scale(1); background-position: 0 0, 20px 20px, 40px 40px, 60px 60px, 80px 80px; }
 }
 
 .step {
@@ -122,8 +84,6 @@ body::before::after {
     max-width: 800px;
     padding: 20px;
     box-sizing: border-box;
-    position: relative;
-    z-index: 1;
 }
 
 .step-centered {
@@ -138,7 +98,6 @@ body::before::after {
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    z-index: 1;
 }
 
 .text-block div {
@@ -158,7 +117,6 @@ body::before::after {
     flex-wrap: wrap;
     justify-content: center;
     position: relative;
-    z-index: 1;
 }
 
 button {
@@ -168,9 +126,8 @@ button {
     font-family: Arial, sans-serif;
     font-size: 16px;
     position: relative;
-    animation: changeShape 5s infinite step-end, changeColor 4s infinite step-end;
-    transition: transform 0s;
-    z-index: 1;
+    animation: changeShape 10s infinite ease-in-out, changeColor 8s infinite;
+    transition: transform 0.3s ease;
 }
 
 button:nth-child(1) {
@@ -202,9 +159,8 @@ button:hover {
 
 @keyframes changeShape {
     0% { border-radius: 50%; }
-    25% { border-radius: 15px; }
-    50% { border-radius: 0px; }
-    75% { border-radius: 10px; }
+    33% { border-radius: 15px; }
+    66% { border-radius: 10px; }
     100% { border-radius: 50%; }
 }
 
@@ -223,7 +179,6 @@ button:hover {
     background: #FFFFFF;
     border-radius: 10px;
     position: relative;
-    z-index: 1;
 }
 
 #thumbnail-portrait {
@@ -231,7 +186,6 @@ button:hover {
     height: 100px;
     border-radius: 10px;
     position: relative;
-    z-index: 1;
 }
 
 .terminal-log {
@@ -248,7 +202,6 @@ button:hover {
     display: none;
     border-radius: 10px;
     position: relative;
-    z-index: 1;
 }
 
 #terminal-log-step-4,
@@ -280,7 +233,6 @@ button:hover {
     max-height: 80%;
     overflow: auto;
     border-radius: 10px;
-    z-index: 1001;
 }
 
 .close {
@@ -291,14 +243,12 @@ button:hover {
     top: 10px;
     right: 20px;
     cursor: pointer;
-    z-index: 1002;
 }
 
 .image-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px;
-    z-index: 1;
 }
 
 .archive-image {
@@ -306,18 +256,15 @@ button:hover {
     height: 150px;
     object-fit: cover;
     border-radius: 10px;
-    z-index: 1;
 }
 
 #camera-video {
     max-width: 100%;
     border-radius: 10px;
-    z-index: 1;
 }
 
 #capture-photo {
     margin-top: 10px;
-    z-index: 1;
 }
 
 input[type="text"] {
@@ -328,7 +275,6 @@ input[type="text"] {
     padding: 10px;
     font-size: 16px;
     border-radius: 10px;
-    z-index: 1;
 }
 
 input[type="text"]::placeholder {
