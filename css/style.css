@@ -12,44 +12,12 @@ body {
     position: relative;
 }
 
-body::before,
-body::after,
-body > div.square:nth-of-type(1)::before,
-body > div.square:nth-of-type(2)::before,
-body > div.square:nth-of-type(3)::before,
-body > div.square:nth-of-type(4)::before,
-body > div.square:nth-of-type(5)::before,
-body > div.square:nth-of-type(6)::before,
-body > div.square:nth-of-type(7)::before,
-body > div.square:nth-of-type(8)::before,
-body > div.square:nth-of-type(9)::before,
-body > div.square:nth-of-type(10)::before {
-    content: '';
+.square {
     position: fixed;
     width: 20px;
     height: 20px;
     pointer-events: none;
     animation: iridescentFlow 6s infinite;
-}
-
-body::before { background: red; top: 10%; left: 10%; }
-body::after { background: green; top: 30%; left: 20%; }
-body > div.square:nth-of-type(1)::before { background: blue; top: 50%; left: 40%; }
-body > div.square:nth-of-type(2)::before { background: yellow; top: 70%; left: 60%; }
-body > div.square:nth-of-type(3)::before { background: cyan; top: 90%; left: 80%; }
-body > div.square:nth-of-type(4)::before { background: magenta; top: 40%; left: 15%; }
-body > div.square:nth-of-type(5)::before { background: orange; top: 60%; left: 35%; }
-body > div.square:nth-of-type(6)::before { background: darkgreen; top: 80%; left: 55%; }
-body > div.square:nth-of-type(7)::before { background: purple; top: 20%; left: 75%; }
-body > div.square:nth-of-type(8)::before { background: teal; top: 45%; left: 90%; }
-body > div.square:nth-of-type(9)::before { background: gold; top: 25%; left: 30%; }
-body > div.square:nth-of-type(10)::before { background: lime; top: 65%; left: 85%; }
-
-div.square {
-    position: absolute;
-    width: 0;
-    height: 0;
-    overflow: hidden;
 }
 
 @keyframes iridescentFlow {
