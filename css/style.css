@@ -21,7 +21,14 @@ body::before {
     height: 100%;
     pointer-events: none;
     z-index: -1;
-    animation: randomShapes 10s infinite linear;
+    background: 
+        radial-gradient(circle at 5% 5%, rgba(255, 0, 0, 0.3) 1px, transparent 2px),
+        radial-gradient(circle at 95% 95%, rgba(0, 255, 0, 0.3) 2px, transparent 3px),
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 255, 0.3) 1.5px, transparent 2.5px),
+        linear-gradient(45deg, rgba(255, 165, 0, 0.3) 1px, transparent 2px),
+        linear-gradient(135deg, rgba(75, 0, 130, 0.3) 2px, transparent 3px);
+    background-size: 50px 50px, 60px 60px, 70px 70px, 40px 40px, 80px 80px;
+    animation: chaoticFlow 15s infinite linear;
 }
 
 body::after {
@@ -33,45 +40,39 @@ body::after {
     height: 100%;
     pointer-events: none;
     z-index: -1;
-    animation: randomShapes 12s infinite linear reverse;
+    background: 
+        radial-gradient(circle at 15% 85%, rgba(255, 20, 147, 0.3) 1px, transparent 2px),
+        radial-gradient(circle at 85% 15%, rgba(0, 100, 0, 0.3) 2px, transparent 3px),
+        radial-gradient(circle at 30% 70%, rgba(255, 215, 0, 0.3) 1.5px, transparent 2.5px),
+        linear-gradient(90deg, rgba(138, 43, 226, 0.3) 1px, transparent 2px),
+        linear-gradient(180deg, rgba(0, 191, 255, 0.3) 2px, transparent 3px);
+    background-size: 55px 55px, 65px 65px, 75px 75px, 45px 45px, 85px 85px;
+    animation: chaoticFlow 18s infinite linear reverse;
 }
 
-@keyframes randomShapes {
-    0% {
-        background: radial-gradient(circle at 10% 10%, rgba(255, 0, 0, 0.2) 1px, transparent 2px),
-                    radial-gradient(circle at 90% 90%, rgba(0, 255, 0, 0.2) 2px, transparent 3px),
-                    radial-gradient(circle at 50% 50%, rgba(0, 0, 255, 0.2) 3px, transparent 4px);
-        background-size: 200px 200px;
-        transform: translate(0, 0) scale(1);
-    }
-    25% {
-        background: radial-gradient(circle at 20% 80%, rgba(255, 165, 0, 0.2) 1.5px, transparent 2.5px),
-                    radial-gradient(circle at 70% 20%, rgba(75, 0, 130, 0.2) 2.5px, transparent 3.5px),
-                    radial-gradient(circle at 40% 60%, rgba(0, 255, 255, 0.2) 3.5px, transparent 4.5px);
-        background-size: 250px 250px;
-        transform: translate(50px, -30px) scale(1.1);
-    }
-    50% {
-        background: radial-gradient(circle at 30% 30%, rgba(255, 20, 147, 0.2) 2px, transparent 3px),
-                    radial-gradient(circle at 80% 70%, rgba(0, 100, 0, 0.2) 1px, transparent 2px),
-                    radial-gradient(circle at 60% 40%, rgba(255, 215, 0, 0.2) 4px, transparent 5px);
-        background-size: 180px 180px;
-        transform: translate(-40px, 20px) scale(0.9);
-    }
-    75% {
-        background: radial-gradient(circle at 50% 70%, rgba(138, 43, 226, 0.2) 1.5px, transparent 2.5px),
-                    radial-gradient(circle at 10% 40%, rgba(255, 99, 71, 0.2) 3px, transparent 4px),
-                    radial-gradient(circle at 90% 50%, rgba(0, 191, 255, 0.2) 2px, transparent 3px);
-        background-size: 220px 220px;
-        transform: translate(30px, -10px) scale(1.05);
-    }
-    100% {
-        background: radial-gradient(circle at 10% 10%, rgba(255, 0, 0, 0.2) 1px, transparent 2px),
-                    radial-gradient(circle at 90% 90%, rgba(0, 255, 0, 0.2) 2px, transparent 3px),
-                    radial-gradient(circle at 50% 50%, rgba(0, 0, 255, 0.2) 3px, transparent 4px);
-        background-size: 200px 200px;
-        transform: translate(0, 0) scale(1);
-    }
+body > div::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background: 
+        radial-gradient(circle at 70% 30%, rgba(255, 99, 71, 0.3) 1px, transparent 2px),
+        linear-gradient(60deg, rgba(255, 0, 255, 0.3) 1.5px, transparent 2.5px),
+        radial-gradient(circle at 40% 90%, rgba(0, 255, 127, 0.3) 2px, transparent 3px);
+    background-size: 50px 50px, 70px 70px, 60px 60px;
+    animation: chaoticFlow 20s infinite linear;
+}
+
+@keyframes chaoticFlow {
+    0% { transform: translate(0, 0) scale(1); background-position: 0 0, 20px 20px, 40px 40px, 60px 60px, 80px 80px; }
+    25% { transform: translate(30px, -20px) scale(1.1); background-position: 10px 10px, 30px 30px, 50px 50px, 70px 70px, 90px 90px; }
+    50% { transform: translate(-25px, 15px) scale(0.9); background-position: 20px 20px, 40px 40px, 60px 60px, 80px 80px, 100px 100px; }
+    75% { transform: translate(20px, -10px) scale(1.05); background-position: 15px 15px, 35px 35px, 55px 55px, 75px 75px, 95px 95px; }
+    100% { transform: translate(0, 0) scale(1); background-position: 0 0, 20px 20px, 40px 40px, 60px 60px, 80px 80px; }
 }
 
 .step {
@@ -97,8 +98,6 @@ body::after {
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .text-block div {
@@ -127,7 +126,7 @@ button {
     font-family: Arial, sans-serif;
     font-size: 16px;
     position: relative;
-    animation: changeShape 8s infinite ease-in-out, changeColor 6s infinite;
+    animation: changeShape 10s infinite ease-in-out, changeColor 8s infinite;
     transition: transform 0.3s ease;
 }
 
@@ -138,20 +137,20 @@ button:nth-child(1) {
 }
 
 button:nth-child(2) {
-    border-radius: 5px;
+    border-radius: 20px;
     min-width: 80px;
     background: hsl(120, 70%, 50%);
 }
 
 button:nth-child(3) {
-    border-radius: 15px;
+    border-radius: 5px;
     min-width: 70px;
     background: hsl(240, 70%, 50%);
 }
 
 button span {
     color: #FFFFFF;
-    mix-blend-mode: difference;
+    filter: invert(1);
 }
 
 button:hover {
@@ -160,16 +159,16 @@ button:hover {
 
 @keyframes changeShape {
     0% { border-radius: 50%; }
-    33% { border-radius: 10px; }
-    66% { border-radius: 20px; }
+    33% { border-radius: 15px; }
+    66% { border-radius: 10px; }
     100% { border-radius: 50%; }
 }
 
 @keyframes changeColor {
     0% { background: hsl(0, 70%, 50%); }
     25% { background: hsl(60, 70%, 50%); }
-    50% { background: hsl(120, 70%, 50%); }
-    75% { background: hsl(180, 70%, 50%); }
+    50% { background: hsl(180, 70%, 50%); }
+    75% { background: hsl(300, 70%, 50%); }
     100% { background: hsl(0, 70%, 50%); }
 }
 
@@ -179,7 +178,6 @@ button:hover {
     height: 400px;
     background: #FFFFFF;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
@@ -187,7 +185,6 @@ button:hover {
     width: 100px;
     height: 100px;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
@@ -204,7 +201,6 @@ button:hover {
     line-height: 1.4;
     display: none;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
@@ -237,7 +233,6 @@ button:hover {
     max-height: 80%;
     overflow: auto;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .close {
@@ -261,13 +256,11 @@ button:hover {
     height: 150px;
     object-fit: cover;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 #camera-video {
     max-width: 100%;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 #capture-photo {
@@ -282,7 +275,6 @@ input[type="text"] {
     padding: 10px;
     font-size: 16px;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 input[type="text"]::placeholder {
