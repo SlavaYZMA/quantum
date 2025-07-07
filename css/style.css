@@ -4,6 +4,9 @@ body {
     background: #FFFFFF;
     color: #000000;
     font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
     overflow: hidden;
     position: relative;
@@ -20,12 +23,13 @@ body::before {
     z-index: -1;
     background: 
         radial-gradient(circle at 10% 10%, rgba(255, 0, 0, 0.5) 4px, transparent 5px),
-        linear-gradient(45deg, rgba(0, 255, 0, 0.5) 10px, transparent 11px),
-        polygon(50% 0%, 70% 20%, 30% 20% / 8px 8px) rgba(0, 0, 255, 0.5),
-        polygon(50% 50%, 70% 70%, 30% 70% / 6px 6px) rgba(255, 165, 0, 0.5),
-        linear-gradient(90deg, rgba(75, 0, 130, 0.5) 15px, transparent 16px);
-    background-size: 100px 100px, 120px 120px, 80px 80px, 90px 90px, 110px 110px;
-    animation: chaoticParticles 5s infinite steps(5);
+        linear-gradient(45deg, rgba(0, 255, 0, 0.5) 6px, transparent 7px),
+        polygon(50% 0%, 0% 100%, 100% 100%) rgba(0, 0, 255, 0.5) 8px, transparent 9px),
+        linear-gradient(90deg, rgba(255, 165, 0, 0.5) 10px, transparent 11px),
+        polygon(50% 50%, 20% 80%, 80% 80%) rgba(75, 0, 130, 0.5) 12px, transparent 13px);
+    background-size: 100px 100px, 120px 120px, 150px 150px, 80px 80px, 130px 130px;
+    background-position: 0 0, 50px 50px, 100px 100px, 150px 150px, 200px 200px;
+    animation: chaoticScatter 5s infinite steps(5, end);
 }
 
 body::after {
@@ -38,22 +42,42 @@ body::after {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 90% 90%, rgba(255, 20, 147, 0.5) 6px, transparent 7px),
-        polygon(50% 0%, 60% 10%, 40% 10% / 12px 12px) rgba(0, 100, 0, 0.5),
-        linear-gradient(135deg, rgba(255, 215, 0, 0.5) 8px, transparent 9px),
-        polygon(50% 50%, 65% 65%, 35% 65% / 10px 10px) rgba(0, 191, 255, 0.5),
-        linear-gradient(60deg, rgba(138, 43, 226, 0.5) 20px, transparent 21px);
-    background-size: 130px 130px, 100px 100px, 110px 110px, 90px 90px, 150px 150px;
-    animation: chaoticParticles 6s infinite steps(6) reverse;
+        radial-gradient(circle at 80% 20%, rgba(255, 20, 147, 0.5) 5px, transparent 6px),
+        polygon(50% 0%, 80% 100%, 20% 100%) rgba(0, 100, 0, 0.5) 7px, transparent 8px),
+        linear-gradient(135deg, rgba(255, 215, 0, 0.5) 9px, transparent 10px),
+        polygon(50% 50%, 70% 30%, 30% 70%) rgba(138, 43, 226, 0.5) 11px, transparent 12px),
+        linear-gradient(60deg, rgba(0, 191, 255, 0.5) 13px, transparent 14px);
+    background-size: 110px 110px, 140px 140px, 90px 90px, 160px 160px, 120px 120px;
+    background-position: 30px 30px, 80px 80px, 130px 130px, 180px 180px, 230px 230px;
+    animation: chaoticScatter 6s infinite steps(6, end) reverse;
 }
 
-@keyframes chaoticParticles {
-    0% { transform: translate(0, 0); background-position: 0 0, 30px 30px, 60px 60px, 90px 90px, 120px 120px; }
-    20% { transform: translate(50px, -40px); background-position: 20px 20px, 50px 50px, 80px 80px, 110px 110px, 140px 140px; }
-    40% { transform: translate(-30px, 60px); background-position: 10px 10px, 40px 40px, 70px 70px, 100px 100px, 130px 130px; }
-    60% { transform: translate(40px, -20px); background-position: 30px 30px, 60px 60px, 90px 90px, 120px 120px, 150px 150px; }
-    80% { transform: translate(-50px, 30px); background-position: 15px 15px, 45px 45px, 75px 75px, 105px 105px, 135px 135px; }
-    100% { transform: translate(0, 0); background-position: 0 0, 30px 30px, 60px 60px, 90px 90px, 120px 120px; }
+body > div::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background: 
+        radial-gradient(circle at 40% 60%, rgba(255, 99, 71, 0.5) 6px, transparent 7px),
+        polygon(50% 50%, 10% 90%, 90% 90%) rgba(255, 0, 255, 0.5) 8px, transparent 9px),
+        linear-gradient(45deg, rgba(0, 255, 127, 0.5) 10px, transparent 11px),
+        polygon(50% 0%, 0% 50%, 100% 50%) rgba(255, 140, 0, 0.5) 12px, transparent 13px);
+    background-size: 100px 100px, 130px 130px, 110px 110px, 150px 150px;
+    background-position: 60px 60px, 110px 110px, 160px 160px, 210px 210px;
+    animation: chaoticScatter 7s infinite steps(7, end);
+}
+
+@keyframes chaoticScatter {
+    0% { transform: translate(0, 0) scale(1); background-position: 0 0, 50px 50px, 100px 100px, 150px 150px, 200px 200px; }
+    20% { transform: translate(40px, -30px) scale(1.2); background-position: 20px 20px, 70px 70px, 120px 120px, 170px 170px, 220px 220px; }
+    40% { transform: translate(-35px, 25px) scale(0.8); background-position: 10px 10px, 60px 60px, 110px 110px, 160px 160px, 210px 210px; }
+    60% { transform: translate(30px, -20px) scale(1.1); background-position: 30px 30px, 80px 80px, 130px 130px, 180px 180px, 230px 230px; }
+    80% { transform: translate(-25px, 15px) scale(0.9); background-position: 40px 40px, 90px 90px, 140px 140px, 190px 190px, 240px 240px; }
+    100% { transform: translate(0, 0) scale(1); background-position: 0 0, 50px 50px, 100px 100px, 150px 150px, 200px 200px; }
 }
 
 .step {
@@ -65,8 +89,6 @@ body::after {
     max-width: 800px;
     padding: 20px;
     box-sizing: border-box;
-    position: absolute;
-    animation: moveBlocks 7s infinite steps(7);
 }
 
 .step-centered {
@@ -81,7 +103,6 @@ body::after {
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    animation: moveBlocks 6s infinite steps(6);
 }
 
 .text-block div {
@@ -97,10 +118,10 @@ body::after {
 
 .button-block {
     display: flex;
+    gap: 15px;
     flex-wrap: wrap;
     justify-content: center;
-    position: absolute;
-    animation: moveButtons 8s infinite steps(8);
+    position: relative;
 }
 
 button {
@@ -109,30 +130,24 @@ button {
     cursor: pointer;
     font-family: Arial, sans-serif;
     font-size: 16px;
-    position: absolute;
-    animation: changeShape 4s infinite steps(4), changeColor 5s infinite steps(5);
+    position: relative;
+    animation: changeShape 5s infinite steps(5, end), changeColor 4s infinite steps(4, end);
     transition: none;
 }
 
 button:nth-child(1) {
-    left: 10%;
-    top: 10%;
     border-radius: 50%;
     min-width: 60px;
     background: hsl(0, 70%, 50%);
 }
 
 button:nth-child(2) {
-    left: 30%;
-    top: 20%;
     border-radius: 20px;
     min-width: 80px;
     background: hsl(120, 70%, 50%);
 }
 
 button:nth-child(3) {
-    left: 50%;
-    top: 30%;
     border-radius: 5px;
     min-width: 70px;
     background: hsl(240, 70%, 50%);
@@ -157,29 +172,10 @@ button:hover {
 
 @keyframes changeColor {
     0% { background: hsl(0, 70%, 50%); }
-    20% { background: hsl(60, 70%, 50%); }
-    40% { background: hsl(180, 70%, 50%); }
-    60% { background: hsl(300, 70%, 50%); }
-    80% { background: hsl(240, 70%, 50%); }
+    25% { background: hsl(60, 70%, 50%); }
+    50% { background: hsl(180, 70%, 50%); }
+    75% { background: hsl(300, 70%, 50%); }
     100% { background: hsl(0, 70%, 50%); }
-}
-
-@keyframes moveButtons {
-    0% { transform: translate(0, 0); }
-    20% { transform: translate(50px, -30px); }
-    40% { transform: translate(-40px, 60px); }
-    60% { transform: translate(30px, -20px); }
-    80% { transform: translate(-50px, 40px); }
-    100% { transform: translate(0, 0); }
-}
-
-@keyframes moveBlocks {
-    0% { transform: translate(0, 0); }
-    20% { transform: translate(40px, -25px); }
-    40% { transform: translate(-30px, 50px); }
-    60% { transform: translate(20px, -15px); }
-    80% { transform: translate(-45px, 35px); }
-    100% { transform: translate(0, 0); }
 }
 
 #portrait-animation-container-step-4,
@@ -188,8 +184,7 @@ button:hover {
     height: 400px;
     background: #FFFFFF;
     border-radius: 10px;
-    position: absolute;
-    animation: moveBlocks 7s infinite steps(7);
+    position: relative;
 }
 
 #thumbnail-portrait {
@@ -212,8 +207,7 @@ button:hover {
     line-height: 1.4;
     display: none;
     border-radius: 10px;
-    position: absolute;
-    animation: moveBlocks 6s infinite steps(6);
+    position: relative;
 }
 
 #terminal-log-step-4,
@@ -245,8 +239,6 @@ button:hover {
     max-height: 80%;
     overflow: auto;
     border-radius: 10px;
-    position: absolute;
-    animation: moveBlocks 7s infinite steps(7);
 }
 
 .close {
@@ -263,8 +255,6 @@ button:hover {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px;
-    position: absolute;
-    animation: moveBlocks 6s infinite steps(6);
 }
 
 .archive-image {
@@ -277,14 +267,10 @@ button:hover {
 #camera-video {
     max-width: 100%;
     border-radius: 10px;
-    position: absolute;
-    animation: moveBlocks 7s infinite steps(7);
 }
 
 #capture-photo {
     margin-top: 10px;
-    position: absolute;
-    animation: moveButtons 8s infinite steps(8);
 }
 
 input[type="text"] {
@@ -295,8 +281,6 @@ input[type="text"] {
     padding: 10px;
     font-size: 16px;
     border-radius: 10px;
-    position: absolute;
-    animation: moveBlocks 6s infinite steps(6);
 }
 
 input[type="text"]::placeholder {
