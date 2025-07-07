@@ -32,7 +32,8 @@ body::before {
         radial-gradient(circle at 61% 39%, rgba(34, 139, 34, 0.5) 1px, rgba(72, 209, 204, 0.8) 1.5px, transparent 2px) translate(-2px, 1px),
         radial-gradient(ellipse at 26% 74%, rgba(255, 215, 0, 0.7) 0.5px, rgba(138, 43, 226, 0.6) 1.5px, transparent 2px) translate(1px, -2px),
         radial-gradient(circle at 54% 46%, rgba(245, 245, 220, 0.8) 1px, rgba(255, 182, 193, 0.5) 1.5px, transparent 2px) translate(-3px, 2px);
-    animation: iridescentFlow 6s infinite;
+    background-attachment: fixed;
+    animation: iridescentFlow 6s infinite both;
 }
 
 body::after {
@@ -55,7 +56,8 @@ body::after {
         radial-gradient(circle at 21% 19%, rgba(255, 165, 0, 0.8) 1px, rgba(0, 0, 255, 0.7) 1.5px, transparent 2px) translate(-2px, 1px),
         radial-gradient(ellipse at 81% 77%, rgba(0, 255, 0, 0.6) 0.5px, rgba(255, 182, 193, 0.5) 1px, transparent 1.5px) translate(1px, -2px),
         radial-gradient(circle at 49% 13%, rgba(135, 206, 235, 0.7) 1px, rgba(255, 20, 147, 0.8) 1.5px, transparent 2px) translate(-3px, 2px);
-    animation: iridescentFlow 8s infinite reverse;
+    background-attachment: fixed;
+    animation: iridescentFlow 8s infinite both;
 }
 
 body > div::before {
@@ -78,7 +80,8 @@ body > div::before {
         radial-gradient(ellipse at 84% 69%, rgba(255, 182, 193, 0.6) 1px, rgba(135, 206, 235, 0.7) 1.5px, transparent 2px) translate(-2px, 1px),
         radial-gradient(circle at 51% 83%, rgba(255, 0, 0, 0.8) 0.5px, rgba(0, 255, 0, 0.5) 1px, transparent 1.5px) translate(1px, -2px),
         radial-gradient(ellipse at 11% 29%, rgba(192, 192, 192, 0.7) 1px, rgba(255, 215, 0, 0.6) 1.5px, transparent 2px) translate(-3px, 2px);
-    animation: iridescentFlow 10s infinite;
+    background-attachment: fixed;
+    animation: iridescentFlow 10s infinite both;
 }
 
 @keyframes iridescentFlow {
