@@ -12,44 +12,62 @@ body {
     position: relative;
 }
 
-body::before {
+body::before,
+body::after,
+body > div.square:nth-of-type(1)::before,
+body > div.square:nth-of-type(2)::before,
+body > div.square:nth-of-type(3)::before,
+body > div.square:nth-of-type(4)::before,
+body > div.square:nth-of-type(5)::before,
+body > div.square:nth-of-type(6)::before,
+body > div.square:nth-of-type(7)::before,
+body > div.square:nth-of-type(8)::before,
+body > div.square:nth-of-type(9)::before,
+body > div.square:nth-of-type(10)::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    width: 20px;
+    height: 20px;
     pointer-events: none;
-    background: 
-        radial-gradient(ellipse at 10% 10%, rgba(255, 0, 0, 1) 10px 15px, transparent 20px), /* Эллипс */
-        radial-gradient(circle at 20% 30%, rgba(0, 255, 0, 1) 15px, transparent 20px), /* Круг */
-        linear-gradient(to bottom right, rgba(0, 0, 255, 1) 0%, rgba(0, 0, 255, 1) 50%, transparent 50%) 40% 50% / 20px 20px no-repeat, /* Квадрат */
-        radial-gradient(ellipse at 60% 70%, rgba(255, 255, 0, 1) 12px 18px, transparent 20px), /* Эллипс */
-        linear-gradient(to top right, rgba(0, 255, 255, 1) 0%, rgba(0, 255, 255, 1) 50%, transparent 50%) 80% 90% / 20px 20px no-repeat, /* Квадрат */
-        linear-gradient(to bottom right, transparent 49.5%, rgba(255, 0, 255, 1) 49.5%) 15% 40% / 20px 20px no-repeat clip-path: polygon(0 100%, 50% 0, 100% 100%), /* Треугольник */
-        radial-gradient(circle at 35% 60%, rgba(255, 165, 0, 1) 16px, transparent 20px), /* Круг */
-        linear-gradient(to top right, transparent 49.5%, rgba(0, 128, 0, 1) 49.5%) 55% 80% / 20px 20px no-repeat clip-path: polygon(0 100%, 50% 0, 100% 100%), /* Треугольник */
-        radial-gradient(ellipse at 75% 20%, rgba(128, 0, 128, 1) 10px 15px, transparent 20px), /* Эллипс */
-        linear-gradient(to bottom right, rgba(255, 215, 0, 1) 0%, rgba(255, 215, 0, 1) 50%, transparent 50%) 90% 45% / 20px 20px no-repeat; /* Квадрат */
     animation: iridescentFlow 6s infinite;
 }
 
+body::before { background: red; top: 10%; left: 10%; }
+body::after { background: green; top: 30%; left: 20%; }
+body > div.square:nth-of-type(1)::before { background: blue; top: 50%; left: 40%; }
+body > div.square:nth-of-type(2)::before { background: yellow; top: 70%; left: 60%; }
+body > div.square:nth-of-type(3)::before { background: cyan; top: 90%; left: 80%; }
+body > div.square:nth-of-type(4)::before { background: magenta; top: 40%; left: 15%; }
+body > div.square:nth-of-type(5)::before { background: orange; top: 60%; left: 35%; }
+body > div.square:nth-of-type(6)::before { background: darkgreen; top: 80%; left: 55%; }
+body > div.square:nth-of-type(7)::before { background: purple; top: 20%; left: 75%; }
+body > div.square:nth-of-type(8)::before { background: teal; top: 45%; left: 90%; }
+body > div.square:nth-of-type(9)::before { background: gold; top: 25%; left: 30%; }
+body > div.square:nth-of-type(10)::before { background: lime; top: 65%; left: 85%; }
+
+div.square {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
 @keyframes iridescentFlow {
-    0% { transform: translate(0, 0); }
-    7% { transform: translate(10px, -15px); }
-    14% { transform: translate(-20px, 10px); }
-    21% { transform: translate(15px, -20px); }
-    28% { transform: translate(-10px, 25px); }
-    35% { transform: translate(20px, -10px); }
-    42% { transform: translate(-15px, 15px); }
-    50% { transform: translate(25px, -5px); }
-    57% { transform: translate(-30px, 20px); }
-    64% { transform: translate(10px, -25px); }
-    71% { transform: translate(-5px, 30px); }
-    78% { transform: translate(15px, -15px); }
-    85% { transform: translate(-20px, 10px); }
-    92% { transform: translate(25px, -20px); }
-    100% { transform: translate(0, 0); }
+    0% { transform: translate(0, 0) scale(1); }
+    7% { transform: translate(10px, -15px) scale(0.8); }
+    14% { transform: translate(-20px, 10px) scale(1.2); }
+    21% { transform: translate(15px, -20px) scale(0.9); }
+    28% { transform: translate(-10px, 25px) scale(1.1); }
+    35% { transform: translate(20px, -10px) scale(0.95); }
+    42% { transform: translate(-15px, 15px) scale(1.15); }
+    50% { transform: translate(25px, -5px) scale(0.85); }
+    57% { transform: translate(-30px, 20px) scale(1.2); }
+    64% { transform: translate(10px, -25px) scale(0.9); }
+    71% { transform: translate(-5px, 30px) scale(1.1); }
+    78% { transform: translate(15px, -15px) scale(0.95); }
+    85% { transform: translate(-20px, 10px) scale(1.15); }
+    92% { transform: translate(25px, -20px) scale(0.8); }
+    100% { transform: translate(0, 0) scale(1); }
 }
 
 .step {
