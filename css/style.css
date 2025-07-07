@@ -23,9 +23,9 @@ body::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 5% 5%, rgba(255, 0, 0, 0.5) 6px, transparent 6px),
-        linear-gradient(45deg, rgba(0, 255, 0, 0.5) 12px, transparent 12px),
-        polygon(50% 0%, 70% 20%, 30% 20% 8px, transparent 8px);
+        radial-gradient(circle at 5% 5%, rgba(255, 0, 0, 0.7) 10px, transparent 10px),
+        linear-gradient(45deg, rgba(0, 255, 0, 0.7) 15px, transparent 15px),
+        polygon(50% 0%, 70% 20%, 30% 20% 12px, transparent 12px);
     animation: chaoticFlow1 5s infinite step-end;
 }
 
@@ -39,9 +39,9 @@ body::after {
     pointer-events: none;
     z-index: -2;
     background: 
-        radial-gradient(circle at 85% 85%, rgba(0, 0, 255, 0.5) 10px, transparent 10px),
-        linear-gradient(135deg, rgba(255, 165, 0, 0.5) 15px, transparent 15px),
-        polygon(50% 100%, 80% 80%, 20% 80% 20px, transparent 20px);
+        radial-gradient(circle at 85% 85%, rgba(0, 0, 255, 0.7) 15px, transparent 15px),
+        linear-gradient(135deg, rgba(255, 165, 0, 0.7) 20px, transparent 20px),
+        polygon(50% 100%, 80% 80%, 20% 80% 18px, transparent 18px);
     animation: chaoticFlow2 6s infinite step-end reverse;
 }
 
@@ -55,37 +55,37 @@ body > div::before {
     pointer-events: none;
     z-index: -3;
     background: 
-        radial-gradient(circle at 30% 70%, rgba(75, 0, 130, 0.5) 4px, transparent 4px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.5) 18px, transparent 18px),
-        polygon(50% 50%, 60% 70%, 40% 70% 16px, transparent 16px);
+        radial-gradient(circle at 30% 70%, rgba(75, 0, 130, 0.7) 8px, transparent 8px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.7) 12px, transparent 12px),
+        polygon(50% 50%, 60% 70%, 40% 70% 14px, transparent 14px);
     animation: chaoticFlow3 7s infinite step-end;
 }
 
 @keyframes chaoticFlow1 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
-    20% { transform: translate(60px, -50px) scale(1.2); opacity: 0; }
-    40% { transform: translate(-40px, 70px) scale(0.8); opacity: 0.6; }
-    60% { transform: translate(30px, -30px) scale(1.1); opacity: 1; }
-    80% { transform: translate(-20px, 40px) scale(0.9); opacity: 0.4; }
-    100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    20% { transform: translate(60px, -50px) scale(1.2); opacity: 0.3; }
+    40% { transform: translate(-40px, 70px) scale(0.8); opacity: 0.7; }
+    60% { transform: translate(30px, -30px) scale(1.1); opacity: 0.9; }
+    80% { transform: translate(-20px, 40px) scale(0.9); opacity: 0.5; }
+    100% { transform: translate(0, 0) scale(1); opacity: 1; }
 }
 
 @keyframes chaoticFlow2 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
-    20% { transform: translate(-70px, 60px) scale(1.3); opacity: 0; }
-    40% { transform: translate(50px, -40px) scale(0.7); opacity: 0.5; }
+    0% { transform: translate(0, 0) scale(1); opacity: 0.9; }
+    20% { transform: translate(-70px, 60px) scale(1.3); opacity: 0.2; }
+    40% { transform: translate(50px, -40px) scale(0.7); opacity: 0.6; }
     60% { transform: translate(-30px, 20px) scale(1.0); opacity: 1; }
-    80% { transform: translate(40px, -50px) scale(0.8); opacity: 0.3; }
-    100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+    80% { transform: translate(40px, -50px) scale(0.8); opacity: 0.4; }
+    100% { transform: translate(0, 0) scale(1); opacity: 0.9; }
 }
 
 @keyframes chaoticFlow3 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0.9; }
-    20% { transform: translate(40px, 30px) scale(1.1); opacity: 0; }
+    0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+    20% { transform: translate(40px, 30px) scale(1.1); opacity: 0.1; }
     40% { transform: translate(-60px, -20px) scale(0.9); opacity: 0.7; }
-    60% { transform: translate(20px, 50px) scale(1.2); opacity: 1; }
-    80% { transform: translate(-50px, 10px) scale(0.6); opacity: 0.2; }
-    100% { transform: translate(0, 0) scale(1); opacity: 0.9; }
+    60% { transform: translate(20px, 50px) scale(1.2); opacity: 0.95; }
+    80% { transform: translate(-50px, 10px) scale(0.6); opacity: 0.3; }
+    100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
 }
 
 .step {
