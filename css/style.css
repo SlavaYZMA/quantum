@@ -10,7 +10,6 @@ body {
     min-height: 100vh;
     overflow: hidden;
     position: relative;
-    z-index: 0;
 }
 
 body::before {
@@ -23,10 +22,11 @@ body::before {
     pointer-events: none;
     z-index: -1;
     background: 
-        radial-gradient(circle at 5% 5%, rgba(255, 0, 0, 0.8) 15px, transparent 15px),
-        linear-gradient(45deg, rgba(0, 255, 0, 0.8) 20px, transparent 20px),
-        polygon(50% 0%, 70% 20%, 30% 20% 18px, transparent 18px);
-    animation: chaoticFlow1 5s infinite step-end;
+        radial-gradient(circle at 10% 10%, rgba(255, 0, 0, 0.5) 4px, transparent 5px),
+        linear-gradient(45deg, rgba(0, 255, 0, 0.5) 8px, transparent 9px),
+        polygon(50% 0%, 0% 100%, 100% 100%) rgba(0, 0, 255, 0.5) 12px, transparent 13px;
+    background-size: 200px 200px;
+    animation: chaoticScatter 5s infinite step-end;
 }
 
 body::after {
@@ -37,30 +37,39 @@ body::after {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: -2;
+    z-index: -1;
     background: 
-        radial-gradient(circle at 85% 85%, rgba(0, 0, 255, 0.8) 20px, transparent 20px),
-        linear-gradient(135deg, rgba(255, 165, 0, 0.8) 25px, transparent 25px),
-        polygon(50% 100%, 80% 80%, 20% 80% 22px, transparent 22px);
-    animation: chaoticFlow2 6s infinite step-end reverse;
+        polygon(20% 20%, 40% 80%, 60% 60%) rgba(255, 165, 0, 0.5) 6px, transparent 7px,
+        linear-gradient(90deg, rgba(75, 0, 130, 0.5) 10px, transparent 11px),
+        radial-gradient(circle at 80% 80%, rgba(0, 255, 255, 0.5) 15px, transparent 16px);
+    background-size: 250px 250px;
+    animation: chaoticScatter 6s infinite step-end reverse;
 }
 
-@keyframes chaoticFlow1 {
-    0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    20% { transform: translate(60px, -50px) scale(1.2); opacity: 0.6; }
-    40% { transform: translate(-40px, 70px) scale(0.8); opacity: 0.8; }
-    60% { transform: translate(30px, -30px) scale(1.1); opacity: 0.9; }
-    80% { transform: translate(-20px, 40px) scale(0.9); opacity: 0.5; }
-    100% { transform: translate(0, 0) scale(1); opacity: 1; }
+body > div::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background: 
+        polygon(30% 30%, 70% 70%, 50% 10%) rgba(255, 20, 147, 0.5) 20px, transparent 21px,
+        linear-gradient(135deg, rgba(0, 100, 0, 0.5) 4px, transparent 5px),
+        radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.5) 7px, transparent 8px);
+    background-size: 180px 180px;
+    animation: chaoticScatter 7s infinite step-end;
 }
 
-@keyframes chaoticFlow2 {
-    0% { transform: translate(0, 0) scale(1); opacity: 0.9; }
-    20% { transform: translate(-70px, 60px) scale(1.3); opacity: 0.4; }
-    40% { transform: translate(50px, -40px) scale(0.7); opacity: 0.7; }
-    60% { transform: translate(-30px, 20px) scale(1.0); opacity: 1; }
-    80% { transform: translate(40px, -50px) scale(0.8); opacity: 0.3; }
-    100% { transform: translate(0, 0) scale(1); opacity: 0.9; }
+@keyframes chaoticScatter {
+    0% { transform: translate(0, 0) scale(1); background-position: 0 0, 50px 50px, 100px 100px; background-size: 200px 200px, 250px 250px, 180px 180px; }
+    20% { transform: translate(40px, -30px) scale(1.2); background-position: 20px 20px, 70px 70px, 120px 120px; background-size: 220px 220px, 270px 270px, 160px 160px; }
+    40% { transform: translate(-50px, 20px) scale(0.8); background-position: 30px 30px, 90px 90px, 80px 80px; background-size: 190px 190px, 230px 230px, 200px 200px; }
+    60% { transform: translate(30px, -10px) scale(1.1); background-position: 10px 10px, 60px 60px, 110px 110px; background-size: 210px 210px, 260px 260px, 170px 170px; }
+    80% { transform: translate(-20px, 40px) scale(0.9); background-position: 40px 40px, 100px 100px, 90px 90px; background-size: 180px 180px, 240px 240px, 190px 190px; }
+    100% { transform: translate(0, 0) scale(1); background-position: 0 0, 50px 50px, 100px 100px; background-size: 200px 200px, 250px 250px, 180px 180px; }
 }
 
 .step {
@@ -72,8 +81,6 @@ body::after {
     max-width: 800px;
     padding: 20px;
     box-sizing: border-box;
-    position: relative;
-    z-index: 1;
 }
 
 .step-centered {
@@ -88,7 +95,6 @@ body::after {
     white-space: pre-wrap;
     text-align: left;
     position: relative;
-    z-index: 1;
 }
 
 .text-block div {
@@ -108,7 +114,6 @@ body::after {
     flex-wrap: wrap;
     justify-content: center;
     position: relative;
-    z-index: 1;
 }
 
 button {
@@ -119,8 +124,7 @@ button {
     font-size: 16px;
     position: relative;
     animation: changeShape 5s infinite step-end, changeColor 4s infinite step-end;
-    transition: transform 0s;
-    z-index: 1;
+    transition: none;
 }
 
 button:nth-child(1) {
@@ -153,8 +157,8 @@ button:hover {
 @keyframes changeShape {
     0% { border-radius: 50%; }
     25% { border-radius: 15px; }
-    50% { border-radius: 0px; }
-    75% { border-radius: 10px; }
+    50% { border-radius: 10px; }
+    75% { border-radius: 30px; }
     100% { border-radius: 50%; }
 }
 
@@ -173,7 +177,6 @@ button:hover {
     background: #FFFFFF;
     border-radius: 10px;
     position: relative;
-    z-index: 1;
 }
 
 #thumbnail-portrait {
@@ -181,7 +184,6 @@ button:hover {
     height: 100px;
     border-radius: 10px;
     position: relative;
-    z-index: 1;
 }
 
 .terminal-log {
@@ -198,7 +200,6 @@ button:hover {
     display: none;
     border-radius: 10px;
     position: relative;
-    z-index: 1;
 }
 
 #terminal-log-step-4,
@@ -230,7 +231,6 @@ button:hover {
     max-height: 80%;
     overflow: auto;
     border-radius: 10px;
-    z-index: 1001;
 }
 
 .close {
@@ -241,14 +241,12 @@ button:hover {
     top: 10px;
     right: 20px;
     cursor: pointer;
-    z-index: 1002;
 }
 
 .image-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px;
-    z-index: 1;
 }
 
 .archive-image {
@@ -256,18 +254,15 @@ button:hover {
     height: 150px;
     object-fit: cover;
     border-radius: 10px;
-    z-index: 1;
 }
 
 #camera-video {
     max-width: 100%;
     border-radius: 10px;
-    z-index: 1;
 }
 
 #capture-photo {
     margin-top: 10px;
-    z-index: 1;
 }
 
 input[type="text"] {
@@ -278,7 +273,6 @@ input[type="text"] {
     padding: 10px;
     font-size: 16px;
     border-radius: 10px;
-    z-index: 1;
 }
 
 input[type="text"]::placeholder {
