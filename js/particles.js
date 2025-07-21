@@ -550,11 +550,15 @@ window.updateParticles = function(sketch) {
     let globalEntanglement = Math.random() < 0.002;
     let wavefrontEvent = Math.random() < 0.001 && window.globalPhase === 'synchronization';
 
-    // Обновление "паутины"
-    if (globalEntanglement || wavefrontEvent || window.globalPhase === 'synchronization') {
-        window.webIntensity = Math.min(1, window.webIntensity + 0.02); // Увеличение интенсивности
+    // Обновление "паутины" с постепенным ростом
+    if (window.currentStep === 5) {
+        if (window.globalPhase === 'synchronization' || globalEntanglement || wavefrontEvent) {
+            window.webIntensity = Math.min(1.0, window.webIntensity + 0.01); // Медленный рост
+        } else {
+            window.webIntensity = Math.max(0.1, window.webIntensity - 0.005); // Постепенное затухание, но не ниже 0.1
+        }
     } else {
-        window.webIntensity = Math.max(0, window.webIntensity - 0.01); // Постепенное затухание
+        window.webIntensity = 0; // Паутина появляется только на шаге 5
     }
 
     // Обновление и отрисовка существующих частиц
@@ -703,7 +707,7 @@ window.updateParticles = function(sketch) {
                 state.entanglementFlash = 15;
                 if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     potentialMessages.push({ type: 'globalEntanglement', params: {} });
-                    window.webIntensity = 1; // Активация паутины
+                    window.webIntensity = Math.min(1.0, window.webIntensity + 0.1); // Резкий рост при запутанности
                 }
             }
 
@@ -713,7 +717,7 @@ window.updateParticles = function(sketch) {
                 p.uncertaintyRadius = 15;
                 if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     potentialMessages.push({ type: 'wavefront', params: {} });
-                    window.webIntensity = 1; // Активация паутины
+                    window.webIntensity = Math.min(1.0, window.webIntensity + 0.1); // Резкий рост при волновом фронте
                     if (typeof window.playNote === 'function' && window.noteFrequencies) {
                         const freq = window.noteFrequencies['C4'] || 261.63;
                         window.playNote(freq, 'sine', 0.3, 0.2);
@@ -759,6 +763,7 @@ window.updateParticles = function(sketch) {
                                 sketch.endShape();
                                 sketch.pop();
                                 potentialMessages.push({ type: 'interference', params: { spin: p.spin.toFixed(1) } });
+                                window.webIntensity = Math.min(1.0, window.webIntensity + 0.05); // Рост при интерференции
                                 if (typeof window.playInterference === 'function') {
                                     window.playInterference(380, 385, 0.7, 0.1);
                                 }
@@ -788,6 +793,7 @@ window.updateParticles = function(sketch) {
                                 sketch.endShape();
                                 sketch.pop();
                                 potentialMessages.push({ type: 'interference', params: { spin: p.spin.toFixed(1) } });
+                                window.webIntensity = Math.min(1.0, window.webIntensity + 0.05); // Рост при интерференции
                                 if (typeof window.playInterference === 'function') {
                                     window.playInterference(380, 385, 0.7, 0.1);
                                 }
@@ -833,7 +839,7 @@ window.updateParticles = function(sketch) {
                     state.entanglementFlash = 15;
                     partnerState.entanglementFlash = 15;
                     potentialMessages.push({ type: 'entanglement', params: { spin: p.spin.toFixed(1) } });
-                    window.webIntensity = 1; // Активация паутины
+                    window.webIntensity = Math.min(1.0, window.webIntensity + 0.1); // Рост при запутанности
                     if (typeof window.playNote === 'function' && window.noteFrequencies) {
                         const freq = window.noteFrequencies['E4'] || 329.63;
                         window.playNote(freq, 'sine', 0.2, 0.15);
@@ -905,7 +911,7 @@ window.updateParticles = function(sketch) {
         }
     }
 
-    // Отрисовка квантовой паутины
+    // Отрисовка квантовой паутины с постепенным появлением
     if (window.webIntensity > 0) {
         sketch.stroke(63, 22, 127, 40 * window.webIntensity);
         sketch.strokeWeight(0.3);
@@ -917,13 +923,13 @@ window.updateParticles = function(sketch) {
                     let dx = p.x - other.x;
                     let dy = p.y - other.y;
                     let d = Math.sqrt(dx * dx + dy * dy);
-                    if (d < 80 && Math.random() < 0.5 * window.webIntensity) {
+                    if (d < 80 && (p.entangledPartner === n || Math.random() < 0.1 * window.webIntensity)) { // Только осмысленные связи
                         sketch.line(p.x, p.y, other.x, other.y);
                     }
                 }
             });
         });
-        if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame && Math.random() < 0.1) {
+        if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame && window.webIntensity > 0.5 && Math.random() < 0.1) {
             window.terminalMessages.push(getRandomMessage('webFormation'));
             window.updateTerminalLog();
             window.globalMessageCooldown = 200;
@@ -1081,7 +1087,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
             var dy = mouseY - p.y;
             var distance = Math.sqrt(dx * dx + dy * dy);
             var state = window.quantumStates[i];
-            var pulse = 1 + 0.2 * Math.sin(p.pulsePhase + p.spin * Math.PI);
+            var pulse = 1 + 0.2 * Math.sin(p.pulsePhase + p.spin);
 
             if (distance < window.mouseInfluenceRadius && distance > 0 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                 if (!p.collapsed) {
