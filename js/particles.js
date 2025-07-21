@@ -365,6 +365,9 @@ window.initializeParticles = function(img) {
 
 // Отрисовка волнового пакета
 function drawWavePacket(sketch, x, y, uncertaintyRadius, r, g, b, wavePacketAlpha) {
+    if (isNaN(x) || isNaN(y) || isNaN(uncertaintyRadius) || uncertaintyRadius <= 0) {
+        return; // Пропускаем, если координаты или радиус некорректны
+    }
     sketch.noStroke();
     let gradient = sketch.drawingContext.createRadialGradient(
         x, y, 0,
@@ -378,6 +381,9 @@ function drawWavePacket(sketch, x, y, uncertaintyRadius, r, g, b, wavePacketAlph
 
 // Отрисовка форм
 function drawShape(sketch, x, y, size, shape, rotation, spin, spinPhase, r, g, b, a, featureWeight, pulse) {
+    if (isNaN(x) || isNaN(y) || isNaN(size) || size <= 0) {
+        return; // Пропускаем, если координаты или размер некорректны
+    }
     sketch.push();
     sketch.translate(x, y);
     sketch.rotate(rotation + spin * Math.PI / 2 + spinPhase);
@@ -414,7 +420,7 @@ function drawShape(sketch, x, y, size, shape, rotation, spin, spinPhase, r, g, b
 
 // Отрисовка мыши
 function drawMouseWave(sketch) {
-    if (window.currentStep !== 4 && window.currentStep !== 5 || window.mouseWave.radius <= 0) return;
+    if (window.currentStep !== 4 && window.currentStep !== 5 || window.mouseWave.radius <= 0 || isNaN(window.mouseWave.x) || isNaN(window.mouseWave.y)) return;
     sketch.noFill();
     let gradient = sketch.drawingContext.createRadialGradient(
         window.mouseWave.x, window.mouseWave.y, 0,
@@ -427,6 +433,7 @@ function drawMouseWave(sketch) {
     sketch.ellipse(window.mouseWave.x, window.mouseWave.y, window.mouseWave.radius * 2);
 
     window.mouseWave.trail.forEach((point, i) => {
+        if (isNaN(point.x) || isNaN(point.y)) return;
         let alpha = 40 * (1 - i / window.mouseWave.trail.length);
         sketch.stroke(209, 209, 230, alpha);
         sketch.ellipse(point.x, point.y, window.mouseWave.radius * 0.4);
@@ -565,6 +572,7 @@ window.updateParticles = function(sketch) {
             // Неопределённость и диффузия
             var speed = Math.sqrt(p.velocityX * p.velocityX + p.velocityY * p.velocityY);
             p.uncertaintyRadius = 6 + speed * 10 + 5 * Math.sin(p.pulsePhase);
+            if (isNaN(p.uncertaintyRadius) || p.uncertaintyRadius <= 0) p.uncertaintyRadius = 6;
             state.wavePacketAlpha = p.collapsed ? 0 : 50 * state.probability * pulse;
 
             // Декогеренция
@@ -657,6 +665,15 @@ window.updateParticles = function(sketch) {
             } else {
                 p.velocityX *= 0.96;
                 p.velocityY *= 0.96;
+            }
+
+            // Проверка и коррекция координат
+            if (isNaN(p.x) || isNaN(p.y) || !isFinite(p.x) || !isFinite(p.y)) {
+                p.x = p.baseX;
+                p.y = p.baseY;
+                p.velocityX = 0;
+                p.velocityY = 0;
+                console.warn('Particle ' + i + ' reset due to NaN/Infinity coordinates');
             }
 
             // Влияние мыши
@@ -955,6 +972,7 @@ class BranchParticle {
     }
 
     show(sketch) {
+        if (isNaN(this.x) || isNaN(this.y) || isNaN(this.size) || this.size <= 0) return;
         sketch.stroke(this.color.r, this.color.g, this.color.b, this.life);
         sketch.strokeWeight(this.size);
         sketch.point(this.x, this.y);
