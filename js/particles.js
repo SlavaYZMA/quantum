@@ -12,10 +12,12 @@ window.grid = [];
 window.vortexCenters = []; // Центры вихрей
 window.branchParticles = []; // Новые частицы для ветвления
 window.webIntensity = 0; // Интенсивность "паутины"
-window.webGrowthRate = 0.01; // Скорость роста паутины
+window.webGrowthRate = 0.005; // Скорость роста паутины (уменьшена для плавности)
 window.webConnections = 0; // Текущее количество ветвей паутины
-window.maxWebConnections = 50; // Максимальное количество ветвей
+window.maxWebConnections = 100; // Новый предел для большего насыщения
+window.webGrowthThreshold = 4; // Порог времени для начала роста паутины
 window.baseWebColor = { r: 63, g: 22, b: 127 }; // Базовый цвет паутины (изменится на основе портрета)
+window.mouseInfluenceRadius = 80; // Увеличенный радиус влияния мыши
 
 const messages = {
     initialize: [
@@ -64,9 +66,9 @@ const messages = {
         "Квант живёт в суперпозиции: спин ${spin}."
     ],
     mouseInfluence: [
-        "Наблюдение возмущает биокванты, изменяя спины.",
-        "Волновой пакет наблюдателя оживляет кванты.",
-        "Квантовое воздействие меняет биопотоки."
+        "Наблюдение сильно возмущает биокванты, изменяя спины.",
+        "Волновой пакет наблюдателя усиливает квантовый танец.",
+        "Квантовое воздействие создаёт мощные биопотоки."
     ],
     featureAttraction: [
         "Кванты текут к ключевым точкам, как клетки.",
@@ -139,8 +141,8 @@ const messages = {
         "Ветвление активирует живой рост."
     ],
     webFormation: [
-        "Квантовая паутина постепенно проявляется.",
-        "Паутина запутанности начинает формироваться.",
+        "Квантовая паутина начинает расти с нуля.",
+        "Паутина запутанности медленно формируется.",
         "Биокванты создают первые связи паутины."
     ],
     error: [
@@ -429,16 +431,16 @@ function drawMouseWave(sketch) {
         window.mouseWave.x, window.mouseWave.y, 0,
         window.mouseWave.x, window.mouseWave.y, window.mouseWave.radius
     );
-    gradient.addColorStop(0, 'rgba(209, 209, 230, 0.15)');
+    gradient.addColorStop(0, 'rgba(209, 209, 230, 0.2)');
     gradient.addColorStop(1, 'rgba(209, 209, 230, 0)');
     sketch.drawingContext.strokeStyle = gradient;
-    sketch.strokeWeight(0.8);
+    sketch.strokeWeight(1.2);
     sketch.ellipse(window.mouseWave.x, window.mouseWave.y, window.mouseWave.radius * 2);
 
     window.mouseWave.trail.forEach((point, i) => {
-        let alpha = 40 * (1 - i / window.mouseWave.trail.length);
+        let alpha = 60 * (1 - i / window.mouseWave.trail.length);
         sketch.stroke(209, 209, 230, alpha);
-        sketch.ellipse(point.x, point.y, window.mouseWave.radius * 0.4);
+        sketch.ellipse(point.x, point.y, window.mouseWave.radius * 0.6);
     });
 }
 
@@ -569,15 +571,17 @@ window.updateParticles = function(sketch) {
     let globalEntanglement = Math.random() < 0.002;
     let wavefrontEvent = Math.random() < 0.001 && window.globalPhase === 'synchronization';
 
-    // Обновление "паутины" с постепенным ростом
-    if ((window.currentStep === 4 && window.decompositionTimer >= 8) || window.currentStep === 5) {
-        window.webIntensity = Math.min(1, window.webIntensity + window.webGrowthRate);
-        window.webConnections = Math.min(window.maxWebConnections, window.webConnections + Math.floor(window.webIntensity * 2));
-        if (window.webConnections > 0 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame && Math.random() < 0.1) {
-            window.terminalMessages.push(getRandomMessage('webFormation'));
-            window.updateTerminalLog();
-            window.globalMessageCooldown = 200;
-            messageAddedThisFrame = true;
+    // Обновление "паутины" с постепенным ростом с нуля
+    if ((window.currentStep === 4 && window.decompositionTimer >= window.webGrowthThreshold) || window.currentStep === 5) {
+        if (window.globalPhase === 'clustering' || window.globalPhase === 'synchronization') {
+            window.webIntensity = Math.min(1, window.webIntensity + window.webGrowthRate);
+            window.webConnections = Math.min(window.maxWebConnections, window.webConnections + Math.floor(window.webIntensity * 2));
+            if (window.webConnections === 1 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                window.terminalMessages.push(getRandomMessage('webFormation'));
+                window.updateTerminalLog();
+                window.globalMessageCooldown = 200;
+                messageAddedThisFrame = true;
+            }
         }
     }
 
@@ -698,18 +702,25 @@ window.updateParticles = function(sketch) {
                 p.velocityY *= 0.96;
             }
 
-            // Влияние мыши
+            // Усиленное влияние мыши
             if (window.currentStep === 4 || window.currentStep === 5) {
                 var dx = p.x - window.mouseWave.x;
                 var dy = p.y - window.mouseWave.y;
                 var distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < window.mouseInfluenceRadius && distance > 0 && !p.collapsed && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                if (distance < window.mouseInfluenceRadius && distance > 0 && !p.collapsed) {
                     var influence = (window.mouseInfluenceRadius - distance) / window.mouseInfluenceRadius;
-                    p.velocityX += dx * influence * 0.03 * pulse;
-                    p.velocityY += dy * influence * 0.03 * pulse;
-                    if (Math.random() < 0.007) {
+                    p.velocityX += dx * influence * 0.05 * pulse; // Увеличена сила до 0.05
+                    p.velocityY += dy * influence * 0.05 * pulse;
+                    if (Math.random() < 0.01 * influence) { // Частота изменения спина зависит от близости
                         p.spin = -p.spin;
-                        potentialMessages.push({ type: 'mouseInfluence', params: { spin: p.spin.toFixed(1) } });
+                        p.size += 2 * pulse; // Временное увеличение размера для эффекта
+                        if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                            potentialMessages.push({ type: 'mouseInfluence', params: { spin: p.spin.toFixed(1) } });
+                        }
+                    }
+                    // Увеличение интенсивности паутины около курсора
+                    if (distance < window.mouseInfluenceRadius / 2) {
+                        window.webIntensity = Math.min(1, window.webIntensity + 0.02 * influence);
                     }
                 }
             }
@@ -942,7 +953,7 @@ window.updateParticles = function(sketch) {
     }
 
     // Отрисовка квантовой паутины с постепенным ростом
-    if (window.webIntensity > 0 && ((window.currentStep === 4 && window.decompositionTimer >= 8) || window.currentStep === 5)) {
+    if (window.webIntensity > 0 && ((window.currentStep === 4 && window.decompositionTimer >= window.webGrowthThreshold) || window.currentStep === 5)) {
         let webAlpha = 40 * window.webIntensity;
         window.particles.forEach((p, i) => {
             const neighbors = getNeighbors(p, i);
@@ -960,7 +971,7 @@ window.updateParticles = function(sketch) {
                             b: window.baseWebColor.b + (Math.random() - 0.5) * 50
                         };
                         sketch.stroke(colorVariation.r, colorVariation.g, colorVariation.b, webAlpha);
-                        sketch.strokeWeight(0.3);
+                        sketch.strokeWeight(0.3 + 0.1 * Math.sin(window.frame * 0.05)); // Лёгкая пульсация
                         sketch.line(p.x, p.y, other.x, other.y);
                         connectionCount++;
                     }
