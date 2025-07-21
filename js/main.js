@@ -58,8 +58,8 @@ function typewriter(element, callback) {
 
         const div = divs[currentDivIndex];
         const text = div.textContent.trim();
-        div.textContent = ''; // Очищаем текст
-        div.style.visibility = 'visible'; // Делаем div видимым
+        div.textContent = '';
+        div.style.visibility = 'visible';
         const span = document.createElement('span');
         span.className = 'typewriter-text';
         div.appendChild(span);
@@ -69,7 +69,6 @@ function typewriter(element, callback) {
             if (charIndex < text.length) {
                 span.textContent += text[charIndex];
                 charIndex++;
-                // Случайная скорость: 5–95 мс на символ
                 const delay = 5 + Math.random() * 90;
                 setTimeout(typeChar, delay);
             } else {
@@ -91,9 +90,7 @@ function showImageArchiveModal() {
         return;
     }
 
-    // Очищаем сетку
     imageGrid.innerHTML = '';
-    // Добавляем изображения
     archiveImages.forEach((src, index) => {
         const img = document.createElement('img');
         img.src = src;
@@ -126,7 +123,6 @@ function selectArchiveImage(src) {
         window.img = img;
         window.initializeParticles(img);
         var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-        console.log('Found thumbnails: ' + thumbnails.length);
         thumbnails.forEach(function(thumbnail) {
             thumbnail.src = src;
             thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
@@ -148,7 +144,6 @@ function startCamera() {
         return;
     }
 
-    // Запрашиваем доступ к камере
     navigator.mediaDevices.getUserMedia({ video: true })
         .then((stream) => {
             console.log('Camera access granted');
@@ -181,47 +176,38 @@ function capturePhoto() {
         return;
     }
 
-    // Устанавливаем размеры canvas на 400x400
     canvas.width = 400;
     canvas.height = 400;
     const ctx = canvas.getContext('2d');
 
-    // Вычисляем размеры и позицию для масштабирования видео в квадрат 400x400
     const videoWidth = video.videoWidth;
     const videoHeight = video.videoHeight;
     let sx, sy, sWidth, sHeight;
 
-    // Сохраняем пропорции, вписывая видео в квадрат
     const videoAspect = videoWidth / videoHeight;
-    const canvasAspect = 1; // 400/400
+    const canvasAspect = 1;
     if (videoAspect > canvasAspect) {
-        // Видео шире, чем квадрат: обрезаем по бокам
         sWidth = videoHeight * canvasAspect;
         sHeight = videoHeight;
         sx = (videoWidth - sWidth) / 2;
         sy = 0;
     } else {
-        // Видео выше, чем квадрат: обрезаем сверху и снизу
         sWidth = videoWidth;
         sHeight = videoWidth / canvasAspect;
         sx = 0;
         sy = (videoHeight - sHeight) / 2;
     }
 
-    // Рисуем масштабированное изображение на canvas
     ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
     console.log('Photo captured, dimensions: ' + canvas.width + ', ' + canvas.height);
 
-    // Конвертируем canvas в изображение
     const imageUrl = canvas.toDataURL('image/png');
 
-    // Загружаем изображение в p5.js
     window.quantumSketch.loadImage(imageUrl, function(img) {
         console.log('Captured image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
         window.img = img;
         window.initializeParticles(img);
         var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-        console.log('Found thumbnails: ' + thumbnails.length);
         thumbnails.forEach(function(thumbnail) {
             thumbnail.src = imageUrl;
             thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
@@ -324,6 +310,14 @@ function initializeSteps() {
         console.warn('Capture photo button not found');
     }
 
+    // Инициализация аудио-контекста
+    document.addEventListener('click', () => {
+        if (typeof window.initAudioContext === 'function') {
+            console.log('Initializing audio context');
+            window.initAudioContext();
+        }
+    }, { once: true });
+
     console.log('quantumSketch initialized: ' + !!window.quantumSketch);
     var canvas = document.querySelector('#quantumCanvas');
     if (canvas) {
@@ -343,13 +337,11 @@ function showStep(stepIndex) {
         step.style.display = isActive ? 'flex' : 'none';
         if (isActive) {
             console.log('Displaying step ' + stepId + ' with display: ' + step.style.display);
-            // Запускаем typewriter-анимацию для text-block
             const textBlock = step.querySelector('.text-block');
             if (textBlock) {
-                // Скрываем все div в text-block до начала анимации
                 textBlock.querySelectorAll('div').forEach(div => {
                     div.style.visibility = 'hidden';
-                    div.textContent = div.textContent.trim(); // Удаляем лишние пробелы
+                    div.textContent = div.textContent.trim();
                 });
                 typewriter(textBlock, () => {
                     console.log('Typewriter animation finished for step ' + stepId);
@@ -365,12 +357,19 @@ function showStep(stepIndex) {
 window.moveToNextStep = function(stepIndex) {
     console.log('moveToNextStep called with stepIndex: ' + stepIndex);
     showStep(stepIndex);
+    if (stepIndex === 4 || stepIndex === 5) {
+        var canvas = document.querySelector('#quantumCanvas');
+        if (canvas) canvas.style.display = 'block';
+    } else {
+        var canvas = document.querySelector('#quantumCanvas');
+        if (canvas) canvas.style.display = 'none';
+    }
 };
 
 window.setLanguageAndNext = function(language) {
     console.log('setLanguageAndNext called with language: ' + language);
     window.setLanguage(language);
-    setTimeout(() => window.moveToNextStep(1), 100); // Delay to ensure text is loaded
+    setTimeout(() => window.moveToNextStep(1), 100);
 };
 
 document.addEventListener('DOMContentLoaded', function() {
