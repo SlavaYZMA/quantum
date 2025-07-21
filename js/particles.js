@@ -11,8 +11,8 @@ window.globalPhase = 'chaos'; // Фазы: chaos, clustering, synchronization, w
 window.grid = [];
 window.vortexCenters = []; // Центры вихрей
 window.branchParticles = []; // Новые частицы для ветвления
+window.webIntensity = 0; // Интенсивность "паутины"
 
-// Сообщения (дополнены для ветвления)
 const messages = {
     initialize: [
         "Инициализация биоквантовой экосистемы портрета.",
@@ -134,6 +134,11 @@ const messages = {
         "Биоквантовая структура разрастается.",
         "Ветвление активирует живой рост."
     ],
+    webFormation: [
+        "Квантовая паутина проявляется в интерференции.",
+        "Паутина запутанности охватывает экосистему.",
+        "Биокванты формируют живую сеть."
+    ],
     error: [
         "Ошибка в биоквантовой системе: квант ${index} не обновлён.",
         "Аномалия: спин кванта ${index} не изменился.",
@@ -160,7 +165,7 @@ window.updateTerminalLog = function() {
     const terminalDiv = document.getElementById(`terminal-log-step-${window.currentStep}`);
     if (terminalDiv) {
         terminalDiv.innerHTML = window.terminalMessages.map(msg => 
-            `<div class="${msg.includes('туннелировал') || msg.includes('мигрировал') ? 'tunneling' : msg.includes('интерференция') ? 'interference' : msg.includes('запутанность') || msg.includes('нелокальность') ? 'entanglement' : msg.includes('сингулярность') ? 'vortex' : msg.includes('ветвится') ? 'branching' : ''}">${msg}</div>`
+            `<div class="${msg.includes('туннелировал') || msg.includes('мигрировал') ? 'tunneling' : msg.includes('интерференция') ? 'interference' : msg.includes('запутанность') || msg.includes('нелокальность') ? 'entanglement' : msg.includes('сингулярность') ? 'vortex' : msg.includes('ветвится') ? 'branching' : msg.includes('паутина') ? 'web' : ''}">${msg}</div>`
         ).join('');
     }
 };
@@ -248,6 +253,7 @@ window.initializeParticles = function(img) {
     window.grid = [];
     window.vortexCenters = [];
     window.branchParticles = [];
+    window.webIntensity = 0;
 
     try {
         img.loadPixels();
@@ -309,7 +315,7 @@ window.initializeParticles = function(img) {
                         vortexId: null,
                         pulsePhase: Math.random() * 2 * Math.PI,
                         uncertaintyRadius: 6,
-                        originalColor: { r: r, g: g, b: b } // Сохранение исходного цвета
+                        originalColor: { r: r, g: g, b: b }
                     });
 
                     window.quantumStates.push({
@@ -578,6 +584,13 @@ window.updateParticles = function(sketch) {
         }
     }
 
+    // Обновление "паутины"
+    if (globalEntanglement || wavefrontEvent || window.globalPhase === 'synchronization') {
+        window.webIntensity = Math.min(1, window.webIntensity + 0.02); // Увеличение интенсивности
+    } else {
+        window.webIntensity = Math.max(0, window.webIntensity - 0.01); // Постепенное затухание
+    }
+
     // Обновление и отрисовка существующих частиц
     window.particles.forEach(function(p, i) {
         try {
@@ -758,6 +771,7 @@ window.updateParticles = function(sketch) {
                 state.entanglementFlash = 15;
                 if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     potentialMessages.push({ type: 'globalEntanglement', params: {} });
+                    window.webIntensity = 1; // Активация паутины
                 }
             }
 
@@ -767,6 +781,7 @@ window.updateParticles = function(sketch) {
                 p.uncertaintyRadius = 15;
                 if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     potentialMessages.push({ type: 'wavefront', params: {} });
+                    window.webIntensity = 1; // Активация паутины
                     if (typeof window.playNote === 'function' && window.noteFrequencies) {
                         const freq = window.noteFrequencies['C4'] || 261.63;
                         window.playNote(freq, 'sine', 0.3, 0.2);
@@ -782,7 +797,7 @@ window.updateParticles = function(sketch) {
             state.g = Math.min(255, Math.max(0, state.g));
             state.b = Math.min(255, Math.max(0, state.b));
 
-            // Интерференция
+            // Интерференция и паутина
             if (window.decompositionTimer >= 8 || window.currentStep === 5) {
                 const neighbors = getNeighbors(p, i);
                 neighbors.forEach(n => {
@@ -800,7 +815,7 @@ window.updateParticles = function(sketch) {
                             if (Math.random() < 0.0005 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                                 sketch.push();
                                 sketch.noFill();
-                                sketch.stroke(63, 22, 127, 40);
+                                sketch.stroke(63, 22, 127, 40 * window.webIntensity);
                                 sketch.strokeWeight(0.4 + 0.2 * Math.abs(wave));
                                 sketch.beginShape();
                                 for (let t = 0; t < 1; t += 0.1) {
@@ -829,7 +844,7 @@ window.updateParticles = function(sketch) {
                             if (Math.random() < 0.0005 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                                 sketch.push();
                                 sketch.noFill();
-                                sketch.stroke(63, 22, 127, 40);
+                                sketch.stroke(63, 22, 127, 40 * window.webIntensity);
                                 sketch.strokeWeight(0.4 + 0.2 * Math.abs(wave));
                                 sketch.beginShape();
                                 for (let t = 0; t < 1; t += 0.1) {
@@ -886,6 +901,7 @@ window.updateParticles = function(sketch) {
                     state.entanglementFlash = 15;
                     partnerState.entanglementFlash = 15;
                     potentialMessages.push({ type: 'entanglement', params: { spin: p.spin.toFixed(1) } });
+                    window.webIntensity = 1; // Активация паутины
                     if (typeof window.playNote === 'function' && window.noteFrequencies) {
                         const freq = window.noteFrequencies['E4'] || 329.63;
                         window.playNote(freq, 'sine', 0.2, 0.15);
@@ -942,7 +958,7 @@ window.updateParticles = function(sketch) {
         bp.show(sketch);
         if (bp.isDone()) {
             window.branchParticles.splice(i, 1);
-        } else if (Math.random() < 0.05) { // Увеличенная частота ветвления
+        } else if (Math.random() < 0.1) { // Увеличена вероятность до 10%
             for (let j = 0; j < 2 + floor(random(3)); j++) { // 2-4 новых частицы
                 let newBranch = bp.branch();
                 newBranch.size = 5 + Math.random() * 5;
@@ -954,6 +970,30 @@ window.updateParticles = function(sketch) {
                 window.globalMessageCooldown = 200;
                 messageAddedThisFrame = true;
             }
+        }
+    }
+
+    // Отрисовка квантовой паутины
+    if (window.webIntensity > 0) {
+        sketch.stroke(63, 22, 127, 40 * window.webIntensity);
+        sketch.strokeWeight(0.3);
+        window.particles.forEach((p, i) => {
+            const neighbors = getNeighbors(p, i);
+            neighbors.forEach(n => {
+                if (!n.isBranch) {
+                    const other = window.particles[n];
+                    let d = dist(p.x, p.y, other.x, other.y);
+                    if (d < 80 && Math.random() < 0.5 * window.webIntensity) {
+                        sketch.line(p.x, p.y, other.x, other.y);
+                    }
+                }
+            });
+        });
+        if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame && Math.random() < 0.1) {
+            window.terminalMessages.push(getRandomMessage('webFormation'));
+            window.updateTerminalLog();
+            window.globalMessageCooldown = 200;
+            messageAddedThisFrame = true;
         }
     }
 
