@@ -45,7 +45,7 @@ window.noteFrequencies = {
 };
 
 // Воспроизведение одной ноты с LFO модуляцией и увеличенной громкостью
-window.playNote = function(frequency, type = 'sine', duration = 0.5, gainValue = 0.5) { // Увеличена громкость до 0.5
+window.playNote = function(frequency, type = 'sine', duration = 0.5, gainValue = 0.5) {
     if (!Number.isFinite(frequency)) {
         console.warn('playNote: Invalid frequency, using fallback 261.63');
         frequency = 261.63;
@@ -60,8 +60,8 @@ window.playNote = function(frequency, type = 'sine', duration = 0.5, gainValue =
     oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
     
     lfo.type = 'sine';
-    lfo.frequency.setValueAtTime(6, ctx.currentTime); // Ускорен LFO
-    lfoGain.gain.setValueAtTime(frequency * 0.07, ctx.currentTime); // Увеличена модуляция
+    lfo.frequency.setValueAtTime(6, ctx.currentTime);
+    lfoGain.gain.setValueAtTime(frequency * 0.07, ctx.currentTime);
     lfo.connect(lfoGain);
     lfoGain.connect(oscillator.frequency);
     lfo.start();
@@ -78,7 +78,7 @@ window.playNote = function(frequency, type = 'sine', duration = 0.5, gainValue =
 };
 
 // Воспроизведение биений для интерференции с модуляцией
-window.playInterference = function(frequency1 = 380, frequency2 = 385, duration = 0.7, gainValue = 0.4) { // Увеличена громкость до 0.4
+window.playInterference = function(frequency1 = 380, frequency2 = 385, duration = 0.7, gainValue = 0.4) {
     if (!Number.isFinite(frequency1) || !Number.isFinite(frequency2)) {
         console.warn('playInterference: Invalid frequency, using fallback 440/445');
         frequency1 = 440;
@@ -97,8 +97,8 @@ window.playInterference = function(frequency1 = 380, frequency2 = 385, duration 
     oscillator2.frequency.setValueAtTime(frequency2, ctx.currentTime);
 
     lfo.type = 'sine';
-    lfo.frequency.setValueAtTime(4, ctx.currentTime); // Ускорен LFO
-    lfoGain.gain.setValueAtTime(frequency1 * 0.04, ctx.currentTime); // Увеличена модуляция
+    lfo.frequency.setValueAtTime(4, ctx.currentTime);
+    lfoGain.gain.setValueAtTime(frequency1 * 0.04, ctx.currentTime);
     lfo.connect(lfoGain);
     lfoGain.connect(oscillator1.frequency);
     lfo.start();
@@ -118,7 +118,7 @@ window.playInterference = function(frequency1 = 380, frequency2 = 385, duration 
 };
 
 // Воспроизведение импульса с ревербом для туннелирования
-window.playTunneling = function(frequency, duration = 0.2, gainValue = 0.6) { // Увеличена громкость до 0.6
+window.playTunneling = function(frequency, duration = 0.2, gainValue = 0.6) {
     if (!Number.isFinite(frequency)) {
         console.warn('playTunneling: Invalid frequency, using fallback 440');
         frequency = 440;
@@ -138,7 +138,7 @@ window.playTunneling = function(frequency, duration = 0.2, gainValue = 0.6) { //
     const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sampleRate * 0.1)) * (1 + Math.random() * 0.3); // Усилен реверб
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sampleRate * 0.1)) * (1 + Math.random() * 0.3);
     }
     convolver.buffer = buffer;
 
@@ -154,7 +154,7 @@ window.playTunneling = function(frequency, duration = 0.2, gainValue = 0.6) { //
 };
 
 // Воспроизведение арпеджио для коллапса с вариациями
-window.playArpeggio = function(shape, duration = 0.5, gainValue = 0.5) { // Увеличена громкость до 0.5
+window.playArpeggio = function(shape, duration = 0.5, gainValue = 0.5) {
     const ctx = initAudioContext();
     const notes = {
         'ribbon': ['C4', 'E4', 'G4'],
@@ -185,7 +185,7 @@ window.playArpeggio = function(shape, duration = 0.5, gainValue = 0.5) { // Ув
 };
 
 // Воспроизведение звука для инициализации
-window.playInitialization = function(duration = 2.0, gainValue = 0.25) { // Увеличена громкость до 0.25
+window.playInitialization = function(duration = 2.0, gainValue = 0.25) {
     const ctx = initAudioContext();
     const oscillator1 = ctx.createOscillator();
     const oscillator2 = ctx.createOscillator();
@@ -209,7 +209,7 @@ window.playInitialization = function(duration = 2.0, gainValue = 0.25) { // Ув
 };
 
 // Воспроизведение звука для стабилизации
-window.playStabilization = function(duration = 1.5, gainValue = 0.3) { // Увеличена громкость до 0.3
+window.playStabilization = function(duration = 1.5, gainValue = 0.3) {
     const ctx = initAudioContext();
     const notes = ['C4', 'E4', 'G4'];
     notes.forEach((note, i) => {
