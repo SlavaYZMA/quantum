@@ -949,7 +949,7 @@ window.updateParticles = function(sketch) {
 
 // Класс для ветвящихся частиц
 class BranchParticle {
-    constructor(x, y, parentColor) {
+    constructor(x, y, parentColor, level = 0) {
         this.x = x;
         this.y = y;
         this.vx = Math.random() - 0.5;
@@ -957,6 +957,9 @@ class BranchParticle {
         this.life = 255;
         this.size = 3 + Math.random() * 3;
         this.color = parentColor || { r: Math.random() * 255, g: Math.random() * 255, b: Math.random() * 255 };
+        this.level = level; // Уровень рекурсии
+        this.maxLevel = 3; // Максимальная глубина ветвления
+        this.collapseProgress = 0; // Прогресс коллапса
     }
 
     update() {
@@ -965,20 +968,54 @@ class BranchParticle {
         this.vx += (Math.random() - 0.5) * 0.2;
         this.vy += (Math.random() - 0.5) * 0.2;
         this.life -= 1.5;
+
+        // Рекурсивное ветвление с квантовой вероятностью и цветовым переходом
+        if (this.level < this.maxLevel && Math.random() < 0.2 && window.currentStep === 5 && this.collapseProgress === 0) {
+            for (let j = 0; j < 2; j++) {
+                let angle = Math.random() * Math.PI * 2; // Случайный угол
+                let length = 10 + Math.random() * 20; // Случайная длина
+                let newX = this.x + Math.cos(angle) * length;
+                let newY = this.y + Math.sin(angle) * length;
+                let newColor = {
+                    r: this.color.r + (Math.random() - 0.5) * 30, // Цветовой переход
+                    g: this.color.g + (Math.random() - 0.5) * 30,
+                    b: this.color.b + (Math.random() - 0.5) * 30
+                };
+                newColor.r = Math.min(255, Math.max(0, newColor.r));
+                newColor.g = Math.min(255, Math.max(0, newColor.g));
+                newColor.b = Math.min(255, Math.max(0, newColor.b));
+                window.branchParticles.push(new BranchParticle(newX, newY, newColor, this.level + 1));
+            }
+        }
+
+        // Анимация коллапса
+        if (this.collapseProgress > 0) {
+            this.life -= 5; // Ускоренное затухание
+            this.collapseProgress += 0.1;
+            if (this.collapseProgress >= 1) this.life = 0;
+        }
     }
 
     show(sketch) {
-        sketch.stroke(this.color.r, this.color.g, this.color.b, this.life);
-        sketch.strokeWeight(this.size);
+        sketch.stroke(this.color.r, this.color.g, this.color.b, this.life * (1 - this.collapseProgress));
+        sketch.strokeWeight(this.size * (1 - this.collapseProgress));
         sketch.point(this.x, this.y);
+
         for (let other of window.branchParticles) {
             let dx = this.x - other.x;
             let dy = this.y - other.y;
             let d = Math.sqrt(dx * dx + dy * dy);
-            if (d < 50 && this !== other) {
+            if (d < 50 && this !== other && this.collapseProgress === 0 && other.collapseProgress === 0) {
                 sketch.stroke(this.color.r, this.color.g, this.color.b, this.life * 0.5);
                 sketch.line(this.x, this.y, other.x, other.y);
             }
+        }
+
+        // Коллапс при клике с анимацией
+        if (window.mouseClicked && Math.sqrt((this.x - window.mouseWave.x) ** 2 + (this.y - window.mouseWave.y) ** 2) < 20 && this.collapseProgress === 0) {
+            this.collapseProgress = 0.1; // Запуск анимации коллапса
+            sketch.fill(204, 51, 51, 80 * (1 - this.collapseProgress));
+            sketch.ellipse(this.x, this.y, 20 * (1 - this.collapseProgress), 20 * (1 - this.collapseProgress));
         }
     }
 
@@ -987,11 +1024,11 @@ class BranchParticle {
             r: this.color.r + (Math.random() - 0.5) * 20,
             g: this.color.g + (Math.random() - 0.5) * 20,
             b: this.color.b + (Math.random() - 0.5) * 20
-        });
+        }, this.level + 1);
     }
 
     isDone() {
-        return this.life < 0 || this.x < 0 || this.x > 400 || this.y < 0 || this.y > 400;
+        return this.life < 0 || this.x < 0 || this.x > 400 || this.y < 0 || this.y > 400 || this.collapseProgress >= 1;
     }
 }
 
