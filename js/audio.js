@@ -1,239 +1,78 @@
-console.log('audio.js loaded');
+window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let noteFrequencies = { 'C4': 261.63, 'E4': 329.63, 'G4': 392.00 };
+let backgroundOsc = null;
+let backgroundAmp = null;
 
-// Инициализация AudioContext с активацией при первом взаимодействии
-let audioContext = null;
-function initAudioContext() {
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        console.log('AudioContext initialized');
-        // Активация при первом клике с повторной проверкой
-        document.addEventListener('click', function activateAudio() {
-            audioContext.resume().then(() => {
-                console.log('AudioContext resumed');
-                document.removeEventListener('click', activateAudio);
-                // Проверка состояния
-                if (audioContext.state === 'running') {
-                    console.log('Audio is active');
-                } else {
-                    console.warn('Audio failed to activate, state: ' + audioContext.state);
-                    alert('Аудио не активировано. Пожалуйста, кликните по экрану для запуска звука.');
-                }
-            }).catch(err => {
-                console.error('AudioContext error: ' + err);
-                alert('Ошибка активации аудио. Проверьте настройки браузера.');
-            });
-        }, { once: true });
+window.playInitialization = () => {
+    console.log('Playing initialization sound');
+    playTone(200, 'sine', 0.3, 0.5);
+};
+
+window.playNote = (freq, type, gain, duration) => {
+    console.log('Playing note:', freq);
+    playTone(freq, type, gain, duration);
+};
+
+window.playInterference = (freq1, freq2, gain, duration) => {
+    console.log('Playing interference sound');
+    playTone(freq1, 'sine', gain, duration);
+    playTone(freq2, 'sine', gain, duration);
+};
+
+window.playTunneling = (freq, gain, duration) => {
+    console.log('Playing tunneling sound:', freq);
+    playTone(freq, 'triangle', gain, duration);
+};
+
+window.playStabilization = () => {
+    console.log('Playing stabilization sound');
+    playTone(300, 'sine', 0.4, 0.7);
+};
+
+window.playArpeggio = (shape) => {
+    console.log('Playing arpeggio sound for shape:', shape);
+    let freqs = [261.63, 329.63, 392.00];
+    freqs.forEach((f, i) => setTimeout(() => playTone(f, 'sine', 0.2, 0.15), i * 100));
+};
+
+window.playBackgroundTone = (freq, type, gain, duration) => {
+    console.log('Playing background tone:', freq);
+    if (backgroundOsc) {
+        backgroundOsc.stop();
+        backgroundAmp.disconnect();
     }
-    return audioContext;
+    const osc = window.audioContext.createOscillator();
+    const amp = window.audioContext.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, window.audioContext.currentTime);
+    amp.gain.setValueAtTime(gain, window.audioContext.currentTime);
+    amp.gain.linearRampToValueAtTime(0.01, window.audioContext.currentTime + duration);
+    osc.connect(amp);
+    amp.connect(window.audioContext.destination);
+    osc.start();
+    osc.stop(window.audioContext.currentTime + duration);
+    backgroundOsc = osc;
+    backgroundAmp = amp;
+};
+
+function playTone(freq, type, gain, duration) {
+    const osc = window.audioContext.createOscillator();
+    const amp = window.audioContext.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, window.audioContext.currentTime);
+    amp.gain.setValueAtTime(gain, window.audioContext.currentTime);
+    amp.gain.exponentialRampToValueAtTime(0.01, window.audioContext.currentTime + duration);
+    osc.connect(amp);
+    amp.connect(window.audioContext.destination);
+    osc.start();
+    osc.stop(window.audioContext.currentTime + duration);
 }
 
-// Частоты нот для расширенной C минорной гаммы (C3–C5)
-window.noteFrequencies = {
-    'C3': 130.81,
-    'D#3': 155.56,
-    'E3': 164.81,
-    'F3': 174.61,
-    'G3': 196.00,
-    'A#3': 233.08,
-    'C4': 261.63,
-    'D#4': 311.13,
-    'E4': 329.63,
-    'F4': 349.23,
-    'G4': 392.00,
-    'A#4': 466.16,
-    'C5': 523.25
-};
-
-// Воспроизведение одной ноты с LFO модуляцией и увеличенной громкостью
-window.playNote = function(frequency, type = 'sine', duration = 0.5, gainValue = 0.5) {
-    if (!Number.isFinite(frequency)) {
-        console.warn('playNote: Invalid frequency, using fallback 261.63');
-        frequency = 261.63;
+document.addEventListener('click', () => {
+    if (window.audioContext.state === 'suspended') {
+        console.log('AudioContext resumed');
+        window.audioContext.resume();
     }
-    const ctx = initAudioContext();
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
+});
 
-    oscillator.type = type;
-    oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
-    
-    lfo.type = 'sine';
-    lfo.frequency.setValueAtTime(6, ctx.currentTime);
-    lfoGain.gain.setValueAtTime(frequency * 0.07, ctx.currentTime);
-    lfo.connect(lfoGain);
-    lfoGain.connect(oscillator.frequency);
-    lfo.start();
-    lfo.stop(ctx.currentTime + duration);
-
-    gain.gain.setValueAtTime(gainValue, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-
-    oscillator.start();
-    oscillator.stop(ctx.currentTime + duration);
-};
-
-// Воспроизведение биений для интерференции с модуляцией
-window.playInterference = function(frequency1 = 380, frequency2 = 385, duration = 0.7, gainValue = 0.4) {
-    if (!Number.isFinite(frequency1) || !Number.isFinite(frequency2)) {
-        console.warn('playInterference: Invalid frequency, using fallback 440/445');
-        frequency1 = 440;
-        frequency2 = 445;
-    }
-    const ctx = initAudioContext();
-    const oscillator1 = ctx.createOscillator();
-    const oscillator2 = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
-
-    oscillator1.type = 'sine';
-    oscillator2.type = 'sine';
-    oscillator1.frequency.setValueAtTime(frequency1, ctx.currentTime);
-    oscillator2.frequency.setValueAtTime(frequency2, ctx.currentTime);
-
-    lfo.type = 'sine';
-    lfo.frequency.setValueAtTime(4, ctx.currentTime);
-    lfoGain.gain.setValueAtTime(frequency1 * 0.04, ctx.currentTime);
-    lfo.connect(lfoGain);
-    lfoGain.connect(oscillator1.frequency);
-    lfo.start();
-    lfo.stop(ctx.currentTime + duration);
-
-    gain.gain.setValueAtTime(gainValue, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-
-    oscillator1.connect(gain);
-    oscillator2.connect(gain);
-    gain.connect(ctx.destination);
-
-    oscillator1.start();
-    oscillator2.start();
-    oscillator1.stop(ctx.currentTime + duration);
-    oscillator2.stop(ctx.currentTime + duration);
-};
-
-// Воспроизведение импульса с ревербом для туннелирования
-window.playTunneling = function(frequency, duration = 0.2, gainValue = 0.6) {
-    if (!Number.isFinite(frequency)) {
-        console.warn('playTunneling: Invalid frequency, using fallback 440');
-        frequency = 440;
-    }
-    const ctx = initAudioContext();
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const convolver = ctx.createConvolver();
-
-    const types = ['square', 'sawtooth', 'triangle'];
-    oscillator.type = types[Math.floor(Math.random() * types.length)];
-
-    oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
-
-    const sampleRate = ctx.sampleRate;
-    const bufferSize = sampleRate * 0.7;
-    const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sampleRate * 0.1)) * (1 + Math.random() * 0.3);
-    }
-    convolver.buffer = buffer;
-
-    gain.gain.setValueAtTime(gainValue, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-
-    oscillator.connect(gain);
-    gain.connect(convolver);
-    convolver.connect(ctx.destination);
-
-    oscillator.start();
-    oscillator.stop(ctx.currentTime + duration);
-};
-
-// Воспроизведение арпеджио для коллапса с вариациями
-window.playArpeggio = function(shape, duration = 0.5, gainValue = 0.5) {
-    const ctx = initAudioContext();
-    const notes = {
-        'ribbon': ['C4', 'E4', 'G4'],
-        'ellipse': ['D#4', 'F4', 'A#4'],
-        'cluster': ['G4', 'C4', 'F4']
-    }[shape] || ['C4', 'E4', 'G4'];
-    
-    notes.forEach((note, i) => {
-        const frequency = window.noteFrequencies[note] || 261.63;
-        const noteDuration = duration / 3 + Math.random() * 0.3;
-        const noteGain = gainValue * (0.8 + Math.random() * 0.2);
-        const oscillator = ctx.createOscillator();
-        const gain = ctx.createGain();
-        const panner = ctx.createStereoPanner();
-        oscillator.type = 'sawtooth';
-        oscillator.frequency.setValueAtTime(frequency, ctx.currentTime + i * 0.15);
-        gain.gain.setValueAtTime(noteGain, ctx.currentTime + i * 0.15);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + noteDuration);
-        panner.pan.setValueAtTime(i === 0 ? -0.5 : i === 1 ? 0 : 0.5, ctx.currentTime);
-
-        oscillator.connect(gain);
-        gain.connect(panner);
-        panner.connect(ctx.destination);
-
-        oscillator.start(ctx.currentTime + i * 0.15);
-        oscillator.stop(ctx.currentTime + i * 0.15 + noteDuration);
-    });
-};
-
-// Воспроизведение звука для инициализации
-window.playInitialization = function(duration = 2.0, gainValue = 0.25) {
-    const ctx = initAudioContext();
-    const oscillator1 = ctx.createOscillator();
-    const oscillator2 = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    oscillator1.type = 'sine';
-    oscillator2.type = 'sine';
-    oscillator1.frequency.setValueAtTime(150, ctx.currentTime);
-    oscillator2.frequency.setValueAtTime(80, ctx.currentTime);
-    gain.gain.setValueAtTime(gainValue, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-
-    oscillator1.connect(gain);
-    oscillator2.connect(gain);
-    gain.connect(ctx.destination);
-
-    oscillator1.start();
-    oscillator2.start();
-    oscillator1.stop(ctx.currentTime + duration);
-    oscillator2.stop(ctx.currentTime + duration);
-};
-
-// Воспроизведение звука для стабилизации
-window.playStabilization = function(duration = 1.5, gainValue = 0.3) {
-    const ctx = initAudioContext();
-    const notes = ['C4', 'E4', 'G4'];
-    notes.forEach((note, i) => {
-        const frequency = window.noteFrequencies[note] || 261.63;
-        if (!Number.isFinite(frequency)) {
-            console.warn('playStabilization: Invalid frequency for note ' + note + ', using fallback 261.63');
-            return;
-        }
-        const oscillator = ctx.createOscillator();
-        const gain = ctx.createGain();
-        const panner = ctx.createStereoPanner();
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
-        gain.gain.setValueAtTime(gainValue, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-        panner.pan.setValueAtTime(i === 0 ? -0.5 : i === 1 ? 0 : 0.5, ctx.currentTime);
-
-        oscillator.connect(gain);
-        gain.connect(panner);
-        panner.connect(ctx.destination);
-
-        oscillator.start();
-        oscillator.stop(ctx.currentTime + duration);
-    });
-};
-
-window.initAudioContext = initAudioContext;
+console.log('audio.js loaded');
