@@ -10,8 +10,9 @@ window.phaseTimer = 0;
 window.globalPhase = 'chaos'; // Фазы: chaos, clustering, synchronization, wavefront, spiral-migration
 window.grid = [];
 window.vortexCenters = []; // Центры вихрей
+window.branchParticles = []; // Новые частицы для ветвления
 
-// Сообщения
+// Сообщения (дополнены для ветвления)
 const messages = {
     initialize: [
         "Инициализация биоквантовой экосистемы портрета.",
@@ -128,6 +129,11 @@ const messages = {
         "Квантовая сингулярность активировала биопотоки.",
         "Глобальный вихрь оживляет квантовую экосистему."
     ],
+    branching: [
+        "Кванты ветвятся, как нейронные сети.",
+        "Биоквантовая структура разрастается.",
+        "Ветвление активирует живой рост."
+    ],
     error: [
         "Ошибка в биоквантовой системе: квант ${index} не обновлён.",
         "Аномалия: спин кванта ${index} не изменился.",
@@ -154,7 +160,7 @@ window.updateTerminalLog = function() {
     const terminalDiv = document.getElementById(`terminal-log-step-${window.currentStep}`);
     if (terminalDiv) {
         terminalDiv.innerHTML = window.terminalMessages.map(msg => 
-            `<div class="${msg.includes('туннелировал') || msg.includes('мигрировал') ? 'tunneling' : msg.includes('интерференция') ? 'interference' : msg.includes('запутанность') || msg.includes('нелокальность') ? 'entanglement' : msg.includes('сингулярность') ? 'vortex' : ''}">${msg}</div>`
+            `<div class="${msg.includes('туннелировал') || msg.includes('мигрировал') ? 'tunneling' : msg.includes('интерференция') ? 'interference' : msg.includes('запутанность') || msg.includes('нелокальность') ? 'entanglement' : msg.includes('сингулярность') ? 'vortex' : msg.includes('ветвится') ? 'branching' : ''}">${msg}</div>`
         ).join('');
     }
 };
@@ -174,6 +180,14 @@ function createGrid() {
         const gridIndex = gridY * gridWidth + gridX;
         if (gridIndex >= 0 && gridIndex < window.grid.length) {
             window.grid[gridIndex].push(i);
+        }
+    });
+    window.branchParticles.forEach((p, i) => {
+        const gridX = Math.floor(p.x / gridSize);
+        const gridY = Math.floor(p.y / gridSize);
+        const gridIndex = gridY * gridWidth + gridX;
+        if (gridIndex >= 0 && gridIndex < window.grid.length) {
+            window.grid[gridIndex].push({ index: i, isBranch: true });
         }
     });
 }
@@ -233,6 +247,7 @@ window.initializeParticles = function(img) {
     window.globalMessageCooldown = 0;
     window.grid = [];
     window.vortexCenters = [];
+    window.branchParticles = [];
 
     try {
         img.loadPixels();
@@ -562,10 +577,12 @@ window.updateParticles = function(sketch) {
         }
     }
 
+    // Обновление и отрисовка существующих частиц
     window.particles.forEach(function(p, i) {
         try {
             var state = window.quantumStates[i];
             var pulse = 1 + 0.2 * Math.sin(p.pulsePhase + p.spin * Math.PI);
+
             p.pulsePhase += 0.05 * (1 + Math.abs(p.spin) * 0.3);
             p.spinPhase += 0.02;
 
@@ -764,9 +781,40 @@ window.updateParticles = function(sketch) {
             // Интерференция
             if (window.decompositionTimer >= 8 || window.currentStep === 5) {
                 const neighbors = getNeighbors(p, i);
-                neighbors.forEach(j => {
-                    if (i !== j) {
-                        const other = window.particles[j];
+                neighbors.forEach(n => {
+                    if (n.isBranch) {
+                        const bp = window.branchParticles[n.index];
+                        var dx = p.x - bp.x;
+                        var dy = p.y - bp.y;
+                        var distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < 80) {
+                            var wave = Math.sin(distance * 0.04 + state.interferencePhase + window.frame * 0.015 + p.spin + bp.spin);
+                            p.velocityX += wave * 0.03 * 2.5 * pulse;
+                            p.velocityY += wave * 0.03 * 2.5 * pulse;
+                            bp.velocityX -= wave * 0.03 * 2.5 * pulse;
+                            bp.velocityY -= wave * 0.03 * 2.5 * pulse;
+                            if (Math.random() < 0.0005 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                                sketch.push();
+                                sketch.noFill();
+                                sketch.stroke(63, 22, 127, 40);
+                                sketch.strokeWeight(0.4 + 0.2 * Math.abs(wave));
+                                sketch.beginShape();
+                                for (let t = 0; t < 1; t += 0.1) {
+                                    let ix = p.x + t * (bp.x - p.x);
+                                    let iy = p.y + t * (bp.y - p.y);
+                                    let offset = Math.sin(t * Math.PI * 2 + state.interferencePhase) * 2 * wave;
+                                    sketch.vertex(ix + offset * (dy / distance), iy - offset * (dx / distance));
+                                }
+                                sketch.endShape();
+                                sketch.pop();
+                                potentialMessages.push({ type: 'interference', params: { spin: p.spin.toFixed(1) } });
+                                if (typeof window.playInterference === 'function') {
+                                    window.playInterference(380, 385, 0.7, 0.1);
+                                }
+                            }
+                        }
+                    } else {
+                        const other = window.particles[n];
                         var dx = p.x - other.x;
                         var dy = p.y - other.y;
                         var distance = Math.sqrt(dx * dx + dy * dy);
@@ -883,6 +931,24 @@ window.updateParticles = function(sketch) {
         }
     });
 
+    // Обновление и отрисовка ветвящихся частиц
+    for (let i = window.branchParticles.length - 1; i >= 0; i--) {
+        let bp = window.branchParticles[i];
+        bp.update();
+        bp.show(sketch);
+        if (bp.isDone()) {
+            window.branchParticles.splice(i, 1);
+        } else if (Math.random() < 0.01) {
+            window.branchParticles.push(bp.branch());
+            if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                window.terminalMessages.push(getRandomMessage('branching'));
+                window.updateTerminalLog();
+                window.globalMessageCooldown = 200;
+                messageAddedThisFrame = true;
+            }
+        }
+    }
+
     if (potentialMessages.length > 0 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
         let selectedMessage = potentialMessages.find(msg => msg.type === 'tunneling') ||
                              potentialMessages.find(msg => msg.type === 'interference') ||
@@ -902,6 +968,44 @@ window.updateParticles = function(sketch) {
 
     drawMouseWave(sketch);
 };
+
+// Класс для ветвящихся частиц
+class BranchParticle {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = random(-1, 1);
+        this.vy = random(-1, 1);
+        this.life = 255;
+    }
+
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx += random(-0.1, 0.1);
+        this.vy += random(-0.1, 0.1);
+        this.life -= 2;
+    }
+
+    show(sketch) {
+        sketch.stroke(255, this.life);
+        sketch.point(this.x, this.y);
+        for (let other of window.branchParticles) {
+            let d = dist(this.x, this.y, other.x, other.y);
+            if (d < 50 && this !== other) {
+                sketch.line(this.x, this.y, other.x, other.y);
+            }
+        }
+    }
+
+    branch() {
+        return new BranchParticle(this.x, this.y);
+    }
+
+    isDone() {
+        return this.life < 0 || this.x < 0 || this.x > 400 || this.y < 0 || this.y > 400;
+    }
+}
 
 // Реакция на движение мыши
 window.observeParticles = function(sketch, mouseX, mouseY) {
@@ -975,6 +1079,8 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     if (typeof window.playArpeggio === 'function') {
                         window.playArpeggio(p.shape);
                     }
+                    // Запуск ветвления при коллапсе
+                    window.branchParticles.push(new BranchParticle(p.x, p.y));
                     window.globalMessageCooldown = 200;
                     messageAddedThisFrame = true;
                 } else {
