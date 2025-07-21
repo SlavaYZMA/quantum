@@ -10,18 +10,18 @@ window.phaseTimer = 0;
 window.globalPhase = 'chaos'; // Фазы: chaos, clustering, synchronization, wavefront, spiral-migration
 window.grid = [];
 window.vortexCenters = []; // Центры вихрей
-window.branchParticles = []; // Паутинные частицы
+window.branchParticles = []; // Новые частицы для ветвления
 
-// Сообщения (дополнены для паутины)
+// Сообщения (дополнены для ветвления)
 const messages = {
     initialize: [
         "Инициализация биоквантовой экосистемы портрета.",
-        "Формирование квантовой биосетки у зон лица.",
+        "Формирование квантовой биосетки. Пиксели оживают.",
         "Запуск квантовой биодекомпозиции."
     ],
     initializeSuccess: [
         "Экосистема активна: ${validParticles} квантовых состояний.",
-        "Успешно оживлено: ${validParticles} биоквантов у глаз и рта.",
+        "Успешно оживлено: ${validParticles} биоквантов.",
         "Портрет трансформирован в ${validParticles} состояний."
     ],
     initializeError: [
@@ -31,8 +31,8 @@ const messages = {
     ],
     update: [
         "Биоквантовая экосистема пульсирует в фазе ${phase}.",
-        "Кванты и паутина текут в квантовом поле.",
-        "Эволюция: кванты создают биоквантовый узор."
+        "Кванты текут в живом квантовом поле.",
+        "Эволюция: кванты создают биоквантовый танец."
     ],
     decomposition: [
         "Декомпозиция портрета: прозрачность ${imgAlpha}/255.",
@@ -45,92 +45,92 @@ const messages = {
         "Квантовая биология: пиксели образуют ${shape}."
     ],
     stabilized: [
-        "Биоквантовая экосистема стабилизирована с паутиной.",
+        "Биоквантовая экосистема стабилизирована.",
         "Органические квантовые состояния синхронизированы.",
-        "Кванты и паутина живут в танце."
+        "Кванты живут в бесконечном квантовом танце."
     ],
     scatter: [
         "Кванты текут, как микроорганизмы в биосреде.",
-        "Паутина формирует нейронные связи.",
+        "Биоквантовая система: спины формируют узоры.",
         "Органическое рассеяние квантов."
     ],
     superposition: [
         "Квант в суперпозиции: форма ${shape}, спин ${spin}.",
-        "Биоквантовая суперпозиция: паутина оживает.",
+        "Биоквантовая суперпозиция: живая форма ${shape}.",
         "Квант живёт в суперпозиции: спин ${spin}."
     ],
     mouseInfluence: [
-        "Наблюдение возмущает биокванты и паутину.",
-        "Волновой пакет наблюдателя оживляет связи.",
+        "Наблюдение возмущает биокванты, изменяя спины.",
+        "Волновой пакет наблюдателя оживляет кванты.",
         "Квантовое воздействие меняет биопотоки."
     ],
     featureAttraction: [
-        "Кванты текут к ключевым точкам, формируя паутину.",
-        "Биоквантовая структура оживает у лица.",
-        "Кванты пульсируют у координат."
+        "Кванты текут к ключевым точкам, как клетки.",
+        "Биоквантовая структура формируется у лица.",
+        "Кванты пульсируют у ключевых координат."
     ],
     interference: [
-        "Квантовая интерференция создаёт паутину.",
-        "Волновые функции формируют живые узоры.",
-        "Интерференция укрепляет биоквантовые связи."
+        "Квантовая интерференция создаёт живые узоры.",
+        "Волновые функции текут, как мембраны.",
+        "Интерференция формирует биоквантовые связи."
     ],
     tunneling: [
         "Квант со спином ${spin} мигрировал через барьер.",
-        "Биоквантовая миграция: паутина обновляется.",
+        "Биоквантовая миграция: квант ожил в новом состоянии.",
         "Квант туннелировал, как живая клетка."
     ],
     entanglement: [
-        "Запутанные кванты пульсируют, создавая паутину.",
+        "Запутанные кванты пульсируют синхронно.",
         "Квантовая нелокальность: спины связаны.",
-        "Запутанность формирует живую корреляцию."
+        "Запутанность создаёт живую корреляцию."
     ],
     globalEntanglement: [
-        "Глобальная запутанность: паутина синхронизирована.",
-        "Экосистема вошла в состояние корреляции.",
+        "Глобальная запутанность: кванты синхронизированы.",
+        "Экосистема вошла в состояние глобальной корреляции.",
         "Нелокальная гармония квантов активирована."
     ],
     wavefront: [
-        "Глобальный волновой фронт оживляет паутину.",
+        "Глобальный волновой фронт оживляет экосистему.",
         "Кванты текут, как волна в биосреде.",
-        "Волновой всплеск укрепляет связи."
+        "Волновой всплеск синхронизирует кванты."
     ],
     phaseTransition: [
         "Квантовый фазовый переход: система в фазе ${phase}.",
-        "Биоквантовая эволюция: переход к ${phase} с паутиной.",
+        "Биоквантовая эволюция: переход к ${phase}.",
         "Экосистема трансформируется в фазу ${phase}."
     ],
     precession: [
         "Спиновая прецессия кванта ${index}: ритм изменён.",
-        "Квант ${index} прецессирует, усиливая паутину.",
+        "Квант ${index} прецессирует, как живая структура.",
         "Биоквант ${index} меняет спиновый ритм."
     ],
     diffusion: [
         "Квант ${index} диффундирует в биосреде.",
-        "Биоквантовая диффузия: паутина расплывается.",
+        "Биоквантовая диффузия: квант ${index} расплывается.",
         "Квант ${index} расширяет волновую функцию."
     ],
     decoherence: [
-        "Квант ${index} потерял когерентность, паутина угасает.",
+        "Квант ${index} потерял когерентность.",
         "Биоквант ${index} стабилизировался из-за декогеренции.",
         "Декогеренция: квант ${index} утратил квантовые свойства."
     ],
     decoherenceRestore: [
-        "Квант ${index} восстановил когерентность, паутина оживает.",
+        "Квант ${index} восстановил квантовую когерентность.",
         "Биоквант ${index} ожил в суперпозиции.",
         "Квант ${index} вернулся к квантовой жизни."
     ],
     spiralMigration: [
-        "Кванты закручиваются в вихри, формируя паутину.",
+        "Кванты закручиваются в биоквантовые вихри.",
         "Спиральная миграция: кванты текут, как живые потоки.",
-        "Биокванты создают вихревые структуры."
+        "Биокванты формируют вихревые биоструктуры."
     ],
     vortexSingularity: [
-        "Вихревая сингулярность: паутина схлопывается в центр.",
+        "Вихревая сингулярность: кванты схлопываются в центр.",
         "Квантовая сингулярность активировала биопотоки.",
-        "Глобальный вихрь оживляет экосистему."
+        "Глобальный вихрь оживляет квантовую экосистему."
     ],
     branching: [
-        "Кванты ветвятся, формируя паутину.",
+        "Кванты ветвятся, как нейронные сети.",
         "Биоквантовая структура разрастается.",
         "Ветвление активирует живой рост."
     ],
@@ -224,7 +224,7 @@ function createVortexCenters() {
     }
 }
 
-// Инициализация частиц из зон лица
+// Инициализация частиц
 window.initializeParticles = function(img) {
     console.log('initializeParticles called, img defined: ' + !!img + ', dimensions: ' + (img ? img.width + 'x' + img.height : 'undefined'));
     window.terminalMessages.push(getRandomMessage('initialize'));
@@ -263,67 +263,68 @@ window.initializeParticles = function(img) {
         const numParticles = Math.floor((img.width * img.height) / (pixelSize * pixelSize));
         let validParticles = 0;
 
-        // Координаты зон лица (глаза, рот)
         const faceFeatures = [
-            { x: img.width * 0.35, y: img.height * 0.3, weight: 0.25 }, // Левый глаз
-            { x: img.width * 0.65, y: img.height * 0.3, weight: 0.25 }, // Правый глаз
-            { x: img.width * 0.5, y: img.height * 0.7, weight: 0.15 }   // Рот
+            { x: img.width * 0.35, y: img.height * 0.3, weight: 0.25 },
+            { x: img.width * 0.65, y: img.height * 0.3, weight: 0.25 },
+            { x: img.width * 0.5, y: img.height * 0.5, weight: 0.15 },
+            { x: img.width * 0.5, y: img.height * 0.7, weight: 0.15 }
         ];
 
-        for (let feature of faceFeatures) {
-            for (let y = -pixelSize * 2; y <= pixelSize * 2; y += pixelSize) {
-                for (let x = -pixelSize * 2; x <= pixelSize * 2; x += pixelSize) {
-                    let px = feature.x + x;
-                    let py = feature.y + y;
-                    if (px >= 0 && px < img.width && py >= 0 && py < img.height) {
-                        const index = (Math.floor(px) + Math.floor(py) * img.width) * 4;
-                        const r = img.pixels[index] || 0;
-                        const g = img.pixels[index + 1] || 0;
-                        const b = img.pixels[index + 2] || 0;
-                        const a = img.pixels[index + 3] || 255;
-                        const brightness = (r + g + b) / 3;
+        for (let y = 0; y < img.height; y += pixelSize) {
+            for (let x = 0; x < img.width; x += pixelSize) {
+                const index = (Math.floor(x) + Math.floor(y) * img.width) * 4;
+                const r = img.pixels[index] || 0;
+                const g = img.pixels[index + 1] || 0;
+                const b = img.pixels[index + 2] || 0;
+                const a = img.pixels[index + 3] || 255;
+                const brightness = (r + g + b) / 3;
 
-                        if (brightness > 60 || Math.random() < 0.2) {
-                            window.particles.push({
-                                x: px * 400 / img.width,
-                                y: py * 400 / img.height,
-                                baseX: px * 400 / img.width,
-                                baseY: py * 400 / img.height,
-                                velocityX: 0,
-                                velocityY: 0,
-                                size: pixelSize * 1.2,
-                                phase: Math.random() * 2 * Math.PI,
-                                frequency: 0.007,
-                                spin: Math.random() < 0.5 ? 0.5 : -0.5,
-                                spinPhase: Math.random() * 2 * Math.PI,
-                                entangledPartner: null,
-                                collapsed: false,
-                                decompositionProgress: 0,
-                                shape: 'pixel',
-                                featureWeight: feature.weight,
-                                blockId: Math.floor(px / blockSize) + Math.floor(py / blockSize) * Math.floor(img.width / blockSize),
-                                clusterId: null,
-                                vortexId: null,
-                                pulsePhase: Math.random() * 2 * Math.PI,
-                                uncertaintyRadius: 6,
-                                originalColor: { r: r, g: g, b: b }
-                            });
-
-                            window.quantumStates.push({
-                                r: r,
-                                g: g,
-                                b: b,
-                                a: 0,
-                                probability: 1.0,
-                                decoherenceTimer: 0,
-                                tunnelFlash: 0,
-                                interferencePhase: Math.random() * 2 * Math.PI,
-                                entanglementFlash: 0,
-                                wavePacketAlpha: 0
-                            });
-                            validParticles++;
-                        }
+                if (brightness > 60 || Math.random() < 0.2) {
+                    const useFeature = Math.random() < 0.5;
+                    let featureWeight = 0.1;
+                    if (useFeature) {
+                        const feature = faceFeatures.find(f => Math.abs(f.x - x) < img.width * 0.1 && Math.abs(f.y - y) < img.height * 0.1);
+                        featureWeight = feature ? feature.weight : 0.1;
                     }
+
+                    window.particles.push({
+                        x: x * 400 / img.width,
+                        y: y * 400 / img.height,
+                        baseX: x * 400 / img.width,
+                        baseY: y * 400 / img.height,
+                        velocityX: 0,
+                        velocityY: 0,
+                        size: pixelSize * 1.2,
+                        phase: Math.random() * 2 * Math.PI,
+                        frequency: 0.007,
+                        spin: Math.random() < 0.5 ? 0.5 : -0.5,
+                        spinPhase: Math.random() * 2 * Math.PI,
+                        entangledPartner: Math.random() < 0.1 ? Math.floor(Math.random() * numParticles) : null,
+                        collapsed: false,
+                        decompositionProgress: 0,
+                        shape: 'pixel',
+                        featureWeight: featureWeight,
+                        blockId: Math.floor(x / blockSize) + Math.floor(y / blockSize) * Math.floor(img.width / blockSize),
+                        clusterId: null,
+                        vortexId: null,
+                        pulsePhase: Math.random() * 2 * Math.PI,
+                        uncertaintyRadius: 6,
+                        originalColor: { r: r, g: g, b: b } // Сохранение исходного цвета
+                    });
+
+                    window.quantumStates.push({
+                        r: r,
+                        g: g,
+                        b: b,
+                        a: 0,
+                        probability: 1.0,
+                        decoherenceTimer: 0,
+                        tunnelFlash: 0,
+                        interferencePhase: Math.random() * 2 * Math.PI,
+                        entanglementFlash: 0,
+                        wavePacketAlpha: 0
+                    });
+                    validParticles++;
                 }
             }
         }
@@ -757,10 +758,6 @@ window.updateParticles = function(sketch) {
                 state.entanglementFlash = 15;
                 if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     potentialMessages.push({ type: 'globalEntanglement', params: {} });
-                    // Создание паутины при запутанности
-                    for (let j = 0; j < 2; j++) {
-                        window.branchParticles.push(new BranchParticle(p.x, p.y, { r: state.r, g: state.g, b: state.b }));
-                    }
                 }
             }
 
@@ -774,10 +771,6 @@ window.updateParticles = function(sketch) {
                         const freq = window.noteFrequencies['C4'] || 261.63;
                         window.playNote(freq, 'sine', 0.3, 0.2);
                     }
-                    // Паутина при волновом фронте
-                    for (let j = 0; j < 3; j++) {
-                        window.branchParticles.push(new BranchParticle(p.x, p.y, { r: state.r, g: state.g, b: state.b }));
-                    }
                 }
             }
 
@@ -789,7 +782,7 @@ window.updateParticles = function(sketch) {
             state.g = Math.min(255, Math.max(0, state.g));
             state.b = Math.min(255, Math.max(0, state.b));
 
-            // Интерференция с паутиной
+            // Интерференция
             if (window.decompositionTimer >= 8 || window.currentStep === 5) {
                 const neighbors = getNeighbors(p, i);
                 neighbors.forEach(n => {
@@ -822,10 +815,6 @@ window.updateParticles = function(sketch) {
                                 if (typeof window.playInterference === 'function') {
                                     window.playInterference(380, 385, 0.7, 0.1);
                                 }
-                                // Укрепление паутины при интерференции
-                                if (Math.random() < 0.3) {
-                                    window.branchParticles.push(new BranchParticle(p.x, p.y, { r: state.r, g: state.g, b: state.b }));
-                                }
                             }
                         }
                     } else {
@@ -854,10 +843,6 @@ window.updateParticles = function(sketch) {
                                 potentialMessages.push({ type: 'interference', params: { spin: p.spin.toFixed(1) } });
                                 if (typeof window.playInterference === 'function') {
                                     window.playInterference(380, 385, 0.7, 0.1);
-                                }
-                                // Паутина при интерференции
-                                if (Math.random() < 0.3) {
-                                    window.branchParticles.push(new BranchParticle(p.x, p.y, { r: state.r, g: state.g, b: state.b }));
                                 }
                             }
                         }
@@ -950,15 +935,15 @@ window.updateParticles = function(sketch) {
         }
     });
 
-    // Обновление и отрисовка паутинных частиц
+    // Обновление и отрисовка ветвящихся частиц
     for (let i = window.branchParticles.length - 1; i >= 0; i--) {
         let bp = window.branchParticles[i];
         bp.update();
         bp.show(sketch);
         if (bp.isDone()) {
             window.branchParticles.splice(i, 1);
-        } else if (Math.random() < 0.1 && window.currentStep === 5) { // 10% вероятность ветвления
-            for (let j = 0; j < 2 + floor(random(3)); j++) { // 2-4 новые частицы
+        } else if (Math.random() < 0.05) { // Увеличенная частота ветвления
+            for (let j = 0; j < 2 + floor(random(3)); j++) { // 2-4 новых частицы
                 let newBranch = bp.branch();
                 newBranch.size = 5 + Math.random() * 5;
                 window.branchParticles.push(newBranch);
@@ -992,52 +977,44 @@ window.updateParticles = function(sketch) {
     drawMouseWave(sketch);
 };
 
-// Класс для паутинных частиц
+// Класс для ветвящихся частиц
 class BranchParticle {
     constructor(x, y, parentColor) {
         this.x = x;
         this.y = y;
-        this.vx = random(-1, 1);
-        this.vy = random(-1, 1);
-        this.life = 300; // Увеличенный жизненный цикл
-        this.size = 3 + random(2);
-        this.color = parentColor || { r: random(255), g: random(255), b: random(255) };
+        this.vx = Math.random() - 0.5;
+        this.vy = Math.random() - 0.5;
+        this.life = 255;
+        this.size = 3 + Math.random() * 3;
+        this.color = parentColor || { r: Math.random() * 255, g: Math.random() * 255, b: Math.random() * 255 };
     }
 
     update() {
         this.x += this.vx * 1.5;
         this.y += this.vy * 1.5;
-        this.vx += random(-0.2, 0.2);
-        this.vy += random(-0.2, 0.2);
-        this.life -= 1;
+        this.vx += (Math.random() - 0.5) * 0.2;
+        this.vy += (Math.random() - 0.5) * 0.2;
+        this.life -= 1.5;
     }
 
     show(sketch) {
-        sketch.stroke(this.color.r, this.color.g, this.color.b, this.life / 3); // Медленное затухание
+        sketch.stroke(this.color.r, this.color.g, this.color.b, this.life);
         sketch.strokeWeight(this.size);
         sketch.point(this.x, this.y);
-        // Формирование паутины
         for (let other of window.branchParticles) {
             let d = dist(this.x, this.y, other.x, other.y);
             if (d < 50 && this !== other) {
-                sketch.stroke(this.color.r, this.color.g, this.color.b, this.life / 6);
+                sketch.stroke(this.color.r, this.color.g, this.color.b, this.life * 0.5);
                 sketch.line(this.x, this.y, other.x, other.y);
-            }
-        }
-        for (let p of window.particles) {
-            let d = dist(this.x, this.y, p.x, p.y);
-            if (d < 50 && !p.collapsed) {
-                sketch.stroke(this.color.r, this.color.g, this.color.b, this.life / 6);
-                sketch.line(this.x, this.y, p.x, p.y);
             }
         }
     }
 
     branch() {
         return new BranchParticle(this.x, this.y, {
-            r: this.color.r + random(-20, 20),
-            g: this.color.g + random(-20, 20),
-            b: this.color.b + random(-20, 20)
+            r: this.color.r + (Math.random() - 0.5) * 20,
+            g: this.color.g + (Math.random() - 0.5) * 20,
+            b: this.color.b + (Math.random() - 0.5) * 20
         });
     }
 
@@ -1118,7 +1095,7 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     if (typeof window.playArpeggio === 'function') {
                         window.playArpeggio(p.shape);
                     }
-                    // Паутина при коллапсе
+                    // Усиленное ветвление с цветом коллапса
                     for (let j = 0; j < 3 + Math.random() * 3; j++) {
                         window.branchParticles.push(new BranchParticle(p.x, p.y, { r: state.r, g: state.g, b: state.b }));
                     }
