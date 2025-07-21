@@ -7,9 +7,9 @@ window.mouseWave = { x: 0, y: 0, radius: 0, trail: [] };
 window.terminalMessages = [];
 window.globalMessageCooldown = 0;
 window.phaseTimer = 0;
-window.globalPhase = 'chaos'; // Фазы: chaos, clustering, synchronization, wavefront, spiral-migration
+window.globalPhase = 'chaos'; // Фазы: chaos, clustering, synchronization
 window.grid = [];
-window.vortexCenters = []; // Центры вихрей
+window.vortexCenters = []; // Центры вихрей (оставим для потенциального расширения)
 window.branchParticles = []; // Новые частицы для ветвления
 window.webIntensity = 0; // Интенсивность "паутины"
 
@@ -139,6 +139,16 @@ const messages = {
         "Паутина запутанности охватывает экосистему.",
         "Биокванты формируют живую сеть."
     ],
+    collapse: [
+        "Квант коллапсировал в форму ${shape}, спин ${spin}.",
+        "Наблюдение завершило суперпозицию: ${shape}.",
+        "Коллапс зафиксировал квантовое состояние."
+    ],
+    saveImage: [
+        "Изображение сохранено как квантовый портрет.",
+        "Квантовая структура экспортирована.",
+        "Портрет сохранён в момент коллапса."
+    ],
     error: [
         "Ошибка в биоквантовой системе: квант ${index} не обновлён.",
         "Аномалия: спин кванта ${index} не изменился.",
@@ -165,7 +175,7 @@ window.updateTerminalLog = function() {
     const terminalDiv = document.getElementById(`terminal-log-step-${window.currentStep}`);
     if (terminalDiv) {
         terminalDiv.innerHTML = window.terminalMessages.map(msg => 
-            `<div class="${msg.includes('туннелировал') || msg.includes('мигрировал') ? 'tunneling' : msg.includes('интерференция') ? 'interference' : msg.includes('запутанность') || msg.includes('нелокальность') ? 'entanglement' : msg.includes('сингулярность') ? 'vortex' : msg.includes('ветвится') ? 'branching' : msg.includes('паутина') ? 'web' : ''}">${msg}</div>`
+            `<div class="${msg.includes('туннелировал') || msg.includes('мигрировал') ? 'tunneling' : msg.includes('интерференция') ? 'interference' : msg.includes('запутанность') || msg.includes('нелокальность') ? 'entanglement' : msg.includes('сингулярность') ? 'vortex' : msg.includes('ветвится') ? 'branching' : msg.includes('паутина') ? 'web' : msg.includes('коллапсировал') ? 'collapse' : ''}">${msg}</div>`
         ).join('');
     }
 };
@@ -216,7 +226,7 @@ function getNeighbors(p, i, gridSize = 80) {
     return neighbors;
 }
 
-// Создание вихревых центров
+// Создание вихревых центров (оставим для будущего)
 function createVortexCenters() {
     window.vortexCenters = [];
     const numVortices = Math.floor(Math.random() * 6) + 5; // 5–10 центров
@@ -451,7 +461,7 @@ window.updateParticles = function(sketch) {
     window.phaseTimer += 0.015;
 
     // Фазовый переход
-    if (window.currentStep === 4) {
+    if (window.currentStep === 4 || window.currentStep === 5) {
         if (window.decompositionTimer < 4) {
             if (window.globalPhase !== 'chaos') {
                 window.globalPhase = 'chaos';
@@ -470,58 +480,6 @@ window.updateParticles = function(sketch) {
                 window.terminalMessages.push(getRandomMessage('phaseTransition', { phase: 'синхронизация' }));
                 window.updateTerminalLog();
             }
-        }
-    } else if (window.currentStep === 5) {
-        if (window.phaseTimer < 30) {
-            if (window.globalPhase !== 'chaos') {
-                window.globalPhase = 'chaos';
-                window.terminalMessages.push(getRandomMessage('phaseTransition', { phase: 'хаос' }));
-                window.updateTerminalLog();
-            }
-        } else if (window.phaseTimer < 60) {
-            if (window.globalPhase !== 'clustering') {
-                window.globalPhase = 'clustering';
-                window.terminalMessages.push(getRandomMessage('phaseTransition', { phase: 'кластеризация' }));
-                window.updateTerminalLog();
-            }
-        } else if (window.phaseTimer < 90) {
-            if (window.globalPhase !== 'synchronization') {
-                window.globalPhase = 'synchronization';
-                window.terminalMessages.push(getRandomMessage('phaseTransition', { phase: 'синхронизация' }));
-                window.updateTerminalLog();
-            }
-        } else if (window.phaseTimer < 120) {
-            if (window.globalPhase !== 'wavefront') {
-                window.globalPhase = 'wavefront';
-                window.terminalMessages.push(getRandomMessage('phaseTransition', { phase: 'волновой фронт' }));
-                window.updateTerminalLog();
-            }
-        } else if (window.phaseTimer < 150) {
-            if (window.globalPhase !== 'spiral-migration') {
-                window.globalPhase = 'spiral-migration';
-                createVortexCenters();
-                window.particles.forEach(p => {
-                    let closestVortex = null;
-                    let minDist = Infinity;
-                    window.vortexCenters.forEach((v, i) => {
-                        const dx = p.x - v.x;
-                        const dy = p.y - v.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < minDist) {
-                            minDist = dist;
-                            closestVortex = i;
-                        }
-                    });
-                    p.vortexId = closestVortex;
-                });
-                window.terminalMessages.push(getRandomMessage('phaseTransition', { phase: 'спиральная миграция' }));
-                window.updateTerminalLog();
-            }
-        } else {
-            window.phaseTimer = 0;
-            window.globalPhase = 'chaos';
-            window.terminalMessages.push(getRandomMessage('phaseTransition', { phase: 'хаос' }));
-            window.updateTerminalLog();
         }
     }
 
@@ -561,7 +519,7 @@ window.updateParticles = function(sketch) {
     // Формирование кластеров
     const blocks = {};
     const clusters = {};
-    if ((window.currentStep === 4 && window.decompositionTimer >= 8) || (window.currentStep === 5 && window.globalPhase === 'clustering')) {
+    if ((window.currentStep === 4 && window.decompositionTimer >= 8) || (window.currentStep === 5)) {
         window.particles.forEach(p => {
             if (!p.clusterId) {
                 p.clusterId = Math.floor(Math.random() * 50);
@@ -585,24 +543,8 @@ window.updateParticles = function(sketch) {
     createGrid();
 
     let potentialMessages = [];
-    let globalEntanglement = Math.random() < 0.002 && window.currentStep === 5;
-    let wavefrontEvent = Math.random() < 0.001 && window.currentStep === 5 && window.globalPhase === 'wavefront';
-    let vortexSingularity = Math.random() < 0.001 && window.currentStep === 5 && window.globalPhase === 'spiral-migration';
-
-    // Вихревая сингулярность
-    if (vortexSingularity) {
-        const singularityCenter = { x: Math.random() * 400, y: Math.random() * 400 };
-        sketch.fill(63, 22, 127, 50);
-        sketch.noStroke();
-        sketch.ellipse(singularityCenter.x, singularityCenter.y, 40, 40);
-        if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-            potentialMessages.push({ type: 'vortexSingularity', params: {} });
-            if (typeof window.playNote === 'function' && window.noteFrequencies) {
-                const freq = window.noteFrequencies['G4'] || 392;
-                window.playNote(freq, 'sine', 0.3, 0.25);
-            }
-        }
-    }
+    let globalEntanglement = Math.random() < 0.002;
+    let wavefrontEvent = Math.random() < 0.001 && window.globalPhase === 'synchronization';
 
     // Обновление "паутины"
     if (globalEntanglement || wavefrontEvent || window.globalPhase === 'synchronization') {
@@ -681,7 +623,6 @@ window.updateParticles = function(sketch) {
                             window.playNote(freq, 'sine', 0.2, 0.15);
                         }
                     }
-                    // Синхронизация спинов на шаге 4
                     if (window.globalPhase === 'synchronization') {
                         p.spin = Math.sin(window.phaseTimer * 0.1 + p.x * 0.01 + p.y * 0.01) > 0 ? 0.5 : -0.5;
                     }
@@ -689,58 +630,10 @@ window.updateParticles = function(sketch) {
             } else if (window.currentStep === 5) {
                 p.decompositionProgress = 1;
                 state.a = 180;
-                p.shape = ['ellipse', 'soft-ribbon', 'bio-cluster'][Math.floor(Math.random() * 3)];
+                p.shape = p.shape; // Сохраняем форму из шага 4
                 p.size = (1.8 + 1.2 * sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale) * state.probability) * (1 + p.featureWeight * 0.3 + Math.abs(p.spin)) * pulse;
-
-                // Фазовое поведение
-                if (window.globalPhase === 'clustering' && p.clusterId !== null) {
-                    const cluster = clusters[p.clusterId];
-                    if (cluster && cluster.length > 0) {
-                        const centerX = cluster.reduce((sum, p) => sum + p.x, 0) / cluster.length;
-                        const centerY = cluster.reduce((sum, p) => sum + p.y, 0) / cluster.length;
-                        p.velocityX += (centerX - p.x) * 0.03;
-                        p.velocityY += (centerY - p.y) * 0.03;
-                    }
-                } else if (window.globalPhase === 'synchronization') {
+                if (window.globalPhase === 'synchronization') {
                     p.spin = Math.sin(window.phaseTimer * 0.1 + p.x * 0.01 + p.y * 0.01) > 0 ? 0.5 : -0.5;
-                } else if (window.globalPhase === 'wavefront' || wavefrontEvent) {
-                    p.velocityX += Math.sin(p.x * 0.02 + window.phaseTimer) * 0.5 * pulse;
-                    p.velocityY += Math.cos(p.y * 0.02 + window.phaseTimer) * 0.5 * pulse;
-                } else if (window.globalPhase === 'spiral-migration' && p.vortexId !== null) {
-                    const vortex = window.vortexCenters[p.vortexId];
-                    if (vortex) {
-                        const dx = p.x - vortex.x;
-                        const dy = p.y - vortex.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        const angle = Math.atan2(dy, dx);
-                        const spiralSpeed = vortex.strength * (1 + Math.abs(p.spin)) * pulse;
-                        p.velocityX += (-Math.sin(angle) * spiralSpeed - dx * 0.01) * 0.05;
-                        p.velocityY += (Math.cos(angle) * spiralSpeed - dy * 0.01) * 0.05;
-                        if (Math.random() < 0.0005 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                            sketch.push();
-                            sketch.noFill();
-                            sketch.stroke(63, 22, 127, 30);
-                            sketch.strokeWeight(0.3);
-                            sketch.beginShape();
-                            for (let t = 0; t < 1; t += 0.1) {
-                                let r = dist * (1 - t);
-                                let a = angle + t * Math.PI * 2;
-                                sketch.vertex(vortex.x + r * Math.cos(a), vortex.y + r * Math.sin(a));
-                            }
-                            sketch.endShape();
-                            sketch.pop();
-                            potentialMessages.push({ type: 'spiralMigration', params: {} });
-                        }
-                    }
-                    if (vortexSingularity) {
-                        const dx = p.x - singularityCenter.x;
-                        const dy = p.y - singularityCenter.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist > 0) {
-                            p.velocityX += -dx / dist * 0.1 * pulse;
-                            p.velocityY += -dy / dist * 0.1 * pulse;
-                        }
-                    }
                 }
             }
 
@@ -1029,8 +922,6 @@ window.updateParticles = function(sketch) {
                              potentialMessages.find(msg => msg.type === 'entanglement') ||
                              potentialMessages.find(msg => msg.type === 'globalEntanglement') ||
                              potentialMessages.find(msg => msg.type === 'wavefront') ||
-                             potentialMessages.find(msg => msg.type === 'vortexSingularity') ||
-                             potentialMessages.find(msg => msg.type === 'spiralMigration') ||
                              potentialMessages.find(msg => msg.type === 'decoherence') ||
                              potentialMessages.find(msg => msg.type === 'decoherenceRestore') ||
                              potentialMessages[Math.floor(Math.random() * potentialMessages.length)];
@@ -1134,69 +1025,61 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
     }
     console.log('clickParticles called, mouseX: ' + mouseX + ', mouseY: ' + mouseY);
     let messageAddedThisFrame = false;
-    window.particles.forEach(function(p, i) {
-        try {
-            var dx = mouseX - p.x;
-            var dy = mouseY - p.y;
-            var distance = Math.sqrt(dx * dx + dy * dy);
-            var state = window.quantumStates[i];
-            var pulse = 1 + 0.2 * Math.sin(p.pulsePhase + p.spin * Math.PI);
+    if (window.currentStep === 5) {
+        window.particles.forEach(function(p, i) {
+            try {
+                var dx = mouseX - p.x;
+                var dy = mouseY - p.y;
+                var distance = Math.sqrt(dx * dx + dy * dy);
+                var state = window.quantumStates[i];
+                var pulse = 1 + 0.2 * Math.sin(p.pulsePhase + p.spin * Math.PI);
 
-            if (distance < window.mouseInfluenceRadius && distance > 0 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                if (!p.collapsed) {
-                    p.collapsed = true;
-                    state.a = 180;
-                    p.size = 2.5 * pulse;
-                    p.uncertaintyRadius = 2;
-                    state.wavePacketAlpha = 0;
-                    p.shape = ['ellipse', 'soft-ribbon', 'bio-cluster'][Math.floor(Math.random() * 3)];
-                    p.spin = Math.random() < 0.5 ? 0.5 : -0.5;
-                    sketch.fill(204, 51, 51, 80);
-                    sketch.ellipse(p.x, p.y, 8 * pulse, 8 * pulse);
-                    sketch.noFill();
-                    sketch.stroke(204, 51, 51, 40);
-                    sketch.strokeWeight(0.4);
-                    sketch.ellipse(p.x, p.y, 20, 20);
-                    console.log('Particle ' + i + ' collapsed, shape: ' + p.shape + ', spin: ' + p.spin.toFixed(1) + ', alpha: ' + state.a);
-                    window.terminalMessages.push(getRandomMessage('collapse', { shape: p.shape, spin: p.spin.toFixed(1) }));
+                if (distance < window.mouseInfluenceRadius && distance > 0 && !messageAddedThisFrame) {
+                    if (!p.collapsed) {
+                        p.collapsed = true;
+                        state.a = 180;
+                        p.size = 2.5 * pulse;
+                        p.uncertaintyRadius = 2;
+                        state.wavePacketAlpha = 0;
+                        p.shape = p.shape; // Сохраняем текущую форму
+                        p.spin = Math.random() < 0.5 ? 0.5 : -0.5;
+                        sketch.fill(204, 51, 51, 80);
+                        sketch.ellipse(p.x, p.y, 8 * pulse, 8 * pulse);
+                        sketch.noFill();
+                        sketch.stroke(204, 51, 51, 40);
+                        sketch.strokeWeight(0.4);
+                        sketch.ellipse(p.x, p.y, 20, 20);
+                        console.log('Particle ' + i + ' collapsed, shape: ' + p.shape + ', spin: ' + p.spin.toFixed(1) + ', alpha: ' + state.a);
+                        window.terminalMessages.push(getRandomMessage('collapse', { shape: p.shape, spin: p.spin.toFixed(1) }));
+                        window.updateTerminalLog();
+                        if (typeof window.playArpeggio === 'function') {
+                            window.playArpeggio(p.shape);
+                        }
+                        // Усиленное ветвление с цветом коллапса
+                        for (let j = 0; j < 3 + Math.random() * 3; j++) {
+                            window.branchParticles.push(new BranchParticle(p.x, p.y, { r: state.r, g: state.g, b: state.b }));
+                        }
+                        window.globalMessageCooldown = 200;
+                        messageAddedThisFrame = true;
+                    }
+                }
+            } catch (error) {
+                console.error('Error clicking particle ' + i + ': ' + error);
+                if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                    window.terminalMessages.push(getRandomMessage('error', { index: i }));
                     window.updateTerminalLog();
-                    if (typeof window.playArpeggio === 'function') {
-                        window.playArpeggio(p.shape);
-                    }
-                    // Усиленное ветвление с цветом коллапса
-                    for (let j = 0; j < 3 + Math.random() * 3; j++) {
-                        window.branchParticles.push(new BranchParticle(p.x, p.y, { r: state.r, g: state.g, b: state.b }));
-                    }
-                    window.globalMessageCooldown = 200;
-                    messageAddedThisFrame = true;
-                } else {
-                    p.collapsed = false;
-                    p.phase = Math.random() * 2 * Math.PI;
-                    p.pulsePhase = Math.random() * 2 * Math.PI;
-                    p.spin = Math.random() < 0.5 ? 0.5 : -0.5;
-                    state.a = 180;
-                    state.wavePacketAlpha = 50;
-                    p.uncertaintyRadius = 5;
-                    p.size = 1.8 + (sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale) * 1.2) * pulse;
-                    console.log('Particle ' + i + ' restored to superposition, shape: ' + p.shape + ', spin: ' + p.spin.toFixed(1) + ', alpha: ' + state.a);
-                    window.terminalMessages.push(getRandomMessage('superpositionRestore', { spin: p.spin.toFixed(1) }));
-                    window.updateTerminalLog();
-                    if (typeof window.playNote === 'function' && window.noteFrequencies) {
-                        const freq = window.noteFrequencies['E4'] || 329.63;
-                        window.playNote(freq, 'sine', 0.2, 0.15);
-                    }
                     window.globalMessageCooldown = 200;
                     messageAddedThisFrame = true;
                 }
             }
-        } catch (error) {
-            console.error('Error clicking particle ' + i + ': ' + error);
-            if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                window.terminalMessages.push(getRandomMessage('error', { index: i }));
-                window.updateTerminalLog();
-                window.globalMessageCooldown = 200;
-                messageAddedThisFrame = true;
-            }
+        });
+        if (!messageAddedThisFrame) {
+            // Сохранение изображения при клике вне частиц
+            sketch.saveCanvas('quantum-portrait', 'png');
+            window.terminalMessages.push(getRandomMessage('saveImage'));
+            window.updateTerminalLog();
+            window.globalMessageCooldown = 200;
+            messageAddedThisFrame = true;
         }
-    });
+    }
 };
