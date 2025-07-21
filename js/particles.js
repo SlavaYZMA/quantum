@@ -308,7 +308,8 @@ window.initializeParticles = function(img) {
                         clusterId: null,
                         vortexId: null,
                         pulsePhase: Math.random() * 2 * Math.PI,
-                        uncertaintyRadius: 6
+                        uncertaintyRadius: 6,
+                        originalColor: { r: r, g: g, b: b } // Сохранение исходного цвета
                     });
 
                     window.quantumStates.push({
@@ -773,7 +774,10 @@ window.updateParticles = function(sketch) {
                 }
             }
 
-            // Цвета
+            // Цвета (сохранение разнообразия)
+            state.r = p.originalColor.r + (Math.random() - 0.5) * 20; // Небольшая вариация
+            state.g = p.originalColor.g + (Math.random() - 0.5) * 20;
+            state.b = p.originalColor.b + (Math.random() - 0.5) * 20;
             state.r = Math.min(255, Math.max(0, state.r));
             state.g = Math.min(255, Math.max(0, state.g));
             state.b = Math.min(255, Math.max(0, state.b));
@@ -875,9 +879,9 @@ window.updateParticles = function(sketch) {
             if (p.entangledPartner !== null && window.particles[p.entangledPartner] && (window.decompositionTimer >= 8 || window.currentStep === 5)) {
                 var partner = window.particles[p.entangledPartner];
                 var partnerState = window.quantumStates[p.entangledPartner];
-                state.r = partnerState.r = (state.r + partnerState.r) / 2;
-                state.g = partnerState.g = (state.g + partnerState.g) / 2;
-                state.b = partnerState.b = (state.b + partnerState.b) / 2;
+                state.r = partnerState.r = (state.r + partnerState.r) / 2 + (p.originalColor.r - state.r) * 0.2; // Часть исходного цвета
+                state.g = partnerState.g = (state.g + partnerState.g) / 2 + (p.originalColor.g - state.g) * 0.2;
+                state.b = partnerState.b = (state.b + partnerState.b) / 2 + (p.originalColor.b - state.b) * 0.2;
                 if (!p.collapsed && !partner.collapsed && Math.random() < 0.005 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     state.entanglementFlash = 15;
                     partnerState.entanglementFlash = 15;
@@ -938,8 +942,10 @@ window.updateParticles = function(sketch) {
         bp.show(sketch);
         if (bp.isDone()) {
             window.branchParticles.splice(i, 1);
-        } else if (Math.random() < 0.01) {
-            window.branchParticles.push(bp.branch());
+        } else if (Math.random() < 0.05) { // Увеличенная частота ветвления
+            let newBranch = bp.branch();
+            newBranch.size = 5 + Math.random() * 5; // Увеличенный размер
+            window.branchParticles.push(newBranch);
             if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                 window.terminalMessages.push(getRandomMessage('branching'));
                 window.updateTerminalLog();
@@ -971,35 +977,39 @@ window.updateParticles = function(sketch) {
 
 // Класс для ветвящихся частиц
 class BranchParticle {
-    constructor(x, y) {
+    constructor(x, y, parentColor) {
         this.x = x;
         this.y = y;
-        this.vx = random(-1, 1);
-        this.vy = random(-1, 1);
+        this.vx = Math.random() - 0.5;
+        this.vy = Math.random() - 0.5;
         this.life = 255;
+        this.size = 3 + Math.random() * 3; // Увеличенный базовый размер
+        this.color = parentColor || { r: Math.random() * 255, g: Math.random() * 255, b: Math.random() * 255 }; // Цвет от родителя
     }
 
     update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.vx += random(-0.1, 0.1);
-        this.vy += random(-0.1, 0.1);
-        this.life -= 2;
+        this.x += this.vx * 2; // Ускорение движения
+        this.y += this.vy * 2;
+        this.vx += (Math.random() - 0.5) * 0.2;
+        this.vy += (Math.random() - 0.5) * 0.2;
+        this.life -= 1.5;
     }
 
     show(sketch) {
-        sketch.stroke(255, this.life);
+        sketch.stroke(this.color.r, this.color.g, this.color.b, this.life);
+        sketch.strokeWeight(this.size);
         sketch.point(this.x, this.y);
         for (let other of window.branchParticles) {
             let d = dist(this.x, this.y, other.x, other.y);
             if (d < 50 && this !== other) {
+                sketch.stroke(this.color.r, this.color.g, this.color.b, this.life * 0.5);
                 sketch.line(this.x, this.y, other.x, other.y);
             }
         }
     }
 
     branch() {
-        return new BranchParticle(this.x, this.y);
+        return new BranchParticle(this.x, this.y, this.color); // Передача цвета
     }
 
     isDone() {
@@ -1079,8 +1089,10 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     if (typeof window.playArpeggio === 'function') {
                         window.playArpeggio(p.shape);
                     }
-                    // Запуск ветвления при коллапсе
-                    window.branchParticles.push(new BranchParticle(p.x, p.y));
+                    // Усиленное ветвление при коллапсе
+                    for (let j = 0; j < 3 + Math.random() * 3; j++) { // 3-6 новых ветвей
+                        window.branchParticles.push(new BranchParticle(p.x, p.y, { r: state.r, g: state.g, b: state.b }));
+                    }
                     window.globalMessageCooldown = 200;
                     messageAddedThisFrame = true;
                 } else {
