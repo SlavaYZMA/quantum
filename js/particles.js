@@ -451,7 +451,27 @@ window.updateParticles = function(sketch) {
     window.phaseTimer += 0.015;
 
     // Фазовый переход
-    if (window.currentStep === 5) {
+    if (window.currentStep === 4) {
+        if (window.decompositionTimer < 4) {
+            if (window.globalPhase !== 'chaos') {
+                window.globalPhase = 'chaos';
+                window.terminalMessages.push(getRandomMessage('phaseTransition', { phase: 'хаос' }));
+                window.updateTerminalLog();
+            }
+        } else if (window.decompositionTimer < 8) {
+            if (window.globalPhase !== 'clustering') {
+                window.globalPhase = 'clustering';
+                window.terminalMessages.push(getRandomMessage('phaseTransition', { phase: 'кластеризация' }));
+                window.updateTerminalLog();
+            }
+        } else {
+            if (window.globalPhase !== 'synchronization') {
+                window.globalPhase = 'synchronization';
+                window.terminalMessages.push(getRandomMessage('phaseTransition', { phase: 'синхронизация' }));
+                window.updateTerminalLog();
+            }
+        }
+    } else if (window.currentStep === 5) {
         if (window.phaseTimer < 30) {
             if (window.globalPhase !== 'chaos') {
                 window.globalPhase = 'chaos';
@@ -541,7 +561,7 @@ window.updateParticles = function(sketch) {
     // Формирование кластеров
     const blocks = {};
     const clusters = {};
-    if (window.globalPhase === 'clustering') {
+    if ((window.currentStep === 4 && window.decompositionTimer >= 8) || (window.currentStep === 5 && window.globalPhase === 'clustering')) {
         window.particles.forEach(p => {
             if (!p.clusterId) {
                 p.clusterId = Math.floor(Math.random() * 50);
@@ -661,6 +681,10 @@ window.updateParticles = function(sketch) {
                             window.playNote(freq, 'sine', 0.2, 0.15);
                         }
                     }
+                    // Синхронизация спинов на шаге 4
+                    if (window.globalPhase === 'synchronization') {
+                        p.spin = Math.sin(window.phaseTimer * 0.1 + p.x * 0.01 + p.y * 0.01) > 0 ? 0.5 : -0.5;
+                    }
                 }
             } else if (window.currentStep === 5) {
                 p.decompositionProgress = 1;
@@ -721,7 +745,7 @@ window.updateParticles = function(sketch) {
             }
 
             // Биологичное движение
-            if (window.decompositionTimer >= 8 || window.currentStep === 5) {
+            if ((window.currentStep === 4 && window.decompositionTimer >= 8) || window.currentStep === 5) {
                 const n = sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale, window.frame * 0.008);
                 const bioRhythm = 1 + 0.3 * Math.sin(p.pulsePhase + p.spin);
                 p.velocityX += (Math.cos(p.phase + p.spin * Math.PI / 2) * n * window.chaosFactor * 0.4 * bioRhythm - p.velocityX) * 0.04;
@@ -798,7 +822,7 @@ window.updateParticles = function(sketch) {
             state.b = Math.min(255, Math.max(0, state.b));
 
             // Интерференция и паутина
-            if (window.decompositionTimer >= 8 || window.currentStep === 5) {
+            if ((window.currentStep === 4 && window.decompositionTimer >= 8) || window.currentStep === 5) {
                 const neighbors = getNeighbors(p, i);
                 neighbors.forEach(n => {
                     if (n.isBranch) {
@@ -866,7 +890,7 @@ window.updateParticles = function(sketch) {
             }
 
             // Туннелирование
-            if (Math.random() < 0.001 && !p.collapsed && (window.decompositionTimer >= 8 || window.currentStep === 5)) {
+            if (Math.random() < 0.001 && !p.collapsed && ((window.currentStep === 4 && window.decompositionTimer >= 8) || window.currentStep === 5)) {
                 var oldX = p.x, oldY = p.y;
                 p.x = Math.random() * 400;
                 p.y = Math.random() * 400;
@@ -891,7 +915,7 @@ window.updateParticles = function(sketch) {
             }
 
             // Запутанность
-            if (p.entangledPartner !== null && window.particles[p.entangledPartner] && (window.decompositionTimer >= 8 || window.currentStep === 5)) {
+            if (p.entangledPartner !== null && window.particles[p.entangledPartner] && ((window.currentStep === 4 && window.decompositionTimer >= 8) || window.currentStep === 5)) {
                 var partner = window.particles[p.entangledPartner];
                 var partnerState = window.quantumStates[p.entangledPartner];
                 state.r = partnerState.r = (state.r + partnerState.r) / 2 + (p.originalColor.r - state.r) * 0.2;
@@ -959,7 +983,7 @@ window.updateParticles = function(sketch) {
         if (bp.isDone()) {
             window.branchParticles.splice(i, 1);
         } else if (Math.random() < 0.1) { // Увеличена вероятность до 10%
-            for (let j = 0; j < 2 + floor(random(3)); j++) { // 2-4 новых частицы
+            for (let j = 0; j < 2 + Math.floor(Math.random() * 3); j++) { // 2-4 новых частицы
                 let newBranch = bp.branch();
                 newBranch.size = 5 + Math.random() * 5;
                 window.branchParticles.push(newBranch);
@@ -982,7 +1006,9 @@ window.updateParticles = function(sketch) {
             neighbors.forEach(n => {
                 if (!n.isBranch) {
                     const other = window.particles[n];
-                    let d = dist(p.x, p.y, other.x, other.y);
+                    let dx = p.x - other.x;
+                    let dy = p.y - other.y;
+                    let d = Math.sqrt(dx * dx + dy * dy);
                     if (d < 80 && Math.random() < 0.5 * window.webIntensity) {
                         sketch.line(p.x, p.y, other.x, other.y);
                     }
@@ -1042,7 +1068,9 @@ class BranchParticle {
         sketch.strokeWeight(this.size);
         sketch.point(this.x, this.y);
         for (let other of window.branchParticles) {
-            let d = dist(this.x, this.y, other.x, other.y);
+            let dx = this.x - other.x;
+            let dy = this.y - other.y;
+            let d = Math.sqrt(dx * dx + dy * dy);
             if (d < 50 && this !== other) {
                 sketch.stroke(this.color.r, this.color.g, this.color.b, this.life * 0.5);
                 sketch.line(this.x, this.y, other.x, other.y);
