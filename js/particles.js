@@ -15,15 +15,20 @@ window.webConnections = 0;
 
 window.initializeParticles = function(img) {
     console.log('initializeParticles called, img defined: ' + !!img + ', dimensions: ' + (img ? img.width + 'x' + img.height : 'undefined'));
-    window.terminalMessages.push(getRandomMessage('initialize'));
-    window.updateTerminalLog();
+    window.terminalMessages = window.terminalMessages || [];
+    window.terminalMessages.push('[INIT] Starting particle initialization');
+    if (typeof window.updateTerminalLog === 'function') {
+        window.updateTerminalLog();
+    }
     if (typeof window.playInitialization === 'function') {
         window.playInitialization();
     }
     if (!img || !img.pixels) {
         console.error('Error: window.img is not defined or pixels not loaded');
-        window.terminalMessages.push(getRandomMessage('initializeError'));
-        window.updateTerminalLog();
+        window.terminalMessages.push('[ERROR] Image not loaded for initialization');
+        if (typeof window.updateTerminalLog === 'function') {
+            window.updateTerminalLog();
+        }
         return;
     }
     window.particles = [];
@@ -56,8 +61,10 @@ window.initializeParticles = function(img) {
     try {
         if (!img.pixels || img.pixels.length === 0) {
             console.error('Error: img.pixels is empty or not loaded');
-            window.terminalMessages.push(getRandomMessage('initializeError'));
-            window.updateTerminalLog();
+            window.terminalMessages.push('[ERROR] Image pixels not available');
+            if (typeof window.updateTerminalLog === 'function') {
+                window.updateTerminalLog();
+            }
             return;
         }
 
@@ -151,20 +158,26 @@ window.initializeParticles = function(img) {
         }
 
         console.log('Initialized ' + window.particles.length + ' particles, valid: ' + validParticles);
-        window.terminalMessages.push(getRandomMessage('initializeSuccess', { validParticles }));
-        window.updateTerminalLog();
+        window.terminalMessages.push('[SUCCESS] Initialized ' + validParticles + ' particles');
+        if (typeof window.updateTerminalLog === 'function') {
+            window.updateTerminalLog();
+        }
         if (typeof window.playInitialization === 'function') {
             window.playInitialization();
         }
         if (validParticles === 0) {
             console.error('No valid particles created.');
-            window.terminalMessages.push(getRandomMessage('initializeError'));
-            window.updateTerminalLog();
+            window.terminalMessages.push('[ERROR] No valid particles created');
+            if (typeof window.updateTerminalLog === 'function') {
+                window.updateTerminalLog();
+            }
         }
     } catch (error) {
         console.error('Error in initializeParticles: ' + error);
-        window.terminalMessages.push(getRandomMessage('initializeError'));
-        window.updateTerminalLog();
+        window.terminalMessages.push('[ERROR] Initialization failed: ' + error.message);
+        if (typeof window.updateTerminalLog === 'function') {
+            window.updateTerminalLog();
+        }
     }
 };
 
@@ -172,8 +185,11 @@ window.updateParticles = function(sketch) {
     if (!window.particles || window.particles.length === 0 || !window.quantumStates) {
         console.error('updateParticles: No particles or quantum states available');
         if (window.globalMessageCooldown <= 0) {
-            window.terminalMessages.push(getRandomMessage('error', { index: 0 }));
-            window.updateTerminalLog();
+            window.terminalMessages = window.terminalMessages || [];
+            window.terminalMessages.push('[ERROR] No particles or quantum states available');
+            if (typeof window.updateTerminalLog === 'function') {
+                window.updateTerminalLog();
+            }
             window.globalMessageCooldown = 200;
         }
         return;
@@ -236,7 +252,7 @@ window.updateParticles = function(sketch) {
                         p.velocityX += (closest.x - p.x) * 0.01;
                         p.velocityY += (closest.y - p.y) * 0.01;
                         if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame && Math.random() < 0.01) {
-                            potentialMessages.push({ type: 'clustering', params: { distance: minDist.toFixed(1) } });
+                            potentialMessages.push('[INFO] Clustering detected, distance: ' + minDist.toFixed(1));
                         }
                     }
                 }
@@ -257,7 +273,7 @@ window.updateParticles = function(sketch) {
                     p.y = Math.random() * sketch.height;
                     state.tunnelFlash = 15;
                     if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                        potentialMessages.push({ type: 'tunneling', params: { x: p.x.toFixed(1), y: p.y.toFixed(1) } });
+                        potentialMessages.push('[EVENT] Tunneling at (' + p.x.toFixed(1) + ', ' + p.y.toFixed(1) + ')');
                     }
                     if (typeof window.playTunneling === 'function') {
                         window.playTunneling(190 + Math.random() * 380);
@@ -268,7 +284,7 @@ window.updateParticles = function(sketch) {
                     p.collapsed = true;
                     state.decoherenceTimer = 0;
                     if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                        potentialMessages.push({ type: 'decoherence', params: { spin: p.spin.toFixed(1) } });
+                        potentialMessages.push('[EVENT] Decoherence occurred, spin: ' + p.spin.toFixed(1));
                     }
                 } else if (!p.collapsed) {
                     state.decoherenceTimer += 0.1;
@@ -333,7 +349,7 @@ window.updateParticles = function(sketch) {
                     state.entanglementFlash = 15;
                     partnerState.entanglementFlash = 15;
                     if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                        potentialMessages.push({ type: 'entanglement', params: { spin: p.spin.toFixed(1) } });
+                        potentialMessages.push('[EVENT] Entanglement detected, spin: ' + p.spin.toFixed(1));
                     }
                     if (typeof window.playNote === 'function' && window.noteFrequencies) {
                         window.playNote(window.noteFrequencies['E4'], 'sine', 0.3, 0.25);
@@ -364,7 +380,7 @@ window.updateParticles = function(sketch) {
                         sketch.strokeWeight(0.5 + interference * 0.5);
                         sketch.line(p.x, p.y, other.x, other.y);
                         if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame && Math.random() < 0.01) {
-                            potentialMessages.push({ type: 'interference', params: { distance: d.toFixed(1) } });
+                            potentialMessages.push('[INFO] Interference detected, distance: ' + d.toFixed(1));
                         }
                         if (typeof window.playInterference === 'function') {
                             window.playInterference(380, 385, 0.7, 0.25);
@@ -375,7 +391,7 @@ window.updateParticles = function(sketch) {
         } catch (error) {
             console.error('Error updating particle ' + i + ': ' + error);
             if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                potentialMessages.push({ type: 'error', params: { index: i } });
+                potentialMessages.push('[ERROR] Update failed for particle ' + i);
             }
         }
     });
@@ -388,9 +404,12 @@ window.updateParticles = function(sketch) {
     });
 
     if (potentialMessages.length > 0 && window.globalMessageCooldown <= 0) {
+        window.terminalMessages = window.terminalMessages || [];
         let message = potentialMessages[Math.floor(Math.random() * potentialMessages.length)];
-        window.terminalMessages.push(getRandomMessage(message.type, message.params));
-        window.updateTerminalLog();
+        window.terminalMessages.push(message);
+        if (typeof window.updateTerminalLog === 'function') {
+            window.updateTerminalLog();
+        }
         window.globalMessageCooldown = 200;
         messageAddedThisFrame = true;
     } else if (window.globalMessageCooldown > 0) {
@@ -432,8 +451,11 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
     if (!window.particles || !window.quantumStates || window.particles.length === 0) {
         console.error('clickParticles: No particles or quantum states available');
         if (window.globalMessageCooldown <= 0) {
-            window.terminalMessages.push(getRandomMessage('error', { index: 0 }));
-            window.updateTerminalLog();
+            window.terminalMessages = window.terminalMessages || [];
+            window.terminalMessages.push('[ERROR] No particles or quantum states available');
+            if (typeof window.updateTerminalLog === 'function') {
+                window.updateTerminalLog();
+            }
             window.globalMessageCooldown = 200;
         }
         return;
@@ -481,8 +503,11 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                         }
                     }
                     console.log('Particle ' + i + ' collapsed, shape: ' + p.shape + ', spin: ' + p.spin.toFixed(1) + ', alpha: ' + state.a);
-                    window.terminalMessages.push(getRandomMessage('collapse', { shape: p.shape, spin: p.spin.toFixed(1) }));
-                    window.updateTerminalLog();
+                    window.terminalMessages = window.terminalMessages || [];
+                    window.terminalMessages.push('[EVENT] Particle ' + i + ' collapsed, shape: ' + p.shape + ', spin: ' + p.spin.toFixed(1));
+                    if (typeof window.updateTerminalLog === 'function') {
+                        window.updateTerminalLog();
+                    }
                     if (typeof window.playArpeggio === 'function') {
                         window.playArpeggio(p.shape);
                     }
@@ -501,8 +526,11 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     p.uncertaintyRadius = 5;
                     p.size = 1.8 + (sketch.noise(p.x * window.noiseScale, p.y * window.noiseScale) * 1.5) * pulse;
                     console.log('Particle ' + i + ' restored to superposition, shape: ' + p.shape + ', spin: ' + p.spin.toFixed(1) + ', alpha: ' + state.a);
-                    window.terminalMessages.push(getRandomMessage('superpositionRestore', { spin: p.spin.toFixed(1) }));
-                    window.updateTerminalLog();
+                    window.terminalMessages = window.terminalMessages || [];
+                    window.terminalMessages.push('[EVENT] Particle ' + i + ' restored to superposition, spin: ' + p.spin.toFixed(1));
+                    if (typeof window.updateTerminalLog === 'function') {
+                        window.updateTerminalLog();
+                    }
                     if (typeof window.playNote === 'function' && window.noteFrequencies) {
                         const freq = window.noteFrequencies['E4'] || 329.63;
                         window.playNote(freq, 'sine', 0.2, 0.15);
@@ -514,8 +542,11 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
         } catch (error) {
             console.error('Error clicking particle ' + i + ': ' + error);
             if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                window.terminalMessages.push(getRandomMessage('error', { index: i }));
-                window.updateTerminalLog();
+                window.terminalMessages = window.terminalMessages || [];
+                window.terminalMessages.push('[ERROR] Error clicking particle ' + i + ': ' + error.message);
+                if (typeof window.updateTerminalLog === 'function') {
+                    window.updateTerminalLog();
+                }
                 window.globalMessageCooldown = 200;
                 messageAddedThisFrame = true;
             }
