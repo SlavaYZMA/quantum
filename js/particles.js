@@ -775,7 +775,7 @@ window.updateParticles = function(sketch) {
             }
 
             // Цвета (сохранение разнообразия)
-            state.r = p.originalColor.r + (Math.random() - 0.5) * 20; // Небольшая вариация
+            state.r = p.originalColor.r + (Math.random() - 0.5) * 20;
             state.g = p.originalColor.g + (Math.random() - 0.5) * 20;
             state.b = p.originalColor.b + (Math.random() - 0.5) * 20;
             state.r = Math.min(255, Math.max(0, state.r));
@@ -879,7 +879,7 @@ window.updateParticles = function(sketch) {
             if (p.entangledPartner !== null && window.particles[p.entangledPartner] && (window.decompositionTimer >= 8 || window.currentStep === 5)) {
                 var partner = window.particles[p.entangledPartner];
                 var partnerState = window.quantumStates[p.entangledPartner];
-                state.r = partnerState.r = (state.r + partnerState.r) / 2 + (p.originalColor.r - state.r) * 0.2; // Часть исходного цвета
+                state.r = partnerState.r = (state.r + partnerState.r) / 2 + (p.originalColor.r - state.r) * 0.2;
                 state.g = partnerState.g = (state.g + partnerState.g) / 2 + (p.originalColor.g - state.g) * 0.2;
                 state.b = partnerState.b = (state.b + partnerState.b) / 2 + (p.originalColor.b - state.b) * 0.2;
                 if (!p.collapsed && !partner.collapsed && Math.random() < 0.005 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
@@ -943,9 +943,11 @@ window.updateParticles = function(sketch) {
         if (bp.isDone()) {
             window.branchParticles.splice(i, 1);
         } else if (Math.random() < 0.05) { // Увеличенная частота ветвления
-            let newBranch = bp.branch();
-            newBranch.size = 5 + Math.random() * 5; // Увеличенный размер
-            window.branchParticles.push(newBranch);
+            for (let j = 0; j < 2 + floor(random(3)); j++) { // 2-4 новых частицы
+                let newBranch = bp.branch();
+                newBranch.size = 5 + Math.random() * 5;
+                window.branchParticles.push(newBranch);
+            }
             if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                 window.terminalMessages.push(getRandomMessage('branching'));
                 window.updateTerminalLog();
@@ -983,13 +985,13 @@ class BranchParticle {
         this.vx = Math.random() - 0.5;
         this.vy = Math.random() - 0.5;
         this.life = 255;
-        this.size = 3 + Math.random() * 3; // Увеличенный базовый размер
-        this.color = parentColor || { r: Math.random() * 255, g: Math.random() * 255, b: Math.random() * 255 }; // Цвет от родителя
+        this.size = 3 + Math.random() * 3;
+        this.color = parentColor || { r: Math.random() * 255, g: Math.random() * 255, b: Math.random() * 255 };
     }
 
     update() {
-        this.x += this.vx * 2; // Ускорение движения
-        this.y += this.vy * 2;
+        this.x += this.vx * 1.5;
+        this.y += this.vy * 1.5;
         this.vx += (Math.random() - 0.5) * 0.2;
         this.vy += (Math.random() - 0.5) * 0.2;
         this.life -= 1.5;
@@ -1009,7 +1011,11 @@ class BranchParticle {
     }
 
     branch() {
-        return new BranchParticle(this.x, this.y, this.color); // Передача цвета
+        return new BranchParticle(this.x, this.y, {
+            r: this.color.r + (Math.random() - 0.5) * 20,
+            g: this.color.g + (Math.random() - 0.5) * 20,
+            b: this.color.b + (Math.random() - 0.5) * 20
+        });
     }
 
     isDone() {
@@ -1089,8 +1095,8 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     if (typeof window.playArpeggio === 'function') {
                         window.playArpeggio(p.shape);
                     }
-                    // Усиленное ветвление при коллапсе
-                    for (let j = 0; j < 3 + Math.random() * 3; j++) { // 3-6 новых ветвей
+                    // Усиленное ветвление с цветом коллапса
+                    for (let j = 0; j < 3 + Math.random() * 3; j++) {
                         window.branchParticles.push(new BranchParticle(p.x, p.y, { r: state.r, g: state.g, b: state.b }));
                     }
                     window.globalMessageCooldown = 200;
