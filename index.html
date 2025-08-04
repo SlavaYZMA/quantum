@@ -20,8 +20,8 @@
     <section id="step-0" class="step quantum-flux">
         <div class="text-cluster" data-i18n="step0_text"></div>
         <div class="quantum-cluster">
-            <div class="particle-button" data-action="setLanguageAndNext('ru')" data-i18n="ru">RU</div>
-            <div class="particle-button" data-action="setLanguageAndNext('en')" data-i18n="en">ENG</div>
+            <div class="particle-button" data-action="setLanguageAndNext('ru')">RU</div>
+            <div class="particle-button" data-action="setLanguageAndNext('en')">ENG</div>
         </div>
     </section>
     <section id="step-1" class="step quantum-flux">
@@ -193,13 +193,14 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM fully loaded, applying initial styles');
-            document.querySelectorAll('.particle-button').forEach(button => {
+            const buttons = document.querySelectorAll('.particle-button');
+            buttons.forEach(button => {
                 window.assembleText(button);
                 button.addEventListener('mouseover', () => window.assembleText(button));
                 button.addEventListener('mouseout', () => window.disassembleText(button));
                 button.addEventListener('click', (e) => {
                     const action = button.getAttribute('data-action') || button.id;
-                    console.log('Button clicked:', action);
+                    console.log('Button clicked:', action, 'on element:', button);
                     if (action && window[action]) window[action]();
                     else console.error(`Function ${action} not found in window`);
                 });
