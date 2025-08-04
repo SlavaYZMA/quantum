@@ -4,6 +4,7 @@ window.currentStep = 0;
 window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
 window.mouseInfluenceRadius = 50;
+window.currentLanguage = 'ru'; // По умолчанию
 
 // Define step transitions explicitly
 const stepTransitions = {
@@ -232,6 +233,13 @@ function initializeSteps() {
     steps.forEach(function(step, index) {
         step.style.display = index === 0 ? 'flex' : 'none';
         console.log('Step ' + step.id + ' initial display: ' + step.style.display);
+        if (index === 0) {
+            const textCluster = step.querySelector('.text-cluster');
+            if (textCluster) console.log('Text cluster found:', textCluster.textContent);
+            const buttons = step.querySelectorAll('.particle-button');
+            buttons.forEach(btn => window.assembleText(btn));
+            console.log('Initialized ' + buttons.length + ' buttons on step-0');
+        }
     });
     window.currentStep = 0;
 
@@ -319,7 +327,7 @@ function initializeSteps() {
     }, { once: true });
 
     console.log('quantumSketch initialized: ' + !!window.quantumSketch);
-    var canvas = document.querySelector('#quantumCanvas');
+    var canvas = document.querySelector('.quantum-canvas');
     if (canvas) {
         canvas.style.display = 'none';
         console.log('Canvas hidden on initialization');
@@ -333,22 +341,24 @@ function showStep(stepIndex) {
     var steps = document.querySelectorAll('.step');
     steps.forEach(function(step) {
         var stepId = step.id.replace('step-', '');
-        const isActive = stepId === stepIndex.toString();
+        const isActive = stepId === stepIndex.toString() || (stepId === stepIndex.toFixed(1) && stepIndex % 1 !== 0);
         step.style.display = isActive ? 'flex' : 'none';
         if (isActive) {
             console.log('Displaying step ' + stepId + ' with display: ' + step.style.display);
-            const textBlock = step.querySelector('.text-block');
-            if (textBlock) {
-                textBlock.querySelectorAll('div').forEach(div => {
-                    div.style.visibility = 'hidden';
-                    div.textContent = div.textContent.trim();
+            const textCluster = step.querySelector('.text-cluster');
+            if (textCluster) {
+                textCluster.querySelectorAll('div').forEach(div => {
+                    div.style.visibility = 'visible'; // Убираем скрытие для теста
+                    div.textContent = div.getAttribute('data-i18n') || div.textContent.trim();
                 });
-                typewriter(textBlock, () => {
-                    console.log('Typewriter animation finished for step ' + stepId);
-                });
+                // typewriter(textCluster, () => {
+                //     console.log('Typewriter animation finished for step ' + stepId);
+                // });
             } else {
-                console.log('No text-block found for step ' + stepId);
+                console.log('No text-cluster found for step ' + stepId);
             }
+            const buttons = step.querySelectorAll('.particle-button');
+            buttons.forEach(btn => window.assembleText(btn));
         }
     });
     window.currentStep = stepIndex;
@@ -358,27 +368,28 @@ window.moveToNextStep = function(stepIndex) {
     console.log('moveToNextStep called with stepIndex: ' + stepIndex);
     showStep(stepIndex);
     if (stepIndex === 4 || stepIndex === 5) {
-        var canvas = document.querySelector('#quantumCanvas');
+        var canvas = document.querySelector('.quantum-canvas');
         if (canvas) canvas.style.display = 'block';
     } else {
-        var canvas = document.querySelector('#quantumCanvas');
+        var canvas = document.querySelector('.quantum-canvas');
         if (canvas) canvas.style.display = 'none';
     }
 };
 
 window.setLanguage = function(language) {
     console.log('Language set to:', language);
-    window.currentLanguage = language; // Храним текущий язык
+    window.currentLanguage = language;
     // Здесь можно добавить логику для переключения текстов (например, через i18n)
 };
 
 window.setLanguageAndNext = function(language) {
     console.log('setLanguageAndNext called with language:', language);
     window.setLanguage(language);
-    setTimeout(() => window.moveToNextStep(1), 100); // Переход на шаг 1
+    setTimeout(() => window.moveToNextStep(1), 100);
 };
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing steps');
     initializeSteps();
+    showStep(0); // Принудительный показ шага 0
 });
