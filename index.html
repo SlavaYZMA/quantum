@@ -6,7 +6,7 @@
     <title>Quantum Portrait</title>
     <link rel="icon" href="data:;base64,=">
     <link rel="stylesheet" href="./css/style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <script src="./js/globals.js"></script>
     <script src="./js/particles.js"></script>
     <script src="./js/observer.js"></script>
@@ -142,15 +142,13 @@
             <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <!-- Модальное окно для выбора изображений из архива -->
-    <div id="image-archive-modal" class="modal" style="display: none;">
+    <div id="image-archive-modal" class="modal">
         <div class="modal-content">
             <span id="close-modal" class="close">×</span>
             <div class="image-grid" id="image-grid"></div>
         </div>
     </div>
-    <!-- Модальное окно для камеры -->
-    <div id="camera-modal" class="modal" style="display: none;">
+    <div id="camera-modal" class="modal">
         <div class="modal-content">
             <span id="close-camera-modal" class="close">×</span>
             <video id="camera-video" autoplay style="width: 100%; max-width: 640px; height: auto;"></video>
@@ -303,5 +301,3 @@
             }
         };
     </script>
-</body>
-</html>
