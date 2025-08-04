@@ -1,5 +1,6 @@
 console.log('main.js loaded');
 
+// Явно добавляем функции в глобальный объект window
 window.currentStep = 0;
 window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
@@ -7,6 +8,9 @@ window.mouseInfluenceRadius = 50;
 window.currentLanguage = 'ru'; // По умолчанию
 window.terminalMessages = [];
 window.particles = [];
+window.setLanguage = setLanguage;
+window.setLanguageAndNext = setLanguageAndNext;
+window.moveToNextStep = moveToNextStep;
 
 const translations = window.translations || {
     ru: {
@@ -392,7 +396,7 @@ function showStep(stepIndex) {
     window.currentStep = stepIndex;
 }
 
-window.moveToNextStep = function(stepIndex) {
+function moveToNextStep(stepIndex) {
     console.log('moveToNextStep called with stepIndex: ' + stepIndex);
     showStep(stepIndex);
     if (stepIndex === 4 || stepIndex === 5) {
@@ -402,9 +406,9 @@ window.moveToNextStep = function(stepIndex) {
         var canvas = document.querySelector('.quantum-canvas');
         if (canvas) canvas.style.display = 'none';
     }
-};
+}
 
-window.setLanguage = function(language) {
+function setLanguage(language) {
     console.log('Language set to:', language);
     window.currentLanguage = language;
     const elements = document.querySelectorAll('[data-i18n]');
@@ -418,13 +422,13 @@ window.setLanguage = function(language) {
             console.warn(`Translation missing for key: ${key} in language: ${language}`);
         }
     });
-};
+}
 
-window.setLanguageAndNext = function(language) {
+function setLanguageAndNext(language) {
     console.log('setLanguageAndNext called with language:', language);
-    window.setLanguage(language);
-    window.moveToNextStep(1);
-};
+    setLanguage(language);
+    moveToNextStep(1);
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing steps');
