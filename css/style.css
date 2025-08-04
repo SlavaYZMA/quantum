@@ -1,18 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-    background: black;
+    background: black !important; /* Принудительный чёрный фон */
     overflow: hidden;
     position: relative;
-    animation: quantumNoise 5s infinite;
-}
-
-@keyframes quantumNoise {
-    0% { background: radial-gradient(circle, #000 0%, #1a0033 50%, #00ffcc 100%); }
-    25% { background: radial-gradient(circle, #000 0%, #330066 50%, #ff00ff 100%); }
-    50% { background: radial-gradient(circle, #000 0%, #003333 50%, #00ccff 100%); }
-    75% { background: radial-gradient(circle, #000 0%, #660033 50%, #ff0066 100%); }
-    100% { background: radial-gradient(circle, #000 0%, #1a0033 50%, #00ffcc 100%); }
 }
 
 .quantum-flux {
@@ -23,15 +14,8 @@ body {
     width: 100%;
     height: 100vh;
     position: absolute;
-    opacity: 0;
+    opacity: 1 !important; /* Убираем возможное скрытие */
     transition: opacity 0.5s ease-in-out;
-    animation: fluxCollapse 4s infinite;
-}
-
-@keyframes fluxCollapse {
-    0% { transform: scale(1); filter: blur(0px); }
-    50% { transform: scale(1.05); filter: blur(2px); }
-    100% { transform: scale(1); filter: blur(0px); }
 }
 
 .text-cluster {
@@ -41,13 +25,7 @@ body {
     text-align: center;
     padding: 20px;
     position: relative;
-    animation: textWave 3s infinite;
-}
-
-@keyframes textWave {
-    0% { text-shadow: 0 0 10px #00ffcc; }
-    50% { text-shadow: 0 0 20px #ff00ff; }
-    100% { text-shadow: 0 0 10px #00ffcc; }
+    visibility: visible !important; /* Убеждаемся, что текст виден */
 }
 
 .quantum-cluster {
@@ -59,15 +37,15 @@ body {
 
 .particle-button {
     position: relative;
-    color: #00ffcc; /* Убедимся, что текст виден по умолчанию */
+    color: #00ffcc !important; /* Текст виден по умолчанию */
     cursor: pointer;
-    font-size: 16px;
+    font-size: 16px !important; /* Убеждаемся, что шрифт виден */
     width: 100px;
     height: 50px;
     background: none;
     border: none;
     overflow: hidden;
-    display: flex;
+    display: flex !important; /* Принудительное отображение */
     align-items: center;
     justify-content: center;
     transition: color 0.3s;
@@ -111,13 +89,6 @@ body {
     height: 400px;
     background: transparent;
     position: relative;
-    animation: observationPulse 3s infinite;
-}
-
-@keyframes observationPulse {
-    0% { box-shadow: 0 0 0 #00ccff; }
-    50% { box-shadow: 0 0 30px #00ccff; }
-    100% { box-shadow: 0 0 0 #00ccff; }
 }
 
 .terminal-log {
@@ -131,14 +102,6 @@ body {
     overflow-y: auto;
     line-height: 1.4;
     border: none;
-    animation: terminalGlitch 1s infinite;
-}
-
-@keyframes terminalGlitch {
-    10% { transform: translateX(2px); }
-    20% { transform: translateX(-2px); }
-    30% { transform: translateX(2px); }
-    40% { transform: translateX(0); }
 }
 
 .quantum-input {
@@ -149,13 +112,6 @@ body {
     font-family: 'Courier New', monospace;
     font-size: 16px;
     padding: 5px;
-    animation: inputPulse 2s infinite;
-}
-
-@keyframes inputPulse {
-    0% { border-color: #ff00ff; }
-    50% { border-color: #00ffcc; }
-    100% { border-color: #ff00ff; }
 }
 
 .modal.quantum-flux {
@@ -175,11 +131,6 @@ body {
     top: 10px;
     right: 20px;
     cursor: pointer;
-    animation: closeBlink 1s infinite;
-}
-
-@keyframes closeBlink {
-    50% { opacity: 0; }
 }
 
 .image-grid {
@@ -193,27 +144,13 @@ body {
     height: 150px;
     object-fit: cover;
     border: none;
-    filter: hue-rotate(90deg);
-    transition: filter 0.3s;
-}
-
-.archive-image:hover {
-    filter: hue-rotate(180deg);
 }
 
 #camera-video {
     max-width: 100%;
     border: none;
-    filter: blur(1px);
-    animation: cameraWave 3s infinite;
-}
-
-@keyframes cameraWave {
-    0% { filter: blur(1px); }
-    50% { filter: blur(3px); }
-    100% { filter: blur(1px); }
 }
 
 .quantum-canvas {
-    display: block !important;
+    display: none;
 }
