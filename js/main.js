@@ -5,6 +5,8 @@ window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
 window.mouseInfluenceRadius = 50;
 window.currentLanguage = 'ru'; // По умолчанию
+window.terminalMessages = [];
+window.particles = [];
 
 // Define step transitions explicitly
 const stepTransitions = {
@@ -40,11 +42,16 @@ const archiveImages = [
 // Переменная для хранения видеопотока
 let cameraStream = null;
 
+function updateTerminalLog() {
+    const log = document.getElementById('terminal-log-step-4') || document.getElementById('terminal-log-step-5');
+    if (log) log.innerHTML = window.terminalMessages.join('<br>');
+}
+
 // Функция для typewriter-анимации
 function typewriter(element, callback) {
     const divs = element.querySelectorAll('div');
     if (divs.length === 0) {
-        console.log('No divs found in text-block for typewriter animation');
+        console.log('No divs found in text-cluster for typewriter animation');
         if (callback) callback();
         return;
     }
@@ -136,28 +143,6 @@ function selectArchiveImage(src) {
     });
 }
 
-// Функция для запуска камеры
-function startCamera() {
-    const modal = document.getElementById('camera-modal');
-    const video = document.getElementById('camera-video');
-    if (!modal || !video) {
-        console.error('Camera modal or video element not found');
-        return;
-    }
-
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then((stream) => {
-            console.log('Camera access granted');
-            cameraStream = stream;
-            video.srcObject = stream;
-            modal.style.display = 'flex';
-        })
-        .catch((err) => {
-            console.error('Error accessing camera:', err);
-            alert('Не удалось получить доступ к камере. Пожалуйста, разрешите доступ или используйте другое устройство.');
-        });
-}
-
 // Функция для остановки камеры
 function stopCamera() {
     if (cameraStream) {
@@ -165,62 +150,6 @@ function stopCamera() {
         cameraStream = null;
         console.log('Camera stream stopped');
     }
-}
-
-// Функция для захвата фото
-function capturePhoto() {
-    const video = document.getElementById('camera-video');
-    const canvas = document.getElementById('camera-canvas');
-    const modal = document.getElementById('camera-modal');
-    if (!video || !canvas || !modal) {
-        console.error('Video, canvas, or modal not found');
-        return;
-    }
-
-    canvas.width = 400;
-    canvas.height = 400;
-    const ctx = canvas.getContext('2d');
-
-    const videoWidth = video.videoWidth;
-    const videoHeight = video.videoHeight;
-    let sx, sy, sWidth, sHeight;
-
-    const videoAspect = videoWidth / videoHeight;
-    const canvasAspect = 1;
-    if (videoAspect > canvasAspect) {
-        sWidth = videoHeight * canvasAspect;
-        sHeight = videoHeight;
-        sx = (videoWidth - sWidth) / 2;
-        sy = 0;
-    } else {
-        sWidth = videoWidth;
-        sHeight = videoWidth / canvasAspect;
-        sx = 0;
-        sy = (videoHeight - sHeight) / 2;
-    }
-
-    ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
-    console.log('Photo captured, dimensions: ' + canvas.width + ', ' + canvas.height);
-
-    const imageUrl = canvas.toDataURL('image/png');
-
-    window.quantumSketch.loadImage(imageUrl, function(img) {
-        console.log('Captured image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
-        window.img = img;
-        window.initializeParticles(img);
-        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-        thumbnails.forEach(function(thumbnail) {
-            thumbnail.src = imageUrl;
-            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
-        });
-        window.moveToNextStep(2.1);
-        stopCamera();
-        modal.style.display = 'none';
-    }, function(err) {
-        console.error('Error loading captured image:', err);
-        alert('Ошибка обработки фото. Пожалуйста, попробуйте снова.');
-    });
 }
 
 function initializeSteps() {
@@ -271,7 +200,6 @@ function initializeSteps() {
         });
     });
 
-    // Инициализация кнопки "Выбрать из архива"
     const archiveButton = document.getElementById('useArchive');
     if (archiveButton) {
         archiveButton.addEventListener('click', showImageArchiveModal);
@@ -279,26 +207,21 @@ function initializeSteps() {
         console.warn('Archive button not found');
     }
 
-    // Инициализация кнопки "Включить камеру"
     const cameraButton = document.getElementById('useCamera');
     if (cameraButton) {
-        cameraButton.addEventListener('click', startCamera);
+        cameraButton.addEventListener('click', window.startCamera);
     } else {
         console.warn('Camera button not found');
     }
 
-    // Инициализация кнопки закрытия модального окна архива
     const closeModal = document.getElementById('close-modal');
     if (closeModal) {
         closeModal.addEventListener('click', () => {
             const modal = document.getElementById('image-archive-modal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
+            if (modal) modal.style.display = 'none';
         });
     }
 
-    // Инициализация кнопки закрытия модального окна камеры
     const closeCameraModal = document.getElementById('close-camera-modal');
     if (closeCameraModal) {
         closeCameraModal.addEventListener('click', () => {
@@ -309,22 +232,6 @@ function initializeSteps() {
             }
         });
     }
-
-    // Инициализация кнопки захвата фото
-    const captureButton = document.getElementById('capture-photo');
-    if (captureButton) {
-        captureButton.addEventListener('click', capturePhoto);
-    } else {
-        console.warn('Capture photo button not found');
-    }
-
-    // Инициализация аудио-контекста
-    document.addEventListener('click', () => {
-        if (typeof window.initAudioContext === 'function') {
-            console.log('Initializing audio context');
-            window.initAudioContext();
-        }
-    }, { once: true });
 
     console.log('quantumSketch initialized: ' + !!window.quantumSketch);
     var canvas = document.querySelector('.quantum-canvas');
@@ -348,12 +255,10 @@ function showStep(stepIndex) {
             const textCluster = step.querySelector('.text-cluster');
             if (textCluster) {
                 textCluster.querySelectorAll('div').forEach(div => {
-                    div.style.visibility = 'visible'; // Убираем скрытие для теста
-                    div.textContent = div.getAttribute('data-i18n') || div.textContent.trim();
+                    div.style.visibility = 'visible';
+                    // Временно отключаем typewriter для теста
+                    // typewriter(textCluster, () => console.log('Typewriter finished'));
                 });
-                // typewriter(textCluster, () => {
-                //     console.log('Typewriter animation finished for step ' + stepId);
-                // });
             } else {
                 console.log('No text-cluster found for step ' + stepId);
             }
@@ -379,17 +284,16 @@ window.moveToNextStep = function(stepIndex) {
 window.setLanguage = function(language) {
     console.log('Language set to:', language);
     window.currentLanguage = language;
-    // Здесь можно добавить логику для переключения текстов (например, через i18n)
 };
 
 window.setLanguageAndNext = function(language) {
     console.log('setLanguageAndNext called with language:', language);
     window.setLanguage(language);
-    setTimeout(() => window.moveToNextStep(1), 100);
+    window.moveToNextStep(1); // Прямой вызов без задержки для теста
 };
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing steps');
     initializeSteps();
-    showStep(0); // Принудительный показ шага 0
+    showStep(0);
 });
