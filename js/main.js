@@ -1,6 +1,6 @@
 console.log('main.js loaded');
 
-// Явно добавляем функции в глобальный объект window
+// Явная глобальная регистрация функций
 window.currentStep = 0;
 window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
@@ -8,11 +8,39 @@ window.mouseInfluenceRadius = 50;
 window.currentLanguage = 'ru'; // По умолчанию
 window.terminalMessages = [];
 window.particles = [];
-window.setLanguage = setLanguage;
-window.setLanguageAndNext = setLanguageAndNext;
-window.moveToNextStep = moveToNextStep;
+window.setLanguage = function(language) {
+    console.log('setLanguage function called with:', language);
+    window.currentLanguage = language;
+    const elements = document.querySelectorAll('[data-i18n]');
+    console.log(`Language elements found: ${elements.length}`);
+    elements.forEach((element, index) => {
+        const key = element.getAttribute('data-i18n');
+        if (window.translations && window.translations[language] && window.translations[language][key]) {
+            element.textContent = window.translations[language][key];
+            console.log(`Updated text at index ${index} (${key}): ${window.translations[language][key]}`);
+        } else {
+            console.warn(`Translation missing for key: ${key} in language: ${language}`);
+        }
+    });
+};
+window.setLanguageAndNext = function(language) {
+    console.log('setLanguageAndNext function called with:', language);
+    window.setLanguage(language);
+    window.moveToNextStep(1);
+};
+window.moveToNextStep = function(stepIndex) {
+    console.log('moveToNextStep function called with:', stepIndex);
+    showStep(stepIndex);
+    if (stepIndex === 4 || stepIndex === 5) {
+        var canvas = document.querySelector('.quantum-canvas');
+        if (canvas) canvas.style.display = 'block';
+    } else {
+        var canvas = document.querySelector('.quantum-canvas');
+        if (canvas) canvas.style.display = 'none';
+    }
+};
 
-const translations = window.translations || {
+const translations = {
     ru: {
         step0_text: "Пожалуйста, выберите язык RU / ENG",
         step1_title: "СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН",
@@ -286,7 +314,7 @@ function initializeSteps() {
             const action = button.getAttribute('data-action') || button.id;
             console.log('Button clicked:', action, 'on element:', button);
             if (action && window[action]) window[action]();
-            else console.error(`Function ${action} not found in window`);
+            else console.error(`Function ${action} not found in window. Available functions:`, Object.keys(window));
         });
     });
 
@@ -375,8 +403,8 @@ function showStep(stepIndex) {
                 textCluster.querySelectorAll('div').forEach(div => {
                     div.style.visibility = 'visible';
                     const key = div.getAttribute('data-i18n');
-                    if (key && translations[window.currentLanguage] && translations[window.currentLanguage][key]) {
-                        div.textContent = translations[window.currentLanguage][key];
+                    if (key && window.translations[window.currentLanguage] && window.translations[window.currentLanguage][key]) {
+                        div.textContent = window.translations[window.currentLanguage][key];
                     }
                 });
                 // typewriter(textCluster, () => console.log('Typewriter finished'));
@@ -386,52 +414,19 @@ function showStep(stepIndex) {
             const buttons = step.querySelectorAll('.particle-button');
             buttons.forEach(btn => {
                 const key = btn.getAttribute('data-i18n');
-                if (key && translations[window.currentLanguage] && translations[window.currentLanguage][key]) {
-                    btn.textContent = translations[window.currentLanguage][key];
+                if (key && window.translations[window.currentLanguage] && window.translations[window.currentLanguage][key]) {
+                    btn.textContent = window.translations[window.currentLanguage][key];
                 }
-                window.assembleText(btn);
+                if (window.assembleText) window.assembleText(btn);
             });
         }
     });
     window.currentStep = stepIndex;
 }
 
-function moveToNextStep(stepIndex) {
-    console.log('moveToNextStep called with stepIndex: ' + stepIndex);
-    showStep(stepIndex);
-    if (stepIndex === 4 || stepIndex === 5) {
-        var canvas = document.querySelector('.quantum-canvas');
-        if (canvas) canvas.style.display = 'block';
-    } else {
-        var canvas = document.querySelector('.quantum-canvas');
-        if (canvas) canvas.style.display = 'none';
-    }
-}
-
-function setLanguage(language) {
-    console.log('Language set to:', language);
-    window.currentLanguage = language;
-    const elements = document.querySelectorAll('[data-i18n]');
-    console.log(`Language elements found: ${elements.length}`);
-    elements.forEach((element, index) => {
-        const key = element.getAttribute('data-i18n');
-        if (translations[language] && translations[language][key]) {
-            element.textContent = translations[language][key];
-            console.log(`Updated text at index ${index} (${key}): ${translations[language][key]}`);
-        } else {
-            console.warn(`Translation missing for key: ${key} in language: ${language}`);
-        }
-    });
-}
-
-function setLanguageAndNext(language) {
-    console.log('setLanguageAndNext called with language:', language);
-    setLanguage(language);
-    moveToNextStep(1);
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing steps');
     initializeSteps();
     showStep(0); // Принудительный показ шага 0
+    console.log('Available global functions:', Object.keys(window));
 });
