@@ -366,10 +366,16 @@ window.moveToNextStep = function(stepIndex) {
     }
 };
 
+window.setLanguage = function(language) {
+    console.log('Language set to:', language);
+    window.currentLanguage = language; // Храним текущий язык
+    // Здесь можно добавить логику для переключения текстов (например, через i18n)
+};
+
 window.setLanguageAndNext = function(language) {
-    console.log('setLanguageAndNext called with language: ' + language);
+    console.log('setLanguageAndNext called with language:', language);
     window.setLanguage(language);
-    setTimeout(() => window.moveToNextStep(1), 100);
+    setTimeout(() => window.moveToNextStep(1), 100); // Переход на шаг 1
 };
 
 document.addEventListener('DOMContentLoaded', function() {
