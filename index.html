@@ -14,7 +14,7 @@
     <script src="./js/audio.js"></script>
     <script src="./js/textSteps.js"></script>
     <script src="./js/utils.js"></script>
-    <script src="js/text-flicker.js"></script>
+    <script src="./js/text-flicker.js"></script>
 </head>
 <body>
     <section id="step-0" class="step quantum-flux">
@@ -161,7 +161,7 @@
                     canvas.class('quantum-canvas');
                     canvas.parent('portrait-animation-container-step-4');
                     console.log('Canvas initialized:', canvas.width, canvas.height);
-                    sketch.loop();
+                    sketch.noLoop();
                 } else {
                     console.error('Canvas creation failed, retrying...');
                     setTimeout(() => sketch.setup(), 100);
@@ -191,6 +191,7 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded, applying initial styles');
             document.querySelectorAll('.particle-button').forEach(button => {
                 window.assembleText(button);
                 button.addEventListener('mouseover', () => window.assembleText(button));
@@ -202,7 +203,7 @@
                 });
             });
 
-            document.getElementById('uploadImage').addEventListener('click', function() {
+            document.getElementById('uploadImage')?.addEventListener('click', function() {
                 var input = document.createElement('input');
                 input.type = 'file';
                 input.accept = 'image/*';
@@ -221,16 +222,16 @@
                 input.click();
             });
 
-            document.getElementById('saveImage').addEventListener('click', function() {
-                const portraitName = document.getElementById('portraitName').value || 'quantum_portrait';
+            document.getElementById('saveImage')?.addEventListener('click', function() {
+                const portraitName = document.getElementById('portraitName')?.value || 'quantum_portrait';
                 window.quantumSketch.saveCanvas(portraitName, 'png');
                 window.terminalMessages.push(`[SAVE] ${portraitName}.png`);
                 window.updateTerminalLog();
             });
 
-            document.getElementById('shareObservation').addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
-            document.getElementById('restart').addEventListener('click', () => window.location.reload());
-            document.getElementById('archive').addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
-            document.getElementById('aboutAuthors').addEventListener('click', () => window.location.href = './about.html');
+            document.getElementById('shareObservation')?.addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
+            document.getElementById('restart')?.addEventListener('click', () => window.location.reload());
+            document.getElementById('archive')?.addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
+            document.getElementById('aboutAuthors')?.addEventListener('click', () => window.location.href = './about.html');
         });
     </script>
