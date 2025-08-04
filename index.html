@@ -157,10 +157,15 @@
         window.quantumSketch = new p5(function(sketch) {
             sketch.setup = function() {
                 var canvas = sketch.createCanvas(400, 400);
-                canvas.class('quantum-canvas');
-                canvas.parent('portrait-animation-container-step-4');
-                if (!canvas) console.error('Canvas creation failed');
-                else sketch.loop();
+                if (canvas) {
+                    canvas.class('quantum-canvas');
+                    canvas.parent('portrait-animation-container-step-4');
+                    console.log('Canvas initialized:', canvas.width, canvas.height);
+                    sketch.loop();
+                } else {
+                    console.error('Canvas creation failed, retrying...');
+                    setTimeout(() => sketch.setup(), 100);
+                }
             };
 
             sketch.draw = function() {
@@ -240,6 +245,6 @@
                     window.updateTerminalLog();
                 } else window.quantumSketch.noLoop();
             };
-            window.moveToNextStep(0); // Ensure initial step is shown
+            window.moveToNextStep(0);
         });
     </script>
