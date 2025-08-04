@@ -18,124 +18,138 @@
 </head>
 <body>
     <section id="step-0" class="step quantum-flux">
-        <div class="text-cluster">Выберите язык: RU или ENG</div>
+        <div class="text-cluster" data-i18n="step0_text"></div>
         <div class="quantum-cluster">
-            <div class="particle-button" data-action="setLanguageAndNext('ru')">RU</div>
-            <div class="particle-button" data-action="setLanguageAndNext('en')">ENG</div>
+            <div class="particle-button" data-action="setLanguageAndNext('ru')" data-i18n="ru">RU</div>
+            <div class="particle-button" data-action="setLanguageAndNext('en')" data-i18n="en">ENG</div>
         </div>
     </section>
     <section id="step-1" class="step quantum-flux">
         <div class="text-cluster">
-            <div>Добро пожаловать на шаг 1</div>
-            <div>Исследуйте квантовый мир</div>
-            <div>Выберите следующий шаг</div>
+            <div data-i18n="step1_title"></div>
+            <div data-i18n="step1_text1"></div>
+            <div data-i18n="step1_text2"></div>
+            <div data-i18n="step1_text3"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button continue">Продолжить</div>
-            <div class="particle-button back">Назад</div>
+            <div class="particle-button continue" data-i18n="continue"></div>
+            <div class="particle-button back" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-2" class="step quantum-flux">
         <div class="text-cluster">
-            <div>Шаг 2: Выбор изображения</div>
-            <div>Загрузите или используйте камеру</div>
+            <div data-i18n="step2_title"></div>
+            <div data-i18n="step2_text1"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button" id="uploadImage">Загрузить</div>
-            <div class="particle-button" id="useCamera">Камера</div>
-            <div class="particle-button" id="useArchive">Архив</div>
-            <div class="particle-button back">Назад</div>
+            <div class="particle-button" id="uploadImage" data-i18n="upload_image"></div>
+            <div class="particle-button" id="useCamera" data-i18n="use_camera"></div>
+            <div class="particle-button" id="useArchive" data-i18n="use_archive"></div>
+            <div class="particle-button back" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-2.1" class="step quantum-flux">
         <div class="text-cluster">
-            <div>Шаг 2.1: Обработка изображения</div>
-            <div>Готово к анализу</div>
-            <div>Перейдите дальше</div>
+            <div data-i18n="step2_text2"></div>
+            <div data-i18n="step2_text3"></div>
+            <div data-i18n="step2_text4"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button continue">Продолжить</div>
-            <div class="particle-button back">Назад</div>
+            <div class="particle-button continue" data-i18n="continue"></div>
+            <div class="particle-button back" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-3" class="step quantum-flux">
         <div class="text-cluster">
-            <div>Шаг 3: Настройка параметров</div>
-            <div>Настройте уровень шума</div>
-            <div>Выберите хаос</div>
-            <div>Продолжайте эксперимент</div>
+            <div data-i18n="step3_title"></div>
+            <div data-i18n="step3_text1"></div>
+            <div data-i18n="step3_text2"></div>
+            <div data-i18n="step3_text3"></div>
+            <div data-i18n="step3_text4"></div>
+            <div data-i18n="step3_text5"></div>
+            <div data-i18n="step3_text6"></div>
+            <div data-i18n="step3_text7"></div>
+            <div data-i18n="step3_text8"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button continue">Продолжить</div>
-            <div class="particle-button back">Назад</div>
+            <div class="particle-button continue" data-i18n="continue"></div>
+            <div class="particle-button back" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-4" class="step quantum-flux">
         <div class="text-cluster">
-            <div>Шаг 4: Анимация</div>
-            <div>Смотрите квантовую эволюцию</div>
+            <div data-i18n="step4_title"></div>
+            <div data-i18n="step4_text1"></div>
+            <div data-i18n="step4_text2"></div>
+            <div data-i18n="step4_text3"></div>
         </div>
         <div class="quantum-observation">
             <div id="portrait-animation-container-step-4"></div>
             <div class="terminal-log" id="terminal-log-step-4"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button continue">Продолжить</div>
-            <div class="particle-button back">Назад</div>
+            <div class="particle-button continue" data-i18n="continue"></div>
+            <div class="particle-button back" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-5" class="step quantum-flux">
         <div class="text-cluster">
-            <div>Шаг 5: Сохранение</div>
-            <div>Назови своё творение</div>
+            <div data-i18n="step5_title"></div>
+            <div data-i18n="step5_text1"></div>
+            <div data-i18n="step5_text2"></div>
+            <div data-i18n="step5_text3"></div>
         </div>
         <div class="quantum-observation">
             <div id="portrait-animation-container-step-5"></div>
             <div class="terminal-log" id="terminal-log-step-5"></div>
         </div>
         <div class="quantum-cluster">
-            <input class="quantum-input" id="portraitName" type="text" placeholder="Назови ∅">
-            <div class="particle-button" id="saveImage">Записать</div>
-            <div class="particle-button continue">Продолжить</div>
-            <div class="particle-button back">Назад</div>
+            <input class="quantum-input" id="portraitName" type="text" placeholder="Назови ∅" data-i18n-placeholder="portrait_name_placeholder">
+            <div class="particle-button" id="saveImage" data-i18n="save_observation"></div>
+            <div class="particle-button continue" data-i18n="continue"></div>
+            <div class="particle-button back" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-6" class="step quantum-flux">
         <div class="text-cluster">
-            <div>Шаг 6: Поделиться</div>
-            <div>Расскажи миру</div>
+            <div data-i18n="step6_title"></div>
+            <div data-i18n="step6_text1"></div>
+            <div data-i18n="step6_text2"></div>
+            <div data-i18n="step6_text3"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button" id="shareObservation">Поделиться</div>
-            <div class="particle-button continue">Продолжить</div>
-            <div class="particle-button back">Назад</div>
+            <div class="particle-button" id="shareObservation" data-i18n="share_observation"></div>
+            <div class="particle-button continue" data-i18n="continue"></div>
+            <div class="particle-button back" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-7" class="step quantum-flux">
         <div class="text-cluster">
-            <div>Шаг 7: Завершение</div>
-            <div>Спасибо за путешествие</div>
+            <div data-i18n="step7_title"></div>
+            <div data-i18n="step7_text1"></div>
+            <div data-i18n="step7_text2"></div>
+            <div data-i18n="step7_text3"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button" id="restart">↻ Снова</div>
-            <div class="particle-button" id="archive">⧉ Архив</div>
-            <div class="particle-button" id="aboutAuthors">О нас</div>
-            <div class="particle-button back">Назад</div>
+            <div class="particle-button" id="restart" data-i18n="restart"></div>
+            <div class="particle-button" id="archive" data-i18n="archive"></div>
+            <div class="particle-button" id="aboutAuthors" data-i18n="about_authors"></div>
+            <div class="particle-button back" data-i18n="back"></div>
         </div>
     </section>
-    <div id="image-archive-modal" class="modal quantum-flux">
+    <div id="image-archive-modal" class="modal quantum-flux" style="display: none;">
         <div class="modal-cluster">
             <div class="close-particle" id="close-modal">×</div>
             <div class="image-grid" id="image-grid"></div>
         </div>
     </div>
-    <div id="camera-modal" class="modal quantum-flux">
+    <div id="camera-modal" class="modal quantum-flux" style="display: none;">
         <div class="modal-cluster">
             <div class="close-particle" id="close-camera-modal">×</div>
             <video id="camera-video" autoplay style="width: 100%; max-width: 640px; height: auto;"></video>
             <canvas id="camera-canvas" style="display: none;"></canvas>
             <div class="quantum-cluster">
-                <div class="particle-button" id="capture-photo">Сфоткать</div>
+                <div class="particle-button" id="capture-photo" data-i18n="capture_photo"></div>
             </div>
         </div>
     </div>
