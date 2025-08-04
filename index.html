@@ -192,11 +192,12 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.particle-button').forEach(button => {
-                window.assembleText(button); // Инициализация текста сразу
+                window.assembleText(button);
                 button.addEventListener('mouseover', () => window.assembleText(button));
                 button.addEventListener('mouseout', () => window.disassembleText(button));
-                button.addEventListener('click', () => {
+                button.addEventListener('click', (e) => {
                     const action = button.getAttribute('data-action') || button.id;
+                    console.log('Button clicked:', action);
                     if (action && window[action]) window[action]();
                 });
             });
@@ -247,6 +248,11 @@
                     window.updateTerminalLog();
                 } else window.quantumSketch.noLoop();
             };
-            window.moveToNextStep(0);
+
+            window.setLanguageAndNext = function(lang) {
+                console.log('Setting language to:', lang);
+                window.currentLanguage = lang; // Предполагаем, что это глобальная переменная
+                window.moveToNextStep(1); // Переход на следующий шаг
+            };
         });
     </script>
