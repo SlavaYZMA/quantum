@@ -59,14 +59,18 @@ body {
 
 .particle-button {
     position: relative;
-    color: transparent;
+    color: #00ffcc; /* Убедимся, что текст виден по умолчанию */
     cursor: pointer;
-    font-size: 0;
+    font-size: 16px;
     width: 100px;
     height: 50px;
     background: none;
     border: none;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s;
 }
 
 .particle-button::before {
