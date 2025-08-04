@@ -1,9 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-    background: #FFFFFF;
-    color: #000000;
-    font-family: Arial, sans-serif;
+    background: #0A0A1A; /* Темный квантовый вакуум */
+    color: #E0E0FF; /* Неоновая белизна для контраста */
+    font-family: 'Courier New', monospace; /* Техногенный шрифт для научного вайба */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,28 +14,20 @@ body {
 
 .square {
     position: fixed;
-    width: 20px;
-    height: 20px;
+    width: 10px;
+    height: 10px;
+    background: rgba(0, 255, 255, 0.3); /* Полупрозрачный циан для частиц */
     pointer-events: none;
-    animation: iridescentFlow 6s infinite;
+    animation: quantumPulse 5s infinite;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5); /* Мерцающий ореол */
 }
 
-@keyframes iridescentFlow {
-    0% { transform: translate(0, 0) scale(1); }
-    7% { transform: translate(10px, -15px) scale(0.8); }
-    14% { transform: translate(-20px, 10px) scale(1.2); }
-    21% { transform: translate(15px, -20px) scale(0.9); }
-    28% { transform: translate(-10px, 25px) scale(1.1); }
-    35% { transform: translate(20px, -10px) scale(0.95); }
-    42% { transform: translate(-15px, 15px) scale(1.15); }
-    50% { transform: translate(25px, -5px) scale(0.85); }
-    57% { transform: translate(-30px, 20px) scale(1.2); }
-    64% { transform: translate(10px, -25px) scale(0.9); }
-    71% { transform: translate(-5px, 30px) scale(1.1); }
-    78% { transform: translate(15px, -15px) scale(0.95); }
-    85% { transform: translate(-20px, 10px) scale(1.15); }
-    92% { transform: translate(25px, -20px) scale(0.8); }
-    100% { transform: translate(0, 0) scale(1); }
+@keyframes quantumPulse {
+    0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+    25% { transform: translate(20px, -20px) scale(1.2); opacity: 0.8; }
+    50% { transform: translate(-20px, 20px) scale(0.8); opacity: 0.6; }
+    75% { transform: translate(15px, -15px) scale(1.1); opacity: 0.7; }
+    100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
 }
 
 .step {
@@ -47,6 +39,12 @@ body {
     max-width: 800px;
     padding: 20px;
     box-sizing: border-box;
+    transition: opacity 0.5s ease-in-out; /* Плавное появление шагов */
+}
+
+.step.active {
+    display: flex;
+    opacity: 1;
 }
 
 .step-centered {
@@ -54,24 +52,27 @@ body {
 }
 
 .text-block {
-    background: #FFFFFF;
+    background: rgba(10, 10, 26, 0.8); /* Полупрозрачный фон для глубины */
     padding: 20px;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
     position: relative;
+    border: 1px solid rgba(0, 255, 255, 0.2); /* Неоновая граница */
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
 }
 
 .text-block div {
     margin-bottom: 10px;
-    color: #000000;
+    color: #E0E0FF;
     font-size: 16px;
+    text-shadow: 0 0 2px #00FFFF; /* Легкий неоновый эффект */
 }
 
 .text-block span {
     display: inline;
-    color: #000000;
+    color: #A0A0FF;
 }
 
 .button-block {
@@ -86,61 +87,50 @@ button {
     padding: 12px 25px;
     border: none;
     cursor: pointer;
-    font-family: Arial, sans-serif;
+    font-family: 'Courier New', monospace;
     font-size: 16px;
     position: relative;
-    animation: iridescentButton 8s infinite, changeShape 10s infinite step-start;
-    transition: transform 0.3s ease;
-    background: linear-gradient(45deg, rgba(255, 159, 172, 0.8), rgba(0, 128, 0, 0.8), rgba(192, 192, 192, 0.8));
-}
-
-button:nth-child(1) {
-    border-radius: 50%;
-    min-width: 60px;
-}
-
-button:nth-child(2) {
-    border-radius: 20px;
-    min-width: 80px;
-}
-
-button:nth-child(3) {
-    border-radius: 5px;
-    min-width: 70px;
-}
-
-button span {
-    color: #FFFFFF;
-    filter: invert(1);
+    animation: iridescentWave 6s infinite;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: linear-gradient(45deg, rgba(135, 206, 235, 0.7), rgba(255, 0, 255, 0.7), rgba(0, 255, 127, 0.7));
+    border-radius: 50%; /* Круглые кнопки как квантовые орбиты */
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
 }
 
 button:hover {
-    transform: scale(1.1);
+    transform: scale(1.15);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
 }
 
-@keyframes iridescentButton {
-    0% { background: linear-gradient(45deg, rgba(255, 159, 172, 0.8), rgba(0, 128, 0, 0.8), rgba(192, 192, 192, 0.8)); }
-    25% { background: linear-gradient(90deg, rgba(0, 191, 255, 0.8), rgba(255, 215, 0, 0.8), rgba(135, 206, 235, 0.8)); }
-    50% { background: linear-gradient(135deg, rgba(47, 79, 79, 0.8), rgba(255, 0, 255, 0.8), rgba(211, 211, 211, 0.8)); }
-    75% { background: linear-gradient(180deg, rgba(255, 69, 0, 0.8), rgba(0, 255, 127, 0.8), rgba(245, 245, 220, 0.8)); }
-    100% { background: linear-gradient(45deg, rgba(255, 159, 172, 0.8), rgba(0, 128, 0, 0.8), rgba(192, 192, 192, 0.8)); }
+@keyframes iridescentWave {
+    0% { background: linear-gradient(45deg, rgba(135, 206, 235, 0.7), rgba(255, 0, 255, 0.7), rgba(0, 255, 127, 0.7)); }
+    33% { background: linear-gradient(90deg, rgba(255, 215, 0, 0.7), rgba(0, 191, 255, 0.7), rgba(211, 211, 211, 0.7)); }
+    66% { background: linear-gradient(135deg, rgba(255, 69, 0, 0.7), rgba(47, 79, 79, 0.7), rgba(245, 245, 220, 0.7)); }
+    100% { background: linear-gradient(45deg, rgba(135, 206, 235, 0.7), rgba(255, 0, 255, 0.7), rgba(0, 255, 127, 0.7)); }
 }
 
-@keyframes changeShape {
-    0% { border-radius: 50%; }
-    25% { border-radius: 15px; }
-    50% { border-radius: 10px; }
-    75% { border-radius: 25px; }
-    100% { border-radius: 50%; }
-}
-
-#portrait-animation-container-step-4,
-#portrait-animation-container-step-5 {
+#portrait-animation-container {
     width: 400px;
     height: 400px;
-    background: #FFFFFF;
+    background: rgba(10, 10, 26, 0.5);
+    border: 2px dashed rgba(0, 255, 255, 0.5);
     border-radius: 10px;
     position: relative;
+    animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseBorder {
+    0% { border-color: rgba(0, 255, 255, 0.5); }
+    50% { border-color: rgba(0, 255, 255, 0.8); }
+    100% { border-color: rgba(0, 255, 255, 0.5); }
+}
+
+#saved-portrait {
+    display: none;
+    max-width: 400px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
 }
 
 #thumbnail-portrait {
@@ -148,14 +138,15 @@ button:hover {
     height: 100px;
     border-radius: 10px;
     position: relative;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: #FFFFFF;
-    color: #000000;
-    font-family: Arial, sans-serif;
+    background: rgba(10, 10, 26, 0.8);
+    color: #E0E0FF;
+    font-family: 'Courier New', monospace;
     font-size: 12px;
     padding: 10px;
     overflow-y: auto;
@@ -164,6 +155,7 @@ button:hover {
     display: none;
     border-radius: 10px;
     position: relative;
+    border: 1px solid rgba(0, 255, 255, 0.2);
 }
 
 #terminal-log-step-4,
@@ -182,29 +174,32 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background: #FFFFFF;
+    background: rgba(10, 10, 26, 0.9);
     padding: 20px;
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
     border-radius: 10px;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
 }
 
 .close {
-    color: #000000;
+    color: #E0E0FF;
     font-size: 24px;
-    font-family: Arial, sans-serif;
+    font-family: 'Courier New', monospace;
     position: absolute;
     top: 10px;
     right: 20px;
     cursor: pointer;
+    text-shadow: 0 0 2px #00FFFF;
 }
 
 .image-grid {
@@ -218,11 +213,18 @@ button:hover {
     height: 150px;
     object-fit: cover;
     border-radius: 10px;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.archive-image:hover {
+    transform: scale(1.05);
 }
 
 #camera-video {
     max-width: 100%;
     border-radius: 10px;
+    border: 1px solid rgba(0, 255, 255, 0.2);
 }
 
 #capture-photo {
@@ -230,15 +232,16 @@ button:hover {
 }
 
 input[type="text"] {
-    background: #FFFFFF;
-    border: 1px solid #000000;
-    color: #000000;
-    font-family: Arial, sans-serif;
+    background: rgba(10, 10, 26, 0.8);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    color: #E0E0FF;
+    font-family: 'Courier New', monospace;
     padding: 10px;
     font-size: 16px;
     border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.1);
 }
 
 input[type="text"]::placeholder {
-    color: #666666;
+    color: #A0A0FF;
 }
