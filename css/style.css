@@ -1,9 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-    background: #0A0A1A; /* Темный квантовый вакуум */
-    color: #E0E0FF; /* Неоновая белизна для контраста */
-    font-family: 'Courier New', monospace; /* Техногенный шрифт для научного вайба */
+    background: linear-gradient(45deg, #0a0a1a, #1a1a2a);
+    color: #e0e0ff;
+    font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,20 +14,25 @@ body {
 
 .square {
     position: fixed;
-    width: 10px;
-    height: 10px;
-    background: rgba(0, 255, 255, 0.3); /* Полупрозрачный циан для частиц */
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.05);
     pointer-events: none;
-    animation: quantumPulse 5s infinite;
-    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5); /* Мерцающий ореол */
+    animation: quantumPulse 6s infinite, quantumFlow 8s infinite;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
 @keyframes quantumPulse {
-    0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-    25% { transform: translate(20px, -20px) scale(1.2); opacity: 0.8; }
-    50% { transform: translate(-20px, 20px) scale(0.8); opacity: 0.6; }
-    75% { transform: translate(15px, -15px) scale(1.1); opacity: 0.7; }
-    100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 0.2; }
+}
+
+@keyframes quantumFlow {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(20px, -20px); }
+    50% { transform: translate(-20px, 20px); }
+    75% { transform: translate(20px, 20px); }
+    100% { transform: translate(0, 0); }
 }
 
 .step {
@@ -39,40 +44,36 @@ body {
     max-width: 800px;
     padding: 20px;
     box-sizing: border-box;
-    transition: opacity 0.5s ease-in-out; /* Плавное появление шагов */
-}
-
-.step.active {
-    display: flex;
-    opacity: 1;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 .step-centered {
     text-align: center;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .text-block {
-    background: rgba(10, 10, 26, 0.8); /* Полупрозрачный фон для глубины */
+    background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     margin-bottom: 20px;
     max-width: 600px;
     white-space: pre-wrap;
     text-align: left;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
     position: relative;
-    border: 1px solid rgba(0, 255, 255, 0.2); /* Неоновая граница */
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
 }
 
 .text-block div {
     margin-bottom: 10px;
-    color: #E0E0FF;
+    color: #e0e0ff;
     font-size: 16px;
-    text-shadow: 0 0 2px #00FFFF; /* Легкий неоновый эффект */
-}
-
-.text-block span {
-    display: inline;
-    color: #A0A0FF;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
 }
 
 .button-block {
@@ -85,68 +86,59 @@ body {
 
 button {
     padding: 12px 25px;
-    border: none;
+    border: 2px dashed rgba(0, 255, 255, 0.5);
     cursor: pointer;
-    font-family: 'Courier New', monospace;
+    font-family: 'Arial', sans-serif;
     font-size: 16px;
+    background: transparent;
+    color: #e0e0ff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
     position: relative;
-    animation: iridescentWave 6s infinite;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: linear-gradient(45deg, rgba(135, 206, 235, 0.7), rgba(255, 0, 255, 0.7), rgba(0, 255, 127, 0.7));
-    border-radius: 50%; /* Круглые кнопки как квантовые орбиты */
-    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    animation: buttonPulse 2s infinite;
 }
 
 button:hover {
-    transform: scale(1.15);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
 }
 
-@keyframes iridescentWave {
-    0% { background: linear-gradient(45deg, rgba(135, 206, 235, 0.7), rgba(255, 0, 255, 0.7), rgba(0, 255, 127, 0.7)); }
-    33% { background: linear-gradient(90deg, rgba(255, 215, 0, 0.7), rgba(0, 191, 255, 0.7), rgba(211, 211, 211, 0.7)); }
-    66% { background: linear-gradient(135deg, rgba(255, 69, 0, 0.7), rgba(47, 79, 79, 0.7), rgba(245, 245, 220, 0.7)); }
-    100% { background: linear-gradient(45deg, rgba(135, 206, 235, 0.7), rgba(255, 0, 255, 0.7), rgba(0, 255, 127, 0.7)); }
+@keyframes buttonPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.6); }
 }
 
-#portrait-animation-container {
+#portrait-animation-container-step-4,
+#portrait-animation-container-step-5 {
     width: 400px;
     height: 400px;
-    background: rgba(10, 10, 26, 0.5);
-    border: 2px dashed rgba(0, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px dashed rgba(0, 255, 0, 0.5);
     border-radius: 10px;
     position: relative;
-    animation: pulseBorder 2s infinite;
+    animation: quantumBorder 3s infinite;
 }
 
-@keyframes pulseBorder {
-    0% { border-color: rgba(0, 255, 255, 0.5); }
-    50% { border-color: rgba(0, 255, 255, 0.8); }
-    100% { border-color: rgba(0, 255, 255, 0.5); }
-}
-
-#saved-portrait {
-    display: none;
-    max-width: 400px;
-    margin: 20px auto;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+@keyframes quantumBorder {
+    0% { border-color: rgba(0, 255, 0, 0.5); }
+    50% { border-color: rgba(0, 255, 255, 0.5); }
+    100% { border-color: rgba(0, 255, 0, 0.5); }
 }
 
 #thumbnail-portrait {
     width: 100px;
     height: 100px;
     border-radius: 10px;
-    position: relative;
-    box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    transition: opacity 0.5s;
 }
 
 .terminal-log {
     width: 300px;
     height: 400px;
-    background: rgba(10, 10, 26, 0.8);
-    color: #E0E0FF;
-    font-family: 'Courier New', monospace;
+    background: rgba(0, 0, 0, 0.7);
+    color: #e0e0ff;
+    font-family: 'Arial', sans-serif;
     font-size: 12px;
     padding: 10px;
     overflow-y: auto;
@@ -154,17 +146,12 @@ button:hover {
     line-height: 1.4;
     display: none;
     border-radius: 10px;
-    position: relative;
     border: 1px solid rgba(0, 255, 255, 0.2);
 }
 
 #terminal-log-step-4,
 #terminal-log-step-5 {
     display: block;
-}
-
-.terminal-log div {
-    margin-bottom: 5px;
 }
 
 .modal {
@@ -174,7 +161,7 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8);
     z-index: 1000;
     justify-content: center;
     align-items: center;
@@ -187,19 +174,18 @@ button:hover {
     max-height: 80%;
     overflow: auto;
     border-radius: 10px;
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    border: 2px solid rgba(0, 255, 255, 0.3);
 }
 
 .close {
-    color: #E0E0FF;
+    color: #e0e0ff;
     font-size: 24px;
-    font-family: 'Courier New', monospace;
+    font-family: 'Arial', sans-serif;
     position: absolute;
     top: 10px;
     right: 20px;
     cursor: pointer;
-    text-shadow: 0 0 2px #00FFFF;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
 }
 
 .image-grid {
@@ -213,8 +199,8 @@ button:hover {
     height: 150px;
     object-fit: cover;
     border-radius: 10px;
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    transition: transform 0.3s ease;
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    transition: transform 0.3s;
 }
 
 .archive-image:hover {
@@ -224,7 +210,7 @@ button:hover {
 #camera-video {
     max-width: 100%;
     border-radius: 10px;
-    border: 1px solid rgba(0, 255, 255, 0.2);
+    border: 2px solid rgba(0, 255, 255, 0.3);
 }
 
 #capture-photo {
@@ -232,16 +218,16 @@ button:hover {
 }
 
 input[type="text"] {
-    background: rgba(10, 10, 26, 0.8);
+    background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(0, 255, 255, 0.2);
-    color: #E0E0FF;
-    font-family: 'Courier New', monospace;
+    color: #e0e0ff;
+    font-family: 'Arial', sans-serif;
     padding: 10px;
     font-size: 16px;
     border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
 }
 
 input[type="text"]::placeholder {
-    color: #A0A0FF;
+    color: #a0a0ff;
 }
