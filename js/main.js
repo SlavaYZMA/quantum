@@ -108,7 +108,7 @@ window.translations = {
 };
 
 // Define step transitions explicitly
-const stepTransitions = {
+window.stepTransitions = {
     0: 1,
     1: 2,
     2: 2.1,
@@ -120,7 +120,7 @@ const stepTransitions = {
 };
 
 // Define back transitions
-const stepTransitionsBack = {
+window.stepTransitionsBack = {
     1: 0,
     2: 1,
     2.1: 2,
@@ -140,6 +140,39 @@ const archiveImages = [
 
 // Переменная для хранения видеопотока
 let cameraStream = null;
+
+// Добавляем недостающие функции
+window.setLanguage = function(lang) {
+    console.log('setLanguage function called with:', lang);
+    window.currentLanguage = lang;
+    const elements = document.querySelectorAll('[data-i18n]');
+    elements.forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (window.translations[lang] && window.translations[lang][key]) {
+            el.textContent = window.translations[lang][key];
+        }
+    });
+    const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+    placeholders.forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (window.translations[lang] && window.translations[lang][key]) {
+            el.placeholder = window.translations[lang][key];
+        }
+    });
+};
+
+window.setLanguageAndNext = function(lang) {
+    console.log('setLanguageAndNext function called with:', lang);
+    window.setLanguage(lang);
+    window.moveToNextStep(window.stepTransitions[window.currentStep]);
+};
+
+window.moveToNextStep = function(stepIndex) {
+    console.log('moveToNextStep function called with:', stepIndex);
+    if (stepIndex !== undefined) {
+        window.showStep(stepIndex);
+    }
+};
 
 window.updateTerminalLog = function() {
     const log = document.getElementById('terminal-log-step-4') || document.getElementById('terminal-log-step-5');
