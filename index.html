@@ -159,7 +159,8 @@
                 var canvas = sketch.createCanvas(400, 400);
                 canvas.class('quantum-canvas');
                 canvas.parent('portrait-animation-container-step-4');
-                sketch.noLoop();
+                if (!canvas) console.error('Canvas creation failed');
+                else sketch.loop();
             };
 
             sketch.draw = function() {
@@ -180,61 +181,65 @@
                 let containerId = stepIndex === 4 ? 'portrait-animation-container-step-4' : 'portrait-animation-container-step-5';
                 let container = document.getElementById(containerId);
                 if (container && sketch.canvas) container.appendChild(sketch.canvas);
+                else console.error('Canvas or container not found for switch');
             };
         });
 
-        document.querySelectorAll('.particle-button').forEach(button => {
-            button.addEventListener('mouseover', () => window.assembleText(button));
-            button.addEventListener('mouseout', () => window.disassembleText(button));
-            button.addEventListener('click', () => {
-                const action = button.getAttribute('data-action') || button.id;
-                if (action && window[action]) window[action]();
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.particle-button').forEach(button => {
+                button.addEventListener('mouseover', () => window.assembleText(button));
+                button.addEventListener('mouseout', () => window.disassembleText(button));
+                button.addEventListener('click', () => {
+                    const action = button.getAttribute('data-action') || button.id;
+                    if (action && window[action]) window[action]();
+                });
             });
-        });
 
-        document.getElementById('uploadImage').addEventListener('click', function() {
-            var input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = function(e) {
-                if (e.target.files[0] && window.quantumSketch) {
-                    var file = e.target.files[0];
-                    window.quantumSketch.loadImage(URL.createObjectURL(file), function(img) {
-                        window.img = img;
-                        window.initializeParticles(img);
-                        document.querySelectorAll('#thumbnail-portrait').forEach(thumbnail => { thumbnail.src = URL.createObjectURL(file); thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none'; });
-                        window.moveToNextStep(2.1);
-                        input.remove();
-                    }, () => { input.remove(); });
-                }
-            };
-            input.click();
-        });
+            document.getElementById('uploadImage').addEventListener('click', function() {
+                var input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function(e) {
+                    if (e.target.files[0] && window.quantumSketch) {
+                        var file = e.target.files[0];
+                        window.quantumSketch.loadImage(URL.createObjectURL(file), function(img) {
+                            window.img = img;
+                            window.initializeParticles(img);
+                            document.querySelectorAll('#thumbnail-portrait').forEach(thumbnail => { thumbnail.src = URL.createObjectURL(file); thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none'; });
+                            window.moveToNextStep(2.1);
+                            input.remove();
+                        }, () => { input.remove(); });
+                    }
+                };
+                input.click();
+            });
 
-        document.getElementById('saveImage').addEventListener('click', function() {
-            const portraitName = document.getElementById('portraitName').value || 'quantum_portrait';
-            window.quantumSketch.saveCanvas(portraitName, 'png');
-            window.terminalMessages.push(`[SAVE] ${portraitName}.png`);
-            window.updateTerminalLog();
-        });
-
-        document.getElementById('shareObservation').addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
-        document.getElementById('restart').addEventListener('click', () => window.location.reload());
-        document.getElementById('archive').addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
-        document.getElementById('aboutAuthors').addEventListener('click', () => window.location.href = './about.html');
-
-        window.moveToNextStep = function(stepIndex) {
-            document.querySelectorAll('.step').forEach(step => step.style.opacity = 0);
-            setTimeout(() => {
-                document.querySelectorAll('.step').forEach(step => step.style.display = 'none');
-                document.getElementById(`step-${stepIndex}`).style.display = 'flex';
-                setTimeout(() => document.getElementById(`step-${stepIndex}`).style.opacity = 1, 50);
-            }, 500);
-            if (stepIndex === 4 || stepIndex === 5) {
-                window.quantumSketch.switchCanvasParent(stepIndex);
-                window.quantumSketch.startAnimation();
-                window.terminalMessages = [`[INIT] Step ${stepIndex} observed`];
+            document.getElementById('saveImage').addEventListener('click', function() {
+                const portraitName = document.getElementById('portraitName').value || 'quantum_portrait';
+                window.quantumSketch.saveCanvas(portraitName, 'png');
+                window.terminalMessages.push(`[SAVE] ${portraitName}.png`);
                 window.updateTerminalLog();
-            } else window.quantumSketch.noLoop();
-        };
+            });
+
+            document.getElementById('shareObservation').addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
+            document.getElementById('restart').addEventListener('click', () => window.location.reload());
+            document.getElementById('archive').addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
+            document.getElementById('aboutAuthors').addEventListener('click', () => window.location.href = './about.html');
+
+            window.moveToNextStep = function(stepIndex) {
+                document.querySelectorAll('.step').forEach(step => step.style.opacity = 0);
+                setTimeout(() => {
+                    document.querySelectorAll('.step').forEach(step => step.style.display = 'none');
+                    document.getElementById(`step-${stepIndex}`).style.display = 'flex';
+                    setTimeout(() => document.getElementById(`step-${stepIndex}`).style.opacity = 1, 50);
+                }, 500);
+                if (stepIndex === 4 || stepIndex === 5) {
+                    window.quantumSketch.switchCanvasParent(stepIndex);
+                    window.quantumSketch.startAnimation();
+                    window.terminalMessages = [`[INIT] Step ${stepIndex} observed`];
+                    window.updateTerminalLog();
+                } else window.quantumSketch.noLoop();
+            };
+            window.moveToNextStep(0); // Ensure initial step is shown
+        });
     </script>
