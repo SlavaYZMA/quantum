@@ -8,7 +8,7 @@ window.currentLanguage = 'ru'; // По умолчанию
 window.terminalMessages = [];
 window.particles = [];
 
-const translations = {
+const translations = window.translations || {
     ru: {
         step0_text: "Пожалуйста, выберите язык RU / ENG",
         step1_title: "СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН",
@@ -265,7 +265,10 @@ function initializeSteps() {
             const textCluster = step.querySelector('.text-cluster');
             if (textCluster) console.log('Text cluster found:', textCluster.textContent);
             const buttons = step.querySelectorAll('.particle-button');
-            buttons.forEach(btn => window.assembleText(btn));
+            buttons.forEach(btn => {
+                window.assembleText(btn);
+                console.log('Initialized button:', btn.textContent);
+            });
             console.log('Initialized ' + buttons.length + ' buttons on step-0');
         }
     });
