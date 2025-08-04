@@ -1,6 +1,6 @@
 console.log('main.js loaded');
 
-// Явная глобальная регистрация функций
+// Явная глобальная регистрация данных и функций
 window.currentStep = 0;
 window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
@@ -8,39 +8,7 @@ window.mouseInfluenceRadius = 50;
 window.currentLanguage = 'ru'; // По умолчанию
 window.terminalMessages = [];
 window.particles = [];
-window.setLanguage = function(language) {
-    console.log('setLanguage function called with:', language);
-    window.currentLanguage = language;
-    const elements = document.querySelectorAll('[data-i18n]');
-    console.log(`Language elements found: ${elements.length}`);
-    elements.forEach((element, index) => {
-        const key = element.getAttribute('data-i18n');
-        if (window.translations && window.translations[language] && window.translations[language][key]) {
-            element.textContent = window.translations[language][key];
-            console.log(`Updated text at index ${index} (${key}): ${window.translations[language][key]}`);
-        } else {
-            console.warn(`Translation missing for key: ${key} in language: ${language}`);
-        }
-    });
-};
-window.setLanguageAndNext = function(language) {
-    console.log('setLanguageAndNext function called with:', language);
-    window.setLanguage(language);
-    window.moveToNextStep(1);
-};
-window.moveToNextStep = function(stepIndex) {
-    console.log('moveToNextStep function called with:', stepIndex);
-    showStep(stepIndex);
-    if (stepIndex === 4 || stepIndex === 5) {
-        var canvas = document.querySelector('.quantum-canvas');
-        if (canvas) canvas.style.display = 'block';
-    } else {
-        var canvas = document.querySelector('.quantum-canvas');
-        if (canvas) canvas.style.display = 'none';
-    }
-};
-
-const translations = {
+window.translations = {
     ru: {
         step0_text: "Пожалуйста, выберите язык RU / ENG",
         step1_title: "СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН",
@@ -173,13 +141,13 @@ const archiveImages = [
 // Переменная для хранения видеопотока
 let cameraStream = null;
 
-function updateTerminalLog() {
+window.updateTerminalLog = function() {
     const log = document.getElementById('terminal-log-step-4') || document.getElementById('terminal-log-step-5');
     if (log) log.innerHTML = window.terminalMessages.join('<br>');
-}
+};
 
 // Функция для typewriter-анимации
-function typewriter(element, callback) {
+window.typewriter = function(element, callback) {
     const divs = element.querySelectorAll('div');
     if (divs.length === 0) {
         console.log('No divs found in text-cluster for typewriter animation');
@@ -218,10 +186,10 @@ function typewriter(element, callback) {
         typeChar();
     }
     typeNextDiv();
-}
+};
 
 // Функция для отображения модального окна с изображениями
-function showImageArchiveModal() {
+window.showImageArchiveModal = function() {
     const modal = document.getElementById('image-archive-modal');
     const imageGrid = document.getElementById('image-grid');
     if (!modal || !imageGrid) {
@@ -241,17 +209,17 @@ function showImageArchiveModal() {
             img.alt = 'Ошибка загрузки';
         };
         img.addEventListener('click', () => {
-            selectArchiveImage(src);
+            window.selectArchiveImage(src);
             modal.style.display = 'none';
         });
         imageGrid.appendChild(img);
     });
 
     modal.style.display = 'flex';
-}
+};
 
 // Функция для выбора изображения из архива
-function selectArchiveImage(src) {
+window.selectArchiveImage = function(src) {
     if (!window.quantumSketch) {
         console.error('quantumSketch not initialized');
         return;
@@ -272,18 +240,18 @@ function selectArchiveImage(src) {
         console.error(`Error loading archive image: ${src}, error: ${err}`);
         alert('Ошибка загрузки изображения из архива. Пожалуйста, попробуйте снова.');
     });
-}
+};
 
 // Функция для остановки камеры
-function stopCamera() {
+window.stopCamera = function() {
     if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
         cameraStream = null;
         console.log('Camera stream stopped');
     }
-}
+};
 
-function initializeSteps() {
+window.initializeSteps = function() {
     console.log('initializeSteps: Found ' + document.querySelectorAll('.step').length + ' steps');
     var steps = document.querySelectorAll('.step');
     if (steps.length === 0) {
@@ -298,7 +266,7 @@ function initializeSteps() {
             if (textCluster) console.log('Text cluster found:', textCluster.textContent);
             const buttons = step.querySelectorAll('.particle-button');
             buttons.forEach(btn => {
-                window.assembleText(btn);
+                if (window.assembleText) window.assembleText(btn);
                 console.log('Initialized button:', btn.textContent);
             });
             console.log('Initialized ' + buttons.length + ' buttons on step-0');
@@ -323,7 +291,7 @@ function initializeSteps() {
     continueButtons.forEach(function(button) {
         button.addEventListener('click', function() {
             console.log('Continue button clicked, currentStep: ' + window.currentStep);
-            const nextStep = stepTransitions[window.currentStep];
+            const nextStep = window.stepTransitions[window.currentStep];
             if (nextStep === undefined) {
                 console.error('No next step defined for currentStep: ' + window.currentStep);
                 return;
@@ -337,7 +305,7 @@ function initializeSteps() {
     backButtons.forEach(function(button) {
         button.addEventListener('click', function() {
             console.log('Back button clicked, currentStep: ' + window.currentStep);
-            const prevStep = stepTransitionsBack[window.currentStep];
+            const prevStep = window.stepTransitionsBack[window.currentStep];
             if (prevStep === undefined) {
                 console.error('No previous step defined for currentStep: ' + window.currentStep);
                 return;
@@ -348,7 +316,7 @@ function initializeSteps() {
 
     const archiveButton = document.getElementById('useArchive');
     if (archiveButton) {
-        archiveButton.addEventListener('click', showImageArchiveModal);
+        archiveButton.addEventListener('click', window.showImageArchiveModal);
     } else {
         console.warn('Archive button not found');
     }
@@ -374,7 +342,7 @@ function initializeSteps() {
             const modal = document.getElementById('camera-modal');
             if (modal) {
                 modal.style.display = 'none';
-                stopCamera();
+                window.stopCamera();
             }
         });
     }
@@ -387,9 +355,9 @@ function initializeSteps() {
     } else {
         console.warn('Canvas not found during initialization, waiting for p5.js setup');
     }
-}
+};
 
-function showStep(stepIndex) {
+window.showStep = function(stepIndex) {
     console.log('showStep called with stepIndex: ' + stepIndex);
     var steps = document.querySelectorAll('.step');
     steps.forEach(function(step) {
@@ -407,7 +375,7 @@ function showStep(stepIndex) {
                         div.textContent = window.translations[window.currentLanguage][key];
                     }
                 });
-                // typewriter(textCluster, () => console.log('Typewriter finished'));
+                // window.typewriter(textCluster, () => console.log('Typewriter finished'));
             } else {
                 console.log('No text-cluster found for step ' + stepId);
             }
@@ -422,11 +390,11 @@ function showStep(stepIndex) {
         }
     });
     window.currentStep = stepIndex;
-}
+};
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing steps');
-    initializeSteps();
-    showStep(0); // Принудительный показ шага 0
+    window.initializeSteps();
+    window.showStep(0); // Принудительный показ шага 0
     console.log('Available global functions:', Object.keys(window));
 });
