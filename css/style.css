@@ -209,3 +209,7 @@ body {
     50% { filter: blur(3px); }
     100% { filter: blur(1px); }
 }
+
+.quantum-canvas {
+    display: block !important;
+}
