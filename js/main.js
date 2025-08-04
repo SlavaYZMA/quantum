@@ -275,6 +275,17 @@ function initializeSteps() {
     window.currentStep = 0;
     window.setLanguage(window.currentLanguage); // Применяем язык при загрузке
 
+    var allButtons = document.querySelectorAll('.particle-button');
+    console.log('Found ' + allButtons.length + ' total buttons');
+    allButtons.forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            const action = button.getAttribute('data-action') || button.id;
+            console.log('Button clicked:', action, 'on element:', button);
+            if (action && window[action]) window[action]();
+            else console.error(`Function ${action} not found in window`);
+        });
+    });
+
     var continueButtons = document.querySelectorAll('.continue');
     console.log('Found ' + continueButtons.length + ' continue buttons');
     continueButtons.forEach(function(button) {
