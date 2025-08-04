@@ -20,8 +20,8 @@
     <section id="step-0" class="step quantum-flux">
         <div class="text-cluster" data-i18n="step0_text">Выберите язык ⊕ RU ∅ ENG</div>
         <div class="quantum-cluster">
-            <div class="particle-button" data-action="setLanguageAndNext('ru')">RU</div>
-            <div class="particle-button" data-action="setLanguageAndNext('en')">ENG</div>
+            <div class="particle-button" data-action="setLanguageAndNext('ru')" data-i18n="ru">RU</div>
+            <div class="particle-button" data-action="setLanguageAndNext('en')" data-i18n="en">ENG</div>
         </div>
     </section>
     <section id="step-1" class="step quantum-flux">
@@ -192,6 +192,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.particle-button').forEach(button => {
+                window.assembleText(button); // Инициализация текста сразу
                 button.addEventListener('mouseover', () => window.assembleText(button));
                 button.addEventListener('mouseout', () => window.disassembleText(button));
                 button.addEventListener('click', () => {
@@ -237,6 +238,7 @@
                     document.querySelectorAll('.step').forEach(step => step.style.display = 'none');
                     document.getElementById(`step-${stepIndex}`).style.display = 'flex';
                     setTimeout(() => document.getElementById(`step-${stepIndex}`).style.opacity = 1, 50);
+                    document.querySelectorAll('#step-' + stepIndex + ' .particle-button').forEach(btn => window.assembleText(btn));
                 }, 500);
                 if (stepIndex === 4 || stepIndex === 5) {
                     window.quantumSketch.switchCanvasParent(stepIndex);
