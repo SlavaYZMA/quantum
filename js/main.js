@@ -141,6 +141,9 @@ const archiveImages = [
 // Переменная для хранения видеопотока
 let cameraStream = null;
 
+// Переменная для хранения экземпляра p5.js
+let p5Instance = null;
+
 // Добавляем недостающие функции
 window.setLanguage = function(lang) {
     console.log('setLanguage function called with:', lang);
@@ -185,4 +188,70 @@ window.moveToPreviousStep = function() {
 };
 
 window.updateTerminalLog = function() {
-    const log = document.getElementById('terminal-log-step-4') || document.getElementById('terminal-log-step
+    const log = document.getElementById('terminal-log-step-4') || document.getElementById('terminal-log-step-5');
+    if (log && window.terminalMessages.length > 0) {
+        log.innerHTML = window.terminalMessages.map(msg => `<div>${msg}</div>`).join('');
+    }
+};
+
+window.showStep = function(step) {
+    console.log('showStep called with:', step);
+    window.currentStep = step;
+    document.querySelectorAll('.step').forEach(el => el.style.display = 'none');
+    const activeStep = document.getElementById(`step-${step}`);
+    if (activeStep) {
+        activeStep.style.display = 'block';
+
+        // Перемещение холста p5.js в соответствующий контейнер
+        const canvasContainer = document.getElementById('quantum-canvas-container');
+        if (canvasContainer && p5Instance) {
+            if (step === 4 || step === 5) {
+                const targetContainer = document.getElementById(`portrait-animation-container-step-${step}`);
+                if (targetContainer && !targetContainer.contains(canvasContainer)) {
+                    targetContainer.appendChild(canvasContainer);
+                }
+            } else {
+                document.body.appendChild(canvasContainer); // Сброс в конец body для других шагов
+            }
+        }
+    }
+};
+
+// Инициализация p5.js
+function setup() {
+    console.log('p5.js setup called');
+    const canvas = createCanvas(400, 400);
+    canvas.parent('quantum-canvas-container');
+    p5Instance = this;
+    window.mouseWave = { x: width / 2, y: height / 2, radius: window.mouseInfluenceRadius };
+    window.showStep(window.currentStep); // Показываем начальный шаг
+}
+
+function draw() {
+    background(0);
+    if (window.currentStep === 4 || window.currentStep === 5) {
+        window.mouseWave.x = mouseX;
+        window.mouseWave.y = mouseY;
+        if (window.observeParticles) {
+            window.observeParticles(this, mouseX, mouseY);
+        }
+    }
+    // Здесь можно добавить рендеринг частиц, если он реализован в particles.js
+}
+
+// Добавление обработчика событий для кнопок
+document.addEventListener('click', function(e) {
+    const button = e.target.closest('.particle-button');
+    if (button) {
+        const action = button.getAttribute('data-action');
+        if (action && window[action]) {
+            window[action]();
+        }
+    }
+});
+
+// Инициализация при загрузке
+window.addEventListener('load', () => {
+    window.setLanguage(window.currentLanguage);
+    window.showStep(window.currentStep);
+});
