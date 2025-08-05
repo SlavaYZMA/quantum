@@ -1,5 +1,5 @@
 window.recordObservation = () => {
-    console.log('Attempting recordObservation, currentStep:', window.currentStep);
+    console.log('currentStep:', window.currentStep, 'isPaused:', window.isPaused);
     if (!window.quantumSketch || !window.quantumSketch.canvas) {
         console.error('quantumSketch is not initialized');
         return;
