@@ -1,10 +1,15 @@
 window.recordObservation = () => {
+    console.log('currentStep:', window.currentStep, 'isPaused:', window.isPaused);
     if (!window.quantumSketch || !window.quantumSketch.canvas) {
         console.error('quantumSketch is not initialized');
         return;
     }
-    if (window.isPaused || window.currentStep !== 4) {
-        console.error('Animation is paused or wrong step');
+    if (window.currentStep !== 4) {
+        console.error('Wrong step:', window.currentStep);
+        return;
+    }
+    if (window.isPaused) {
+        console.error('Animation is already paused');
         return;
     }
     window.isPaused = true;
@@ -19,7 +24,7 @@ window.recordObservation = () => {
             savedPortrait.style.display = 'none';
             window.isPaused = false;
             if (window.quantumSketch) window.quantumSketch.loop();
-            console.log('Animation resumed');
+            console.log('Animation resumed on image click');
         };
         console.log('Animation paused, preview displayed');
     } else {
