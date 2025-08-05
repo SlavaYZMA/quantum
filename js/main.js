@@ -8,7 +8,7 @@ window.mouseInfluenceRadius = 50;
 window.currentLanguage = 'ru';
 window.terminalMessages = [];
 window.particles = [];
-window.isPaused = false; // Явная инициализация
+window.isPaused = false;
 window.quantumSketch = null;
 
 window.translations = {
@@ -333,11 +333,11 @@ window.showStep = function(step) {
 
         // Очистка saved-portrait при переходе
         const savedPortrait = document.getElementById('saved-portrait');
-        if (savedPortrait && step !== 4) {
+        if (savedPortrait && step !== 5) {
             savedPortrait.style.display = 'none';
             savedPortrait.src = '';
             savedPortrait.onclick = null;
-        } else if (savedPortrait && step === 4 && window.isPaused) {
+        } else if (savedPortrait && step === 5 && window.isPaused) {
             savedPortrait.style.display = 'block';
         }
 
@@ -378,7 +378,7 @@ window.addEventListener('load', () => {
             window.quantumSketch = p; // Явно сохраняем экземпляр
         };
         p.draw = function() {
-            if (window.currentStep === 4 || window.currentStep === 5) {
+            if (window.currentStep === 4) {
                 if (!window.isPaused) {
                     p.background(0);
                     window.mouseWave = window.mouseWave || { x: p.width / 2, y: p.height / 2 };
@@ -391,10 +391,12 @@ window.addEventListener('load', () => {
                         window.observeParticles(p, window.mouseWave.x, window.mouseWave.y);
                     }
                 }
+            } else if (window.currentStep === 5 && window.isPaused) {
+                // Ничего не рисуем, если анимация зафиксирована
             }
         };
         p.mouseClicked = function() {
-            if (window.currentStep === 4 || window.currentStep === 5) {
+            if (window.currentStep === 4 && !window.isPaused) {
                 if (typeof window.clickParticles === 'function') {
                     window.clickParticles(p, p.mouseX, p.mouseY);
                 }
@@ -422,10 +424,11 @@ document.addEventListener('click', function(e) {
     }
     // Обработка клика по изображению
     const savedPortrait = document.getElementById('saved-portrait');
-    if (savedPortrait && e.target === savedPortrait && window.currentStep === 4) {
+    if (savedPortrait && e.target === savedPortrait && window.currentStep === 5) {
         savedPortrait.style.display = 'none';
         window.isPaused = false;
         if (window.quantumSketch) window.quantumSketch.loop();
         console.log('Animation resumed on image click');
+        window.moveToPreviousStep(); // Возвращаемся на шаг 4 для возобновления
     }
 });
