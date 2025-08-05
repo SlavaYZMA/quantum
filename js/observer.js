@@ -13,8 +13,7 @@ window.recordObservation = () => {
                 window.isPaused = false;
                 window.quantumSketch.loop();
             };
-            window.fixationCount = (window.fixationCount || 0) + 1;
-            console.log('Preview saved, fixation count:', window.fixationCount);
+            console.log('Animation paused, preview displayed');
         } else {
             console.error('Saved portrait element not found');
         }
@@ -26,14 +25,15 @@ window.recordObservation = () => {
 window.shareToArchive = () => {
     const portraitName = document.getElementById('portraitName');
     const savedPortrait = document.getElementById('saved-portrait');
-    if (portraitName && portraitName.value && savedPortrait && savedPortrait.src) {
+    if (portraitName && portraitName.value && savedPortrait && savedPortrait.src && savedPortrait.style.display === 'block') {
         const link = document.createElement('a');
         link.href = savedPortrait.src;
         link.download = portraitName.value + '.png';
         link.click();
         alert('Изображение сохранено в архиве под названием: ' + portraitName.value);
+        savedPortrait.style.display = 'none'; // Скрываем после сохранения
         window.moveToNextStep(7);
     } else {
-        alert('Введите название портрета или убедитесь, что изображение сохранено!');
+        alert('Введите название портрета и зафиксируйте изображение!');
     }
 };
