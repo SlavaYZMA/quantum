@@ -312,10 +312,18 @@ window.initializeSteps = function() {
     console.log('Found ' + allButtons.length + ' total buttons');
     allButtons.forEach(function(button) {
         button.addEventListener('click', function(e) {
-            const action = button.getAttribute('data-action') || button.id;
-            console.log('Button clicked:', action, 'on element:', button);
-            if (action && window[action]) window[action]();
-            else console.error(`Function ${action} not found in window. Available functions:`, Object.keys(window));
+            const action = button.getAttribute('data-action');
+            const lang = button.id.toLowerCase();
+            console.log('Button clicked:', action, 'with lang:', lang, 'on element:', button);
+            if (action && window[action]) {
+                if (action === 'setLanguageAndNext') {
+                    window[action](lang);
+                } else {
+                    window[action]();
+                }
+            } else {
+                console.error(`Function ${action} not found in window. Available functions:`, Object.keys(window));
+            }
         });
     });
 
