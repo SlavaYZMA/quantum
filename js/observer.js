@@ -1,24 +1,29 @@
 window.recordObservation = () => {
-    if (window.quantumSketch && !window.isPaused && window.currentStep === 4) {
-        window.isPaused = true;
-        window.quantumSketch.noLoop();
-        let canvas = window.quantumSketch.canvas;
-        let dataURL = canvas.toDataURL();
-        const savedPortrait = document.getElementById('saved-portrait');
-        if (savedPortrait) {
-            savedPortrait.src = dataURL;
-            savedPortrait.style.display = 'block';
-            savedPortrait.onclick = () => {
-                savedPortrait.style.display = 'none';
-                window.isPaused = false;
-                window.quantumSketch.loop();
-            };
-            console.log('Animation paused, preview displayed');
-        } else {
-            console.error('Saved portrait element not found');
-        }
+    if (!window.quantumSketch || !window.quantumSketch.canvas) {
+        console.error('quantumSketch is not initialized');
+        return;
+    }
+    if (window.isPaused || window.currentStep !== 4) {
+        console.error('Animation is paused or wrong step');
+        return;
+    }
+    window.isPaused = true;
+    window.quantumSketch.noLoop();
+    let canvas = window.quantumSketch.canvas;
+    let dataURL = canvas.toDataURL();
+    const savedPortrait = document.getElementById('saved-portrait');
+    if (savedPortrait) {
+        savedPortrait.src = dataURL;
+        savedPortrait.style.display = 'block';
+        savedPortrait.onclick = () => {
+            savedPortrait.style.display = 'none';
+            window.isPaused = false;
+            if (window.quantumSketch) window.quantumSketch.loop();
+            console.log('Animation resumed');
+        };
+        console.log('Animation paused, preview displayed');
     } else {
-        console.error('quantumSketch not available, animation is paused, or wrong step');
+        console.error('Saved portrait element not found');
     }
 };
 
@@ -31,7 +36,7 @@ window.shareToArchive = () => {
         link.download = portraitName.value + '.png';
         link.click();
         alert('Изображение сохранено в архиве под названием: ' + portraitName.value);
-        savedPortrait.style.display = 'none'; // Скрываем после сохранения
+        savedPortrait.style.display = 'none';
         window.moveToNextStep(7);
     } else {
         alert('Введите название портрета и зафиксируйте изображение!');
