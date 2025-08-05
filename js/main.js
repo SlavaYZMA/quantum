@@ -355,6 +355,15 @@ window.showStep = function(step) {
                 console.log('Canvas moved to body');
             }
         }
+
+        // Явный запуск анимации на шаге 4
+        if (step === 4) {
+            window.isPaused = false;
+            if (window.quantumSketch) {
+                window.quantumSketch.loop();
+                console.log('Animation started on step 4');
+            }
+        }
     }
 };
 
@@ -378,18 +387,13 @@ window.addEventListener('load', () => {
             window.quantumSketch = p; // Явно сохраняем экземпляр
         };
         p.draw = function() {
-            if (window.currentStep === 4) {
-                if (!window.isPaused) {
-                    p.background(0);
-                    window.mouseWave = window.mouseWave || { x: p.width / 2, y: p.height / 2 };
-                    window.mouseWave.x = p.lerp(window.mouseWave.x, p.mouseX, 0.1);
-                    window.mouseWave.y = p.lerp(window.mouseWave.y, p.mouseY, 0.1);
-                    if (typeof window.updateParticles === 'function') {
-                        window.updateParticles(p);
-                    }
-                    if (typeof window.observeParticles === 'function') {
-                        window.observeParticles(p, window.mouseWave.x, window.mouseWave.y);
-                    }
+            p.background(0); // Очистка фона для каждого кадра
+            if (window.currentStep === 4 && !window.isPaused) {
+                window.mouseWave = window.mouseWave || { x: p.width / 2, y: p.height / 2 };
+                window.mouseWave.x = p.lerp(window.mouseWave.x, p.mouseX, 0.1);
+                window.mouseWave.y = p.lerp(window.mouseWave.y, p.mouseY, 0.1);
+                if (typeof window.updateParticles === 'function') {
+                    window.updateParticles(p);
                 }
             } else if (window.currentStep === 5 && window.isPaused) {
                 // Ничего не рисуем, если анимация зафиксирована
@@ -399,6 +403,16 @@ window.addEventListener('load', () => {
             if (window.currentStep === 4 && !window.isPaused) {
                 if (typeof window.clickParticles === 'function') {
                     window.clickParticles(p, p.mouseX, p.mouseY);
+                }
+                if (typeof window.observeParticles === 'function') {
+                    window.observeParticles(p, p.mouseX, p.mouseY);
+                }
+            }
+        };
+        p.mouseMoved = function() {
+            if (window.currentStep === 4 && !window.isPaused) {
+                if (typeof window.observeParticles === 'function') {
+                    window.observeParticles(p, p.mouseX, p.mouseY);
                 }
             }
         };
@@ -415,6 +429,8 @@ document.addEventListener('click', function(e) {
         if (action && window[action]) {
             if (action === 'setLanguageAndNext' && lang) {
                 window[action](lang);
+            } else if (action === 'recordObservation') {
+                window.recordObservation();
             } else {
                 window[action]();
             }
