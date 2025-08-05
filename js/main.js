@@ -8,6 +8,9 @@ window.mouseInfluenceRadius = 50;
 window.currentLanguage = 'ru'; // По умолчанию
 window.terminalMessages = [];
 window.particles = [];
+window.isPaused = false; // Добавляем явную инициализацию
+window.quantumSketch = null; // Глобальная переменная для sketch
+
 window.translations = {
     ru: {
         step0_text: "Пожалуйста, выберите язык RU / ENG",
@@ -220,6 +223,7 @@ window.stopCamera = function() {
 window.restart = function() {
     console.log('restart function called');
     window.currentStep = 0;
+    window.isPaused = false;
     window.showStep(0);
 };
 
@@ -359,7 +363,7 @@ window.addEventListener('load', () => {
     console.log('DOM loaded, initializing steps');
     window.setLanguage(window.currentLanguage);
     window.showStep(window.currentStep);
-    // Инициализация p5.js
+    // Инициализация p5.js с явной привязкой
     window.quantumSketch = new p5(function(p) {
         p.setup = function() {
             const canvasContainer = document.getElementById('quantum-canvas-container');
@@ -371,17 +375,20 @@ window.addEventListener('load', () => {
             canvas.parent(canvasContainer);
             console.log('p5.js sketch initialized, canvas created');
             p.background(0);
+            window.quantumSketch = p; // Явно сохраняем экземпляр
         };
         p.draw = function() {
             if (window.currentStep === 4 || window.currentStep === 5) {
-                p.background(0);
-                window.mouseWave.x = p.mouseX;
-                window.mouseWave.y = p.mouseY;
-                if (typeof window.updateParticles === 'function') {
-                    window.updateParticles(p);
-                }
-                if (typeof window.observeParticles === 'function') {
-                    window.observeParticles(p, p.mouseX, p.mouseY);
+                if (!window.isPaused) {
+                    p.background(0);
+                    window.mouseWave.x = p.mouseX;
+                    window.mouseWave.y = p.mouseY;
+                    if (typeof window.updateParticles === 'function') {
+                        window.updateParticles(p);
+                    }
+                    if (typeof window.observeParticles === 'function') {
+                        window.observeParticles(p, p.mouseX, p.mouseY);
+                    }
                 }
             }
         };
@@ -411,5 +418,13 @@ document.addEventListener('click', function(e) {
         } else {
             console.error(`Function ${action} not found in window`);
         }
+    }
+    // Обработка клика по изображению
+    const savedPortrait = document.getElementById('saved-portrait');
+    if (savedPortrait && e.target === savedPortrait && window.currentStep === 4) {
+        savedPortrait.style.display = 'none';
+        window.isPaused = false;
+        if (window.quantumSketch) window.quantumSketch.loop();
+        console.log('Animation resumed on image click');
     }
 });
