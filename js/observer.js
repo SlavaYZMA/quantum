@@ -27,6 +27,7 @@ window.recordObservation = () => {
             console.log('Animation resumed on image click');
         };
         console.log('Animation paused, preview displayed');
+        window.moveToNextStep(5); // Переход на шаг 5 после фиксации
     } else {
         console.error('Saved portrait element not found');
     }
@@ -42,7 +43,7 @@ window.shareToArchive = () => {
         link.click();
         alert('Изображение сохранено в архиве под названием: ' + portraitName.value);
         savedPortrait.style.display = 'none';
-        window.moveToNextStep(7);
+        window.moveToNextStep(6);
     } else {
         alert('Введите название портрета и зафиксируйте изображение!');
     }
