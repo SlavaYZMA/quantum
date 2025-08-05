@@ -5,11 +5,11 @@ window.currentStep = 0;
 window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
 window.mouseInfluenceRadius = 50;
-window.currentLanguage = 'ru'; // По умолчанию
+window.currentLanguage = 'ru';
 window.terminalMessages = [];
 window.particles = [];
-window.isPaused = false; // Добавляем явную инициализацию
-window.quantumSketch = null; // Глобальная переменная для sketch
+window.isPaused = false; // Явная инициализация
+window.quantumSketch = null;
 
 window.translations = {
     ru: {
@@ -351,7 +351,7 @@ window.showStep = function(step) {
                     console.log(`Canvas moved to portrait-animation-container-step-${step}`);
                 }
             } else {
-                document.body.appendChild(canvasContainer); // Сброс в конец body для других шагов
+                document.body.appendChild(canvasContainer);
                 console.log('Canvas moved to body');
             }
         }
@@ -381,13 +381,14 @@ window.addEventListener('load', () => {
             if (window.currentStep === 4 || window.currentStep === 5) {
                 if (!window.isPaused) {
                     p.background(0);
-                    window.mouseWave.x = p.mouseX;
-                    window.mouseWave.y = p.mouseY;
+                    window.mouseWave = window.mouseWave || { x: p.width / 2, y: p.height / 2 };
+                    window.mouseWave.x = p.lerp(window.mouseWave.x, p.mouseX, 0.1);
+                    window.mouseWave.y = p.lerp(window.mouseWave.y, p.mouseY, 0.1);
                     if (typeof window.updateParticles === 'function') {
                         window.updateParticles(p);
                     }
                     if (typeof window.observeParticles === 'function') {
-                        window.observeParticles(p, p.mouseX, p.mouseY);
+                        window.observeParticles(p, window.mouseWave.x, window.mouseWave.y);
                     }
                 }
             }
