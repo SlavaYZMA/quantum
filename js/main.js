@@ -10,6 +10,7 @@ window.terminalMessages = [];
 window.particles = [];
 window.isPaused = false;
 window.quantumSketch = null;
+window.stepReady = false; // Новая переменная для задержки
 
 window.translations = {
     ru: {
@@ -224,6 +225,7 @@ window.restart = function() {
     console.log('restart function called');
     window.currentStep = 0;
     window.isPaused = false;
+    window.stepReady = false; // Сброс состояния
     window.showStep(0);
 };
 
@@ -356,12 +358,18 @@ window.showStep = function(step) {
             }
         }
 
-        // Явный запуск анимации на шаге 4
+        // Явный запуск анимации на шаге 4 с задержкой
         if (step === 4) {
             window.isPaused = false;
+            window.stepReady = false; // Сброс готовности
             if (window.quantumSketch) {
                 window.quantumSketch.loop();
                 console.log('Animation started on step 4');
+                // Задержка перед активацией событий
+                setTimeout(() => {
+                    window.stepReady = true;
+                    console.log('Step 4 is now ready for user interaction');
+                }, 500);
             }
         }
     }
@@ -400,7 +408,7 @@ window.addEventListener('load', () => {
             }
         };
         p.mouseClicked = function() {
-            if (window.currentStep === 4 && !window.isPaused) {
+            if (window.currentStep === 4 && !window.isPaused && window.stepReady) {
                 if (typeof window.clickParticles === 'function') {
                     window.clickParticles(p, p.mouseX, p.mouseY);
                 }
@@ -410,7 +418,7 @@ window.addEventListener('load', () => {
             }
         };
         p.mouseMoved = function() {
-            if (window.currentStep === 4 && !window.isPaused) {
+            if (window.currentStep === 4 && !window.isPaused && window.stepReady) {
                 if (typeof window.observeParticles === 'function') {
                     window.observeParticles(p, p.mouseX, p.mouseY);
                 }
@@ -448,3 +456,28 @@ document.addEventListener('click', function(e) {
         window.moveToPreviousStep(); // Возвращаемся на шаг 4 для возобновления
     }
 });
+
+// Функция фиксации (нужна для кнопки)
+window.recordObservation = function() {
+    if (window.currentStep === 4 && !window.isPaused && window.quantumSketch) {
+        window.isPaused = true;
+        window.quantumSketch.noLoop();
+        console.log('Observation recorded, animation paused');
+        // Сохранение текущего состояния (например, как изображение)
+        const canvas = window.quantumSketch.canvas;
+        const dataURL = canvas.toDataURL();
+        const savedPortrait = document.getElementById('saved-portrait');
+        if (savedPortrait) {
+            savedPortrait.src = dataURL;
+            savedPortrait.style.display = 'block';
+            savedPortrait.onclick = () => {
+                savedPortrait.style.display = 'none';
+                window.isPaused = false;
+                window.quantumSketch.loop();
+                console.log('Animation resumed on saved portrait click');
+                window.moveToPreviousStep();
+            };
+        }
+        window.moveToNextStep(5);
+    }
+};
