@@ -141,8 +141,99 @@ const archiveImages = [
 // Переменная для хранения видеопотока
 let cameraStream = null;
 
-// Переменная для хранения экземпляра p5.js
-let p5Instance = null;
+// Функция для отображения модального окна с изображениями
+window.showImageArchiveModal = function() {
+    const modal = document.getElementById('image-archive-modal');
+    const imageGrid = document.getElementById('image-grid');
+    if (!modal || !imageGrid) {
+        console.error('Modal or image grid not found');
+        return;
+    }
+
+    imageGrid.innerHTML = '';
+    archiveImages.forEach((src, index) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.className = 'archive-image';
+        img.alt = `Archive image ${index + 1}`;
+        img.onerror = () => {
+            console.error(`Failed to load image: ${src}`);
+            img.src = '';
+            img.alt = 'Ошибка загрузки';
+        };
+        img.addEventListener('click', () => {
+            window.selectArchiveImage(src);
+            modal.style.display = 'none';
+        });
+        imageGrid.appendChild(img);
+    });
+
+    modal.style.display = 'flex';
+};
+
+// Функция для выбора изображения из архива
+window.selectArchiveImage = function(src) {
+    if (!window.quantumSketch) {
+        console.error('quantumSketch not initialized');
+        return;
+    }
+    console.log(`Attempting to load archive image: ${src}`);
+    window.quantumSketch.loadImage(src, function(img) {
+        console.log('Archive image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
+        window.img = img;
+        window.initializeParticles(img);
+        var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+        thumbnails.forEach(function(thumbnail) {
+            thumbnail.src = src;
+            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+            console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+        });
+        window.moveToNextStep(2.1);
+    }, function(err) {
+        console.error(`Error loading archive image: ${src}, error: ${err}`);
+        alert('Ошибка загрузки изображения из архива. Пожалуйста, попробуйте снова.');
+    });
+};
+
+// Функция для загрузки изображения
+window.uploadImage = function() {
+    console.log('uploadImage function called');
+    // Здесь будет код для загрузки изображения
+};
+
+// Функция для работы с камерой
+window.startCamera = function() {
+    console.log('startCamera function called');
+    // Здесь будет код для работы с камерой
+};
+
+// Функция для остановки камеры
+window.stopCamera = function() {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+        console.log('Camera stream stopped');
+    }
+};
+
+// Функция для перезапуска
+window.restart = function() {
+    console.log('restart function called');
+    window.currentStep = 0;
+    window.showStep(0);
+};
+
+// Функция для отображения информации об авторах
+window.showAboutAuthors = function() {
+    console.log('showAboutAuthors function called');
+    alert('Информация об авторах будет добавлена позже.');
+};
+
+// Функция для захвата фото
+window.capturePhoto = function() {
+    console.log('capturePhoto function called');
+    // Здесь будет код для захвата фото
+};
 
 // Добавляем недостающие функции
 window.setLanguage = function(lang) {
@@ -174,7 +265,8 @@ window.setLanguageAndNext = function(lang) {
         console.warn('No language provided to setLanguageAndNext');
         return;
     }
-    window.setLanguage(lang);
+    const lowerLang = lang.toLowerCase();
+    window.setLanguage(lowerLang);
     const nextStep = window.stepTransitions[window.currentStep];
     window.moveToNextStep(nextStep);
 };
@@ -211,68 +303,99 @@ window.showStep = function(step) {
     document.querySelectorAll('.step').forEach(el => el.style.display = 'none');
     const activeStep = document.getElementById(`step-${step}`);
     if (activeStep) {
-        activeStep.style.display = 'block';
+        activeStep.style.display = 'flex';
+        const textCluster = activeStep.querySelector('.text-cluster');
+        if (textCluster) {
+            textCluster.querySelectorAll('div').forEach(div => {
+                div.style.visibility = 'visible';
+                const key = div.getAttribute('data-i18n');
+                if (key && window.translations[window.currentLanguage] && window.translations[window.currentLanguage][key]) {
+                    div.textContent = window.translations[window.currentLanguage][key];
+                }
+            });
+        }
+        const buttons = activeStep.querySelectorAll('.particle-button');
+        buttons.forEach(btn => {
+            const key = btn.getAttribute('data-i18n');
+            if (key && window.translations[window.currentLanguage] && window.translations[window.currentLanguage][key]) {
+                btn.textContent = window.translations[window.currentLanguage][key];
+            }
+            if (window.assembleText) window.assembleText(btn);
+        });
 
         // Перемещение холста p5.js в соответствующий контейнер
         const canvasContainer = document.getElementById('quantum-canvas-container');
-        if (canvasContainer && p5Instance) {
+        if (canvasContainer && window.quantumSketch) {
             if (step === 4 || step === 5) {
                 const targetContainer = document.getElementById(`portrait-animation-container-step-${step}`);
                 if (targetContainer && !targetContainer.contains(canvasContainer)) {
                     targetContainer.appendChild(canvasContainer);
+                    console.log(`Canvas moved to portrait-animation-container-step-${step}`);
                 }
             } else {
                 document.body.appendChild(canvasContainer); // Сброс в конец body для других шагов
+                console.log('Canvas moved to body');
             }
         }
     }
 };
 
-// Инициализация p5.js
-function setup() {
-    console.log('p5.js setup called');
-    const canvasContainer = document.getElementById('quantum-canvas-container');
-    if (!canvasContainer) {
-        console.error('Container quantum-canvas-container not found!');
-        return;
-    }
-    const canvas = createCanvas(400, 400);
-    canvas.parent(canvasContainer);
-    p5Instance = this;
-    window.mouseWave = { x: width / 2, y: height / 2, radius: window.mouseInfluenceRadius };
-    window.showStep(window.currentStep); // Показываем начальный шаг
-}
-
-function draw() {
-    background(0);
-    if (window.currentStep === 4 || window.currentStep === 5) {
-        window.mouseWave.x = mouseX;
-        window.mouseWave.y = mouseY;
-        if (window.observeParticles) {
-            window.observeParticles(this, mouseX, mouseY);
-        }
-    }
-    // Здесь можно добавить рендеринг частиц, если он реализован в particles.js
-}
+// Инициализация при загрузке
+window.addEventListener('load', () => {
+    console.log('DOM loaded, initializing steps');
+    window.setLanguage(window.currentLanguage);
+    window.showStep(window.currentStep);
+    // Инициализация p5.js
+    window.quantumSketch = new p5(function(p) {
+        p.setup = function() {
+            const canvasContainer = document.getElementById('quantum-canvas-container');
+            if (!canvasContainer) {
+                console.error('Container quantum-canvas-container not found!');
+                return;
+            }
+            const canvas = p.createCanvas(400, 400);
+            canvas.parent(canvasContainer);
+            console.log('p5.js sketch initialized, canvas created');
+            p.background(0);
+        };
+        p.draw = function() {
+            if (window.currentStep === 4 || window.currentStep === 5) {
+                p.background(0);
+                window.mouseWave.x = p.mouseX;
+                window.mouseWave.y = p.mouseY;
+                if (typeof window.updateParticles === 'function') {
+                    window.updateParticles(p);
+                }
+                if (typeof window.observeParticles === 'function') {
+                    window.observeParticles(p, p.mouseX, p.mouseY);
+                }
+            }
+        };
+        p.mouseClicked = function() {
+            if (window.currentStep === 4 || window.currentStep === 5) {
+                if (typeof window.clickParticles === 'function') {
+                    window.clickParticles(p, p.mouseX, p.mouseY);
+                }
+            }
+        };
+    });
+});
 
 // Добавление обработчика событий для кнопок
 document.addEventListener('click', function(e) {
     const button = e.target.closest('.particle-button');
     if (button) {
         const action = button.getAttribute('data-action');
-        const lang = button.id; // Предполагаем, что язык передаётся через id (RU или ENG)
+        const lang = button.id;
+        console.log('Button clicked:', action, 'with lang:', lang, 'on element:', button);
         if (action && window[action]) {
             if (action === 'setLanguageAndNext' && lang) {
                 window[action](lang);
             } else {
                 window[action]();
             }
+        } else {
+            console.error(`Function ${action} not found in window`);
         }
     }
-});
-
-// Инициализация при загрузке
-window.addEventListener('load', () => {
-    window.setLanguage(window.currentLanguage);
-    window.showStep(window.currentStep);
 });
