@@ -275,6 +275,18 @@ window.selectArchiveImage = function(src) {
     });
 };
 
+// Функция для загрузки изображения
+window.uploadImage = function() {
+    console.log('uploadImage function called');
+    // Здесь будет код для загрузки изображения
+};
+
+// Функция для работы с камерой
+window.startCamera = function() {
+    console.log('startCamera function called');
+    // Здесь будет код для работы с камерой
+};
+
 // Функция для остановки камеры
 window.stopCamera = function() {
     if (cameraStream) {
@@ -388,13 +400,26 @@ window.initializeSteps = function() {
         });
     }
 
-    console.log('quantumSketch initialized: ' + !!window.quantumSketch);
-    var canvas = document.querySelector('.quantum-canvas');
-    if (canvas) {
-        canvas.style.display = 'none';
-        console.log('Canvas hidden on initialization');
+    console.log('Attempting to initialize p5.js sketch');
+    if (typeof p5 !== 'undefined') {
+        window.quantumSketch = new p5(function(p) {
+            p.setup = function() {
+                let canvas = p.createCanvas(400, 400);
+                canvas.parent('quantum-canvas-container');
+                console.log('p5.js sketch initialized, canvas created');
+                p.background(0);
+            };
+            p.draw = function() {
+                if (window.currentStep === 4 || window.currentStep === 5) {
+                    p.background(0);
+                    if (typeof window.updateParticles === 'function') {
+                        window.updateParticles(p);
+                    }
+                }
+            };
+        });
     } else {
-        console.warn('Canvas not found during initialization, waiting for p5.js setup');
+        console.error('p5.js library not loaded');
     }
 };
 
