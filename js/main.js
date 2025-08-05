@@ -8,7 +8,7 @@ window.mouseInfluenceRadius = 50;
 window.currentLanguage = 'ru';
 window.terminalMessages = [];
 window.particles = [];
-window.isPaused = false;
+window.isPaused = false; // Явная инициализация
 window.quantumSketch = null;
 
 window.translations = {
@@ -306,8 +306,7 @@ window.updateTerminalLog = function() {
 };
 
 window.showStep = function(step) {
-    console.log('Entering step:', step);
-    if (window.currentStep === step) return; // Предотвращаем повторный переход
+    console.log('showStep called with:', step);
     window.currentStep = step;
     document.querySelectorAll('.step').forEach(el => el.style.display = 'none');
     const activeStep = document.getElementById(`step-${step}`);
@@ -410,7 +409,7 @@ document.addEventListener('click', function(e) {
     if (button) {
         const action = button.getAttribute('data-action');
         const lang = button.id;
-        console.log('Button clicked:', action, 'with lang:', lang, 'on element:', button, 'currentStep:', window.currentStep);
+        console.log('Button clicked:', action, 'with lang:', lang, 'on element:', button);
         if (action && window[action]) {
             if (action === 'setLanguageAndNext' && lang) {
                 window[action](lang);
