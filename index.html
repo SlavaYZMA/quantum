@@ -32,8 +32,8 @@
             <div data-i18n="step1_text3"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button continue" data-i18n="continue"></div>
-            <div class="particle-button back" data-i18n="back"></div>
+            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
+            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-2" class="step quantum-flux">
@@ -45,7 +45,7 @@
             <div class="particle-button" id="uploadImage" data-action="uploadImage" data-i18n="upload_image"></div>
             <div class="particle-button" id="useCamera" data-action="startCamera" data-i18n="use_camera"></div>
             <div class="particle-button" id="useArchive" data-action="showImageArchiveModal" data-i18n="use_archive"></div>
-            <div class="particle-button back" data-i18n="back"></div>
+            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-2.1" class="step quantum-flux">
@@ -55,8 +55,8 @@
             <div data-i18n="step2_text4"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button continue" data-i18n="continue"></div>
-            <div class="particle-button back" data-i18n="back"></div>
+            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
+            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-3" class="step quantum-flux">
@@ -72,8 +72,8 @@
             <div data-i18n="step3_text8"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button continue" data-i18n="continue"></div>
-            <div class="particle-button back" data-i18n="back"></div>
+            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
+            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-4" class="step quantum-flux">
@@ -88,8 +88,8 @@
             <div class="terminal-log" id="terminal-log-step-4"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button continue" data-i18n="continue"></div>
-            <div class="particle-button back" data-i18n="back"></div>
+            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
+            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-5" class="step quantum-flux">
@@ -105,9 +105,9 @@
         </div>
         <div class="quantum-cluster">
             <input class="quantum-input" id="portraitName" type="text" placeholder="Назови ∅" data-i18n-placeholder="portrait_name_placeholder">
-            <div class="particle-button" id="saveImage" data-i18n="save_observation"></div>
-            <div class="particle-button continue" data-i18n="continue"></div>
-            <div class="particle-button back" data-i18n="back"></div>
+            <div class="particle-button" id="saveImage" data-action="recordObservation" data-i18n="save_observation"></div>
+            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
+            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-6" class="step quantum-flux">
@@ -118,9 +118,9 @@
             <div data-i18n="step6_text3"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button" id="shareObservation" data-i18n="share_observation"></div>
-            <div class="particle-button continue" data-i18n="continue"></div>
-            <div class="particle-button back" data-i18n="back"></div>
+            <div class="particle-button" id="shareObservation" data-action="shareToArchive" data-i18n="share_observation"></div>
+            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
+            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
         </div>
     </section>
     <section id="step-7" class="step quantum-flux">
@@ -131,10 +131,10 @@
             <div data-i18n="step7_text3"></div>
         </div>
         <div class="quantum-cluster">
-            <div class="particle-button" id="restart" data-i18n="restart"></div>
-            <div class="particle-button" id="archive" data-i18n="archive"></div>
-            <div class="particle-button" id="aboutAuthors" data-i18n="about_authors"></div>
-            <div class="particle-button back" data-i18n="back"></div>
+            <div class="particle-button" id="restart" data-action="restart" data-i18n="restart"></div>
+            <div class="particle-button" id="archive" data-action="showImageArchiveModal" data-i18n="archive"></div>
+            <div class="particle-button" id="aboutAuthors" data-action="showAboutAuthors" data-i18n="about_authors"></div>
+            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
         </div>
     </section>
     <div id="image-archive-modal" class="modal quantum-flux" style="display: none;">
@@ -149,11 +149,10 @@
             <video id="camera-video" autoplay style="width: 100%; max-width: 640px; height: auto;"></video>
             <canvas id="camera-canvas" style="display: none;"></canvas>
             <div class="quantum-cluster">
-                <div class="particle-button" id="capture-photo" data-i18n="capture_photo"></div>
+                <div class="particle-button" id="capture-photo" data-action="capturePhoto" data-i18n="capture_photo"></div>
             </div>
         </div>
     </div>
-    <div id="quantum-canvas-container"></div>
     <script>
         console.log('Inline script loaded after main.js');
     </script>
