@@ -274,8 +274,12 @@ window.setLanguageAndNext = function(lang) {
 window.moveToNextStep = function(stepIndex) {
     console.log('moveToNextStep function called with:', stepIndex);
     if (stepIndex === undefined) {
-        console.warn('No step index provided to moveToNextStep');
-        return;
+        const nextStep = window.stepTransitions[window.currentStep];
+        if (nextStep === undefined) {
+            console.warn('No next step defined for currentStep: ' + window.currentStep);
+            return;
+        }
+        stepIndex = nextStep;
     }
     window.showStep(stepIndex);
 };
