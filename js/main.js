@@ -147,6 +147,10 @@ let p5Instance = null;
 // Добавляем недостающие функции
 window.setLanguage = function(lang) {
     console.log('setLanguage function called with:', lang);
+    if (!lang || !window.translations[lang]) {
+        console.warn('Invalid language:', lang);
+        return;
+    }
     window.currentLanguage = lang;
     const elements = document.querySelectorAll('[data-i18n]');
     elements.forEach(el => {
@@ -166,15 +170,22 @@ window.setLanguage = function(lang) {
 
 window.setLanguageAndNext = function(lang) {
     console.log('setLanguageAndNext function called with:', lang);
+    if (!lang) {
+        console.warn('No language provided to setLanguageAndNext');
+        return;
+    }
     window.setLanguage(lang);
-    window.moveToNextStep(window.stepTransitions[window.currentStep]);
+    const nextStep = window.stepTransitions[window.currentStep];
+    window.moveToNextStep(nextStep);
 };
 
 window.moveToNextStep = function(stepIndex) {
     console.log('moveToNextStep function called with:', stepIndex);
-    if (stepIndex !== undefined) {
-        window.showStep(stepIndex);
+    if (stepIndex === undefined) {
+        console.warn('No step index provided to moveToNextStep');
+        return;
     }
+    window.showStep(stepIndex);
 };
 
 window.moveToPreviousStep = function() {
@@ -220,8 +231,13 @@ window.showStep = function(step) {
 // Инициализация p5.js
 function setup() {
     console.log('p5.js setup called');
+    const canvasContainer = document.getElementById('quantum-canvas-container');
+    if (!canvasContainer) {
+        console.error('Container quantum-canvas-container not found!');
+        return;
+    }
     const canvas = createCanvas(400, 400);
-    canvas.parent('quantum-canvas-container');
+    canvas.parent(canvasContainer);
     p5Instance = this;
     window.mouseWave = { x: width / 2, y: height / 2, radius: window.mouseInfluenceRadius };
     window.showStep(window.currentStep); // Показываем начальный шаг
@@ -244,8 +260,13 @@ document.addEventListener('click', function(e) {
     const button = e.target.closest('.particle-button');
     if (button) {
         const action = button.getAttribute('data-action');
+        const lang = button.id; // Предполагаем, что язык передаётся через id (RU или ENG)
         if (action && window[action]) {
-            window[action]();
+            if (action === 'setLanguageAndNext' && lang) {
+                window[action](lang);
+            } else {
+                window[action]();
+            }
         }
     }
 });
