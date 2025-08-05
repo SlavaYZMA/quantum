@@ -327,6 +327,16 @@ window.showStep = function(step) {
             if (window.assembleText) window.assembleText(btn);
         });
 
+        // Очистка saved-portrait при переходе
+        const savedPortrait = document.getElementById('saved-portrait');
+        if (savedPortrait && step !== 4) {
+            savedPortrait.style.display = 'none';
+            savedPortrait.src = '';
+            savedPortrait.onclick = null;
+        } else if (savedPortrait && step === 4 && window.isPaused) {
+            savedPortrait.style.display = 'block';
+        }
+
         // Перемещение холста p5.js в соответствующий контейнер
         const canvasContainer = document.getElementById('quantum-canvas-container');
         if (canvasContainer && window.quantumSketch) {
