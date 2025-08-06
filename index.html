@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,61 +7,61 @@
     <title>Quantum Portrait</title>
     <link rel="icon" href="data:;base64,=">
     <link rel="stylesheet" href="./css/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <script src="./js/globals.js"></script>
     <script src="./js/particles.js"></script>
     <script src="./js/observer.js"></script>
+    <script src="./js/main.js"></script>
     <script src="./js/audio.js"></script>
     <script src="./js/textSteps.js"></script>
     <script src="./js/utils.js"></script>
-    <script src="./js/text-flicker.js"></script>
-    <script src="./js/main.js"></script>
+    <script src="js/text-flicker.js"></script>
 </head>
 <body>
-    <section id="step-0" class="step quantum-flux">
-        <div class="text-cluster" data-i18n="step0_text"></div>
-        <div class="quantum-cluster">
-            <div id="RU" class="particle-button" data-action="setLanguageAndNext">RU</div>
-            <div id="ENG" class="particle-button" data-action="setLanguageAndNext">ENG</div>
+    <section id="step-0" class="step">
+        <div class="text-block" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</div>
+        <div class="button-block">
+            <button onclick="window.setLanguageAndNext('ru')">RU</button>
+            <button onclick="window.setLanguageAndNext('en')">ENG</button>
         </div>
     </section>
-    <section id="step-1" class="step quantum-flux">
-        <div class="text-cluster">
+    <section id="step-1" class="step step-centered">
+        <div class="text-block">
             <div data-i18n="step1_title"></div>
             <div data-i18n="step1_text1"></div>
             <div data-i18n="step1_text2"></div>
             <div data-i18n="step1_text3"></div>
         </div>
-        <div class="quantum-cluster">
-            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
-            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
+        <div class="button-block">
+            <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-2" class="step quantum-flux">
-        <div class="text-cluster">
+    <section id="step-2" class="step step-centered">
+        <div class="text-block">
             <div data-i18n="step2_title"></div>
             <div data-i18n="step2_text1"></div>
         </div>
-        <div class="quantum-cluster">
-            <div class="particle-button" id="uploadImage" data-action="uploadImage" data-i18n="upload_image"></div>
-            <div class="particle-button" id="useCamera" data-action="startCamera" data-i18n="use_camera"></div>
-            <div class="particle-button" id="useArchive" data-action="showImageArchiveModal" data-i18n="use_archive"></div>
-            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
+        <div class="button-block">
+            <button id="uploadImage" data-i18n="upload_image">Загрузить изображение</button>
+            <button id="useCamera" data-i18n="use_camera">Включить камеру</button>
+            <button id="useArchive" data-i18n="use_archive">Выбрать из архива</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-2.1" class="step quantum-flux">
-        <div class="text-cluster">
+    <section id="step-2.1" class="step step-centered">
+        <div class="text-block">
             <div data-i18n="step2_text2"></div>
             <div data-i18n="step2_text3"></div>
             <div data-i18n="step2_text4"></div>
         </div>
-        <div class="quantum-cluster">
-            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
-            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
+        <div class="button-block">
+            <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-3" class="step quantum-flux">
-        <div class="text-cluster">
+    <section id="step-3" class="step step-centered">
+        <div class="text-block">
             <div data-i18n="step3_title"></div>
             <div data-i18n="step3_text1"></div>
             <div data-i18n="step3_text2"></div>
@@ -71,90 +72,237 @@
             <div data-i18n="step3_text7"></div>
             <div data-i18n="step3_text8"></div>
         </div>
-        <div class="quantum-cluster">
-            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
-            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
+        <div class="button-block">
+            <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-4" class="step quantum-flux">
-        <div class="text-cluster">
+    <section id="step-4" class="step step-centered">
+        <div class="text-block">
             <div data-i18n="step4_title"></div>
             <div data-i18n="step4_text1"></div>
             <div data-i18n="step4_text2"></div>
             <div data-i18n="step4_text3"></div>
         </div>
-        <div class="quantum-observation">
-            <div id="portrait-animation-container-step-4"></div>
-            <div class="terminal-log" id="terminal-log-step-4"></div>
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+            <img id="thumbnail-portrait" class="thumbnail-portrait" />
+            <div style="display: flex; flex-direction: row;">
+                <div id="portrait-animation-container-step-4"></div>
+                <div class="terminal-log" id="terminal-log-step-4"></div>
+            </div>
         </div>
-        <div class="quantum-cluster">
-            <div class="particle-button" id="saveImage" data-action="recordObservation" data-i18n="save_observation"></div>
-            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
-            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
+        <div class="button-block">
+            <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-5" class="step quantum-flux">
-        <div class="text-cluster">
+    <section id="step-5" class="step step-centered">
+        <div class="text-block">
             <div data-i18n="step5_title"></div>
             <div data-i18n="step5_text1"></div>
             <div data-i18n="step5_text2"></div>
             <div data-i18n="step5_text3"></div>
         </div>
-        <div class="quantum-observation">
-            <div id="portrait-animation-container-step-5"></div>
-            <div class="terminal-log" id="terminal-log-step-5"></div>
-            <img id="saved-portrait" style="display: none; max-width: 100%;">
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+            <img id="thumbnail-portrait" class="thumbnail-portrait" />
+            <div style="display: flex; flex-direction: row;">
+                <div id="portrait-animation-container-step-5"></div>
+                <div class="terminal-log" id="terminal-log-step-5"></div>
+            </div>
         </div>
-        <div class="quantum-cluster">
-            <input class="quantum-input" id="portraitName" type="text" placeholder="Назови ∅" data-i18n-placeholder="portrait_name_placeholder">
-            <div class="particle-button" id="shareObservation" data-action="shareToArchive" data-i18n="share_observation"></div>
-            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
-            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
+        <div class="button-block">
+            <input id="portraitName" type="text" placeholder="Название портрета" data-i18n-placeholder="portrait_name_placeholder">
+            <button id="saveImage" data-i18n="save_observation">[ЗАПИСАТЬ НАБЛЮДЕНИЕ]</button>
+            <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-6" class="step quantum-flux">
-        <div class="text-cluster">
+    <section id="step-6" class="step step-centered">
+        <div class="text-block">
             <div data-i18n="step6_title"></div>
             <div data-i18n="step6_text1"></div>
             <div data-i18n="step6_text2"></div>
             <div data-i18n="step6_text3"></div>
         </div>
-        <div class="quantum-cluster">
-            <div class="particle-button continue" data-action="moveToNextStep" data-i18n="continue"></div>
-            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
+        <div class="button-block">
+            <button id="shareObservation" data-i18n="share_observation">[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]</button>
+            <button class="continue" data-i18n="continue">Продолжить</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-7" class="step quantum-flux">
-        <div class="text-cluster">
-            <div data-i18n="step7_title"></div>
+    <section id="step-7" class="step step-centered">
+        <div class="text-block">
             <div data-i18n="step7_text1"></div>
             <div data-i18n="step7_text2"></div>
             <div data-i18n="step7_text3"></div>
         </div>
-        <div class="quantum-cluster">
-            <div class="particle-button" id="restart" data-action="restart" data-i18n="restart"></div>
-            <div class="particle-button" id="archive" data-action="showImageArchiveModal" data-i18n="archive"></div>
-            <div class="particle-button" id="aboutAuthors" data-action="showAboutAuthors" data-i18n="about_authors"></div>
-            <div class="particle-button back" data-action="moveToPreviousStep" data-i18n="back"></div>
+        <div class="button-block">
+            <button id="restart" data-i18n="restart">[↻ НАЧАТЬ СНАЧАЛА]</button>
+            <button id="archive" data-i18n="archive">[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]</button>
+            <button id="aboutAuthors" data-i18n="about_authors">[ОБ АВТОРАХ]</button>
+            <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <div id="image-archive-modal" class="modal quantum-flux" style="display: none;">
-        <div class="modal-cluster">
-            <div class="close-particle" id="close-modal">×</div>
+    <!-- Модальное окно для выбора изображений из архива -->
+    <div id="image-archive-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span id="close-modal" class="close">×</span>
             <div class="image-grid" id="image-grid"></div>
         </div>
     </div>
-    <div id="camera-modal" class="modal quantum-flux" style="display: none;">
-        <div class="modal-cluster">
-            <div class="close-particle" id="close-camera-modal">×</div>
+    <!-- Модальное окно для камеры -->
+    <div id="camera-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span id="close-camera-modal" class="close">×</span>
             <video id="camera-video" autoplay style="width: 100%; max-width: 640px; height: auto;"></video>
             <canvas id="camera-canvas" style="display: none;"></canvas>
-            <div class="quantum-cluster">
-                <div class="particle-button" id="capture-photo" data-action="capturePhoto" data-i18n="capture_photo"></div>
+            <div class="button-block">
+                <button id="capture-photo" data-i18n="capture_photo">Сделать фото</button>
             </div>
         </div>
     </div>
-    <div id="quantum-canvas-container"></div>
+
     <script>
-        console.log('Inline script loaded after main.js');
+        window.quantumSketch = new p5(function(sketch) {
+            console.log('p5 setup called');
+            sketch.setup = function() {
+                var canvas = sketch.createCanvas(400, 400);
+                canvas.class('quantum-canvas');
+                canvas.parent('portrait-animation-container-step-4');
+                console.log('Canvas created, width: ' + canvas.width + ', height: ' + canvas.height);
+                sketch.noLoop();
+            };
+
+            sketch.draw = function() {
+                console.log('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
+                sketch.background(0);
+                if (window.currentStep === 4 || window.currentStep === 5) {
+                    if (window.particles && window.particles.length > 0) {
+                        window.updateParticles(sketch);
+                    } else {
+                        console.error('No particles to render: ', { particles: window.particles ? window.particles.length : 0 });
+                    }
+                    sketch.fill(255);
+                    sketch.textSize(16);
+                    sketch.text('Frame: ' + (window.frame || 0), 10, 20);
+                }
+            };
+
+            sketch.mouseMoved = function() {
+                if (window.currentStep === 4 || window.currentStep === 5) {
+                    window.observeParticles(sketch, sketch.mouseX, sketch.mouseY);
+                }
+            };
+
+            sketch.mouseClicked = function() {
+                if (window.currentStep === 4 || window.currentStep === 5) {
+                    window.clickParticles(sketch, sketch.mouseX, sketch.mouseY);
+                    sketch.loop();
+                }
+            };
+
+            sketch.startAnimation = function() {
+                sketch.loop();
+                console.log('Animation started');
+            };
+
+            sketch.switchCanvasParent = function(stepIndex) {
+                let containerId = stepIndex === 4 ? 'portrait-animation-container-step-4' : 'portrait-animation-container-step-5';
+                let container = document.getElementById(containerId);
+                if (container && sketch.canvas) {
+                    container.appendChild(sketch.canvas);
+                    console.log('Canvas switched to ' + containerId);
+                } else {
+                    console.error('Failed to switch canvas parent: container or canvas not found', { container, canvas: !!sketch.canvas });
+                }
+            };
+        });
+
+        document.getElementById('uploadImage').addEventListener('click', function() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                console.log('Image input changed, files: ' + e.target.files.length);
+                if (!e.target || !e.target.files || e.target.files.length === 0 || !window.quantumSketch) {
+                    console.error('Error: Invalid file input or quantumSketch not initialized', {
+                        hasTarget: !!e.target,
+                        hasFiles: e.target.files ? e.target.files.length : 0,
+                        quantumSketch: !!window.quantumSketch
+                    });
+                    return;
+                }
+                var file = e.target.files[0];
+                window.quantumSketch.loadImage(URL.createObjectURL(file), function(img) {
+                    console.log('Image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
+                    window.img = img;
+                    window.initializeParticles(img);
+                    var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+                    console.log('Found thumbnails: ' + thumbnails.length);
+                    thumbnails.forEach(function(thumbnail) {
+                        thumbnail.src = URL.createObjectURL(file);
+                        thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
+                        console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
+                    });
+                    window.moveToNextStep(2.1);
+                    input.remove();
+                }, function() {
+                    console.error('Error loading image');
+                    input.remove();
+                });
+            };
+            input.click();
+        });
+
+        document.getElementById('saveImage').addEventListener('click', function() {
+            const portraitName = document.getElementById('portraitName').value || 'quantum_portrait';
+            window.quantumSketch.saveCanvas(portraitName, 'png');
+            console.log('Image saved with name: ' + portraitName);
+            window.terminalMessages.push(`[SAVE] Quantum portrait saved as ${portraitName}.png`);
+            window.updateTerminalLog();
+        });
+
+        document.getElementById('shareObservation').addEventListener('click', function() {
+            window.open('https://t.me/quantum_portrait_channel', '_blank');
+            console.log('Share observation: opened Telegram channel');
+        });
+
+        document.getElementById('restart').addEventListener('click', function() {
+            window.location.reload();
+            console.log('Restart: page reloaded');
+        });
+
+        document.getElementById('archive').addEventListener('click', function() {
+            window.open('https://t.me/quantum_portrait_channel', '_blank');
+            console.log('Archive: opened Telegram channel');
+        });
+
+        document.getElementById('aboutAuthors').addEventListener('click', function() {
+            window.location.href = './about.html';
+            console.log('About authors: navigated to about.html');
+        });
+
+        var originalMoveToNextStep = window.moveToNextStep;
+        window.moveToNextStep = function(stepIndex) {
+            console.log('moveToNextStep called with stepIndex: ' + stepIndex);
+            originalMoveToNextStep(stepIndex);
+            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
+            thumbnails.forEach(function(thumbnail) {
+                thumbnail.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
+                console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + stepIndex);
+            });
+            if (stepIndex === 4 || stepIndex === 5) {
+                window.quantumSketch.switchCanvasParent(stepIndex);
+                window.quantumSketch.startAnimation();
+                window.terminalMessages = [];
+                window.terminalMessages.push(`[INIT] Quantum portrait animation started for step ${stepIndex}`);
+                window.updateTerminalLog();
+            } else {
+                window.quantumSketch.noLoop();
+                window.terminalMessages = [];
+                window.updateTerminalLog();
+            }
+        };
     </script>
+</body>
+</html>
