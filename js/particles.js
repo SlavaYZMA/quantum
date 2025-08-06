@@ -314,8 +314,8 @@ window.initializeParticles = function(img) {
                     }
 
                     window.particles.push({
-                        x: x * 400 / img.width,
-                        y: y * 400 / img.height,
+                        x: x * 800 / img.width,
+                        y: y * 800 / img.height,
                         baseX: x * 400 / img.width,
                         baseY: y * 400 / img.height,
                         velocityX: 0,
