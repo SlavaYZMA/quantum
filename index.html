@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -166,7 +165,7 @@
         window.quantumSketch = new p5(function(sketch) {
             console.log('p5 setup called');
             sketch.setup = function() {
-                var canvas = sketch.createCanvas(400, 400);
+                var canvas = sketch.createCanvas(800, 800); // Изменено с 400, 400 на 800, 800
                 canvas.class('quantum-canvas');
                 canvas.parent('portrait-animation-container-step-4');
                 console.log('Canvas created, width: ' + canvas.width + ', height: ' + canvas.height);
