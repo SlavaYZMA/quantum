@@ -15,13 +15,13 @@ body {
     min-height: 100vh;
     overflow: hidden;
     position: relative;
-    perspective: 1200px;
-    animation: quantum-shift 25s linear infinite;
+    perspective: 1500px;
+    animation: quantum-shift 30s linear infinite;
 }
 
 @keyframes quantum-shift {
-    0%, 100% { filter: brightness(1); transform: perspective(1200px) rotateX(0deg) rotateY(0deg); }
-    50% { filter: brightness(1.2) blur(0.5px); transform: perspective(1200px) rotateX(2deg) rotateY(2deg); }
+    0%, 100% { filter: brightness(1); transform: perspective(1500px) rotateX(0deg) rotateY(0deg); }
+    50% { filter: brightness(1.3) blur(1px); transform: perspective(1500px) rotateX(3deg) rotateY(3deg); }
 }
 
 .particles {
@@ -31,15 +31,15 @@ body {
     width: 100%;
     height: 100%;
     z-index: -1;
-    background: radial-gradient(circle, rgba(0, 255, 255, 0.15) 5%, transparent 10%);
-    background-size: 15px 15px;
-    animation: particle-drift 12s linear infinite alternate-reverse;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.2) 5%, transparent 15%);
+    background-size: 20px 20px;
+    animation: particle-drift 15s linear infinite alternate-reverse;
     mix-blend-mode: screen;
 }
 
 @keyframes particle-drift {
     0% { transform: translate(0, 0); opacity: 0.3; }
-    100% { transform: translate(40px, -40px); opacity: 0.5; }
+    100% { transform: translate(60px, -60px); opacity: 0.6; }
 }
 
 .main-container {
@@ -53,17 +53,18 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 80%;
-    max-width: 600px;
-    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    padding: 30px;
+    min-height: 500px;
     background: rgba(20, 20, 40, 0.6);
-    border: 1px solid var(--neon-green);
-    border-radius: 12px;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
-    transform: translate(-50%, -50%) translateZ(-600px) rotateY(15deg);
+    border: 2px solid var(--neon-green);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    transform: translate(-50%, -50%) translateZ(-800px) rotateY(20deg);
     opacity: 0;
-    transition: transform 0.7s ease, opacity 0.7s ease;
-    animation: flicker 5s infinite alternate;
+    transition: transform 0.8s ease, opacity 0.8s ease;
+    animation: flicker 6s infinite alternate;
     mix-blend-mode: screen;
 }
 
@@ -73,53 +74,54 @@ body {
 }
 
 .step.past {
-    transform: translate(-50%, -50%) translateZ(-300px) rotateY(20deg);
-    opacity: 0.4;
-    filter: blur(2px);
+    transform: translate(-50%, -50%) translateZ(-400px) rotateY(25deg);
+    opacity: 0.5;
+    filter: blur(3px);
 }
 
 .step.future {
-    transform: translate(-50%, -50%) translateZ(-900px) rotateY(-20deg);
-    opacity: 0.3;
-    filter: blur(3px);
+    transform: translate(-50%, -50%) translateZ(-1200px) rotateY(-25deg);
+    opacity: 0.4;
+    filter: blur(4px);
 }
 
 @keyframes flicker {
     0%, 100% { opacity: 0.8; }
-    20% { opacity: 0.5; }
-    40% { opacity: 0.9; }
-    60% { opacity: 0.4; }
-    80% { opacity: 0.7; }
+    20% { opacity: 0.6; }
+    40% { opacity: 0.95; }
+    60% { opacity: 0.5; }
+    80% { opacity: 0.75; }
 }
 
 .step-centered {
     text-align: center;
     align-items: center;
     justify-content: center;
+    height: 100%;
 }
 
 .text-block {
     background: rgba(10, 10, 30, 0.5);
-    padding: 15px;
-    margin-bottom: 15px;
-    max-width: 90%;
+    padding: 25px;
+    margin-bottom: 25px;
+    max-width: 95%;
     white-space: pre-wrap;
     text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
-    backdrop-filter: blur(5px);
-    animation: text-glitch 8s infinite;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);
+    backdrop-filter: blur(6px);
+    animation: text-glitch 10s infinite;
 }
 
 .text-block div {
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     color: var(--neon-cyan);
-    font-size: 15px;
-    text-shadow: 0 0 8px var(--neon-cyan);
+    font-size: 18px;
+    text-shadow: 0 0 10px var(--neon-cyan);
     overflow: hidden;
     white-space: nowrap;
-    border-right: 2px solid var(--neon-green);
-    animation: typewriter 3s steps(40, end) forwards, blink-caret 0.8s step-end infinite;
+    border-right: 3px solid var(--neon-green);
+    animation: typewriter 4s steps(50, end) forwards, blink-caret 1s step-end infinite;
     animation-delay: calc(var(--random-delay) * 1s);
 }
 
@@ -135,97 +137,97 @@ body {
 
 @keyframes text-glitch {
     0%, 100% { transform: translate(0, 0); opacity: 1; }
-    10% { transform: translate(2px, -2px); opacity: 0.7; }
-    20% { transform: translate(-3px, 3px); opacity: 0.9; }
-    30% { transform: translate(1px, -1px); opacity: 0.6; }
+    10% { transform: translate(3px, -3px); opacity: 0.7; }
+    20% { transform: translate(-4px, 4px); opacity: 0.9; }
+    30% { transform: translate(2px, -2px); opacity: 0.6; }
 }
 
 .button-block {
     display: flex;
-    gap: 8px;
+    gap: 12px;
     flex-wrap: wrap;
     justify-content: center;
-    padding: 10px;
+    padding: 15px;
     margin: 0 auto;
 }
 
 button {
-    padding: 10px 18px;
-    border: 2px solid var(--neon-green);
-    border-radius: 10px;
+    padding: 15px 25px;
+    border: 3px solid var(--neon-green);
+    border-radius: 15px;
     cursor: pointer;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 14px;
+    font-size: 16px;
     background: linear-gradient(45deg, var(--quantum-purple), #5a5abf);
     color: var(--neon-cyan);
-    transition: transform 0.4s ease, background 0.6s ease;
+    transition: transform 0.5s ease, background 0.7s ease;
     mix-blend-mode: screen;
-    animation: button-pulse 4s infinite alternate;
+    animation: button-pulse 5s infinite alternate;
 }
 
 button:hover {
-    transform: scale(1.1) rotate(3deg) translateZ(20px);
+    transform: scale(1.2) rotate(5deg) translateZ(30px);
     background: linear-gradient(45deg, #00ffff, #ff4500);
-    box-shadow: 0 0 20px var(--neon-cyan);
+    box-shadow: 0 0 25px var(--neon-cyan);
 }
 
 @keyframes button-pulse {
     0% { transform: scale(1) rotate(0deg); opacity: 0.8; }
-    50% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+    50% { transform: scale(1.1) rotate(3deg); opacity: 1; }
     100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
-    width: 400px;
-    height: 400px;
+    width: 500px;
+    height: 500px;
     background: rgba(10, 10, 26, 0.4);
-    border: 2px dashed var(--neon-green);
-    border-radius: 15px;
+    border: 3px dashed var(--neon-green);
+    border-radius: 20px;
     position: relative;
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
-    animation: quantum-glow 3s infinite alternate;
-    transform: translateZ(50px);
+    box-shadow: 0 0 25px rgba(0, 191, 255, 0.6);
+    animation: quantum-glow 4s infinite alternate;
+    transform: translateZ(70px);
     mix-blend-mode: screen;
 }
 
 @keyframes quantum-glow {
-    0% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
-    50% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.7); }
-    100% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
+    0% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); }
+    50% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.8); }
+    100% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); }
 }
 
 #thumbnail-portrait {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 150px;
+    max-height: 150px;
     object-fit: cover;
-    border-radius: 12px;
-    border: 2px solid var(--neon-cyan);
-    animation: image-flicker 6s infinite;
+    border-radius: 15px;
+    border: 3px solid var(--neon-cyan);
+    animation: image-flicker 7s infinite;
 }
 
 @keyframes image-flicker {
     0%, 100% { opacity: 1; transform: scale(1); }
-    30% { opacity: 0.6; transform: scale(0.95); }
-    60% { opacity: 0.8; transform: scale(1.05); }
+    30% { opacity: 0.7; transform: scale(0.9); }
+    60% { opacity: 0.85; transform: scale(1.1); }
 }
 
 .terminal-log {
-    width: 300px;
-    height: 400px;
+    width: 400px;
+    height: 500px;
     background: rgba(10, 10, 30, 0.8);
     color: var(--neon-cyan);
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    padding: 10px;
+    font-size: 15px;
+    padding: 15px;
     overflow-y: auto;
-    margin-left: 10px;
-    line-height: 1.5;
+    margin-left: 15px;
+    line-height: 1.6;
     display: none;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 191, 255, 0.4);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
     scroll-behavior: smooth;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(5px);
 }
 
 #terminal-log-step-4,
@@ -244,25 +246,25 @@ button:hover {
     z-index: 1000;
     justify-content: center;
     align-items: center;
-    animation: modal-shift 15s infinite;
+    animation: modal-shift 20s infinite;
 }
 
 @keyframes modal-shift {
     0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(10px, -10px); }
+    50% { transform: translate(15px, -15px); }
 }
 
 .modal-content {
     background: rgba(10, 10, 30, 0.7);
-    padding: 20px;
-    max-width: 90vw;
-    max-height: 90vh;
+    padding: 30px;
+    max-width: 95vw;
+    max-height: 95vh;
     overflow: auto;
-    border-radius: 15px;
-    border: 2px solid var(--neon-green);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-    animation: modal-appear 0.7s ease forwards;
-    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    border: 3px solid var(--neon-green);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+    animation: modal-appear 0.8s ease forwards;
+    backdrop-filter: blur(7px);
 }
 
 @keyframes modal-appear {
@@ -272,76 +274,76 @@ button:hover {
 
 .close {
     color: var(--neon-cyan);
-    font-size: 24px;
+    font-size: 28px;
     position: absolute;
-    top: 10px;
-    right: 20px;
+    top: 15px;
+    right: 25px;
     cursor: pointer;
-    transition: color 0.4s, transform 0.4s;
+    transition: color 0.5s, transform 0.5s;
 }
 
 .close:hover {
     color: #ff4500;
-    transform: rotate(45deg);
+    transform: rotate(60deg);
 }
 
 .image-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 6px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
 }
 
 .archive-image {
     width: 100%;
-    height: 140px;
+    height: 180px;
     object-fit: cover;
-    border-radius: 10px;
-    border: 2px solid var(--neon-cyan);
-    transition: transform 0.4s ease, opacity 0.4s ease;
+    border-radius: 15px;
+    border: 3px solid var(--neon-cyan);
+    transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
 .archive-image:hover {
-    transform: scale(1.1) translateZ(20px);
-    opacity: 0.8;
+    transform: scale(1.2) translateZ(30px);
+    opacity: 0.85;
 }
 
 #camera-video {
     max-width: 100%;
-    border-radius: 12px;
-    border: 2px solid var(--neon-green);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    border-radius: 15px;
+    border: 3px solid var(--neon-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
 }
 
 #capture-photo {
-    margin-top: 10px;
+    margin-top: 15px;
     background: linear-gradient(45deg, var(--quantum-purple), #5a5abf);
-    padding: 10px 18px;
-    border: 2px solid var(--neon-green);
-    border-radius: 10px;
-    transition: transform 0.4s ease, background 0.6s ease;
+    padding: 15px 25px;
+    border: 3px solid var(--neon-green);
+    border-radius: 15px;
+    transition: transform 0.5s ease, background 0.7s ease;
 }
 
 #capture-photo:hover {
     background: linear-gradient(45deg, #00ffff, #ff4500);
-    transform: scale(1.1) rotate(3deg);
-    box-shadow: 0 0 20px var(--neon-cyan);
+    transform: scale(1.2) rotate(5deg);
+    box-shadow: 0 0 25px var(--neon-cyan);
 }
 
 input[type="text"] {
     background: rgba(10, 10, 30, 0.6);
-    border: 2px solid var(--neon-cyan);
+    border: 3px solid var(--neon-cyan);
     color: var(--neon-cyan);
     font-family: 'IBM Plex Mono', monospace;
-    padding: 10px;
-    font-size: 14px;
-    border-radius: 10px;
-    transition: border-color 0.4s, transform 0.4s;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 12px;
+    transition: border-color 0.5s, transform 0.5s;
     mix-blend-mode: screen;
 }
 
 input[type="text"]:focus {
     border-color: var(--neon-green);
-    transform: scale(1.05);
+    transform: scale(1.1);
     outline: none;
 }
 
@@ -353,30 +355,31 @@ input[type="text"]::placeholder {
 @media (max-width: 600px) {
     .step {
         max-width: 95%;
-        padding: 10px;
+        padding: 15px;
+        min-height: 400px;
     }
     #portrait-animation-container-step-4,
     #portrait-animation-container-step-5 {
-        width: 300px;
-        height: 300px;
+        width: 350px;
+        height: 350px;
     }
     .terminal-log {
-        width: 250px;
-        height: 300px;
-        font-size: 12px;
+        width: 300px;
+        height: 400px;
+        font-size: 13px;
     }
     button,
     #capture-photo {
-        padding: 8px 12px;
-        font-size: 12px;
+        padding: 10px 18px;
+        font-size: 14px;
     }
     .button-block {
-        gap: 5px;
+        gap: 6px;
     }
     .text-block div {
-        font-size: 13px;
+        font-size: 16px;
     }
     .image-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     }
 }
