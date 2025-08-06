@@ -10,7 +10,6 @@ window.terminalMessages = [];
 window.particles = [];
 window.isPaused = false;
 window.quantumSketch = null;
-window.stepReady = false; // Новая переменная для задержки
 
 window.translations = {
     ru: {
@@ -225,7 +224,6 @@ window.restart = function() {
     console.log('restart function called');
     window.currentStep = 0;
     window.isPaused = false;
-    window.stepReady = false; // Сброс состояния
     window.showStep(0);
 };
 
@@ -357,21 +355,6 @@ window.showStep = function(step) {
                 console.log('Canvas moved to body');
             }
         }
-
-        // Явный запуск анимации на шаге 4 с задержкой
-        if (step === 4) {
-            window.isPaused = false;
-            window.stepReady = false; // Сброс готовности
-            if (window.quantumSketch) {
-                window.quantumSketch.loop();
-                console.log('Animation started on step 4');
-                // Задержка перед активацией событий
-                setTimeout(() => {
-                    window.stepReady = true;
-                    console.log('Step 4 is now ready for user interaction');
-                }, 500);
-            }
-        }
     }
 };
 
@@ -395,32 +378,27 @@ window.addEventListener('load', () => {
             window.quantumSketch = p; // Явно сохраняем экземпляр
         };
         p.draw = function() {
-            p.background(0); // Очистка фона для каждого кадра
-            if (window.currentStep === 4 && !window.isPaused) {
-                window.mouseWave = window.mouseWave || { x: p.width / 2, y: p.height / 2 };
-                window.mouseWave.x = p.lerp(window.mouseWave.x, p.mouseX, 0.1);
-                window.mouseWave.y = p.lerp(window.mouseWave.y, p.mouseY, 0.1);
-                if (typeof window.updateParticles === 'function') {
-                    window.updateParticles(p);
+            if (window.currentStep === 4) {
+                if (!window.isPaused) {
+                    p.background(0);
+                    window.mouseWave = window.mouseWave || { x: p.width / 2, y: p.height / 2 };
+                    window.mouseWave.x = p.lerp(window.mouseWave.x, p.mouseX, 0.1);
+                    window.mouseWave.y = p.lerp(window.mouseWave.y, p.mouseY, 0.1);
+                    if (typeof window.updateParticles === 'function') {
+                        window.updateParticles(p);
+                    }
+                    if (typeof window.observeParticles === 'function') {
+                        window.observeParticles(p, window.mouseWave.x, window.mouseWave.y);
+                    }
                 }
             } else if (window.currentStep === 5 && window.isPaused) {
                 // Ничего не рисуем, если анимация зафиксирована
             }
         };
         p.mouseClicked = function() {
-            if (window.currentStep === 4 && !window.isPaused && window.stepReady) {
+            if (window.currentStep === 4 && !window.isPaused) {
                 if (typeof window.clickParticles === 'function') {
                     window.clickParticles(p, p.mouseX, p.mouseY);
-                }
-                if (typeof window.observeParticles === 'function') {
-                    window.observeParticles(p, p.mouseX, p.mouseY);
-                }
-            }
-        };
-        p.mouseMoved = function() {
-            if (window.currentStep === 4 && !window.isPaused && window.stepReady) {
-                if (typeof window.observeParticles === 'function') {
-                    window.observeParticles(p, p.mouseX, p.mouseY);
                 }
             }
         };
@@ -437,8 +415,6 @@ document.addEventListener('click', function(e) {
         if (action && window[action]) {
             if (action === 'setLanguageAndNext' && lang) {
                 window[action](lang);
-            } else if (action === 'recordObservation') {
-                window.recordObservation();
             } else {
                 window[action]();
             }
@@ -456,28 +432,3 @@ document.addEventListener('click', function(e) {
         window.moveToPreviousStep(); // Возвращаемся на шаг 4 для возобновления
     }
 });
-
-// Функция фиксации (нужна для кнопки)
-window.recordObservation = function() {
-    if (window.currentStep === 4 && !window.isPaused && window.quantumSketch) {
-        window.isPaused = true;
-        window.quantumSketch.noLoop();
-        console.log('Observation recorded, animation paused');
-        // Сохранение текущего состояния (например, как изображение)
-        const canvas = window.quantumSketch.canvas;
-        const dataURL = canvas.toDataURL();
-        const savedPortrait = document.getElementById('saved-portrait');
-        if (savedPortrait) {
-            savedPortrait.src = dataURL;
-            savedPortrait.style.display = 'block';
-            savedPortrait.onclick = () => {
-                savedPortrait.style.display = 'none';
-                window.isPaused = false;
-                window.quantumSketch.loop();
-                console.log('Animation resumed on saved portrait click');
-                window.moveToPreviousStep();
-            };
-        }
-        window.moveToNextStep(5);
-    }
-};
