@@ -871,7 +871,7 @@ window.updateParticles = function(sketch) {
             if (p.x < margin) p.velocityX += (margin - p.x) * 0.05 * pulse;
             if (p.x > 800 - margin) p.velocityX -= (p.x - (800 - margin)) * 0.05 * pulse;
             if (p.y < margin) p.velocityY += (margin - p.y) * 0.05 * pulse;
-            if (p.y > 800 - margin) p.velocityY -= (p.y - (800 - margin)) * 0.05 * pulse;e;
+            if (p.y > 800 - margin) p.velocityY -= (p.y - (800 - margin)) * 0.05 * pulse;
 
             p.x = Math.max(0, Math.min(800, p.x + p.velocityX * 1.2));
             p.y = Math.max(0, Math.min(800, p.y + p.velocityY * 1.2));
