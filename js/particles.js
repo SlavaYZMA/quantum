@@ -18,7 +18,6 @@ window.maxWebConnections = 100;
 window.webGrowthThreshold = 4;
 window.baseWebColor = { r: 63, g: 22, b: 127 };
 window.mouseInfluenceRadius = 80;
-window.noiseScale = 0.01; // Добавлено для стабильности
 
 const messages = {
     initialize: [
@@ -336,8 +335,7 @@ window.initializeParticles = function(img) {
                         vortexId: null,
                         pulsePhase: Math.random() * 2 * Math.PI,
                         uncertaintyRadius: 6,
-                        originalColor: { r: r, g: g, b: b },
-                        branches: [] // Добавляем массив ветвей для суперпозиции
+                        originalColor: { r: r, g: g, b: b }
                     });
 
                     window.quantumStates.push({
@@ -399,7 +397,7 @@ function drawShape(sketch, x, y, size, shape, rotation, spin, spinPhase, r, g, b
         let stretch = 1 + featureWeight + Math.abs(spin) * 0.4 + 0.2 * Math.sin(spinPhase);
         sketch.beginShape();
         sketch.vertex(-size * 1.0 * stretch * pulse, size * 0.15 * pulse);
-sketch.bezierVertex(
+        sketch.bezierVertex(
             -size * 0.4 * stretch * pulse, size * 0.3 * pulse,
             size * 0.4 * stretch * pulse, size * 0.3 * pulse,
             size * 1.0 * stretch * pulse, size * 0.15 * pulse
@@ -584,66 +582,6 @@ window.updateParticles = function(sketch) {
             p.uncertaintyRadius = 6 + speed * 12 + 5 * Math.sin(p.pulsePhase);
             state.wavePacketAlpha = p.collapsed ? 0 : 50 * state.probability * pulse;
 
-            // Логика ветвления для суперпозиции
-            if (!p.collapsed && window.decompositionTimer >= 8 && Math.random() < state.probability * 0.02) {
-                const angle = Math.random() * Math.PI * 2;
-                const length = 10 + Math.random() * 20 * state.probability;
-                p.branches.push({
-                    x: p.x + Math.cos(angle) * length,
-                    y: p.y + Math.sin(angle) * length,
-                    length: length,
-                    angle: angle,
-                    life: 100,
-                    color: {
-                        r: state.r + (Math.random() - 0.5) * 30,
-                        g: state.g + (Math.random() - 0.5) * 30,
-                        b: state.b + (Math.random() - 0.5) * 30
-                    }
-                });
-                if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                    window.terminalMessages.push(getRandomMessage('superposition', { shape: p.shape, spin: p.spin.toFixed(1) }));
-                    window.updateTerminalLog();
-                    window.globalMessageCooldown = 200;
-                }
-            }
-
-            // Обновление и отрисовка ветвей
-            p.branches = p.branches.filter(branch => {
-                branch.life -= 1;
-                branch.x += Math.cos(branch.angle) * 0.5;
-                branch.y += Math.sin(branch.angle) * 0.5;
-                return branch.life > 0;
-            });
-            p.branches.forEach(branch => {
-                let gradient = sketch.drawingContext.createLinearGradient(p.x, p.y, branch.x, branch.y);
-                gradient.addColorStop(0, `rgba(${state.r}, ${state.g}, ${state.b}, ${state.a / 255})`);
-                gradient.addColorStop(1, `rgba(${branch.color.r}, ${branch.color.g}, ${branch.color.b}, ${branch.life / 100})`);
-                sketch.strokeStyle = gradient;
-                sketch.lineWidth = 0.5 + 0.2 * (branch.life / 100);
-                sketch.beginPath();
-                sketch.moveTo(p.x, p.y);
-                sketch.lineTo(branch.x, branch.y);
-                sketch.stroke();
-            });
-
-            // Коллапс и исчезновение связей при наведении мыши
-            var dx = p.x - window.mouseWave.x;
-            var dy = p.y - window.mouseWave.y;
-            var distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < window.mouseInfluenceRadius && !p.collapsed) {
-                p.collapsed = true;
-                state.probability = 0.3;
-                state.wavePacketAlpha = 0;
-                p.size = 2;
-                p.branches = []; // Очищаем ветви при коллапсе
-                if (window.webConnections > 0) {
-                    window.webConnections = 0; // Временное исчезновение связей
-                    setTimeout(() => { window.webConnections = Math.min(window.maxWebConnections, window.webIntensity * 100); }, 500); // Восстановление через 0.5s
-                }
-                sketch.fill(204, 51, 51, 80);
-                sketch.ellipse(p.x, p.y, 8 * pulse, 8 * pulse);
-            }
-
             if (!p.collapsed && window.decompositionTimer >= 8) {
                 state.decoherenceTimer += 0.01;
                 if (state.decoherenceTimer > 100 && Math.random() < 0.003) {
@@ -729,7 +667,7 @@ window.updateParticles = function(sketch) {
                 }
                 if (Math.random() < 0.1 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                     potentialMessages.push({ type: 'diffusion', params: { index: i } });
-            }
+                }
             } else {
                 p.velocityX *= 0.95;
                 p.velocityY *= 0.95;
@@ -811,7 +749,7 @@ window.updateParticles = function(sketch) {
                             p.velocityY += wave * 0.04 * 2.5 * pulse;
                             bp.velocityX -= wave * 0.04 * 2.5 * pulse;
                             bp.velocityY -= wave * 0.04 * 2.5 * pulse;
-                            if (Math.random() < 0.3 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                            if (Math.random() < 0.3 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) { // Увеличена вероятность
                                 sketch.push();
                                 sketch.noFill();
                                 let webAlpha = 40 * window.webIntensity;
@@ -847,7 +785,7 @@ window.updateParticles = function(sketch) {
                             var wave = Math.sin(distance * 0.05 + state.interferencePhase + window.frame * 0.02 + p.spin + other.spin);
                             p.velocityX += wave * 0.04 * (window.globalPhase === 'synchronization' ? 4 : 2.5) * pulse;
                             p.velocityY += wave * 0.04 * (window.globalPhase === 'synchronization' ? 4 : 2.5) * pulse;
-                            if (Math.random() < 0.3 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                            if (Math.random() < 0.3 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) { // Увеличена вероятность
                                 sketch.push();
                                 sketch.noFill();
                                 let webAlpha = 40 * window.webIntensity;
@@ -878,7 +816,7 @@ window.updateParticles = function(sketch) {
                 });
             }
 
-            if (Math.random() < 0.1 && !p.collapsed && ((window.currentStep === 4 || window.currentStep === 5) && window.decompositionTimer >= 8)) {
+            if (Math.random() < 0.1 && !p.collapsed && ((window.currentStep === 4 || window.currentStep === 5) && window.decompositionTimer >= 8)) { // Увеличена вероятность
                 var oldX = p.x, oldY = p.y;
                 p.x = Math.random() * 800;
                 p.y = Math.random() * 800;
@@ -909,7 +847,7 @@ window.updateParticles = function(sketch) {
                 state.r = partnerState.r = (state.r + partnerState.r) / 2 + (p.originalColor.r - state.r) * 0.2;
                 state.g = partnerState.g = (state.g + partnerState.g) / 2 + (p.originalColor.g - state.g) * 0.2;
                 state.b = partnerState.b = (state.b + partnerState.b) / 2 + (p.originalColor.b - state.b) * 0.2;
-                if (!p.collapsed && !partner.collapsed && Math.random() < 0.2 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+                if (!p.collapsed && !partner.collapsed && Math.random() < 0.2 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) { // Увеличена вероятность
                     state.entanglementFlash = 15;
                     partnerState.entanglementFlash = 15;
                     potentialMessages.push({ type: 'entanglement', params: { spin: p.spin.toFixed(1) } });
@@ -934,6 +872,7 @@ window.updateParticles = function(sketch) {
             if (p.x > 800 - margin) p.velocityX -= (p.x - (800 - margin)) * 0.05 * pulse;
             if (p.y < margin) p.velocityY += (margin - p.y) * 0.05 * pulse;
             if (p.y > 800 - margin) p.velocityY -= (p.y - (800 - margin)) * 0.05 * pulse;
+
             p.x = Math.max(0, Math.min(800, p.x + p.velocityX * 1.2));
             p.y = Math.max(0, Math.min(800, p.y + p.velocityY * 1.2));
 
@@ -1067,15 +1006,6 @@ class BranchParticle {
             this.collapseProgress += 0.15;
             if (this.collapseProgress >= 1) this.life = 0;
         }
-
-        // Коллапс при наведении мыши
-        if (Math.sqrt((this.x - window.mouseWave.x) ** 2 + (this.y - window.mouseWave.y) ** 2) < 20 && this.collapseProgress === 0) {
-            this.collapseProgress = 0.1;
-            if (typeof window.playArpeggio === 'function') {
-                console.log('Playing branch collapse sound');
-                window.playArpeggio('ellipse');
-            }
-        }
     }
 
     show(sketch) {
@@ -1090,6 +1020,16 @@ class BranchParticle {
             if (d < 50 && this !== other && this.collapseProgress === 0 && other.collapseProgress === 0) {
                 sketch.stroke(this.color.r, this.color.g, this.color.b, this.life * 0.5);
                 sketch.line(this.x, this.y, other.x, other.y);
+            }
+        }
+
+        if (window.mouseClicked && Math.sqrt((this.x - window.mouseWave.x) ** 2 + (this.y - window.mouseWave.y) ** 2) < 20 && this.collapseProgress === 0) {
+            this.collapseProgress = 0.1;
+            sketch.fill(204, 51, 51, 80 * (1 - this.collapseProgress));
+            sketch.ellipse(this.x, this.y, 20 * (1 - this.collapseProgress), 20 * (1 - this.collapseProgress));
+            if (typeof window.playArpeggio === 'function') {
+                console.log('Playing branch collapse sound');
+                window.playArpeggio('ellipse');
             }
         }
     }
@@ -1130,7 +1070,6 @@ window.observeParticles = function(sketch, mouseX, mouseY) {
     window.mouseWave.x = mouseX;
     window.mouseWave.y = mouseY;
     window.mouseWave.radius = window.mouseInfluenceRadius;
-
     if (typeof window.playBackgroundTone === 'function') {
         const freq = 80 + Math.random() * 20; // Лёгкое изменение тона при движении
         console.log('Playing mouse move tone:', freq);
@@ -1171,7 +1110,6 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     state.wavePacketAlpha = 0;
                     p.shape = ['ellipse', 'soft-ribbon', 'bio-cluster'][Math.floor(Math.random() * 3)];
                     p.spin = Math.random() < 0.5 ? 0.5 : -0.5;
-                    p.branches = []; // Очищаем ветви при коллапсе
                     sketch.fill(204, 51, 51, 80);
                     sketch.ellipse(p.x, p.y, 8 * pulse, 8 * pulse);
                     sketch.noFill();
@@ -1219,32 +1157,3 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
         }
     });
 };
-
-// Завершающая функция для синхронизации
-function finalizeAnimation() {
-    if (window.decompositionTimer >= 12 && window.currentStep === 5) {
-        window.particles.forEach((p, i) => {
-            if (!p.collapsed) {
-                p.velocityX *= 0.98;
-                p.velocityY *= 0.98;
-                if (Math.random() < 0.01) {
-                    p.branches.push({
-                        x: p.x + (Math.random() - 0.5) * 15,
-                        y: p.y + (Math.random() - 0.5) * 15,
-                        length: 10,
-                        angle: Math.random() * Math.PI * 2,
-                        life: 50,
-                        color: {
-                            r: window.quantumStates[i].r,
-                            g: window.quantumStates[i].g,
-                            b: window.quantumStates[i].b
-                        }
-                    });
-                }
-            }
-        });
-    }
-}
-
-// Вызов финальной функции
-window.finalizeAnimation = finalizeAnimation;
