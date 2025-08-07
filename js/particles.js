@@ -180,8 +180,8 @@ window.updateTerminalLog = function() {
 function createGrid() {
     window.grid = [];
     const gridSize = 80;
-    const gridWidth = Math.ceil(400 / gridSize);
-    const gridHeight = Math.ceil(400 / gridSize);
+    const gridWidth = Math.ceil(800 / gridSize);
+    const gridHeight = Math.ceil(800 / gridSize);
     for (let i = 0; i < gridWidth * gridHeight; i++) {
         window.grid[i] = [];
     }
@@ -205,7 +205,7 @@ function createGrid() {
 
 // Получение соседей из сетки (оптимизировано до 4 клеток)
 function getNeighbors(p, i, gridSize = 80) {
-    const gridWidth = Math.ceil(400 / gridSize);
+    const gridWidth = Math.ceil(800 / gridSize);
     const gridX = Math.floor(p.x / gridSize);
     const gridY = Math.floor(p.y / gridSize);
     let neighbors = [];
@@ -227,8 +227,8 @@ function createVortexCenters() {
     const numVortices = Math.floor(Math.random() * 6) + 5;
     for (let i = 0; i < numVortices; i++) {
         window.vortexCenters.push({
-            x: Math.random() * 400,
-            y: Math.random() * 400,
+            x: Math.random() * 800,
+            y: Math.random() * 800,
             strength: 0.02 + Math.random() * 0.03
         });
     }
@@ -314,10 +314,10 @@ window.initializeParticles = function(img) {
                     }
 
                     window.particles.push({
-                        x: x * 400 / img.width,
-                        y: y * 400 / img.height,
-                        baseX: x * 400 / img.width,
-                        baseY: y * 400 / img.height,
+                        x: x * 800 / img.width,
+                        y: y * 800 / img.height,
+                        baseX: x * 800 / img.width,
+                        baseY: y * 800 / img.height,
                         velocityX: 0,
                         velocityY: 0,
                         size: pixelSize * 1.2,
@@ -493,7 +493,7 @@ window.updateParticles = function(sketch) {
         if (window.img) {
             var imgAlpha = Math.max(0, 255 * (1 - window.decompositionTimer / 4));
             sketch.tint(255, imgAlpha);
-            sketch.image(window.img, 0, 0, 400, 400);
+            sketch.image(window.img, 0, 0, 800, 800);
             if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
                 window.terminalMessages.push(getRandomMessage('decomposition', { imgAlpha: imgAlpha.toFixed(0) }));
                 window.updateTerminalLog();
@@ -818,8 +818,8 @@ window.updateParticles = function(sketch) {
 
             if (Math.random() < 0.1 && !p.collapsed && ((window.currentStep === 4 || window.currentStep === 5) && window.decompositionTimer >= 8)) { // Увеличена вероятность
                 var oldX = p.x, oldY = p.y;
-                p.x = Math.random() * 400;
-                p.y = Math.random() * 400;
+                p.x = Math.random() * 800;
+                p.y = Math.random() * 800;
                 p.velocityX = (Math.random() - 0.5) * 1.5 * pulse;
                 p.velocityY = (Math.random() - 0.5) * 1.5 * pulse;
                 state.tunnelFlash = 12;
@@ -869,12 +869,12 @@ window.updateParticles = function(sketch) {
 
             const margin = 20;
             if (p.x < margin) p.velocityX += (margin - p.x) * 0.05 * pulse;
-            if (p.x > 400 - margin) p.velocityX -= (p.x - (400 - margin)) * 0.05 * pulse;
+            if (p.x > 800 - margin) p.velocityX -= (p.x - (800 - margin)) * 0.05 * pulse;
             if (p.y < margin) p.velocityY += (margin - p.y) * 0.05 * pulse;
-            if (p.y > 400 - margin) p.velocityY -= (p.y - (400 - margin)) * 0.05 * pulse;
+            if (p.y > 800 - margin) p.velocityY -= (p.y - (800 - margin)) * 0.05 * pulse;e;
 
-            p.x = Math.max(0, Math.min(400, p.x + p.velocityX * 1.2));
-            p.y = Math.max(0, Math.min(400, p.y + p.velocityY * 1.2));
+            p.x = Math.max(0, Math.min(800, p.x + p.velocityX * 1.2));
+            p.y = Math.max(0, Math.min(800, p.y + p.velocityY * 1.2));
 
             if (!p.collapsed && state.wavePacketAlpha > 0) {
                 drawWavePacket(sketch, p.x, p.y, p.uncertaintyRadius, state.r, state.g, state.b, state.wavePacketAlpha);
@@ -1043,7 +1043,7 @@ class BranchParticle {
     }
 
     isDone() {
-        return this.life < 0 || this.x < 0 || this.x > 400 || this.y < 0 || this.y > 400 || this.collapseProgress >= 1;
+        return this.life < 0 || this.x < 0 || this.x > 800 || this.y < 0 || this.y > 800 || this.collapseProgress >= 1;
     }
 }
 
