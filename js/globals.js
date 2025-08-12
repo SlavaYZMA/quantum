@@ -44,7 +44,9 @@ const translations = {
         restart: "[↻ НАЧАТЬ СНАЧАЛА]",
         archive: "[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]",
         about_authors: "[ОБ АВТОРАХ]",
-        back: "Назад"
+        back: "Назад",
+        portrait_name_placeholder: "Название портрета", // Добавлено для placeholder
+        capture_photo: "Сделать фото" // Добавлено
     },
     eng: {
         step0_text: "Please select language RU / ENG",
@@ -91,7 +93,9 @@ const translations = {
         restart: "[↻ START OVER]",
         archive: "[⧉ GO TO OBSERVATION ARCHIVE]",
         about_authors: "[ABOUT AUTHORS]",
-        back: "Back"
+        back: "Back",
+        portrait_name_placeholder: "Portrait name", // Добавлено
+        capture_photo: "Capture Photo" // Добавлено
     }
 };
 
@@ -107,6 +111,12 @@ window.setLanguage = (lang) => {
         } else {
             console.warn(`Translation missing for key: ${key} in language: ${lang}`);
         }
+    });
+    // Обновление placeholder
+    const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+    placeholders.forEach((el) => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[lang][key]) el.placeholder = translations[lang][key];
     });
 };
 
