@@ -16,6 +16,24 @@ const archiveImages = [
 
 let cameraStream = null;
 
+// Hide all steps except the current one
+function updateStepVisibility() {
+    document.querySelectorAll('.step').forEach((section, index) => {
+        if (index === window.currentStep) {
+            section.style.display = 'block';
+            setTimeout(() => section.classList.add('visible'), 10); // Trigger animation
+        } else {
+            section.style.display = 'none';
+            section.classList.remove('visible');
+        }
+    });
+    // Hide subsections unless on step-2 and explicitly shown
+    document.getElementById('image-archive-section').style.display = 'none';
+    document.getElementById('image-archive-section').classList.remove('visible');
+    document.getElementById('camera-section').style.display = 'none';
+    document.getElementById('camera-section').classList.remove('visible');
+}
+
 function typewriter(element) {
     const elements = element.querySelectorAll('div, p, h2');
     let index = 0;
@@ -55,7 +73,7 @@ function showImageArchiveSection() {
         grid.appendChild(img);
     });
     section.style.display = 'block';
-    setTimeout(() => section.classList.add('visible'), 10); // Trigger slide-in
+    setTimeout(() => section.classList.add('visible'), 10);
 }
 
 function startCamera() {
@@ -65,14 +83,14 @@ function startCamera() {
         cameraStream = stream;
         video.srcObject = stream;
         section.style.display = 'block';
-        setTimeout(() => section.classList.add('visible'), 10); // Trigger slide-in
+        setTimeout(() => section.classList.add('visible'), 10);
     }).catch(err => console.error('Camera error:', err));
 }
 
 function stopCamera() {
     const section = document.getElementById('camera-section');
     section.classList.remove('visible');
-    setTimeout(() => section.style.display = 'none', 500); // Match CSS transition duration
+    setTimeout(() => section.style.display = 'none', 500);
     if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
 }
 
@@ -103,10 +121,45 @@ function selectArchiveImage(src) {
 }
 
 window.moveToNextStep = function(stepIndex) {
-    const id = `step-${stepIndex}`.replace('.', '.');
-    const section = document.getElementById(id);
-    if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
+    const stepId = `step-${stepIndex}`.replace('.', '.');
+    const stepIdx = stepIds.indexOf(stepId);
+    if (stepIdx >= 0 && stepIdx < totalSteps) {
+        window.currentStep = stepIdx;
+        updateStepVisibility();
+        const section = document.getElementById(stepId);
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+            const textBlock = section.querySelector('.text-block');
+            if (textBlock && !textBlock.classList.contains('animated')) {
+                typewriter(textBlock);
+                textBlock.classList.add('animated');
+            }
+        }
+        const progress = ((window.currentStep + 1) / totalSteps) * 100;
+        document.getElementById('progress-fill').style.width = `${progress}%`;
+        document.querySelectorAll('#menu a').forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href') === `#${stepId}`);
+        });
+        if (stepId === 'step-4' || stepId === 'step-5') {
+            if (typeof switchCanvasParent === 'function') {
+                switchCanvasParent(window.currentStep);
+            } else {
+                console.warn('switchCanvasParent not defined, skipping');
+            }
+            if (typeof startAnimation === 'function') {
+                startAnimation();
+            } else {
+                console.warn('startAnimation not defined, skipping');
+            }
+            window.terminalMessages = [`[INIT] Started for ${stepId}`];
+            window.updateTerminalLog();
+        } else {
+            if (typeof noLoop === 'function') {
+                noLoop();
+            } else {
+                console.warn('noLoop not defined, skipping');
+            }
+        }
     }
 };
 
@@ -119,66 +172,23 @@ window.updateTerminalLog = function() {
 };
 
 window.setLanguageAndStay = function(lang) {
-    const currentScroll = window.scrollY;
     window.setLanguage(lang);
-    setTimeout(() => window.scrollTo(0, currentScroll), 100);
+    updateStepVisibility(); // Ensure only current step is visible after language change
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    const observer = new IntersectionObserver(entries => {
-        let maxRatio = 0;
-        let currentId = '';
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                const textBlock = entry.target.querySelector('.text-block');
-                if (textBlock && !textBlock.classList.contains('animated')) {
-                    typewriter(textBlock);
-                    textBlock.classList.add('animated');
-                }
-                if (entry.intersectionRatio > maxRatio) {
-                    maxRatio = entry.intersectionRatio;
-                    currentId = entry.target.id;
-                }
-            }
-        });
-        if (currentId && stepIds.includes(currentId)) { // Only update for main steps
-            window.currentStep = stepIds.indexOf(currentId);
-            const progress = ((window.currentStep + 1) / totalSteps) * 100;
-            document.getElementById('progress-fill').style.width = `${progress}%`;
-            document.querySelectorAll('#menu a').forEach(a => {
-                a.classList.toggle('active', a.getAttribute('href') === `#${currentId}`);
-            });
-            if (currentId === 'step-4' || currentId === 'step-5') {
-                if (typeof switchCanvasParent === 'function') {
-                    switchCanvasParent(window.currentStep);
-                } else {
-                    console.warn('switchCanvasParent not defined, skipping');
-                }
-                if (typeof startAnimation === 'function') {
-                    startAnimation();
-                } else {
-                    console.warn('startAnimation not defined, skipping');
-                }
-                window.terminalMessages = [`[INIT] Started for ${currentId}`];
-                window.updateTerminalLog();
-            } else {
-                if (typeof noLoop === 'function') {
-                    noLoop();
-                } else {
-                    console.warn('noLoop not defined, skipping');
-                }
-            }
-        }
-    }, { threshold: 0.5 });
-
-    document.querySelectorAll('.step').forEach(section => observer.observe(section));
+    updateStepVisibility(); // Show only step-0 initially
 
     document.querySelectorAll('#menu a').forEach(a => {
         a.addEventListener('click', e => {
             e.preventDefault();
-            const target = document.querySelector(a.getAttribute('href'));
-            target.scrollIntoView({ behavior: 'smooth' });
+            const stepId = a.getAttribute('href').substring(1);
+            const stepIndex = stepIds.indexOf(stepId);
+            if (stepIndex <= window.currentStep) { // Allow navigation only to completed steps
+                window.currentStep = stepIndex;
+                updateStepVisibility();
+                document.getElementById(stepId).scrollIntoView({ behavior: 'smooth' });
+            }
         });
     });
 
@@ -233,13 +243,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.continue').forEach(btn => {
         btn.addEventListener('click', () => {
             const nextIndex = window.currentStep + 1;
-            if (nextIndex < totalSteps) moveToNextStep(stepIds[nextIndex].replace('step-', ''));
+            if (nextIndex < totalSteps) {
+                moveToNextStep(stepIds[nextIndex].replace('step-', ''));
+            }
         });
     });
     document.querySelectorAll('.back').forEach(btn => {
         btn.addEventListener('click', () => {
             const prevIndex = window.currentStep - 1;
-            if (prevIndex >= 0) moveToNextStep(stepIds[prevIndex].replace('step-', ''));
+            if (prevIndex >= 0) {
+                moveToNextStep(stepIds[prevIndex].replace('step-', ''));
+            }
         });
     });
 
