@@ -21,9 +21,9 @@ const archiveImages = [
 // Camera stream variable
 let cameraStream = null;
 
-// Function for typewriter animation on text blocks (triggered when section visible)
+// Function for typewriter animation on text blocks
 function typewriter(element) {
-    const elements = element.querySelectorAll('div, p, h2'); // Comment: Animates each child element in sequence for art-house reveal effect
+    const elements = element.querySelectorAll('div, p, h2');
     let index = 0;
     function typeNext() {
         if (index >= elements.length) return;
@@ -35,7 +35,7 @@ function typewriter(element) {
             if (charIndex < text.length) {
                 el.textContent += text[charIndex];
                 charIndex++;
-                setTimeout(typeChar, 20 + Math.random() * 50); // Comment: Random delay for character typing to add challenge/organic feel
+                setTimeout(typeChar, 20 + Math.random() * 50);
             } else {
                 index++;
                 typeNext();
@@ -61,17 +61,21 @@ function showImageArchiveModal() {
         };
         grid.appendChild(img);
     });
-    modal.style.display = 'flex'; // Comment: Modal fades in via CSS transition
+    modal.style.display = 'flex';
 }
 
 // Select archive image
 function selectArchiveImage(src) {
-    window.quantumSketch.loadImage(src, img => {
-        window.img = img;
-        window.initializeParticles(img);
-        document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = src);
-        moveToNextStep('2.1');
-    });
+    if (window.quantumSketch && typeof window.quantumSketch.loadImage === 'function') {
+        window.quantumSketch.loadImage(src, img => {
+            window.img = img;
+            window.initializeParticles && window.initializeParticles(img);
+            document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = src);
+            moveToNextStep('2.1');
+        });
+    } else {
+        console.error('quantumSketch не инициализирован');
+    }
 }
 
 // Start camera
@@ -97,24 +101,28 @@ function capturePhoto() {
     canvas.width = 400;
     canvas.height = 400;
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, 400, 400); // Simplified crop for square
+    ctx.drawImage(video, 0, 0, 400, 400);
     const url = canvas.toDataURL('image/png');
-    window.quantumSketch.loadImage(url, img => {
-        window.img = img;
-        window.initializeParticles(img);
-        document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = url);
-        moveToNextStep('2.1');
-        stopCamera();
-        document.getElementById('camera-modal').style.display = 'none';
-    });
+    if (window.quantumSketch && typeof window.quantumSketch.loadImage === 'function') {
+        window.quantumSketch.loadImage(url, img => {
+            window.img = img;
+            window.initializeParticles && window.initializeParticles(img);
+            document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = url);
+            moveToNextStep('2.1');
+            stopCamera();
+            document.getElementById('camera-modal').style.display = 'none';
+        });
+    } else {
+        console.error('quantumSketch не инициализирован');
+    }
 }
 
 // Smooth scroll to step
 window.moveToNextStep = function(stepIndex) {
-    const id = `step-${stepIndex}`.replace('.', '.'); // Handle 2.1
+    const id = `step-${stepIndex}`.replace('.', '.');
     const section = document.getElementById(id);
     if (section) {
-        section.scrollIntoView({ behavior: 'smooth' }); // Comment: Smooth scroll animation (browser-native, ~400-600ms depending on distance)
+        section.scrollIntoView({ behavior: 'smooth' });
     }
 };
 
@@ -130,22 +138,22 @@ window.updateTerminalLog = function() {
 // Language switch preserving position
 window.setLanguageAndStay = function(lang) {
     const currentScroll = window.scrollY;
-    window.setLanguage(lang); // Assume defined in textSteps.js
-    setTimeout(() => window.scrollTo(0, currentScroll), 100); // Comment: Preserve scroll position after language change
+    window.setLanguage(lang);
+    setTimeout(() => window.scrollTo(0, currentScroll), 100);
 };
 
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {
-    // Setup IntersectionObserver for fade-in, typewriter, active menu, progress
+    // Setup IntersectionObserver
     const observer = new IntersectionObserver(entries => {
         let maxRatio = 0;
         let currentId = '';
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('visible'); // Comment: Triggers fade-in animation on section enter
+                entry.target.classList.add('visible');
                 const textBlock = entry.target.querySelector('.text-block');
                 if (textBlock && !textBlock.classList.contains('animated')) {
-                    typewriter(textBlock); // Comment: Starts typewriter only once per section
+                    typewriter(textBlock);
                     textBlock.classList.add('animated');
                 }
                 if (entry.intersectionRatio > maxRatio) {
@@ -158,22 +166,28 @@ document.addEventListener('DOMContentLoaded', () => {
             window.currentStep = stepIds.indexOf(currentId);
             // Update progress
             const progress = ((window.currentStep + 1) / totalSteps) * 100;
-            document.getElementById('progress-fill').style.width = `${progress}%`; // Comment: Smooth width transition for progress fill
+            document.getElementById('progress-fill').style.width = `${progress}%`;
             // Update active menu
             document.querySelectorAll('#menu a').forEach(a => {
                 a.classList.toggle('active', a.getAttribute('href') === `#${currentId}`);
             });
             // Handle canvas for steps 4 and 5
             if (currentId === 'step-4' || currentId === 'step-5') {
-                window.quantumSketch.switchCanvasParent(window.currentStep);
-                window.quantumSketch.startAnimation();
-                window.terminalMessages = [`[INIT] Started for ${currentId}`];
-                window.updateTerminalLog();
+                if (window.quantumSketch) {
+                    window.quantumSketch.switchCanvasParent && window.quantumSketch.switchCanvasParent(window.currentStep);
+                    window.quantumSketch.startAnimation && window.quantumSketch.startAnimation();
+                    window.terminalMessages = [`[INIT] Started for ${currentId}`];
+                    window.updateTerminalLog();
+                } else {
+                    console.warn('quantumSketch отсутствует, пропуск анимации');
+                }
             } else {
-                window.quantumSketch.noLoop();
+                if (window.quantumSketch && typeof window.quantumSketch.noLoop === 'function') {
+                    window.quantumSketch.noLoop();
+                }
             }
         }
-    }, { threshold: 0.5 }); // Comment: 50% visibility threshold for "current" step
+    }, { threshold: 0.5 });
 
     // Observe all sections
     document.querySelectorAll('.step').forEach(section => observer.observe(section));
@@ -190,22 +204,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hamburger toggle
     document.getElementById('hamburger').addEventListener('click', () => {
         const menu = document.getElementById('menu');
-        menu.classList.toggle('visible'); // Comment: Toggles full-screen menu on mobile with CSS display
+        menu.classList.toggle('visible');
     });
 
-    // Event listeners from original (upload, save, etc.)
+    // Event listeners
     document.getElementById('uploadImage').addEventListener('click', () => {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
         input.onchange = e => {
             const file = e.target.files[0];
-            window.quantumSketch.loadImage(URL.createObjectURL(file), img => {
-                window.img = img;
-                window.initializeParticles(img);
-                document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = URL.createObjectURL(file));
-                moveToNextStep('2.1');
-            });
+            if (window.quantumSketch && typeof window.quantumSketch.loadImage === 'function') {
+                window.quantumSketch.loadImage(URL.createObjectURL(file), img => {
+                    window.img = img;
+                    window.initializeParticles && window.initializeParticles(img);
+                    document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = URL.createObjectURL(file));
+                    moveToNextStep('2.1');
+                });
+            } else {
+                console.error('quantumSketch не инициализирован');
+            }
         };
         input.click();
     });
@@ -215,9 +233,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('capture-photo').addEventListener('click', capturePhoto);
     document.getElementById('saveImage').addEventListener('click', () => {
         const name = document.getElementById('portraitName').value || 'quantum_portrait';
-        window.quantumSketch.saveCanvas(name, 'png');
-        window.terminalMessages.push(`[SAVE] Saved as ${name}.png`);
-        window.updateTerminalLog();
+        if (window.quantumSketch && typeof window.quantumSketch.saveCanvas === 'function') {
+            window.quantumSketch.saveCanvas(name, 'png');
+            window.terminalMessages.push(`[SAVE] Saved as ${name}.png`);
+            window.updateTerminalLog();
+        } else {
+            console.error('quantumSketch не инициализирован');
+        }
     });
     document.getElementById('shareObservation').addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
     document.getElementById('restart').addEventListener('click', () => window.location.reload());
@@ -231,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
         stopCamera();
     });
 
-    // Continue/back buttons scroll to next/prev
+    // Continue/back buttons
     document.querySelectorAll('.continue').forEach(btn => {
         btn.addEventListener('click', () => {
             const nextIndex = window.currentStep + 1;
