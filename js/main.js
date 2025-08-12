@@ -95,7 +95,7 @@ function updateStepVisibility() {
 }
 
 function typewriter(element) {
-    const elements = element.querySelectorAll('div, p, h2, button');
+    const elements = element.querySelectorAll('div, p, h2'); // Excluded button to prevent text reset
     let index = 0;
     function typeNext() {
         if (index >= elements.length) return;
