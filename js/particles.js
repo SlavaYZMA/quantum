@@ -176,6 +176,54 @@ window.updateTerminalLog = function() {
     }
 };
 
+// p5.js setup to create canvas
+function setup() {
+    console.log('p5.js setup called');
+    const canvas = createCanvas(800, 800);
+    canvas.parent('canvas-container');
+    console.log('Canvas created and parented to canvas-container');
+}
+
+// p5.js draw function for quantum animation
+function draw() {
+    console.log('p5.js draw called');
+    background(0);
+    if (!window.particles || !window.quantumStates) {
+        console.warn('Particles or quantum states not initialized');
+        return;
+    }
+    window.particles.forEach((particle, index) => {
+        const state = window.quantumStates[index];
+        if (!particle.collapsed) {
+            let dx = mouseX - particle.x;
+            let dy = mouseY - particle.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < window.mouseInfluenceRadius) {
+                particle.velocityX += dx * 0.01 * particle.featureWeight;
+                particle.velocityY += dy * 0.01 * particle.featureWeight;
+                state.probability *= 0.99;
+                if (Math.random() < 0.01) {
+                    particle.collapsed = true;
+                    state.a = 255;
+                    window.terminalMessages.push(getRandomMessage('collapse'));
+                    window.updateTerminalLog();
+                }
+            }
+            particle.x += particle.velocityX;
+            particle.y += particle.velocityY;
+            particle.velocityX *= 0.95;
+            particle.velocityY *= 0.95;
+            particle.phase += particle.frequency;
+            let offset = Math.sin(particle.phase) * particle.uncertaintyRadius;
+            fill(state.r, state.g, state.b, state.a);
+            ellipse(particle.x + offset, particle.y + offset, particle.size, particle.size);
+        } else {
+            fill(state.r, state.g, state.b, state.a);
+            ellipse(particle.x, particle.y, particle.size, particle.size);
+        }
+    });
+}
+
 // Создание сетки для оптимизации
 function createGrid() {
     window.grid = [];
