@@ -55,11 +55,16 @@ function updateStepVisibility() {
             console.log(`Canvas ${canvas.id || 'unnamed'} display set to: ${canvas.style.display}`);
         }
     }
-    // Ensure canvas-container is hidden unless needed
+    // Ensure canvas-container and portrait-animation-container are visible when needed
     const canvasContainer = document.getElementById('canvas-container');
     if (canvasContainer) {
         canvasContainer.style.display = window.currentStep >= stepIds.indexOf('step-4') ? 'block' : 'none';
         console.log(`canvas-container display set to: ${canvasContainer.style.display}`);
+    }
+    const portraitContainer = document.getElementById(`portrait-animation-container-step-${window.currentStep + 1}`);
+    if (portraitContainer) {
+        portraitContainer.style.display = window.currentStep >= stepIds.indexOf('step-4') ? 'block' : 'none';
+        console.log(`portrait-animation-container-step-${window.currentStep + 1} display set to: ${portraitContainer.style.display}`);
     }
 }
 
@@ -85,6 +90,32 @@ function typewriter(element) {
         typeChar();
     }
     typeNext();
+}
+
+function switchCanvasParent(stepIndex) {
+    console.log('switchCanvasParent called with step:', stepIndex);
+    const canvas = document.querySelector('canvas:not(#camera-canvas)');
+    if (canvas) {
+        const targetContainer = document.getElementById(`portrait-animation-container-step-${stepIndex + 1}`);
+        if (targetContainer) {
+            targetContainer.appendChild(canvas);
+            console.log(`Moved canvas to portrait-animation-container-step-${stepIndex + 1}`);
+        } else {
+            console.warn(`Target container portrait-animation-container-step-${stepIndex + 1} not found`);
+        }
+    } else {
+        console.warn('No canvas found to switch parent');
+    }
+}
+
+function startAnimation() {
+    console.log('startAnimation called');
+    if (typeof loop === 'function') {
+        loop();
+        console.log('p5.js animation loop started');
+    } else {
+        console.warn('p5.js loop function not defined, cannot start animation');
+    }
 }
 
 function showImageArchiveSection() {
@@ -171,15 +202,15 @@ function selectArchiveImage(src) {
     }, 500);
     // Load and process image
     window.loadImage(src, img => {
-    window.img = img;
-    console.log('Image loaded for initializeParticles:', img, 'pixels:', img.pixels);
-    try {
-        window.initializeParticles(img);
-        console.log('initializeParticles completed');
-    } catch (err) {
-        console.error('Error in initializeParticles:', err);
-    }
-});
+        window.img = img;
+        console.log('Image loaded for initializeParticles:', img, 'pixels:', img.pixels);
+        try {
+            window.initializeParticles(img);
+            console.log('initializeParticles completed');
+        } catch (err) {
+            console.error('Error in initializeParticles:', err);
+        }
+    });
 }
 
 window.moveToNextStep = function(stepIndex) {
@@ -207,16 +238,8 @@ window.moveToNextStep = function(stepIndex) {
             a.classList.toggle('active', a.getAttribute('href') === `#${stepId}`);
         });
         if (stepId === 'step-4' || stepId === 'step-5') {
-            if (typeof switchCanvasParent === 'function') {
-                switchCanvasParent(window.currentStep);
-            } else {
-                console.warn('switchCanvasParent not defined, skipping');
-            }
-            if (typeof startAnimation === 'function') {
-                startAnimation();
-            } else {
-                console.warn('startAnimation not defined, skipping');
-            }
+            switchCanvasParent(window.currentStep);
+            startAnimation();
             window.terminalMessages = [`[INIT] Started for ${stepId}`];
             window.updateTerminalLog();
         } else {
