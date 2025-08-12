@@ -1,4 +1,4 @@
-window.currentLanguage = localStorage.getItem('language') || 'ru'; // Сохраняем выбор языка
+window.currentLanguage = 'ru';
 
 const translations = {
     ru: {
@@ -59,7 +59,7 @@ const translations = {
         menu_sharing: "Поделиться",
         menu_conclusion: "Заключение"
     },
-    en: {
+    eng: {
         step0_text: "Please select language RU / ENG",
         step1_title: "STATUS: OBSERVER CONNECTED",
         step1_text1: "> What can Schrödinger teach us about digital identity?",
@@ -121,17 +121,12 @@ const translations = {
 
 window.setLanguage = (lang) => {
     console.log(`setLanguage called with: ${lang}`);
-    if (!translations[lang]) {
-        console.warn(`Language ${lang} not found, falling back to 'ru'`);
-        lang = 'ru';
-    }
     window.currentLanguage = lang;
-    localStorage.setItem('language', lang); // Сохраняем выбор языка
     const elements = document.querySelectorAll('[data-i18n]');
     console.log(`Language elements found: ${elements.length}`);
     elements.forEach((element, index) => {
         const key = element.getAttribute('data-i18n');
-        if (translations[lang][key]) {
+        if (translations[lang] && translations[lang][key]) {
             element.textContent = translations[lang][key];
             console.log(`Updated text at index ${index} (${key}): ${translations[lang][key]}`);
         } else {
@@ -141,7 +136,7 @@ window.setLanguage = (lang) => {
     const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
     placeholders.forEach((el) => {
         const key = el.getAttribute('data-i18n-placeholder');
-        if (translations[lang][key]) {
+        if (translations[lang] && translations[lang][key]) {
             el.placeholder = translations[lang][key];
             console.log(`Updated placeholder (${key}): ${translations[lang][key]}`);
         } else {
@@ -162,7 +157,7 @@ window.setLanguage = (lang) => {
     ];
     menuItems.forEach((item, index) => {
         const key = menuKeys[index];
-        if (translations[lang][key]) {
+        if (translations[lang] && translations[lang][key]) {
             item.textContent = translations[lang][key];
             console.log(`Updated menu item ${index} (${key}): ${translations[lang][key]}`);
         } else {
