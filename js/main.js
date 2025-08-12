@@ -95,13 +95,24 @@ function updateStepVisibility() {
 }
 
 function typewriter(element) {
-    const elements = element.querySelectorAll('div, p, h2'); // Excluded button to prevent text reset
+    console.log('typewriter called for element:', element);
+    const elements = element.querySelectorAll('div, p, h2'); // Explicitly exclude buttons
     let index = 0;
     function typeNext() {
-        if (index >= elements.length) return;
+        if (index >= elements.length) {
+            console.log('typewriter completed for all elements');
+            return;
+        }
         const el = elements[index];
+        if (el.tagName.toLowerCase() === 'button') {
+            console.log('Skipping button element:', el);
+            index++;
+            typeNext();
+            return;
+        }
         const key = el.getAttribute('data-i18n');
         const text = key ? translations[window.currentLanguage][key] || el.textContent.trim() : el.textContent.trim();
+        console.log(`Processing element ${el.tagName}, data-i18n: ${key}, text: ${text}`);
         if (!text || el.classList.contains('typewriter-done')) {
             index++;
             typeNext();
@@ -279,6 +290,13 @@ window.moveToNextStep = function(stepIndex) {
                 textBlock.classList.add('animated');
             }
             console.log(`Scrolled to ${stepId}`);
+            // Ensure button texts are set after typewriter
+            document.querySelectorAll('button[data-i18n]').forEach(btn => {
+                const key = btn.getAttribute('data-i18n');
+                const text = translations[window.currentLanguage][key] || btn.textContent;
+                btn.textContent = text;
+                console.log(`Set button text for ${btn.id || btn.className}: ${text}`);
+            });
         } else {
             console.error(`Section ${stepId} not found in DOM`);
         }
@@ -320,6 +338,11 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded');
     window.setLanguage(window.currentLanguage);
     updateStepVisibility();
+
+    // Log initial button texts
+    document.querySelectorAll('button[data-i18n]').forEach(btn => {
+        console.log(`Initial button text for ${btn.id || btn.className}: ${btn.textContent}`);
+    });
 
     document.querySelectorAll('#menu a').forEach(a => {
         a.addEventListener('click', e => {
@@ -422,6 +445,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (prevIndex >= 0) {
                 moveToNextStep(stepIds[prevIndex].replace('step-', ''));
             }
+        });
+    });
+
+    // Log button text changes on mouse events
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            console.log(`Mouse entered ${btn.id || btn.className}: textContent = ${btn.textContent}`);
+        });
+        btn.addEventListener('mouseleave', () => {
+            console.log(`Mouse left ${btn.id || btn.className}: textContent = ${btn.textContent}`);
         });
     });
 
