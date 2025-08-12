@@ -173,7 +173,7 @@ window.updateTerminalLog = function() {
 
 window.setLanguageAndStay = function(lang) {
     window.setLanguage(lang);
-    updateStepVisibility(); // Ensure only current step is visible after language change
+    moveToNextStep('1'); // Automatically move to step-1 after language selection
 };
 
 document.addEventListener('DOMContentLoaded', () => {
