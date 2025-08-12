@@ -132,7 +132,10 @@ window.setLanguage = (lang) => {
         const key = element.getAttribute('data-i18n');
         if (translations[lang] && translations[lang][key]) {
             element.textContent = translations[lang][key];
-            console.log(`Updated text at index ${index} (${key}): ${translations[lang][key]}`);
+            console.log(`Updated element ${index} (${key}): ${translations[lang][key]} on`, element);
+            if (key === 'continue' || key === 'back' || key === 'upload_image' || key === 'use_camera' || key === 'use_archive' || key === 'save_observation' || key === 'share_observation' || key === 'restart' || key === 'archive' || key === 'about_authors' || key === 'capture_photo') {
+                console.log(`Button ${key} set to: ${translations[lang][key]}`);
+            }
         } else {
             console.warn(`Translation missing for key: ${key} in language: ${lang}`);
         }
@@ -144,6 +147,8 @@ window.setLanguage = (lang) => {
         if (translations[lang][key]) {
             el.placeholder = translations[lang][key];
             console.log(`Updated placeholder (${key}): ${translations[lang][key]}`);
+        } else {
+            console.warn(`Placeholder translation missing for key: ${key} in language: ${lang}`);
         }
     });
     // Обновление меню
@@ -174,6 +179,7 @@ window.setLanguage = (lang) => {
     if (ruButton && engButton) {
         ruButton.classList.toggle('active', lang === 'ru');
         engButton.classList.toggle('active', lang === 'eng');
+        console.log(`Language buttons updated: ru active=${lang === 'ru'}, eng active=${lang === 'eng'}`);
     }
 };
 
