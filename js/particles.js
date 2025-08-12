@@ -162,6 +162,12 @@ function getRandomMessage(type, params = {}) {
     return `[${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' })}] ${msg}`;
 }
 
+// Инициализация terminalMessages
+window.terminalMessages = window.terminalMessages || [];
+window.updateTerminalLog = window.updateTerminalLog || function() {
+    console.log('updateTerminalLog called, messages:', window.terminalMessages);
+};
+
 // Обновление терминального лога
 window.updateTerminalLog = function() {
     const maxMessages = 10;
