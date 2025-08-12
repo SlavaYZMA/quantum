@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quantum Portrait</title>
     <link rel="icon" href="data:;base64,=">
-    <!-- Load Roboto Mono from Google Fonts for consistent typography -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
@@ -16,21 +15,16 @@
     <script src="./js/textSteps.js"></script>
     <script src="./js/utils.js"></script>
     <script src="js/text-flicker.js"></script>
-    <script src="./js/main.js"></script> <!-- Main JS loaded last to ensure DOM readiness -->
+    <script src="./js/main.js"></script>
 </head>
 <body>
-    <!-- Progress bar at the top, fills smoothly based on current visible step -->
     <div class="progress-bar">
         <div class="progress-fill" id="progress-fill"></div>
     </div>
-
-    <!-- Language switch fixed at top right, allows switching RU/ENG while preserving current scroll position/step -->
     <div id="language-switch">
         <button onclick="window.setLanguageAndStay('ru')">RU</button>
         <button onclick="window.setLanguageAndStay('en')">ENG</button>
     </div>
-
-    <!-- Fixed vertical menu on the left with step links for navigation -->
     <nav id="menu">
         <ul>
             <li><a href="#step-0" data-step="0">Language Selection</a></li>
@@ -44,15 +38,10 @@
             <li><a href="#step-7" data-step="7">Conclusion</a></li>
         </ul>
     </nav>
-
-    <!-- Hamburger menu for mobile, toggles the full-screen menu -->
-    <button id="hamburger">&#9776;</button> <!-- Unicode for hamburger icon -->
-
-    <!-- Main content area, positioned to the right of the menu -->
+    <button id="hamburger">&#9776;</button>
     <main id="content">
         <section id="step-0" class="step">
             <div class="text-block" data-i18n="step0_text">Please select language RU / ENG</div>
-            <!-- Language buttons moved to fixed switch, but kept here for initial choice if needed -->
         </section>
         <section id="step-1" class="step">
             <div class="text-block">
@@ -76,6 +65,22 @@
                 <button id="useCamera" data-i18n="use_camera">Use Camera</button>
                 <button id="useArchive" data-i18n="use_archive">Use Archive</button>
                 <button class="back" data-i18n="back">Back</button>
+            </div>
+        </section>
+        <section id="image-archive-section" class="step step-subsection" style="display: none;">
+            <div class="section-content">
+                <span id="close-archive-section" class="close" aria-label="Close archive">×</span>
+                <div class="image-grid" id="image-grid"></div>
+            </div>
+        </section>
+        <section id="camera-section" class="step step-subsection" style="display: none;">
+            <div class="section-content">
+                <span id="close-camera-section" class="close" aria-label="Close camera">×</span>
+                <video id="camera-video" autoplay style="width: 100%; max-width: 640px; height: auto;"></video>
+                <canvas id="camera-canvas" style="display: none;"></canvas>
+                <div class="button-block">
+                    <button id="capture-photo" data-i18n="capture_photo">Capture Photo</button>
+                </div>
             </div>
         </section>
         <section id="step-2.1" class="step">
@@ -173,24 +178,5 @@
             </div>
         </section>
     </main>
-
-    <!-- Modals kept from original for image archive and camera -->
-    <div id="image-archive-modal" class="modal" style="display: none;" role="dialog" aria-modal="true">
-        <div class="modal-content">
-            <span id="close-modal" class="close" aria-label="Close modal">×</span>
-            <div class="image-grid" id="image-grid"></div>
-        </div>
-    </div>
-    <div id="camera-modal" class="modal" style="display: none;" role="dialog" aria-modal="true">
-        <div class="modal-content">
-            <span id="close-camera-modal" class="close" aria-label="Close camera">×</span>
-            <video id="camera-video" autoplay style="width: 100%; max-width: 640px; height: auto;"></video>
-            <canvas id="camera-canvas" style="display: none;"></canvas>
-            <div class="button-block">
-                <button id="capture-photo" data-i18n="capture_photo">Capture Photo</button>
-            </div>
-        </div>
-    </div>
-
 </body>
 </html>
