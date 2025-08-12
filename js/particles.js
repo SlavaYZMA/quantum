@@ -149,12 +149,17 @@ const messages = {
         "Ошибка в биоквантовой системе: квант ${index} не обновлён.",
         "Аномалия: спин кванта ${index} не изменился.",
         "Биоквантовая ошибка: квант ${index} не ожил."
+    ],
+    collapse: [
+        "Квант коллапсировал в определённое состояние.",
+        "Биоквант стабилизировался в новой форме.",
+        "Коллапс волновой функции зафиксирован."
     ]
 };
 
 // Выбор случайного сообщения
 function getRandomMessage(type, params = {}) {
-    let msgArray = messages[type];
+    let msgArray = messages[type] || ['Unknown message type'];
     let msg = msgArray[Math.floor(Math.random() * msgArray.length)];
     for (let key in params) {
         msg = msg.replace(`\${${key}}`, params[key]);
@@ -193,6 +198,7 @@ function setup() {
 // p5.js draw function for quantum animation
 function draw() {
     console.log('p5.js draw called');
+    if (window.currentStep !== 4 && window.currentStep !== 5) return;
     background(0);
     if (!window.particles || !window.quantumStates) {
         console.warn('Particles or quantum states not initialized');
