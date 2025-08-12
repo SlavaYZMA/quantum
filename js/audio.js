@@ -1,5 +1,4 @@
 window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-let noteFrequencies = { 'C4': 261.63, 'E4': 329.63, 'G4': 392.00 };
 let backgroundOsc = null;
 let backgroundAmp = null;
 
