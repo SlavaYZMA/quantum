@@ -324,13 +324,17 @@ function initializeSteps() {
     }, { once: true });
 
     console.log('quantumSketch initialized: ' + !!window.quantumSketch);
-    var canvas = document.querySelector('#quantumCanvas');
-    if (canvas) {
-        canvas.style.display = 'none';
-        console.log('Canvas hidden on initialization');
-    } else {
-        console.warn('Canvas not found during initialization, waiting for p5.js setup');
-    }
+
+    // Проверка canvas после загрузки p5 (с задержкой, если не найден сразу)
+    setTimeout(() => {
+        var canvas = document.querySelector('.quantum-canvas'); // Класс от p5
+        if (canvas) {
+            canvas.style.display = 'none';
+            console.log('Canvas hidden after p5 setup');
+        } else {
+            console.warn('Canvas still not found after timeout');
+        }
+    }, 100); // 100ms задержка, чтобы p5 успел создать canvas
 
     // Subtle resize for responsive canvas
     window.addEventListener('resize', () => {
@@ -349,7 +353,8 @@ function showStep(stepIndex) {
         const isActive = stepId === stepIndex.toString();
         step.style.display = isActive ? 'flex' : 'none';
         if (isActive) {
-            console.log('Displaying step ' + stepId + ' with display: ' + step.style.display);
+            step.classList.add('active'); // Добавляем класс для visibility
+            console.log('Added active class to step ' + stepId);
             const textBlock = step.querySelector('.text-block');
             if (textBlock) {
                 textBlock.querySelectorAll('div').forEach(div => {
@@ -362,6 +367,8 @@ function showStep(stepIndex) {
             } else {
                 console.log('No text-block found for step ' + stepId);
             }
+        } else {
+            step.classList.remove('active'); // Удаляем для неактивных
         }
     });
     window.currentStep = stepIndex;
@@ -370,12 +377,10 @@ function showStep(stepIndex) {
 window.moveToNextStep = function(stepIndex) {
     console.log('moveToNextStep called with stepIndex: ' + stepIndex);
     showStep(stepIndex);
-    if (stepIndex === 4 || stepIndex === 5) {
-        var canvas = document.querySelector('#quantumCanvas');
-        if (canvas) canvas.style.display = 'block';
-    } else {
-        var canvas = document.querySelector('#quantumCanvas');
-        if (canvas) canvas.style.display = 'none';
+    var canvas = document.querySelector('.quantum-canvas'); // Используем класс
+    if (canvas) {
+        canvas.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
+        console.log('Canvas display set to: ' + canvas.style.display + ' for step ' + stepIndex);
     }
 };
 
