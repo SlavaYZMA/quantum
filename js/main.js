@@ -46,6 +46,20 @@ function updateStepVisibility() {
         cameraSection.classList.remove('visible');
         console.log('Hid camera-section');
     }
+    // Hide any stray canvas elements
+    const canvases = document.getElementsByTagName('canvas');
+    for (let canvas of canvases) {
+        if (canvas.id !== 'camera-canvas') {
+            canvas.style.display = window.currentStep >= stepIds.indexOf('step-4') ? 'block' : 'none';
+            console.log(`Canvas ${canvas.id || 'unnamed'} display set to: ${canvas.style.display}`);
+        }
+    }
+    // Ensure canvas-container is hidden unless needed
+    const canvasContainer = document.getElementById('canvas-container');
+    if (canvasContainer) {
+        canvasContainer.style.display = window.currentStep >= stepIds.indexOf('step-4') ? 'block' : 'none';
+        console.log(`canvas-container display set to: ${canvasContainer.style.display}`);
+    }
 }
 
 function typewriter(element) {
@@ -146,13 +160,12 @@ function selectArchiveImage(src) {
     // Update thumbnails and hide archive section
     document.querySelectorAll('.thumbnail-portrait').forEach(thumb => {
         thumb.src = src;
-        console.log('Updated thumbnail:', thumb.id);
+        console.log('Updated thumbnail:', thumb.id || 'unnamed');
     });
     archiveSection.classList.remove('visible');
     setTimeout(() => {
         archiveSection.style.display = 'none';
         console.log('image-archive-section hidden');
-        // Move to step-2.1
         moveToNextStep('2.1');
     }, 500);
     // Load and process image
