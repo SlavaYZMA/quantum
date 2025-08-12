@@ -18,20 +18,34 @@ let cameraStream = null;
 
 // Hide all steps except the current one
 function updateStepVisibility() {
+    console.log('updateStepVisibility called, currentStep:', window.currentStep);
     document.querySelectorAll('.step').forEach((section, index) => {
+        console.log(`Section ${section.id}, index: ${index}, should be visible: ${index === window.currentStep}`);
         if (index === window.currentStep) {
             section.style.display = 'block';
-            setTimeout(() => section.classList.add('visible'), 10); // Trigger animation
+            setTimeout(() => {
+                section.classList.add('visible');
+                console.log(`Made ${section.id} visible`);
+            }, 10);
         } else {
             section.style.display = 'none';
             section.classList.remove('visible');
+            console.log(`Hid ${section.id}`);
         }
     });
-    // Hide subsections unless on step-2 and explicitly shown
-    document.getElementById('image-archive-section').style.display = 'none';
-    document.getElementById('image-archive-section').classList.remove('visible');
-    document.getElementById('camera-section').style.display = 'none';
-    document.getElementById('camera-section').classList.remove('visible');
+    // Hide subsections
+    const archiveSection = document.getElementById('image-archive-section');
+    if (archiveSection) {
+        archiveSection.style.display = 'none';
+        archiveSection.classList.remove('visible');
+        console.log('Hid image-archive-section');
+    }
+    const cameraSection = document.getElementById('camera-section');
+    if (cameraSection) {
+        cameraSection.style.display = 'none';
+        cameraSection.classList.remove('visible');
+        console.log('Hid camera-section');
+    }
 }
 
 function typewriter(element) {
@@ -59,6 +73,7 @@ function typewriter(element) {
 }
 
 function showImageArchiveSection() {
+    console.log('showImageArchiveSection called');
     const section = document.getElementById('image-archive-section');
     const grid = document.getElementById('image-grid');
     grid.innerHTML = '';
@@ -70,28 +85,40 @@ function showImageArchiveSection() {
         grid.appendChild(img);
     });
     section.style.display = 'block';
-    setTimeout(() => section.classList.add('visible'), 10);
+    setTimeout(() => {
+        section.classList.add('visible');
+        console.log('image-archive-section made visible');
+    }, 10);
 }
 
 function startCamera() {
+    console.log('startCamera called');
     const section = document.getElementById('camera-section');
     const video = document.getElementById('camera-video');
     navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
         cameraStream = stream;
         video.srcObject = stream;
         section.style.display = 'block';
-        setTimeout(() => section.classList.add('visible'), 10);
+        setTimeout(() => {
+            section.classList.add('visible');
+            console.log('camera-section made visible');
+        }, 10);
     }).catch(err => console.error('Camera error:', err));
 }
 
 function stopCamera() {
+    console.log('stopCamera called');
     const section = document.getElementById('camera-section');
     section.classList.remove('visible');
-    setTimeout(() => section.style.display = 'none', 500);
+    setTimeout(() => {
+        section.style.display = 'none';
+        console.log('camera-section hidden');
+    }, 500);
     if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
 }
 
 function capturePhoto() {
+    console.log('capturePhoto called');
     const video = document.getElementById('camera-video');
     const canvas = document.getElementById('camera-canvas');
     canvas.width = 400;
@@ -103,8 +130,9 @@ function capturePhoto() {
         window.img = img;
         try {
             window.initializeParticles(img);
+            console.log('initializeParticles completed for camera');
         } catch (err) {
-            console.error('Error in initializeParticles:', err);
+            console.error('Error in initializeParticles (camera):', err);
         }
         document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = url);
         moveToNextStep('2.1');
@@ -115,29 +143,28 @@ function capturePhoto() {
 function selectArchiveImage(src) {
     console.log('selectArchiveImage called with:', src);
     const archiveSection = document.getElementById('image-archive-section');
-    // Update thumbnails and hide archive section immediately
-    document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = src);
+    // Update thumbnails and hide archive section
+    document.querySelectorAll('.thumbnail-portrait').forEach(thumb => {
+        thumb.src = src;
+        console.log('Updated thumbnail:', thumb.id);
+    });
     archiveSection.classList.remove('visible');
     setTimeout(() => {
         archiveSection.style.display = 'none';
-        // Move to step-2.1 regardless of loadImage outcome
+        console.log('image-archive-section hidden');
+        // Move to step-2.1
         moveToNextStep('2.1');
-    }, 500); // Match CSS transition duration
-    // Attempt to load and process image
-    try {
-        window.loadImage(src, img => {
-            console.log('Image loaded successfully:', src);
-            window.img = img;
-            try {
-                window.initializeParticles(img);
-                console.log('initializeParticles completed');
-            } catch (err) {
-                console.error('Error in initializeParticles:', err);
-            }
-        });
-    } catch (err) {
-        console.error('Error in selectArchiveImage:', err);
-    }
+    }, 500);
+    // Load and process image
+    window.loadImage(src, img => {
+        window.img = img;
+        try {
+            window.initializeParticles(img);
+            console.log('initializeParticles completed');
+        } catch (err) {
+            console.error('Error in initializeParticles:', err);
+        }
+    });
 }
 
 window.moveToNextStep = function(stepIndex) {
@@ -155,6 +182,9 @@ window.moveToNextStep = function(stepIndex) {
                 typewriter(textBlock);
                 textBlock.classList.add('animated');
             }
+            console.log(`Scrolled to ${stepId}`);
+        } else {
+            console.error(`Section ${stepId} not found in DOM`);
         }
         const progress = ((window.currentStep + 1) / totalSteps) * 100;
         document.getElementById('progress-fill').style.width = `${progress}%`;
@@ -181,6 +211,8 @@ window.moveToNextStep = function(stepIndex) {
                 console.warn('noLoop not defined, skipping');
             }
         }
+    } else {
+        console.error(`Invalid step index: ${stepIdx} for stepId: ${stepId}`);
     }
 };
 
@@ -193,22 +225,25 @@ window.updateTerminalLog = function() {
 };
 
 window.setLanguageAndStay = function(lang) {
+    console.log('setLanguageAndStay called with:', lang);
     window.setLanguage(lang);
     moveToNextStep('1');
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    updateStepVisibility(); // Show only step-0 initially
+    console.log('DOMContentLoaded');
+    updateStepVisibility();
 
     document.querySelectorAll('#menu a').forEach(a => {
         a.addEventListener('click', e => {
             e.preventDefault();
             const stepId = a.getAttribute('href').substring(1);
             const stepIndex = stepIds.indexOf(stepId);
-            if (stepIndex <= window.currentStep) { // Allow navigation only to completed steps
+            if (stepIndex <= window.currentStep) {
                 window.currentStep = stepIndex;
                 updateStepVisibility();
                 document.getElementById(stepId).scrollIntoView({ behavior: 'smooth' });
+                console.log(`Menu clicked, moved to ${stepId}`);
             }
         });
     });
@@ -216,9 +251,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('hamburger').addEventListener('click', () => {
         const menu = document.getElementById('menu');
         menu.classList.toggle('visible');
+        console.log('Hamburger menu toggled');
     });
 
     document.getElementById('uploadImage').addEventListener('click', () => {
+        console.log('uploadImage clicked');
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
@@ -228,8 +265,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.img = img;
                 try {
                     window.initializeParticles(img);
+                    console.log('initializeParticles completed for upload');
                 } catch (err) {
-                    console.error('Error in initializeParticles:', err);
+                    console.error('Error in initializeParticles (upload):', err);
                 }
                 document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = URL.createObjectURL(file));
                 moveToNextStep('2.1');
@@ -259,7 +297,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('close-archive-section').addEventListener('click', () => {
         const section = document.getElementById('image-archive-section');
         section.classList.remove('visible');
-        setTimeout(() => section.style.display = 'none', 500);
+        setTimeout(() => {
+            section.style.display = 'none';
+            console.log('close-archive-section clicked');
+        }, 500);
     });
     document.getElementById('close-camera-section').addEventListener('click', () => {
         stopCamera();
