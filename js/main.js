@@ -29,6 +29,8 @@ function updateStepVisibility() {
             setTimeout(() => {
                 section.classList.add('visible');
                 console.log(`Made ${section.id} visible`);
+                // Принудительное обновление текста после отображения секции
+                window.setLanguage(window.currentLanguage);
             }, 10);
         } else {
             section.style.display = 'none';
@@ -104,7 +106,8 @@ function typewriter(element) {
     function typeNext() {
         if (index >= elements.length) return;
         const el = elements[index];
-        const text = el.textContent.trim();
+        const key = el.getAttribute('data-i18n');
+        const text = key && translations[window.currentLanguage][key] ? translations[window.currentLanguage][key] : el.textContent.trim();
         el.textContent = '';
         let charIndex = 0;
         function typeChar() {
@@ -326,11 +329,13 @@ window.updateTerminalLog = function() {
 window.setLanguageAndStay = function(lang) {
     console.log('setLanguageAndStay called with:', lang);
     window.setLanguage(lang);
-    moveToNextStep('1');
+    setTimeout(() => {
+        window.moveToNextStep('1');
+        window.setLanguage(lang); // Повторное обновление языка после перехода
+    }, 100); // Небольшая задержка для завершения анимаций
 };
 
 // Инициализация обработчиков событий
-// main.js (фрагмент с инициализацией)
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded');
     window.setLanguage(window.currentLanguage); // Устанавливаем начальный язык
