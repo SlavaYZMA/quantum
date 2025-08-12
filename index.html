@@ -6,6 +6,9 @@
     <title>Quantum Portrait</title>
     <link rel="icon" href="data:;base64,=">
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Source+Sans+Pro&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <script src="./js/globals.js"></script>
     <script src="./js/particles.js"></script>
@@ -27,22 +30,22 @@
             <button onclick="window.setLanguageAndNext('en')">ENG</button>
         </div>
     </section>
-    <section id="step-1" class="step step-centered">
+    <section id="step-1" class="step step-asymmetric">
         <div class="text-block">
-            <div data-i18n="step1_title"></div>
-            <div data-i18n="step1_text1"></div>
-            <div data-i18n="step1_text2"></div>
-            <div data-i18n="step1_text3"></div>
+            <h2 data-i18n="step1_title"></h2>
+            <p data-i18n="step1_text1"></p>
+            <p data-i18n="step1_text2"></p>
+            <p data-i18n="step1_text3"></p>
         </div>
         <div class="button-block">
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-2" class="step step-centered">
+    <section id="step-2" class="step step-asymmetric">
         <div class="text-block">
-            <div data-i18n="step2_title"></div>
-            <div data-i18n="step2_text1"></div>
+            <h2 data-i18n="step2_title"></h2>
+            <p data-i18n="step2_text1"></p>
         </div>
         <div class="button-block">
             <button id="uploadImage" data-i18n="upload_image">Загрузить изображение</button>
@@ -51,42 +54,42 @@
             <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-2.1" class="step step-centered">
+    <section id="step-2.1" class="step step-asymmetric">
         <div class="text-block">
-            <div data-i18n="step2_text2"></div>
-            <div data-i18n="step2_text3"></div>
-            <div data-i18n="step2_text4"></div>
+            <p data-i18n="step2_text2"></p>
+            <p data-i18n="step2_text3"></p>
+            <p data-i18n="step2_text4"></p>
         </div>
         <div class="button-block">
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-3" class="step step-centered">
+    <section id="step-3" class="step step-asymmetric">
         <div class="text-block">
-            <div data-i18n="step3_title"></div>
-            <div data-i18n="step3_text1"></div>
-            <div data-i18n="step3_text2"></div>
-            <div data-i18n="step3_text3"></div>
-            <div data-i18n="step3_text4"></div>
-            <div data-i18n="step3_text5"></div>
-            <div data-i18n="step3_text6"></div>
-            <div data-i18n="step3_text7"></div>
-            <div data-i18n="step3_text8"></div>
+            <h2 data-i18n="step3_title"></h2>
+            <p data-i18n="step3_text1"></p>
+            <p data-i18n="step3_text2"></p>
+            <p data-i18n="step3_text3"></p>
+            <p data-i18n="step3_text4"></p>
+            <p data-i18n="step3_text5"></p>
+            <p data-i18n="step3_text6"></p>
+            <p data-i18n="step3_text7"></p>
+            <p data-i18n="step3_text8"></p>
         </div>
         <div class="button-block">
             <button class="continue" data-i18n="continue">Продолжить</button>
             <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-4" class="step step-centered">
+    <section id="step-4" class="step step-asymmetric">
         <div class="text-block">
-            <div data-i18n="step4_title"></div>
-            <div data-i18n="step4_text1"></div>
-            <div data-i18n="step4_text2"></div>
-            <div data-i18n="step4_text3"></div>
+            <h2 data-i18n="step4_title"></h2>
+            <p data-i18n="step4_text1"></p>
+            <p data-i18n="step4_text2"></p>
+            <p data-i18n="step4_text3"></p>
         </div>
-        <div style="display: flex; justify-content: space-between; width: 100%;">
+        <div class="content-grid">
             <img id="thumbnail-portrait" class="thumbnail-portrait" alt="Миниатюра квантового портрета" />
             <div class="portrait-terminal-wrapper">
                 <div id="portrait-animation-container-step-4"></div>
@@ -98,14 +101,14 @@
             <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-5" class="step step-centered">
+    <section id="step-5" class="step step-asymmetric">
         <div class="text-block">
-            <div data-i18n="step5_title"></div>
-            <div data-i18n="step5_text1"></div>
-            <div data-i18n="step5_text2"></div>
-            <div data-i18n="step5_text3"></div>
+            <h2 data-i18n="step5_title"></h2>
+            <p data-i18n="step5_text1"></p>
+            <p data-i18n="step5_text2"></p>
+            <p data-i18n="step5_text3"></p>
         </div>
-        <div style="display: flex; justify-content: space-between; width: 100%;">
+        <div class="content-grid">
             <img id="thumbnail-portrait" class="thumbnail-portrait" alt="Миниатюра квантового портрета" />
             <div class="portrait-terminal-wrapper">
                 <div id="portrait-animation-container-step-5"></div>
@@ -119,12 +122,12 @@
             <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-6" class="step step-centered">
+    <section id="step-6" class="step step-asymmetric">
         <div class="text-block">
-            <div data-i18n="step6_title"></div>
-            <div data-i18n="step6_text1"></div>
-            <div data-i18n="step6_text2"></div>
-            <div data-i18n="step6_text3"></div>
+            <h2 data-i18n="step6_title"></h2>
+            <p data-i18n="step6_text1"></p>
+            <p data-i18n="step6_text2"></p>
+            <p data-i18n="step6_text3"></p>
         </div>
         <div class="button-block">
             <button id="shareObservation" data-i18n="share_observation">[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]</button>
@@ -132,11 +135,11 @@
             <button class="back" data-i18n="back">Назад</button>
         </div>
     </section>
-    <section id="step-7" class="step step-centered">
+    <section id="step-7" class="step step-asymmetric">
         <div class="text-block">
-            <div data-i18n="step7_text1"></div>
-            <div data-i18n="step7_text2"></div>
-            <div data-i18n="step7_text3"></div>
+            <p data-i18n="step7_text1"></p>
+            <p data-i18n="step7_text2"></p>
+            <p data-i18n="step7_text3"></p>
         </div>
         <div class="button-block">
             <button id="restart" data-i18n="restart">[↻ НАЧАТЬ СНАЧАЛА]</button>
@@ -168,28 +171,22 @@
         window.quantumSketch = new p5(function(sketch) {
             console.log('p5 setup called');
             sketch.setup = function() {
-                var canvas = sketch.createCanvas(800, 800, p5.WEBGL); // Добавлено WEBGL для улучшенного рендеринга
+                var canvas = sketch.createCanvas(800, 800, p5.WEBGL);
                 canvas.class('quantum-canvas');
                 canvas.parent('portrait-animation-container-step-4');
-                sketch.pixelDensity(2); // Увеличиваем плотность для высокого качества
+                sketch.pixelDensity(2);
                 sketch.noLoop();
             };
 
             sketch.draw = function() {
-                console.log('draw called, currentStep: ' + window.currentStep + ', canvasVisible: ' + (document.querySelector('.quantum-canvas').style.display !== 'none'));
-                sketch.background(0);
+                sketch.background(26, 26, 26); // Соответствует новому фону
                 if (window.currentStep === 4 || window.currentStep === 5) {
                     if (window.particles && window.particles.length > 0) {
                         window.updateParticles(sketch);
-                    } else {
-                        console.error('No particles to render: ', { particles: window.particles ? window.particles.length : 0 });
                     }
                     if (window.img) {
                         sketch.image(window.img, 0, 0, sketch.width, sketch.height);
                     }
-                    sketch.fill(255);
-                    sketch.textSize(16);
-                    sketch.text('Frame: ' + (window.frame || 0), 10, 20);
                 }
             };
 
@@ -208,7 +205,6 @@
 
             sketch.startAnimation = function() {
                 sketch.loop();
-                console.log('Animation started');
             };
 
             sketch.switchCanvasParent = function(stepIndex) {
@@ -216,9 +212,6 @@
                 let container = document.getElementById(containerId);
                 if (container && sketch.canvas) {
                     container.appendChild(sketch.canvas);
-                    console.log('Canvas switched to ' + containerId);
-                } else {
-                    console.error('Failed to switch canvas parent: container or canvas not found', { container, canvas: !!sketch.canvas });
                 }
             };
         });
@@ -228,39 +221,21 @@
             input.type = 'file';
             input.accept = 'image/*';
             input.onchange = function(e) {
-                console.log('Image input changed, files: ' + e.target.files.length);
-                if (!e.target || !e.target.files || e.target.files.length === 0 || !window.quantumSketch) {
-                    console.error('Error: Invalid file input or quantumSketch not initialized', {
-                        hasTarget: !!e.target,
-                        hasFiles: e.target.files ? e.target.files.length : 0,
-                        quantumSketch: !!window.quantumSketch
+                if (e.target.files.length > 0) {
+                    var file = e.target.files[0];
+                    window.quantumSketch.loadImage(URL.createObjectURL(file), function(img) {
+                        if (img.width < 800 || img.height < 800) {
+                            img.resize(800, 800);
+                        }
+                        window.img = img;
+                        window.initializeParticles(img);
+                        document.querySelectorAll('#thumbnail-portrait').forEach(thumbnail => {
+                            thumbnail.src = URL.createObjectURL(file);
+                            thumbnail.style.display = 'block';
+                        });
+                        window.moveToNextStep(2.1);
                     });
-                    alert('Ошибка загрузки изображения. Попробуйте снова.'); /* Добавлена обработка ошибок */
-                    return;
                 }
-                var file = e.target.files[0];
-                window.quantumSketch.loadImage(URL.createObjectURL(file), function(img) {
-                    console.log('Image loaded successfully, dimensions: ' + img.width + ', ' + img.height);
-                    // Изменяем размер изображения до размеров канвы, если оно меньше
-                    if (img.width < 800 || img.height < 800) {
-                        img.resize(800, 800); // Масштабируем до размера канвы
-                    }
-                    window.img = img;
-                    window.initializeParticles(img);
-                    var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-                    console.log('Found thumbnails: ' + thumbnails.length);
-                    thumbnails.forEach(function(thumbnail) {
-                        thumbnail.src = URL.createObjectURL(file);
-                        thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-                        console.log('Updated thumbnail src: ' + thumbnail.src + ', display: ' + thumbnail.style.display);
-                    });
-                    window.moveToNextStep(2.1);
-                    input.remove();
-                }, function() {
-                    console.error('Error loading image');
-                    alert('Ошибка загрузки изображения. Попробуйте другой файл.');
-                    input.remove();
-                });
             };
             input.click();
         });
@@ -268,39 +243,31 @@
         document.getElementById('saveImage').addEventListener('click', function() {
             const portraitName = document.getElementById('portraitName').value || 'quantum_portrait';
             window.quantumSketch.saveCanvas(portraitName, 'png');
-            console.log('Image saved with name: ' + portraitName);
             window.terminalMessages.push(`[SAVE] Quantum portrait saved as ${portraitName}.png`);
             window.updateTerminalLog();
         });
 
         document.getElementById('shareObservation').addEventListener('click', function() {
             window.open('https://t.me/quantum_portrait_channel', '_blank');
-            console.log('Share observation: opened Telegram channel');
         });
 
         document.getElementById('restart').addEventListener('click', function() {
             window.location.reload();
-            console.log('Restart: page reloaded');
         });
 
         document.getElementById('archive').addEventListener('click', function() {
             window.open('https://t.me/quantum_portrait_channel', '_blank');
-            console.log('Archive: opened Telegram channel');
         });
 
         document.getElementById('aboutAuthors').addEventListener('click', function() {
             window.location.href = './about.html';
-            console.log('About authors: navigated to about.html');
         });
 
         var originalMoveToNextStep = window.moveToNextStep;
         window.moveToNextStep = function(stepIndex) {
-            console.log('moveToNextStep called with stepIndex: ' + stepIndex);
             originalMoveToNextStep(stepIndex);
-            var thumbnails = document.querySelectorAll('#thumbnail-portrait');
-            thumbnails.forEach(function(thumbnail) {
+            document.querySelectorAll('#thumbnail-portrait').forEach(thumbnail => {
                 thumbnail.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
-                console.log('Thumbnail display set to: ' + thumbnail.style.display + ' for step: ' + stepIndex);
             });
             if (stepIndex === 4 || stepIndex === 5) {
                 window.quantumSketch.switchCanvasParent(stepIndex);
@@ -313,7 +280,6 @@
                 window.terminalMessages = [];
                 window.updateTerminalLog();
             }
-            // Обновление progress-bar
             const totalSteps = 7;
             const progress = (stepIndex / totalSteps) * 100;
             document.getElementById('progress-fill').style.width = `${progress}%`;
