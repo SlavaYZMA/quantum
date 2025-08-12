@@ -1,131 +1,156 @@
 :root {
-    --bg-primary: #1A1A1A; /* Тёмный серый для фона */
-    --text-primary: #F5F5F5; /* Светлый текст */
-    --accent-blue: #4A90E2; /* Глубокий синий акцент */
-    --accent-red: #D0021B; /* Бордовый для коллапса */
-    --border-gray: #E0E0E0; /* Серый для границ */
-    --font-heading: 'Playfair Display', serif;
-    --font-body: 'Source Sans Pro', sans-serif;
+    --primary-dark: #1A1A1A; /* Глубокий тёмный фон для интеллектуальной атмосферы */
+    --accent-gold: #D4AF37; /* Золотой акцент для творчества и элегантности */
+    --accent-indigo: #4B0082; /* Индиго для глубины и эксперимента */
+    --text-light: #EDEDED; /* Светлый текст для читаемости */
+    --subtle-gray: #A9A9A9; /* Для второстепенных элементов */
+    --neon-subtle: rgba(212, 175, 55, 0.3); /* Смягчённый неон для акцентов */
+    --font-heading: 'Playfair Display', serif; /* Нестандартная типографика для заголовков */
+    --font-body: 'Source Sans Pro', sans-serif; /* Минималистичная для текста */
 }
 
 body {
     margin: 0;
     padding: 0;
-    background: var(--bg-primary);
-    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-indigo) 100%);
+    color: var(--text-light);
     font-family: var(--font-body);
-    font-size: 1.125rem; /* 18px для читаемости */
+    font-size: 1.125rem; /* 18px базовый для читаемости */
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
+    display: grid;
+    place-items: center;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle, var(--neon-subtle) 5%, transparent 15%);
+    background-size: 30px 30px;
+    animation: subtle-drift 20s linear infinite alternate-reverse;
+    mix-blend-mode: overlay;
+    opacity: 0.4; /* Смягчён для минимализма */
+}
+
+@keyframes subtle-drift {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(20px, -20px); }
 }
 
 .step {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
     width: 90%;
     max-width: 1200px;
     padding: 3rem;
-    background: rgba(255, 255, 255, 0.05); /* Лёгкая прозрачность */
-    border: 1px solid var(--border-gray);
-    border-radius: 0; /* Прямоугольный для минимализма */
+    background: rgba(255, 255, 255, 0.05); /* Лёгкая прозрачность для арт-хаус */
+    border: 1px solid var(--accent-gold);
+    border-radius: 0 20px 0 20px; /* Асимметрия в бордерах */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     opacity: 0;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    display: grid;
-    grid-template-columns: 1fr 2fr; /* Асимметрия */
+    transform: translateY(20px) rotate(-2deg); /* Лёгкая асимметрия */
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    display: none;
+    flex-direction: column;
     gap: 2rem;
-    align-items: start;
 }
 
 .step.active {
     opacity: 1;
-    transform: translate(-50%, -50%);
-}
-
-.step-asymmetric {
-    grid-template-columns: 1fr 3fr; /* Усиленная асимметрия для креативности */
+    transform: translateY(0) rotate(0deg);
+    display: flex;
 }
 
 .text-block {
+    max-width: 80%;
+    margin-left: auto; /* Асимметричное позиционирование */
     padding: 1.5rem;
-    white-space: pre-wrap;
-    text-align: left; /* Асимметричный текст */
-}
-
-.text-block h2 {
+    background: transparent;
+    border-left: 4px solid var(--accent-gold);
     font-family: var(--font-heading);
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: var(--accent-blue);
+    font-size: 1.5rem;
+    font-style: italic; /* Эксперимент с типографикой */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.text-block p {
+.text-block div {
     margin-bottom: 1rem;
     animation: fade-in 1s ease forwards;
 }
 
 @keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
 .button-block {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    justify-content: flex-start; /* Асимметрия */
-    margin-top: 2rem;
+    justify-content: flex-end; /* Асимметрия */
+    margin-top: auto;
 }
 
 button {
     padding: 1rem 2rem;
-    border: 1px solid var(--accent-blue);
-    border-radius: 0;
-    cursor: pointer;
+    border: 1px solid var(--accent-gold);
+    border-radius: 0 10px 0 10px; /* Асимметрия */
+    background: transparent;
+    color: var(--text-light);
     font-family: var(--font-body);
     font-size: 1rem;
-    background: transparent;
-    color: var(--accent-blue);
-    transition: background 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
-    background: var(--accent-blue);
-    color: var(--text-primary);
+    background: var(--accent-gold);
+    color: var(--primary-dark);
+    transform: translateY(-2px);
 }
 
-.content-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 2rem;
+button:focus {
+    outline: 2px solid var(--accent-indigo);
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1; /* Квадратный для canvas */
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--border-gray);
+    width: 600px;
+    height: 600px;
+    border: 1px dashed var(--accent-gold);
+    border-radius: 20px 0; /* Асимметрия */
+    position: relative;
+    overflow: hidden;
 }
 
 .thumbnail-portrait {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid var(--border-gray);
-    object-fit: contain;
+    max-width: 200px;
+    border-radius: 10px 0; /* Асимметрия */
+    border: 1px solid var(--accent-gold);
 }
 
 .terminal-log {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
+    width: 400px;
+    height: 500px;
+    background: rgba(0, 0, 0, 0.2);
     padding: 1rem;
     overflow-y: auto;
-    max-height: 400px;
     font-size: 0.875rem;
+    border-left: 4px solid var(--accent-indigo);
+}
+
+.portrait-terminal-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
 }
 
 .modal {
@@ -134,34 +159,48 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
 .modal-content {
-    background: var(--bg-primary);
+    background: var(--primary-dark);
     padding: 2rem;
+    border-radius: 0 15px 0 15px;
+    border: 1px solid var(--accent-gold);
     max-width: 80%;
     max-height: 80%;
     overflow: auto;
-    border: 1px solid var(--border-gray);
+}
+
+.close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--accent-gold);
 }
 
 .image-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
 }
 
 .archive-image {
     width: 100%;
-    height: auto;
-    object-fit: contain;
-    border: 1px solid var(--border-gray);
+    border-radius: 10px 0;
+    border: 1px solid var(--accent-gold);
     cursor: pointer;
+}
+
+#camera-video {
+    width: 100%;
+    border-radius: 10px 0;
 }
 
 .progress-bar {
@@ -176,22 +215,47 @@ button:hover {
 
 .progress-fill {
     height: 100%;
-    background: var(--accent-blue);
+    background: var(--accent-gold);
     transition: width 0.5s ease;
 }
 
 @media (max-width: 768px) {
     .step {
-        grid-template-columns: 1fr;
         padding: 1.5rem;
+        max-width: 95%;
     }
-    .content-grid {
+    .text-block {
+        max-width: 100%;
+        margin-left: 0;
+        font-size: 1.25rem;
+    }
+    .portrait-terminal-wrapper {
         grid-template-columns: 1fr;
     }
-    .text-block h2 {
-        font-size: 2rem;
+    #portrait-animation-container-step-4,
+    #portrait-animation-container-step-5 {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+    }
+    .terminal-log {
+        width: 100%;
+        height: 300px;
+    }
+    .button-block {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 1rem;
     }
     button {
-        width: 100%;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
+    }
+    .text-block {
+        font-size: 1.125rem;
     }
 }
