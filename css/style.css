@@ -35,12 +35,30 @@ button {
     transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
     font-family: 'Roboto Mono', monospace;
     font-size: 16px;
+    min-width: 120px; /* Prevent size reduction */
+    text-align: center; /* Ensure text stays centered */
 }
 
+/* Fix text visibility and prevent size reduction on hover */
 button:hover {
     background: #00ffcc;
-    color: #000000;
-    transform: scale(1.05);
+    color: #ffffff; /* White text for high contrast on #00ffcc background */
+    transform: scale(1.05); /* Slight scale up, no reduction */
+}
+
+/* Specific button styles */
+button.continue, 
+button.back, 
+button#uploadImage, 
+button#useCamera, 
+button#useArchive, 
+button#capture-photo, 
+button#saveImage, 
+button#shareObservation, 
+button#restart, 
+button#archive, 
+button#aboutAuthors {
+    text-transform: uppercase; /* Consistent with your art-house style */
 }
 
 /* Progress bar at top */
@@ -75,6 +93,12 @@ button:hover {
     border: none;
     background: transparent;
     font-weight: normal;
+    color: #dddddd; /* Ensure visibility */
+    transition: color 0.3s ease;
+}
+
+#language-switch button:hover {
+    color: #00ffcc; /* Consistent accent color */
 }
 
 #language-switch button.active {
