@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Quantum Portrait</title>
     <link rel="icon" href="data:;base64,=">
     <link rel="stylesheet" href="./css/style.css">
@@ -17,6 +17,9 @@
     <script src="js/text-flicker.js"></script>
 </head>
 <body>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
     <section id="step-0" class="step">
         <div class="text-block" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</div>
         <div class="button-block">
@@ -84,8 +87,8 @@
             <div data-i18n="step4_text3"></div>
         </div>
         <div style="display: flex; justify-content: space-between; width: 100%;">
-            <img id="thumbnail-portrait" class="thumbnail-portrait" />
-            <div style="display: flex; flex-direction: row;">
+            <img id="thumbnail-portrait" class="thumbnail-portrait" alt="Миниатюра квантового портрета" />
+            <div class="portrait-terminal-wrapper">
                 <div id="portrait-animation-container-step-4"></div>
                 <div class="terminal-log" id="terminal-log-step-4"></div>
             </div>
@@ -103,8 +106,8 @@
             <div data-i18n="step5_text3"></div>
         </div>
         <div style="display: flex; justify-content: space-between; width: 100%;">
-            <img id="thumbnail-portrait" class="thumbnail-portrait" />
-            <div style="display: flex; flex-direction: row;">
+            <img id="thumbnail-portrait" class="thumbnail-portrait" alt="Миниатюра квантового портрета" />
+            <div class="portrait-terminal-wrapper">
                 <div id="portrait-animation-container-step-5"></div>
                 <div class="terminal-log" id="terminal-log-step-5"></div>
             </div>
@@ -143,16 +146,16 @@
         </div>
     </section>
     <!-- Модальное окно для выбора изображений из архива -->
-    <div id="image-archive-modal" class="modal" style="display: none;">
+    <div id="image-archive-modal" class="modal" style="display: none;" role="dialog" aria-modal="true">
         <div class="modal-content">
-            <span id="close-modal" class="close">×</span>
+            <span id="close-modal" class="close" aria-label="Закрыть модальное окно">×</span>
             <div class="image-grid" id="image-grid"></div>
         </div>
     </div>
     <!-- Модальное окно для камеры -->
-    <div id="camera-modal" class="modal" style="display: none;">
+    <div id="camera-modal" class="modal" style="display: none;" role="dialog" aria-modal="true">
         <div class="modal-content">
-            <span id="close-camera-modal" class="close">×</span>
+            <span id="close-camera-modal" class="close" aria-label="Закрыть камеру">×</span>
             <video id="camera-video" autoplay style="width: 100%; max-width: 640px; height: auto;"></video>
             <canvas id="camera-canvas" style="display: none;"></canvas>
             <div class="button-block">
@@ -232,6 +235,7 @@
                         hasFiles: e.target.files ? e.target.files.length : 0,
                         quantumSketch: !!window.quantumSketch
                     });
+                    alert('Ошибка загрузки изображения. Попробуйте снова.'); /* Добавлена обработка ошибок */
                     return;
                 }
                 var file = e.target.files[0];
@@ -254,6 +258,7 @@
                     input.remove();
                 }, function() {
                     console.error('Error loading image');
+                    alert('Ошибка загрузки изображения. Попробуйте другой файл.');
                     input.remove();
                 });
             };
@@ -308,6 +313,10 @@
                 window.terminalMessages = [];
                 window.updateTerminalLog();
             }
+            // Обновление progress-bar
+            const totalSteps = 7;
+            const progress = (stepIndex / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
         };
     </script>
 </body>
