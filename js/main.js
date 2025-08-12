@@ -343,6 +343,10 @@ function initializeSteps() {
             window.quantumSketch.resizeCanvas(size, size);
         }
     });
+
+    // Активируем начальный шаг
+    showStep(0);
+    console.log('Initial showStep(0) called');
 }
 
 function showStep(stepIndex) {
