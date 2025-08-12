@@ -96,12 +96,12 @@ function switchCanvasParent(stepIndex) {
     console.log('switchCanvasParent called with step:', stepIndex);
     const canvas = document.querySelector('canvas:not(#camera-canvas)');
     if (canvas) {
-        const targetContainer = document.getElementById(`portrait-animation-container-step-${stepIndex + 1}`);
+        const targetContainer = document.getElementById(`portrait-animation-container-step-${stepIndex}`);
         if (targetContainer) {
             targetContainer.appendChild(canvas);
-            console.log(`Moved canvas to portrait-animation-container-step-${stepIndex + 1}`);
+            console.log(`Moved canvas to portrait-animation-container-step-${stepIndex}`);
         } else {
-            console.warn(`Target container portrait-animation-container-step-${stepIndex + 1} not found`);
+            console.warn(`Target container portrait-animation-container-step-${stepIndex} not found`);
         }
     } else {
         console.warn('No canvas found to switch parent');
