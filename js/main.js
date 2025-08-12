@@ -1,21 +1,10 @@
 console.log('main.js loaded');
 
-window.setLanguageAndStay = function (lang) {
-    try {
-        localStorage.setItem('lang', lang);
-    } catch (e) {
-        console.error('Не удалось сохранить язык:', e);
-    }
-    console.log('Language set to:', lang);
-    location.reload(); // или обновить контент без перезагрузки
-};
-
 window.currentStep = 0;
 window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
 window.mouseInfluenceRadius = 50;
 
-// Переходы между шагами
 const stepTransitions = {
     0: 1,
     1: 2,
@@ -38,7 +27,6 @@ const stepTransitionsBack = {
     7: 6
 };
 
-// Изображения архива
 const archiveImages = [
     '/public/images/image1.jpg',
     '/public/images/image2.jpg',
@@ -47,11 +35,9 @@ const archiveImages = [
 
 let cameraStream = null;
 
-// Анимация печатной машинки
 function typewriter(element, callback) {
     const divs = element.querySelectorAll('div');
     if (divs.length === 0) {
-        console.log('No divs for typewriter');
         if (callback) callback();
         return;
     }
@@ -79,8 +65,7 @@ function typewriter(element, callback) {
             if (charIndex < text.length) {
                 span.textContent += text[charIndex];
                 charIndex++;
-                const delay = 5 + Math.random() * 90;
-                setTimeout(typeChar, delay);
+                setTimeout(typeChar, 5 + Math.random() * 90);
             } else {
                 currentDivIndex++;
                 typeNextDiv();
@@ -91,7 +76,6 @@ function typewriter(element, callback) {
     typeNextDiv();
 }
 
-// Показ модалки архива
 function showImageArchiveModal() {
     const modal = document.getElementById('image-archive-modal');
     const imageGrid = document.getElementById('image-grid');
@@ -108,11 +92,13 @@ function showImageArchiveModal() {
         img.alt = `Архивное изображение ${index + 1}`;
         img.onerror = () => {
             console.error(`Failed to load image: ${src}`);
-            alert('Ошибка загрузки изображения.');
+            img.src = '';
+            img.alt = 'Ошибка загрузки';
+            alert('Ошибка загрузки изображения из архива.');
         };
         img.addEventListener('click', () => {
             if (!window.quantumSketch) {
-                alert('Изображение будет выбрано после инициализации визуализации.');
+                alert('Изображение выбрано, но обработка будет доступна после загрузки модуля.');
                 modal.style.display = 'none';
                 return;
             }
@@ -125,10 +111,9 @@ function showImageArchiveModal() {
     modal.style.display = 'flex';
 }
 
-// Выбор изображения из архива
 function selectArchiveImage(src) {
-    console.log(`Loading archive image: ${src}`);
-    window.quantumSketch.loadImage(src, function (img) {
+    console.log(`Attempting to load archive image: ${src}`);
+    window.quantumSketch.loadImage(src, function(img) {
         window.img = img;
         window.initializeParticles(img);
         document.querySelectorAll('#thumbnail-portrait').forEach(thumbnail => {
@@ -136,31 +121,32 @@ function selectArchiveImage(src) {
             thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
         });
         window.moveToNextStep(2.1);
-    }, function (err) {
-        console.error(`Error loading archive image: ${err}`);
-        alert('Ошибка загрузки изображения.');
+    }, function(err) {
+        console.error(`Error loading archive image: ${src}`, err);
+        alert('Ошибка загрузки изображения из архива.');
     });
 }
 
-// Запуск камеры
 function startCamera() {
     const modal = document.getElementById('camera-modal');
     const video = document.getElementById('camera-video');
-    if (!modal || !video) return;
+    if (!modal || !video) {
+        console.error('Camera modal or video element not found');
+        return;
+    }
 
     navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
+        .then((stream) => {
             cameraStream = stream;
             video.srcObject = stream;
             modal.style.display = 'flex';
         })
-        .catch(err => {
-            console.error('Camera error:', err);
+        .catch((err) => {
+            console.error('Error accessing camera:', err);
             alert('Не удалось получить доступ к камере.');
         });
 }
 
-// Остановка камеры
 function stopCamera() {
     if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
@@ -168,42 +154,48 @@ function stopCamera() {
     }
 }
 
-// Захват фото
 function capturePhoto() {
-    if (!window.quantumSketch) {
-        alert('Невозможно обработать фото до инициализации визуализации.');
-        return;
-    }
-
     const video = document.getElementById('camera-video');
     const canvas = document.getElementById('camera-canvas');
     const modal = document.getElementById('camera-modal');
-    if (!video || !canvas || !modal) return;
+    if (!video || !canvas || !modal) {
+        console.error('Video, canvas, or modal not found');
+        return;
+    }
 
     canvas.width = 400;
     canvas.height = 400;
     const ctx = canvas.getContext('2d');
 
-    const videoAspect = video.videoWidth / video.videoHeight;
-    const canvasAspect = 1;
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
     let sx, sy, sWidth, sHeight;
 
+    const videoAspect = videoWidth / videoHeight;
+    const canvasAspect = 1;
     if (videoAspect > canvasAspect) {
-        sWidth = video.videoHeight * canvasAspect;
-        sHeight = video.videoHeight;
-        sx = (video.videoWidth - sWidth) / 2;
+        sWidth = videoHeight * canvasAspect;
+        sHeight = videoHeight;
+        sx = (videoWidth - sWidth) / 2;
         sy = 0;
     } else {
-        sWidth = video.videoWidth;
-        sHeight = video.videoWidth / canvasAspect;
+        sWidth = videoWidth;
+        sHeight = videoWidth / canvasAspect;
         sx = 0;
-        sy = (video.videoHeight - sHeight) / 2;
+        sy = (videoHeight - sHeight) / 2;
     }
 
     ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
 
+    if (!window.quantumSketch) {
+        alert('Фото сделано, но обработка будет доступна после загрузки модуля.');
+        modal.style.display = 'none';
+        stopCamera();
+        return;
+    }
+
     const imageUrl = canvas.toDataURL('image/png');
-    window.quantumSketch.loadImage(imageUrl, function (img) {
+    window.quantumSketch.loadImage(imageUrl, function(img) {
         window.img = img;
         window.initializeParticles(img);
         document.querySelectorAll('#thumbnail-portrait').forEach(thumbnail => {
@@ -213,15 +205,14 @@ function capturePhoto() {
         window.moveToNextStep(2.1);
         stopCamera();
         modal.style.display = 'none';
-    }, function (err) {
-        console.error('Error loading photo:', err);
+    }, function(err) {
+        console.error('Error loading captured image:', err);
         alert('Ошибка обработки фото.');
     });
 }
 
-// Инициализация шагов
 function initializeSteps() {
-    var steps = document.querySelectorAll('.step');
+    const steps = document.querySelectorAll('.step');
     steps.forEach((step, index) => {
         step.style.display = index === 0 ? 'flex' : 'none';
     });
@@ -230,14 +221,18 @@ function initializeSteps() {
     document.querySelectorAll('.continue').forEach(button => {
         button.addEventListener('click', () => {
             const nextStep = stepTransitions[window.currentStep];
-            if (nextStep !== undefined) window.moveToNextStep(nextStep);
+            if (nextStep !== undefined) {
+                window.moveToNextStep(nextStep);
+            }
         });
     });
 
     document.querySelectorAll('.back').forEach(button => {
         button.addEventListener('click', () => {
             const prevStep = stepTransitionsBack[window.currentStep];
-            if (prevStep !== undefined) window.moveToNextStep(prevStep);
+            if (prevStep !== undefined) {
+                window.moveToNextStep(prevStep);
+            }
         });
     });
 
@@ -249,14 +244,12 @@ function initializeSteps() {
 
     const closeModal = document.getElementById('close-modal');
     if (closeModal) closeModal.addEventListener('click', () => {
-        const modal = document.getElementById('image-archive-modal');
-        if (modal) modal.style.display = 'none';
+        document.getElementById('image-archive-modal').style.display = 'none';
     });
 
     const closeCameraModal = document.getElementById('close-camera-modal');
     if (closeCameraModal) closeCameraModal.addEventListener('click', () => {
-        const modal = document.getElementById('camera-modal');
-        if (modal) modal.style.display = 'none';
+        document.getElementById('camera-modal').style.display = 'none';
         stopCamera();
     });
 
@@ -268,13 +261,11 @@ function initializeSteps() {
             window.initAudioContext();
         }
     }, { once: true });
-
-    const canvas = document.querySelector('#quantumCanvas');
-    if (canvas) canvas.style.display = 'none';
 }
 
 function showStep(stepIndex) {
-    document.querySelectorAll('.step').forEach(step => {
+    const steps = document.querySelectorAll('.step');
+    steps.forEach(step => {
         const stepId = step.id.replace('step-', '');
         const isActive = stepId === stepIndex.toString();
         step.style.display = isActive ? 'flex' : 'none';
@@ -292,10 +283,12 @@ function showStep(stepIndex) {
     window.currentStep = stepIndex;
 }
 
-window.moveToNextStep = function (stepIndex) {
+window.moveToNextStep = function(stepIndex) {
     showStep(stepIndex);
     const canvas = document.querySelector('#quantumCanvas');
-    if (canvas) canvas.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
+    if (canvas) {
+        canvas.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
+    }
 };
 
 document.addEventListener('DOMContentLoaded', initializeSteps);
