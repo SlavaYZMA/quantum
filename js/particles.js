@@ -194,21 +194,71 @@ function setup() {
     canvas.parent('canvas-container');
     console.log('Canvas created and parented to canvas-container');
 }
-
-// p5.js draw function for quantum animation
 function draw() {
     console.log('p5.js draw called');
-    if (window.currentStep !== 4 && window.currentStep !== 5) return;
-    background(0);
-    if (!window.particles || !window.quantumStates) {
-        console.warn('Particles or quantum states not initialized');
+    if (window.currentStep !== 7 && window.currentStep !== 8) return; // step-4 (индекс 7), step-5 (индекс 8)
+    background(0); // Очистка canvas черным фоном
+    if (window.decompositionTimer === undefined) window.decompositionTimer = 0;
+    if (window.globalPhase === undefined) window.globalPhase = 'chaos';
+    if (!window.particles || !window.quantumStates || window.particles.length === 0 || window.quantumStates.length === 0) {
+        console.warn('Particles or quantum states not initialized', {
+            particles: window.particles ? window.particles.length : 'undefined',
+            quantumStates: window.quantumStates ? window.quantumStates.length : 'undefined'
+        });
+        return;
+    }
+    const collapsedCount = window.particles.filter(p => p.collapsed).length;
+    console.log('Collapsed particles:', collapsedCount, 'Total particles:', window.particles.length);
+    window.decompositionTimer += 0.015; // Обновляем таймер для анимации
+    window.updateParticles(window.quantumSketch); // Обновляем частицы
+    window.particles.forEach((particle, index) => {
+        const state = window.quantumStates[index];
+        console.log('Drawing particle', index, 'at', particle.x, particle.y, 'collapsed:', particle.collapsed, 'alpha:', state.a);
+        if (!particle.collapsed) {
+            drawShape(window.quantumSketch, particle.x, particle.y, particle.size, particle.shape, particle.phase, particle.spin, particle.spinPhase, state.r, state.g, state.b, state.a || 180, particle.featureWeight, 1 + 0.3 * Math.sin(particle.pulsePhase + particle.spin));
+            if (state.wavePacketAlpha > 0) {
+                drawWavePacket(window.quantumSketch, particle.x, particle.y, particle.uncertaintyRadius, state.r, state.g, state.b, state.wavePacketAlpha);
+            }
+            if (state.tunnelFlash > 0) {
+                window.quantumSketch.fill(204, 51, 51, state.tunnelFlash * 2.5);
+                window.quantumSketch.ellipse(particle.x, particle.y, particle.size + 2 * (1 + 0.3 * Math.sin(particle.pulsePhase + particle.spin)), particle.size + 2 * (1 + 0.3 * Math.sin(particle.pulsePhase + particle.spin)));
+            }
+        } else {
+            window.quantumSketch.fill(state.r, state.g, state.b, 255); // Полная непрозрачность для коллапса
+            window.quantumSketch.ellipse(particle.x, particle.y, particle.size, particle.size);
+        }
+    });
+    // Рендеринг ветвящихся частиц
+    window.branchParticles.forEach(bp => bp.show(window.quantumSketch));
+    // Рендеринг мыши
+    drawMouseWave(window.quantumSketch);
+}
+
+// p5.js draw function for quantum animation
+window.updateParticles = function(sketch) {
+    console.log('updateParticles called, decompositionTimer:', window.decompositionTimer, 'globalPhase:', window.globalPhase);
+    if (!sketch || !window.particles || window.particles.length === 0 || !window.quantumStates || window.quantumStates.length === 0) {
+        console.error('Cannot update particles:', {
+            sketch: !!sketch,
+            particlesLength: window.particles ? window.particles.length : 0,
+            quantumStatesLength: window.quantumStates ? window.quantumStates.length : 0
+        });
+        if (window.globalMessageCooldown <= 0) {
+            window.terminalMessages.push(getRandomMessage('error', { index: 0 }));
+            window.updateTerminalLog();
+            window.globalMessageCooldown = 200;
+        }
+        return;
+    }
+    if (window.currentStep !== 7 && window.currentStep !== 8) {
+        console.log('updateParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
         return;
     }
     window.particles.forEach((particle, index) => {
         const state = window.quantumStates[index];
         if (!particle.collapsed) {
-            let dx = mouseX - particle.x;
-            let dy = mouseY - particle.y;
+            let dx = sketch.mouseX - particle.x;
+            let dy = sketch.mouseY - particle.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
             if (distance < window.mouseInfluenceRadius) {
                 particle.velocityX += dx * 0.01 * particle.featureWeight;
@@ -226,12 +276,7 @@ function draw() {
             particle.velocityX *= 0.95;
             particle.velocityY *= 0.95;
             particle.phase += particle.frequency;
-            let offset = Math.sin(particle.phase) * particle.uncertaintyRadius;
-            fill(state.r, state.g, state.b, state.a);
-            ellipse(particle.x + offset, particle.y + offset, particle.size, particle.size);
-        } else {
-            fill(state.r, state.g, state.b, state.a);
-            ellipse(particle.x, particle.y, particle.size, particle.size);
+            state.wavePacketAlpha = 50 * state.probability * (1 + 0.3 * Math.sin(particle.pulsePhase + particle.spin));
         }
     });
 }
@@ -336,7 +381,8 @@ window.initializeParticles = function(img) {
         b: Math.floor(totalB / pixelCount)
     };
 
-    try {
+    console.log('window.img:', window.img, 'img.pixels:', window.img ? window.img.pixels : 'undefined');
+try {
         if (!img.pixels || img.pixels.length === 0) {
             console.error('Error: img.pixels is empty or not loaded');
             window.terminalMessages.push(getRandomMessage('initializeError'));
@@ -416,6 +462,7 @@ window.initializeParticles = function(img) {
         }
 
         console.log('Initialized ' + window.particles.length + ' particles, valid: ' + validParticles);
+        console.log('Particles initialized:', window.particles.length, 'Quantum states:', window.quantumStates.length);
         window.terminalMessages.push(getRandomMessage('initializeSuccess', { validParticles }));
         window.updateTerminalLog();
         if (typeof window.playInitialization === 'function') {
@@ -510,10 +557,10 @@ window.updateParticles = function(sketch) {
         }
         return;
     }
-    if (window.currentStep !== 4 && window.currentStep !== 5) {
-        console.log('updateParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
-        return;
-    }
+    if (window.currentStep !== 7 && window.currentStep !== 8) {
+    console.log('updateParticles skipped: not on step 4 or 5, currentStep: ' + window.currentStep);
+    return;
+}
     let messageAddedThisFrame = false;
     if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
         window.terminalMessages.push(getRandomMessage('update', { phase: window.globalPhase }));
@@ -674,7 +721,7 @@ window.updateParticles = function(sketch) {
 
             if (window.currentStep === 4 || window.currentStep === 5) {
                 p.decompositionProgress = Math.min(1, p.decompositionProgress + 0.02);
-                state.a = Math.floor(p.decompositionProgress * 180);
+                state.a = Math.floor(p.decompositionProgress * 180) || 180; // Гарантируем видимость
 
                 if (window.decompositionTimer < 4) {
                     p.shape = 'pixel';
