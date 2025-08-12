@@ -1,168 +1,197 @@
-@import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,700;1,400&display=swap'); /* Добавляем Spectral для самобытности */
-
 :root {
-    --quantum-indigo: #1a0a3a; /* Muted deep base */
-    --quantum-orange: #ff8c00; /* Warm accent for collapse */
-    --quantum-gradient: linear-gradient(135deg, var(--quantum-indigo), rgba(255,140,0,0.2)); /* Subtle surreal gradient */
-    --quantum-noise: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100" height="100" filter="url(%23n)"/%3E%3C/svg%3E'); /* Квантовый шум для арт-хауса */
-    --text-serif: 'Spectral', serif; /* Retro-serif для timelessness */
-    --text-mono: 'IBM Plex Mono', monospace;
+    --bg-primary: #1A1A1A; /* Тёмный серый для фона */
+    --text-primary: #F5F5F5; /* Светлый текст */
+    --accent-blue: #4A90E2; /* Глубокий синий акцент */
+    --accent-red: #D0021B; /* Бордовый для коллапса */
+    --border-gray: #E0E0E0; /* Серый для границ */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Source Sans Pro', sans-serif;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background: var(--quantum-gradient);
-    color: #e0e0ff;
-    font-family: var(--text-serif); /* Основной шрифт - Spectral для самобытности */
-    font-size: 1rem; /* Base для rem */
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 1.125rem; /* 18px для читаемости */
+    line-height: 1.6;
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
     position: relative;
-    perspective: 1500px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background: var(--quantum-noise); /* Noise вместо particles для surreal */
-    mix-blend-mode: screen;
-    opacity: 0.3; /* Subtle */
 }
 
 .step {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 90vw;
-    max-width: 56.25rem; /* 900px в rem */
-    padding: 2.5rem;
-    background: rgba(26, 10, 58, 0.6); /* Muted indigo */
-    border: 2px dashed rgba(255,140,0,0.5); /* Dashed для арт-хауса */
-    border-radius: 1rem;
-    box-shadow: 0 0 0.625rem rgba(255,140,0,0.3); /* Subtle glow */
-    transform: translate(-50%, -50%) translateZ(-800px) rotateY(5deg); /* Легкая асимметрия */
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 1200px;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.05); /* Лёгкая прозрачность */
+    border: 1px solid var(--border-gray);
+    border-radius: 0; /* Прямоугольный для минимализма */
     opacity: 0;
-    transition: transform 0.8s ease, opacity 0.8s ease, border-color 0.5s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Чтобы buttons не перекрывали */
-    min-height: 50vh; /* Auto-adapt */
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Асимметрия */
+    gap: 2rem;
+    align-items: start;
 }
 
 .step.active {
-    transform: translate(-50%, -50%) translateZ(0) rotateY(0deg);
     opacity: 1;
-    border-color: var(--quantum-orange);
+    transform: translate(-50%, -50%);
+}
+
+.step-asymmetric {
+    grid-template-columns: 1fr 3fr; /* Усиленная асимметрия для креативности */
 }
 
 .text-block {
-    padding: 1.25rem;
-    margin-bottom: 1.875rem;
-    text-align: center;
-    border-radius: 0.9375rem;
-    box-shadow: 0 0 0.3125rem rgba(255,140,0,0.3);
-    backdrop-filter: blur(0.0625rem);
-    font-style: italic; /* Subtle surreal tilt */
+    padding: 1.5rem;
+    white-space: pre-wrap;
+    text-align: left; /* Асимметричный текст */
 }
 
-.text-block div {
-    margin-bottom: 0.9375rem;
-    color: #ffdab9; /* Peach для warmth */
-    font-size: 1.75rem;
-    text-shadow: 0 0 0.125rem var(--quantum-orange);
-    animation: typewriter 3s steps(60, end) forwards, blink-caret 1s step-end infinite; /* Быстрее */
+.text-block h2 {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent-blue);
+}
+
+.text-block p {
+    margin-bottom: 1rem;
+    animation: fade-in 1s ease forwards;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .button-block {
     display: flex;
-    gap: 0.9375rem;
     flex-wrap: wrap;
-    justify-content: center;
-    padding: 1.25rem;
-    position: relative; /* No absolute, чтобы не overlap */
+    gap: 1rem;
+    justify-content: flex-start; /* Асимметрия */
+    margin-top: 2rem;
 }
 
 button {
-    padding: 1.25rem 2.5rem;
-    border: 2px dashed var(--quantum-orange); /* Dashed для самобытности */
-    border-radius: 0.9375rem;
+    padding: 1rem 2rem;
+    border: 1px solid var(--accent-blue);
+    border-radius: 0;
     cursor: pointer;
-    font-family: var(--text-serif);
-    font-size: 1.25rem;
-    background: transparent; /* Minimal, no gradient */
-    color: #ffdab9;
-    transition: transform 0.3s ease, box-shadow 0.3s; /* Subtle hover */
+    font-family: var(--font-body);
+    font-size: 1rem;
+    background: transparent;
+    color: var(--accent-blue);
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 0.625rem var(--quantum-orange);
+    background: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
-    width: min(80vw, 50rem); /* Responsive */
+    width: 100%;
     height: auto;
-    aspect-ratio: 1/1;
-    border: 2px dashed var(--quantum-orange);
-    border-radius: 1.25rem;
-    box-shadow: 0 0 0.625rem rgba(255,140,0,0.4);
-    transition: box-shadow 0.5s; /* Subtle glow on hover */
+    aspect-ratio: 1 / 1; /* Квадратный для canvas */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-gray);
+}
+
+.thumbnail-portrait {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--border-gray);
+    object-fit: contain;
 }
 
 .terminal-log {
-    width: min(80vw, 31.25rem);
-    height: min(50vh, 25rem);
-    background: rgba(26,10,58,0.8);
-    color: #ffdab9;
-    font-family: var(--text-mono); /* Mono only here */
-    font-size: 1.125rem;
-    padding: 1.5625rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    padding: 1rem;
     overflow-y: auto;
-    border-radius: 0.9375rem;
-    box-shadow: 0 0 0.625rem rgba(255,140,0,0.4);
+    max-height: 400px;
+    font-size: 0.875rem;
 }
 
-.portrait-terminal-wrapper {
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
-    gap: 1.25rem;
     justify-content: center;
-    align-items: flex-start;
-    flex-wrap: wrap; /* Для mobile */
+    align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
-    background: rgba(26,10,58,0.7);
-    padding: 2.5rem;
-    max-width: 95vw;
-    max-height: 95vh;
-    border: 2px dashed var(--quantum-orange);
-    border-radius: 1.25rem;
-    box-shadow: 0 0 0.625rem rgba(255,140,0,0.95);
-    transition: transform 0.5s; /* Subtle appear */
+    background: var(--bg-primary);
+    padding: 2rem;
+    max-width: 80%;
+    max-height: 80%;
+    overflow: auto;
+    border: 1px solid var(--border-gray);
 }
 
-@media (min-width: 768px) and (max-width: 1024px) { /* Tablets */
-    .step { padding: 2rem; font-size: 1.1rem; }
-    button { padding: 1rem 2rem; }
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
 }
 
-@media (min-width: 1025px) { /* Large screens */
-    .step { max-width: 60rem; }
+.archive-image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid var(--border-gray);
+    cursor: pointer;
 }
 
-@media (max-width: 600px) {
-    .step { padding: 1.25rem; }
-    #portrait-animation-container-step-4, #portrait-animation-container-step-5 { width: 90vw; }
-    .terminal-log { width: 90vw; height: 40vh; }
-    .portrait-terminal-wrapper { flex-direction: column; }
-    button { padding: 0.9375rem 1.875rem; font-size: 1.125rem; }
-    .text-block div { font-size: 1.5rem; }
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 100;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-blue);
+    transition: width 0.5s ease;
+}
+
+@media (max-width: 768px) {
+    .step {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+    }
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    .text-block h2 {
+        font-size: 2rem;
+    }
+    button {
+        width: 100%;
+    }
 }
