@@ -1,5 +1,15 @@
 console.log('main.js loaded');
 
+window.setLanguageAndStay = function (lang) {
+    try {
+        localStorage.setItem('lang', lang);
+    } catch (e) {
+        console.error('Не удалось сохранить язык:', e);
+    }
+    console.log('Language set to:', lang);
+    location.reload(); // или обновить контент без перезагрузки
+};
+
 window.currentStep = 0;
 window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
