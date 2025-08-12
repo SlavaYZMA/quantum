@@ -109,17 +109,27 @@ function capturePhoto() {
 }
 
 function selectArchiveImage(src) {
-    window.loadImage(src, img => {
-        window.img = img;
-        window.initializeParticles(img);
-        document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = src);
-        const archiveSection = document.getElementById('image-archive-section');
+    const archiveSection = document.getElementById('image-archive-section');
+    try {
+        window.loadImage(src, img => {
+            window.img = img;
+            window.initializeParticles(img);
+            document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = src);
+            archiveSection.classList.remove('visible');
+            setTimeout(() => {
+                archiveSection.style.display = 'none';
+                moveToNextStep('2.1');
+            }, 500); // Match CSS transition duration
+        });
+    } catch (err) {
+        console.error('Error in selectArchiveImage:', err);
+        // Proceed to step-2.1 even if p5.js throws an error
         archiveSection.classList.remove('visible');
         setTimeout(() => {
             archiveSection.style.display = 'none';
             moveToNextStep('2.1');
-        }, 500); // Match CSS transition duration
-    });
+        }, 500);
+    }
 }
 
 window.moveToNextStep = function(stepIndex) {
