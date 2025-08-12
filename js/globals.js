@@ -1,183 +1,187 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Portrait</title>
-    <link rel="icon" href="data:;base64,=">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-    <script src="./js/globals.js"></script>
-    <script src="./js/particles.js"></script>
-    <script src="./js/observer.js"></script>
-    <script src="./js/audio.js"></script>
-    <script src="./js/textSteps.js"></script>
-    <script src="./js/utils.js"></script>
-    <script src="./js/text-flicker.js"></script>
-    <script src="./js/main.js"></script>
-</head>
-<body>
-    <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
-    </div>
-    <div id="language-switch">
-        <button onclick="window.setLanguageAndStay('ru')">RU</button>
-        <button onclick="window.setLanguageAndStay('en')">ENG</button>
-    </div>
-    <nav id="menu">
-        <ul>
-            <li><a href="#step-0" data-step="0" data-i18n="menu_language_selection">Выбор языка</a></li>
-            <li><a href="#step-1" data-step="1" data-i18n="menu_introduction">Введение</a></li>
-            <li><a href="#step-2" data-step="2" data-i18n="menu_image_source">Источник изображения</a></li>
-            <li><a href="#step-2.1" data-step="2.1" data-i18n="menu_image_instructions">Инструкции по изображению</a></li>
-            <li><a href="#step-3" data-step="3" data-i18n="menu_quantum_explanation">Квантовое объяснение</a></li>
-            <li><a href="#step-4" data-step="4" data-i18n="menu_portrait_generation">Генерация портрета</a></li>
-            <li><a href="#step-5" data-step="5" data-i18n="menu_observation_recording">Запись наблюдения</a></li>
-            <li><a href="#step-6" data-step="6" data-i18n="menu_sharing">Поделиться</a></li>
-            <li><a href="#step-7" data-step="7" data-i18n="menu_conclusion">Заключение</a></li>
-        </ul>
-    </nav>
-    <button id="hamburger">&#9776;</button>
-    <main id="content">
-        <section id="step-0" class="step">
-            <div class="text-block" data-i18n="step0_text">Пожалуйста, выберите язык RU / ENG</div>
-        </section>
-        <section id="step-1" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step1_title"></h2>
-                <p data-i18n="step1_text1"></p>
-                <p data-i18n="step1_text2"></p>
-                <p data-i18n="step1_text3"></p>
-            </div>
-            <div class="button-block">
-                <button class="continue" data-i18n="continue">Продолжить</button>
-                <button class="back" data-i18n="back">Назад</button>
-            </div>
-        </section>
-        <section id="step-2" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step2_title"></h2>
-                <p data-i18n="step2_text1"></p>
-            </div>
-            <div class="button-block">
-                <button id="uploadImage" data-i18n="upload_image">Загрузить изображение</button>
-                <button id="useCamera" data-i18n="use_camera">Включить камеру</button>
-                <button id="useArchive" data-i18n="use_archive">Выбрать из архива</button>
-                <button class="back" data-i18n="back">Назад</button>
-            </div>
-        </section>
-        <section id="image-archive-section" class="step step-subsection" style="display: none;">
-            <div class="section-content">
-                <span id="close-archive-section" class="close" aria-label="Close archive">×</span>
-                <div class="image-grid" id="image-grid"></div>
-            </div>
-        </section>
-        <section id="camera-section" class="step step-subsection" style="display: none;">
-            <div class="section-content">
-                <span id="close-camera-section" class="close" aria-label="Close camera">×</span>
-                <video id="camera-video" autoplay style="width: 100%; max-width: 640px; height: auto;"></video>
-                <canvas id="camera-canvas" style="display: none;"></canvas>
-                <div class="button-block">
-                    <button id="capture-photo" data-i18n="capture_photo">Сделать фото</button>
-                </div>
-            </div>
-        </section>
-        <section id="step-2.1" class="step" style="display: none;">
-            <div id="canvas-container" style="display: none;"></div>
-            <div class="text-block">
-                <p data-i18n="step2_text2"></p>
-                <p data-i18n="step2_text3"></p>
-                <p data-i18n="step2_text4"></p>
-            </div>
-            <div class="button-block">
-                <button class="continue" data-i18n="continue">Продолжить</button>
-                <button class="back" data-i18n="back">Назад</button>
-            </div>
-        </section>
-        <section id="step-3" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step3_title"></h2>
-                <p data-i18n="step3_text1"></p>
-                <p data-i18n="step3_text2"></p>
-                <p data-i18n="step3_text3"></p>
-                <p data-i18n="step3_text4"></p>
-                <p data-i18n="step3_text5"></p>
-                <p data-i18n="step3_text6"></p>
-                <p data-i18n="step3_text7"></p>
-                <p data-i18n="step3_text8"></p>
-            </div>
-            <div class="button-block">
-                <button class="continue" data-i18n="continue">Продолжить</button>
-                <button class="back" data-i18n="back">Назад</button>
-            </div>
-        </section>
-        <section id="step-4" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step4_title"></h2>
-                <p data-i18n="step4_text1"></p>
-                <p data-i18n="step4_text2"></p>
-                <p data-i18n="step4_text3"></p>
-            </div>
-            <div class="portrait-wrapper">
-                <img class="thumbnail-portrait" alt="Thumbnail of quantum portrait" />
-                <div class="portrait-terminal-wrapper">
-                    <div id="portrait-animation-container-step-4"></div>
-                    <div class="terminal-log" id="terminal-log-step-4"></div>
-                </div>
-            </div>
-            <div class="button-block">
-                <button class="continue" data-i18n="continue">Продолжить</button>
-                <button class="back" data-i18n="back">Назад</button>
-            </div>
-        </section>
-        <section id="step-5" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step5_title"></h2>
-                <p data-i18n="step5_text1"></p>
-                <p data-i18n="step5_text2"></p>
-                <p data-i18n="step5_text3"></p>
-            </div>
-            <div class="portrait-wrapper">
-                <img class="thumbnail-portrait" alt="Thumbnail of quantum portrait" />
-                <div class="portrait-terminal-wrapper">
-                    <div id="portrait-animation-container-step-5"></div>
-                    <div class="terminal-log" id="terminal-log-step-5"></div>
-                </div>
-            </div>
-            <div class="button-block">
-                <input id="portraitName" type="text" data-i18n-placeholder="portrait_name_placeholder">
-                <button id="saveImage" data-i18n="save_observation">[ЗАПИСАТЬ НАБЛЮДЕНИЕ]</button>
-                <button class="continue" data-i18n="continue">Продолжить</button>
-                <button class="back" data-i18n="back">Назад</button>
-            </div>
-        </section>
-        <section id="step-6" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step6_title"></h2>
-                <p data-i18n="step6_text1"></p>
-                <p data-i18n="step6_text2"></p>
-                <p data-i18n="step6_text3"></p>
-            </div>
-            <div class="button-block">
-                <button id="shareObservation" data-i18n="share_observation">[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]</button>
-                <button class="continue" data-i18n="continue">Продолжить</button>
-                <button class="back" data-i18n="back">Назад</button>
-            </div>
-        </section>
-        <section id="step-7" class="step" style="display: none;">
-            <div class="text-block">
-                <p data-i18n="step7_text1"></p>
-                <p data-i18n="step7_text2"></p>
-                <p data-i18n="step7_text3"></p>
-            </div>
-            <div class="button-block">
-                <button id="restart" data-i18n="restart">[↻ НАЧАТЬ СНАЧАЛА]</button>
-                <button id="archive" data-i18n="archive">[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]</button>
-                <button id="aboutAuthors" data-i18n="about_authors">[ОБ АВТОРАХ]</button>
-                <button class="back" data-i18n="back">Назад</button>
-            </div>
-        </section>
-    </main>
-</body>
-</html>
+// globals.js
+window.currentLanguage = 'ru'; // По умолчанию русский
+
+const translations = {
+    ru: {
+        step0_text: "Пожалуйста, выберите язык RU / ENG",
+        step1_title: "СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН",
+        step1_text1: "> Чему Шредингер может научить нас в области цифровой идентификации?",
+        step1_text2: "> Добро пожаловать в экспериментальную зону.",
+        step1_text3: "> Здесь наблюдение = вмешательство",
+        step2_title: "Шаг 1: Сканируйте лицо суперпозиции.",
+        step2_text1: "Вы можете загрузить изображение или выбрать вариант из архива.",
+        step2_text2: "> Изображение принято.",
+        step2_text3: "> Запускается волновая функция.",
+        step2_text4: "> Система готова к инициализации.",
+        step3_title: "Шаг 2: Инициализация",
+        step3_text1: "> Изображение преобразовано в пиксельную сетку.",
+        step3_text2: "> Каждому пикселю назначены параметры (x, y, brightness, color)",
+        step3_text3: "> На их основе построена волновая функция: ψ(x, y, t)",
+        step3_text4: "Уравнение эволюции:",
+        step3_text5: "iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)",
+        step3_text6: "> Потенциал V(x, y) формируется из визуальных характеристик изображения.",
+        step3_text7: "> Система переходит в режим временной симуляции.",
+        step3_text8: "> Портрет существует как совокупность возможных состояний.",
+        step4_title: "Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ",
+        step4_text1: "> Двигайте курсором по изображению.",
+        step4_text2: "> Каждый ваш жест запускает коллапс.",
+        step4_text3: "> Система реагирует. Наблюдаемый образ формируется здесь и сейчас.",
+        step5_title: "Шаг 4: ФИКСАЦИЯ",
+        step5_text1: "> Портрет — это процесс.",
+        step5_text2: "> Но ты можешь зафиксировать один миг.",
+        step5_text3: "> Это будет один из возможных тебя.",
+        step6_title: "Шаг 5: РЕАКЦИЯ СИСТЕМЫ",
+        step6_text1: "> Это не портрет.",
+        step6_text2: "> Это — реакция системы на тебя.",
+        step6_text3: "> Ты повлиял на исход.",
+        step7_title: "Заключение",
+        step7_text1: "Ты — не единственный наблюдатель.",
+        step7_text2: "Каждое наблюдение — это акт, формирующий образ.",
+        step7_text3: "Здесь ты — одновременно субъект и объект.",
+        continue: "Продолжить",
+        upload_image: "Загрузить изображение",
+        use_camera: "Включить камеру",
+        use_archive: "Выбрать из архива",
+        save_observation: "[ЗАПИСАТЬ НАБЛЮДЕНИЕ]",
+        share_observation: "[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]",
+        restart: "[↻ НАЧАТЬ СНАЧАЛА]",
+        archive: "[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]",
+        about_authors: "[ОБ АВТОРАХ]",
+        back: "Назад",
+        portrait_name_placeholder: "Название портрета",
+        capture_photo: "Сделать фото",
+        // Переводы для меню
+        menu_language_selection: "Выбор языка",
+        menu_introduction: "Введение",
+        menu_image_source: "Источник изображения",
+        menu_image_instructions: "Инструкции по изображению",
+        menu_quantum_explanation: "Квантовое объяснение",
+        menu_portrait_generation: "Генерация портрета",
+        menu_observation_recording: "Запись наблюдения",
+        menu_sharing: "Поделиться",
+        menu_conclusion: "Заключение"
+    },
+    eng: {
+        step0_text: "Please select language RU / ENG",
+        step1_title: "STATUS: OBSERVER CONNECTED",
+        step1_text1: "> What can Schrödinger teach us about digital identity?",
+        step1_text2: "> Welcome to the experimental zone.",
+        step1_text3: "> Here observation = interference",
+        step2_title: "Step 1: Scan the face of superposition.",
+        step2_text1: "You can upload an image or select one from the archive.",
+        step2_text2: "> Image received.",
+        step2_text3: "> Wave function initiated.",
+        step2_text4: "> System ready for initialization.",
+        step3_title: "Step 2: Initialization",
+        step3_text1: "> Image converted into a pixel grid.",
+        step3_text2: "> Each pixel assigned parameters (x, y, brightness, color).",
+        step3_text3: "> Wave function constructed: ψ(x, y, t).",
+        step3_text4: "Evolution equation:",
+        step3_text5: "iℏ ∂ψ/∂t = Ĥψ, where Ĥ = -½∇² + V(x, y)",
+        step3_text6: "> Potential V(x, y) derived from image visual characteristics.",
+        step3_text7: "> System enters time simulation mode.",
+        step3_text8: "> Portrait exists as a superposition of possible states.",
+        step4_title: "Step 3: BEGIN OBSERVATION",
+        step4_text1: "> Move your cursor over the image.",
+        step4_text2: "> Each gesture triggers a collapse.",
+        step4_text3: "> The system reacts. The observed image forms here and now.",
+        step5_title: "Step 4: FIXATION",
+        step5_text1: "> The portrait is a process.",
+        step5_text2: "> But you can fix a single moment.",
+        step5_text3: "> This will be one of the possible yous.",
+        step6_title: "Step 5: SYSTEM REACTION",
+        step6_text1: "> This is not a portrait.",
+        step6_text2: "> This is the system’s reaction to you.",
+        step6_text3: "> You influenced the outcome.",
+        step7_title: "Conclusion",
+        step7_text1: "You are not the only observer.",
+        step7_text2: "Each observation is an act that shapes the image.",
+        step7_text3: "Here, you are both subject and object.",
+        continue: "Continue",
+        upload_image: "Upload Image",
+        use_camera: "Use Camera",
+        use_archive: "Select from Archive",
+        save_observation: "[RECORD OBSERVATION]",
+        share_observation: "[SHARE OBSERVATION]",
+        restart: "[↻ START OVER]",
+        archive: "[⧉ GO TO OBSERVATION ARCHIVE]",
+        about_authors: "[ABOUT AUTHORS]",
+        back: "Back",
+        portrait_name_placeholder: "Portrait name",
+        capture_photo: "Capture Photo",
+        // Переводы для меню
+        menu_language_selection: "Language Selection",
+        menu_introduction: "Introduction",
+        menu_image_source: "Image Source",
+        menu_image_instructions: "Image Instructions",
+        menu_quantum_explanation: "Quantum Explanation",
+        menu_portrait_generation: "Portrait Generation",
+        menu_observation_recording: "Observation Recording",
+        menu_sharing: "Sharing",
+        menu_conclusion: "Conclusion"
+    }
+};
+
+window.setLanguage = (lang) => {
+    console.log(`setLanguage called with: ${lang}`);
+    window.currentLanguage = lang; // Сохраняем текущий язык
+    const elements = document.querySelectorAll('[data-i18n]');
+    console.log(`Language elements found: ${elements.length}`);
+    elements.forEach((element, index) => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+            console.log(`Updated text at index ${index} (${key}): ${translations[lang][key]}`);
+        } else {
+            console.warn(`Translation missing for key: ${key} in language: ${lang}`);
+        }
+    });
+    // Обновление placeholder
+    const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+    placeholders.forEach((el) => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[lang][key]) {
+            el.placeholder = translations[lang][key];
+            console.log(`Updated placeholder (${key}): ${translations[lang][key]}`);
+        }
+    });
+    // Обновление меню
+    const menuItems = document.querySelectorAll('#menu a');
+    const menuKeys = [
+        'menu_language_selection',
+        'menu_introduction',
+        'menu_image_source',
+        'menu_image_instructions',
+        'menu_quantum_explanation',
+        'menu_portrait_generation',
+        'menu_observation_recording',
+        'menu_sharing',
+        'menu_conclusion'
+    ];
+    menuItems.forEach((item, index) => {
+        const key = menuKeys[index];
+        if (translations[lang][key]) {
+            item.textContent = translations[lang][key];
+            console.log(`Updated menu item ${index} (${key}): ${translations[lang][key]}`);
+        } else {
+            console.warn(`Menu translation missing for key: ${key} in language: ${lang}`);
+        }
+    });
+};
+
+window.setLanguageAndNext = (lang) => {
+    console.log(`setLanguageAndNext called with: ${lang}`);
+    window.setLanguage(lang);
+    window.moveToNextStep(1);
+};
+
+window.setLanguageAndStay = (lang) => {
+    console.log(`setLanguageAndStay called with: ${lang}`);
+    window.setLanguage(lang);
+    window.moveToNextStep('1');
+};
+
+window.noiseScale = 0.01;
+window.chaosFactor = 1.0;
+window.mouseInfluenceRadius = 50;
+window.frame = 0;
