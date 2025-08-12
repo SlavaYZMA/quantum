@@ -66,10 +66,7 @@ function showImageArchiveSection() {
         const img = document.createElement('img');
         img.src = src;
         img.className = 'archive-image';
-        img.onclick = () => {
-            selectArchiveImage(src);
-            section.style.display = 'none';
-        };
+        img.onclick = () => selectArchiveImage(src);
         grid.appendChild(img);
     });
     section.style.display = 'block';
@@ -102,7 +99,7 @@ function capturePhoto() {
     const ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, 400, 400);
     const url = canvas.toDataURL('image/png');
-    loadImage(url, img => {
+    window.loadImage(url, img => {
         window.img = img;
         window.initializeParticles(img);
         document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = url);
@@ -112,11 +109,16 @@ function capturePhoto() {
 }
 
 function selectArchiveImage(src) {
-    loadImage(src, img => {
+    window.loadImage(src, img => {
         window.img = img;
         window.initializeParticles(img);
         document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = src);
-        moveToNextStep('2.1');
+        const archiveSection = document.getElementById('image-archive-section');
+        archiveSection.classList.remove('visible');
+        setTimeout(() => {
+            archiveSection.style.display = 'none';
+            moveToNextStep('2.1');
+        }, 500); // Match CSS transition duration
     });
 }
 
@@ -173,7 +175,7 @@ window.updateTerminalLog = function() {
 
 window.setLanguageAndStay = function(lang) {
     window.setLanguage(lang);
-    moveToNextStep('1'); // Automatically move to step-1 after language selection
+    moveToNextStep('1');
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -203,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         input.accept = 'image/*';
         input.onchange = e => {
             const file = e.target.files[0];
-            loadImage(URL.createObjectURL(file), img => {
+            window.loadImage(URL.createObjectURL(file), img => {
                 window.img = img;
                 window.initializeParticles(img);
                 document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = URL.createObjectURL(file));
