@@ -35,30 +35,16 @@ button {
     transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
     font-family: 'Roboto Mono', monospace;
     font-size: 16px;
-    min-width: 120px; /* Prevent size reduction */
-    text-align: center; /* Ensure text stays centered */
+    min-width: 120px; /* Prevent perceived size reduction */
+    box-sizing: border-box; /* Ensure padding and border don't affect size */
+    text-align: center; /* Keep text centered */
 }
 
-/* Fix text visibility and prevent size reduction on hover */
+/* Fix text visibility on hover */
 button:hover {
     background: #00ffcc;
-    color: #ffffff; /* White text for high contrast on #00ffcc background */
-    transform: scale(1.05); /* Slight scale up, no reduction */
-}
-
-/* Specific button styles */
-button.continue, 
-button.back, 
-button#uploadImage, 
-button#useCamera, 
-button#useArchive, 
-button#capture-photo, 
-button#saveImage, 
-button#shareObservation, 
-button#restart, 
-button#archive, 
-button#aboutAuthors {
-    text-transform: uppercase; /* Consistent with your art-house style */
+    color: #ffffff; /* White text for high contrast */
+    transform: scale(1.05);
 }
 
 /* Progress bar at top */
@@ -93,12 +79,12 @@ button#aboutAuthors {
     border: none;
     background: transparent;
     font-weight: normal;
-    color: #dddddd; /* Ensure visibility */
+    color: #dddddd;
     transition: color 0.3s ease;
 }
 
 #language-switch button:hover {
-    color: #00ffcc; /* Consistent accent color */
+    color: #00ffcc;
 }
 
 #language-switch button.active {
