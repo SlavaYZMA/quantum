@@ -52,6 +52,10 @@ function typewriter(element, callback) {
     function typeNextDiv() {
         if (currentDivIndex >= divs.length) {
             console.log('Typewriter animation completed for all divs');
+            // Авто-подстройка высоты после анимации
+            element.style.height = 'auto';
+            const step = element.closest('.step');
+            if (step) step.style.height = 'auto';
             if (callback) callback();
             return;
         }
@@ -95,11 +99,12 @@ function showImageArchiveModal() {
         const img = document.createElement('img');
         img.src = src;
         img.className = 'archive-image';
-        img.alt = `Archive image ${index + 1}`;
+        img.alt = `Архивное изображение ${index + 1}`;
         img.onerror = () => {
             console.error(`Failed to load image: ${src}`);
             img.src = '';
             img.alt = 'Ошибка загрузки';
+            alert('Ошибка загрузки изображения из архива.');
         };
         img.addEventListener('click', () => {
             selectArchiveImage(src);
@@ -363,6 +368,14 @@ window.moveToNextStep = function(stepIndex) {
     } else {
         var canvas = document.querySelector('#quantumCanvas');
         if (canvas) canvas.style.display = 'none';
+    }
+};
+
+window.updateTerminalLog = function() {
+    const terminal = document.querySelector('.terminal-log[style*="display: block"]');
+    if (terminal) {
+        terminal.innerHTML = window.terminalMessages.join('<br>');
+        terminal.scrollTop = terminal.scrollHeight; // Авто-скролл к концу
     }
 };
 
