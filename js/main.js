@@ -235,12 +235,8 @@ function initializeSteps() {
         return;
     }
     steps.forEach(function(step, index) {
-        if (index === 0) {
-            step.classList.add('active');
-        } else {
-            step.classList.remove('active');
-        }
-        console.log('Step ' + step.id + ' initial class: ' + step.className);
+        step.style.display = index === 0 ? 'flex' : 'none';
+        console.log('Step ' + step.id + ' initial display: ' + step.style.display);
     });
     window.currentStep = 0;
 
@@ -343,9 +339,9 @@ function showStep(stepIndex) {
     steps.forEach(function(step) {
         var stepId = step.id.replace('step-', '');
         const isActive = stepId === stepIndex.toString();
+        step.style.display = isActive ? 'flex' : 'none';
         if (isActive) {
-            step.classList.add('active');
-            console.log('Activating step ' + stepId + ' with class: ' + step.className);
+            console.log('Displaying step ' + stepId + ' with display: ' + step.style.display);
             const textBlock = step.querySelector('.text-block');
             if (textBlock) {
                 textBlock.querySelectorAll('div').forEach(div => {
@@ -358,8 +354,6 @@ function showStep(stepIndex) {
             } else {
                 console.log('No text-block found for step ' + stepId);
             }
-        } else {
-            step.classList.remove('active');
         }
     });
     window.currentStep = stepIndex;
