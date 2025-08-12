@@ -1,291 +1,250 @@
+// main.js - Reworked for minimalist design with smooth animations and navigation
+
 console.log('main.js loaded');
 
-window.currentStep = 0;
+window.currentStep = 0; // Tracks the current visible step for progress and animations
 window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
 window.mouseInfluenceRadius = 50;
 
-// Переходы между шагами
-const stepTransitions = {
-    0: 1,
-    1: 2,
-    2: 2.1,
-    2.1: 3,
-    3: 4,
-    4: 5,
-    5: 6,
-    6: 7
-};
+// Define step IDs for navigation and progress
+const stepIds = ['step-0', 'step-1', 'step-2', 'step-2.1', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7'];
+const totalSteps = stepIds.length;
 
-const stepTransitionsBack = {
-    1: 0,
-    2: 1,
-    2.1: 2,
-    3: 2.1,
-    4: 3,
-    5: 4,
-    6: 5,
-    7: 6
-};
-
-// Изображения архива
+// Archive images (assuming public folder)
 const archiveImages = [
     '/public/images/image1.jpg',
     '/public/images/image2.jpg',
     '/public/images/image3.jpg'
 ];
 
+// Camera stream variable
 let cameraStream = null;
 
-// Анимация печатной машинки
-function typewriter(element, callback) {
-    const divs = element.querySelectorAll('div');
-    if (divs.length === 0) {
-        console.log('No divs for typewriter');
-        if (callback) callback();
-        return;
-    }
-
-    let currentDivIndex = 0;
-    function typeNextDiv() {
-        if (currentDivIndex >= divs.length) {
-            element.style.height = 'auto';
-            const step = element.closest('.step');
-            if (step) step.style.height = 'auto';
-            if (callback) callback();
-            return;
-        }
-
-        const div = divs[currentDivIndex];
-        const text = div.textContent.trim();
-        div.textContent = '';
-        div.style.visibility = 'visible';
-        const span = document.createElement('span');
-        span.className = 'typewriter-text';
-        div.appendChild(span);
-
+// Function for typewriter animation on text blocks (triggered when section visible)
+function typewriter(element) {
+    const elements = element.querySelectorAll('div, p, h2'); // Comment: Animates each child element in sequence for art-house reveal effect
+    let index = 0;
+    function typeNext() {
+        if (index >= elements.length) return;
+        const el = elements[index];
+        const text = el.textContent.trim();
+        el.textContent = '';
         let charIndex = 0;
         function typeChar() {
             if (charIndex < text.length) {
-                span.textContent += text[charIndex];
+                el.textContent += text[charIndex];
                 charIndex++;
-                const delay = 5 + Math.random() * 90;
-                setTimeout(typeChar, delay);
+                setTimeout(typeChar, 20 + Math.random() * 50); // Comment: Random delay for character typing to add challenge/organic feel
             } else {
-                currentDivIndex++;
-                typeNextDiv();
+                index++;
+                typeNext();
             }
         }
         typeChar();
     }
-    typeNextDiv();
+    typeNext();
 }
 
-// Показ модалки архива
+// Show image archive modal
 function showImageArchiveModal() {
     const modal = document.getElementById('image-archive-modal');
-    const imageGrid = document.getElementById('image-grid');
-    if (!modal || !imageGrid) {
-        console.error('Modal or image grid not found');
-        return;
-    }
-
-    imageGrid.innerHTML = '';
-    archiveImages.forEach((src, index) => {
+    const grid = document.getElementById('image-grid');
+    grid.innerHTML = '';
+    archiveImages.forEach(src => {
         const img = document.createElement('img');
         img.src = src;
         img.className = 'archive-image';
-        img.alt = `Архивное изображение ${index + 1}`;
-        img.onerror = () => {
-            console.error(`Failed to load image: ${src}`);
-            alert('Ошибка загрузки изображения.');
-        };
-        img.addEventListener('click', () => {
-            if (!window.quantumSketch) {
-                alert('Изображение будет выбрано после инициализации визуализации.');
-                modal.style.display = 'none';
-                return;
-            }
+        img.onclick = () => {
             selectArchiveImage(src);
             modal.style.display = 'none';
-        });
-        imageGrid.appendChild(img);
+        };
+        grid.appendChild(img);
     });
-
-    modal.style.display = 'flex';
+    modal.style.display = 'flex'; // Comment: Modal fades in via CSS transition
 }
 
-// Выбор изображения из архива
+// Select archive image
 function selectArchiveImage(src) {
-    console.log(`Loading archive image: ${src}`);
-    window.quantumSketch.loadImage(src, function (img) {
+    window.quantumSketch.loadImage(src, img => {
         window.img = img;
         window.initializeParticles(img);
-        document.querySelectorAll('#thumbnail-portrait').forEach(thumbnail => {
-            thumbnail.src = src;
-            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-        });
-        window.moveToNextStep(2.1);
-    }, function (err) {
-        console.error(`Error loading archive image: ${err}`);
-        alert('Ошибка загрузки изображения.');
+        document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = src);
+        moveToNextStep('2.1');
     });
 }
 
-// Запуск камеры
+// Start camera
 function startCamera() {
     const modal = document.getElementById('camera-modal');
     const video = document.getElementById('camera-video');
-    if (!modal || !video) return;
-
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-            cameraStream = stream;
-            video.srcObject = stream;
-            modal.style.display = 'flex';
-        })
-        .catch(err => {
-            console.error('Camera error:', err);
-            alert('Не удалось получить доступ к камере.');
-        });
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        cameraStream = stream;
+        video.srcObject = stream;
+        modal.style.display = 'flex';
+    }).catch(err => console.error('Camera error:', err));
 }
 
-// Остановка камеры
+// Stop camera
 function stopCamera() {
-    if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
-        cameraStream = null;
-    }
+    if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
 }
 
-// Захват фото
+// Capture photo from camera
 function capturePhoto() {
-    if (!window.quantumSketch) {
-        alert('Невозможно обработать фото до инициализации визуализации.');
-        return;
-    }
-
     const video = document.getElementById('camera-video');
     const canvas = document.getElementById('camera-canvas');
-    const modal = document.getElementById('camera-modal');
-    if (!video || !canvas || !modal) return;
-
     canvas.width = 400;
     canvas.height = 400;
     const ctx = canvas.getContext('2d');
-
-    const videoAspect = video.videoWidth / video.videoHeight;
-    const canvasAspect = 1;
-    let sx, sy, sWidth, sHeight;
-
-    if (videoAspect > canvasAspect) {
-        sWidth = video.videoHeight * canvasAspect;
-        sHeight = video.videoHeight;
-        sx = (video.videoWidth - sWidth) / 2;
-        sy = 0;
-    } else {
-        sWidth = video.videoWidth;
-        sHeight = video.videoWidth / canvasAspect;
-        sx = 0;
-        sy = (video.videoHeight - sHeight) / 2;
-    }
-
-    ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
-
-    const imageUrl = canvas.toDataURL('image/png');
-    window.quantumSketch.loadImage(imageUrl, function (img) {
+    ctx.drawImage(video, 0, 0, 400, 400); // Simplified crop for square
+    const url = canvas.toDataURL('image/png');
+    window.quantumSketch.loadImage(url, img => {
         window.img = img;
         window.initializeParticles(img);
-        document.querySelectorAll('#thumbnail-portrait').forEach(thumbnail => {
-            thumbnail.src = imageUrl;
-            thumbnail.style.display = (window.currentStep === 4 || window.currentStep === 5) ? 'block' : 'none';
-        });
-        window.moveToNextStep(2.1);
+        document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = url);
+        moveToNextStep('2.1');
         stopCamera();
-        modal.style.display = 'none';
-    }, function (err) {
-        console.error('Error loading photo:', err);
-        alert('Ошибка обработки фото.');
+        document.getElementById('camera-modal').style.display = 'none';
     });
 }
 
-// Инициализация шагов
-function initializeSteps() {
-    var steps = document.querySelectorAll('.step');
-    steps.forEach((step, index) => {
-        step.style.display = index === 0 ? 'flex' : 'none';
-    });
-    window.currentStep = 0;
-
-    document.querySelectorAll('.continue').forEach(button => {
-        button.addEventListener('click', () => {
-            const nextStep = stepTransitions[window.currentStep];
-            if (nextStep !== undefined) window.moveToNextStep(nextStep);
-        });
-    });
-
-    document.querySelectorAll('.back').forEach(button => {
-        button.addEventListener('click', () => {
-            const prevStep = stepTransitionsBack[window.currentStep];
-            if (prevStep !== undefined) window.moveToNextStep(prevStep);
-        });
-    });
-
-    const archiveButton = document.getElementById('useArchive');
-    if (archiveButton) archiveButton.addEventListener('click', showImageArchiveModal);
-
-    const cameraButton = document.getElementById('useCamera');
-    if (cameraButton) cameraButton.addEventListener('click', startCamera);
-
-    const closeModal = document.getElementById('close-modal');
-    if (closeModal) closeModal.addEventListener('click', () => {
-        const modal = document.getElementById('image-archive-modal');
-        if (modal) modal.style.display = 'none';
-    });
-
-    const closeCameraModal = document.getElementById('close-camera-modal');
-    if (closeCameraModal) closeCameraModal.addEventListener('click', () => {
-        const modal = document.getElementById('camera-modal');
-        if (modal) modal.style.display = 'none';
-        stopCamera();
-    });
-
-    const captureButton = document.getElementById('capture-photo');
-    if (captureButton) captureButton.addEventListener('click', capturePhoto);
-
-    document.addEventListener('click', () => {
-        if (typeof window.initAudioContext === 'function') {
-            window.initAudioContext();
-        }
-    }, { once: true });
-
-    const canvas = document.querySelector('#quantumCanvas');
-    if (canvas) canvas.style.display = 'none';
-}
-
-function showStep(stepIndex) {
-    document.querySelectorAll('.step').forEach(step => {
-        const stepId = step.id.replace('step-', '');
-        const isActive = stepId === stepIndex.toString();
-        step.style.display = isActive ? 'flex' : 'none';
-        if (isActive) {
-            const textBlock = step.querySelector('.text-block');
-            if (textBlock) {
-                textBlock.querySelectorAll('div').forEach(div => {
-                    div.style.visibility = 'hidden';
-                    div.textContent = div.textContent.trim();
-                });
-                typewriter(textBlock);
-            }
-        }
-    });
-    window.currentStep = stepIndex;
-}
-
-window.moveToNextStep = function (stepIndex) {
-    showStep(stepIndex);
-    const canvas = document.querySelector('#quantumCanvas');
-    if (canvas) canvas.style.display = (stepIndex === 4 || stepIndex === 5) ? 'block' : 'none';
+// Smooth scroll to step
+window.moveToNextStep = function(stepIndex) {
+    const id = `step-${stepIndex}`.replace('.', '.'); // Handle 2.1
+    const section = document.getElementById(id);
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth' }); // Comment: Smooth scroll animation (browser-native, ~400-600ms depending on distance)
+    }
 };
 
-document.addEventListener('DOMContentLoaded', initializeSteps);
+// Update terminal log
+window.updateTerminalLog = function() {
+    const terminals = document.querySelectorAll('.terminal-log');
+    terminals.forEach(terminal => {
+        terminal.innerHTML = window.terminalMessages.join('<br>');
+        terminal.scrollTop = terminal.scrollHeight;
+    });
+};
+
+// Language switch preserving position
+window.setLanguageAndStay = function(lang) {
+    const currentScroll = window.scrollY;
+    window.setLanguage(lang); // Assume defined in textSteps.js
+    setTimeout(() => window.scrollTo(0, currentScroll), 100); // Comment: Preserve scroll position after language change
+};
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', () => {
+    // Setup IntersectionObserver for fade-in, typewriter, active menu, progress
+    const observer = new IntersectionObserver(entries => {
+        let maxRatio = 0;
+        let currentId = '';
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible'); // Comment: Triggers fade-in animation on section enter
+                const textBlock = entry.target.querySelector('.text-block');
+                if (textBlock && !textBlock.classList.contains('animated')) {
+                    typewriter(textBlock); // Comment: Starts typewriter only once per section
+                    textBlock.classList.add('animated');
+                }
+                if (entry.intersectionRatio > maxRatio) {
+                    maxRatio = entry.intersectionRatio;
+                    currentId = entry.target.id;
+                }
+            }
+        });
+        if (currentId) {
+            window.currentStep = stepIds.indexOf(currentId);
+            // Update progress
+            const progress = ((window.currentStep + 1) / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`; // Comment: Smooth width transition for progress fill
+            // Update active menu
+            document.querySelectorAll('#menu a').forEach(a => {
+                a.classList.toggle('active', a.getAttribute('href') === `#${currentId}`);
+            });
+            // Handle canvas for steps 4 and 5
+            if (currentId === 'step-4' || currentId === 'step-5') {
+                window.quantumSketch.switchCanvasParent(window.currentStep);
+                window.quantumSketch.startAnimation();
+                window.terminalMessages = [`[INIT] Started for ${currentId}`];
+                window.updateTerminalLog();
+            } else {
+                window.quantumSketch.noLoop();
+            }
+        }
+    }, { threshold: 0.5 }); // Comment: 50% visibility threshold for "current" step
+
+    // Observe all sections
+    document.querySelectorAll('.step').forEach(section => observer.observe(section));
+
+    // Menu click for smooth scroll
+    document.querySelectorAll('#menu a').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            const target = document.querySelector(a.getAttribute('href'));
+            target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Hamburger toggle
+    document.getElementById('hamburger').addEventListener('click', () => {
+        const menu = document.getElementById('menu');
+        menu.classList.toggle('visible'); // Comment: Toggles full-screen menu on mobile with CSS display
+    });
+
+    // Event listeners from original (upload, save, etc.)
+    document.getElementById('uploadImage').addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = e => {
+            const file = e.target.files[0];
+            window.quantumSketch.loadImage(URL.createObjectURL(file), img => {
+                window.img = img;
+                window.initializeParticles(img);
+                document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = URL.createObjectURL(file));
+                moveToNextStep('2.1');
+            });
+        };
+        input.click();
+    });
+
+    document.getElementById('useArchive').addEventListener('click', showImageArchiveModal);
+    document.getElementById('useCamera').addEventListener('click', startCamera);
+    document.getElementById('capture-photo').addEventListener('click', capturePhoto);
+    document.getElementById('saveImage').addEventListener('click', () => {
+        const name = document.getElementById('portraitName').value || 'quantum_portrait';
+        window.quantumSketch.saveCanvas(name, 'png');
+        window.terminalMessages.push(`[SAVE] Saved as ${name}.png`);
+        window.updateTerminalLog();
+    });
+    document.getElementById('shareObservation').addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
+    document.getElementById('restart').addEventListener('click', () => window.location.reload());
+    document.getElementById('archive').addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
+    document.getElementById('aboutAuthors').addEventListener('click', () => window.location.href = './about.html');
+
+    // Close modals
+    document.getElementById('close-modal').addEventListener('click', () => document.getElementById('image-archive-modal').style.display = 'none');
+    document.getElementById('close-camera-modal').addEventListener('click', () => {
+        document.getElementById('camera-modal').style.display = 'none';
+        stopCamera();
+    });
+
+    // Continue/back buttons scroll to next/prev
+    document.querySelectorAll('.continue').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const nextIndex = window.currentStep + 1;
+            if (nextIndex < totalSteps) moveToNextStep(stepIds[nextIndex].replace('step-', ''));
+        });
+    });
+    document.querySelectorAll('.back').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const prevIndex = window.currentStep - 1;
+            if (prevIndex >= 0) moveToNextStep(stepIds[prevIndex].replace('step-', ''));
+        });
+    });
+
+    // Audio init on click
+    document.addEventListener('click', () => window.initAudioContext && window.initAudioContext(), { once: true });
+});
