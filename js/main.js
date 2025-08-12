@@ -101,7 +101,11 @@ function capturePhoto() {
     const url = canvas.toDataURL('image/png');
     window.loadImage(url, img => {
         window.img = img;
-        window.initializeParticles(img);
+        try {
+            window.initializeParticles(img);
+        } catch (err) {
+            console.error('Error in initializeParticles:', err);
+        }
         document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = url);
         moveToNextStep('2.1');
         stopCamera();
@@ -109,30 +113,35 @@ function capturePhoto() {
 }
 
 function selectArchiveImage(src) {
+    console.log('selectArchiveImage called with:', src);
     const archiveSection = document.getElementById('image-archive-section');
+    // Update thumbnails and hide archive section immediately
+    document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = src);
+    archiveSection.classList.remove('visible');
+    setTimeout(() => {
+        archiveSection.style.display = 'none';
+        // Move to step-2.1 regardless of loadImage outcome
+        moveToNextStep('2.1');
+    }, 500); // Match CSS transition duration
+    // Attempt to load and process image
     try {
         window.loadImage(src, img => {
+            console.log('Image loaded successfully:', src);
             window.img = img;
-            window.initializeParticles(img);
-            document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = src);
-            archiveSection.classList.remove('visible');
-            setTimeout(() => {
-                archiveSection.style.display = 'none';
-                moveToNextStep('2.1');
-            }, 500); // Match CSS transition duration
+            try {
+                window.initializeParticles(img);
+                console.log('initializeParticles completed');
+            } catch (err) {
+                console.error('Error in initializeParticles:', err);
+            }
         });
     } catch (err) {
         console.error('Error in selectArchiveImage:', err);
-        // Proceed to step-2.1 even if p5.js throws an error
-        archiveSection.classList.remove('visible');
-        setTimeout(() => {
-            archiveSection.style.display = 'none';
-            moveToNextStep('2.1');
-        }, 500);
     }
 }
 
 window.moveToNextStep = function(stepIndex) {
+    console.log('moveToNextStep called with:', stepIndex);
     const stepId = `step-${stepIndex}`.replace('.', '.');
     const stepIdx = stepIds.indexOf(stepId);
     if (stepIdx >= 0 && stepIdx < totalSteps) {
@@ -217,7 +226,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const file = e.target.files[0];
             window.loadImage(URL.createObjectURL(file), img => {
                 window.img = img;
-                window.initializeParticles(img);
+                try {
+                    window.initializeParticles(img);
+                } catch (err) {
+                    console.error('Error in initializeParticles:', err);
+                }
                 document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = URL.createObjectURL(file));
                 moveToNextStep('2.1');
             });
