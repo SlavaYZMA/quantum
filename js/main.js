@@ -17,7 +17,6 @@ const archiveImages = [
 
 let cameraStream = null;
 
-// Обновление видимости шагов
 function updateStepVisibility() {
     console.log('updateStepVisibility called, currentStep:', window.currentStep);
     const currentStepId = stepIds[window.currentStep];
@@ -26,8 +25,10 @@ function updateStepVisibility() {
         console.log(`Section ${section.id}, should be visible: ${shouldBeVisible}, classes: ${section.className}`);
         if (shouldBeVisible) {
             section.style.display = 'block';
-            section.classList.add('visible');
-            console.log(`Made ${section.id} visible`);
+            setTimeout(() => {
+                section.classList.add('visible');
+                console.log(`Made ${section.id} visible`);
+            }, 10);
         } else {
             section.style.display = 'none';
             section.classList.remove('visible');
@@ -35,7 +36,6 @@ function updateStepVisibility() {
         }
     });
 
-    // Управление видимостью subsections
     const archiveSection = document.getElementById('image-archive-section');
     if (archiveSection) {
         const isArchiveVisible = currentStepId === 'image-archive-section';
@@ -52,7 +52,6 @@ function updateStepVisibility() {
         console.log(`camera-section display set to: ${cameraSection.style.display}`);
     }
 
-    // Управление видимостью canvas и контейнеров
     const canvas = document.querySelector('canvas:not(#camera-canvas)');
     const canvasContainer = document.getElementById('canvas-container');
     const portraitContainer4 = document.getElementById('portrait-animation-container-step-4');
@@ -93,20 +92,15 @@ function updateStepVisibility() {
             console.log('portrait-animation-container-step-5 display set to: none');
         }
     }
-
-    // Обновление текста после смены шага
-    window.setLanguage(window.currentLanguage);
 }
 
-// Эффект печати текста только для .text-block
 function typewriter(element) {
-    const elements = element.querySelectorAll('.text-block div, .text-block p, .text-block h2');
+    const elements = element.querySelectorAll('div, p, h2');
     let index = 0;
     function typeNext() {
         if (index >= elements.length) return;
         const el = elements[index];
-        const key = el.getAttribute('data-i18n');
-        const text = key && translations[window.currentLanguage][key] ? translations[window.currentLanguage][key] : '';
+        const text = translations[window.currentLanguage][el.getAttribute('data-i18n')] || el.textContent.trim();
         el.textContent = '';
         let charIndex = 0;
         function typeChar() {
@@ -124,7 +118,6 @@ function typewriter(element) {
     typeNext();
 }
 
-// Перемещение canvas
 function switchCanvasParent(stepIndex) {
     console.log('switchCanvasParent called with step:', stepIndex);
     const canvas = document.querySelector('canvas:not(#camera-canvas)');
@@ -142,7 +135,6 @@ function switchCanvasParent(stepIndex) {
     }
 }
 
-// Запуск анимации
 function startAnimation() {
     console.log('startAnimation called');
     if (window.quantumSketch && typeof window.quantumSketch.loop === 'function') {
@@ -153,7 +145,6 @@ function startAnimation() {
     }
 }
 
-// Показ архива изображений
 function showImageArchiveSection() {
     console.log('showImageArchiveSection called');
     const section = document.getElementById('image-archive-section');
@@ -176,7 +167,6 @@ function showImageArchiveSection() {
     }
 }
 
-// Запуск камеры
 function startCamera() {
     console.log('startCamera called');
     const section = document.getElementById('camera-section');
@@ -195,14 +185,15 @@ function startCamera() {
     }
 }
 
-// Остановка камеры
 function stopCamera() {
     console.log('stopCamera called');
     const section = document.getElementById('camera-section');
     if (section) {
         section.classList.remove('visible');
-        section.style.display = 'none';
-        console.log('camera-section hidden');
+        setTimeout(() => {
+            section.style.display = 'none';
+            console.log('camera-section hidden');
+        }, 500);
     }
     if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
@@ -210,7 +201,6 @@ function stopCamera() {
     }
 }
 
-// Захват фото
 function capturePhoto() {
     console.log('capturePhoto called');
     const video = document.getElementById('camera-video');
@@ -238,7 +228,6 @@ function capturePhoto() {
     }
 }
 
-// Выбор изображения из архива
 function selectArchiveImage(src) {
     console.log('selectArchiveImage called with:', src);
     const archiveSection = document.getElementById('image-archive-section');
@@ -248,8 +237,10 @@ function selectArchiveImage(src) {
     });
     if (archiveSection) {
         archiveSection.classList.remove('visible');
-        archiveSection.style.display = 'none';
-        console.log('image-archive-section hidden');
+        setTimeout(() => {
+            archiveSection.style.display = 'none';
+            console.log('image-archive-section hidden');
+        }, 500);
     }
     window.loadImage(src, img => {
         window.img = img;
@@ -264,7 +255,6 @@ function selectArchiveImage(src) {
     });
 }
 
-// Переход к следующему шагу
 window.moveToNextStep = function(stepIndex) {
     console.log('moveToNextStep called with:', stepIndex);
     const stepId = `step-${stepIndex}`.replace('.', '.');
@@ -311,7 +301,6 @@ window.moveToNextStep = function(stepIndex) {
     }
 };
 
-// Обновление терминального лога
 window.updateTerminalLog = function() {
     const terminals = document.querySelectorAll('.terminal-log');
     terminals.forEach(terminal => {
@@ -320,17 +309,9 @@ window.updateTerminalLog = function() {
     });
 };
 
-// Установка языка
-window.setLanguageAndStay = function(lang) {
-    console.log('setLanguageAndStay called with:', lang);
-    window.setLanguage(lang);
-    window.moveToNextStep('1');
-};
-
-// Инициализация обработчиков событий
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded');
-    window.setLanguage(window.currentLanguage); // Устанавливаем начальный язык
+    window.setLanguage(window.currentLanguage);
     updateStepVisibility();
 
     document.querySelectorAll('#menu a').forEach(a => {
@@ -402,8 +383,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const section = document.getElementById('image-archive-section');
         if (section) {
             section.classList.remove('visible');
-            section.style.display = 'none';
-            console.log('close-archive-section clicked');
+            setTimeout(() => {
+                section.style.display = 'none';
+                console.log('close-archive-section clicked');
+            }, 500);
             window.currentStep = stepIds.indexOf('step-2');
             window.currentStepId = 'step-2';
             updateStepVisibility();
