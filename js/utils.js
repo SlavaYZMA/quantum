@@ -1,7 +1,9 @@
-window.loadImage = () => {
-    if (window.quantumSketch && typeof window.quantumSketch.loadImage === 'function') {
-        window.loadImageOnce(); // Используем существующую функцию
+// utils.js
+window.loadImage = (src, callback) => {
+    // Directly use p5.js global loadImage function
+    if (typeof loadImage === 'function') {
+        loadImage(src, callback);
     } else {
-        console.error('p5.js instance or loadImage not available');
+        console.error('p5.js loadImage function not available');
     }
 };
