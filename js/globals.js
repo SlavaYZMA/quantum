@@ -1,4 +1,3 @@
-// globals.js
 window.currentLanguage = 'ru'; // По умолчанию русский
 
 const translations = {
@@ -50,7 +49,6 @@ const translations = {
         back: "Назад",
         portrait_name_placeholder: "Название портрета",
         capture_photo: "Сделать фото",
-        // Переводы для меню
         menu_language_selection: "Выбор языка",
         menu_introduction: "Введение",
         menu_image_source: "Источник изображения",
@@ -59,7 +57,9 @@ const translations = {
         menu_portrait_generation: "Генерация портрета",
         menu_observation_recording: "Запись наблюдения",
         menu_sharing: "Поделиться",
-        menu_conclusion: "Заключение"
+        menu_conclusion: "Заключение",
+        lang_ru: "RU",
+        lang_eng: "ENG"
     },
     eng: {
         step0_text: "Please select language RU / ENG",
@@ -109,7 +109,6 @@ const translations = {
         back: "Back",
         portrait_name_placeholder: "Portrait name",
         capture_photo: "Capture Photo",
-        // Переводы для меню
         menu_language_selection: "Language Selection",
         menu_introduction: "Introduction",
         menu_image_source: "Image Source",
@@ -118,7 +117,9 @@ const translations = {
         menu_portrait_generation: "Portrait Generation",
         menu_observation_recording: "Observation Recording",
         menu_sharing: "Sharing",
-        menu_conclusion: "Conclusion"
+        menu_conclusion: "Conclusion",
+        lang_ru: "RU",
+        lang_eng: "ENG"
     }
 };
 
@@ -167,6 +168,13 @@ window.setLanguage = (lang) => {
             console.warn(`Menu translation missing for key: ${key} in language: ${lang}`);
         }
     });
+    // Обновление стилей кнопок переключения языка
+    const ruButton = document.querySelector('button[data-i18n="lang_ru"]');
+    const engButton = document.querySelector('button[data-i18n="lang_eng"]');
+    if (ruButton && engButton) {
+        ruButton.classList.toggle('active', lang === 'ru');
+        engButton.classList.toggle('active', lang === 'eng');
+    }
 };
 
 window.setLanguageAndNext = (lang) => {
