@@ -29,7 +29,7 @@ a, button {
 
 button {
     background: transparent;
-    border: 1px solid #555555; /* Gray border for secondary elements */
+    border: 1px solid #555555;
     padding: 10px 20px;
     cursor: pointer;
     transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
@@ -50,7 +50,7 @@ button:hover {
     left: 0;
     width: 100%;
     height: 4px;
-    background: #333333; /* Gray background */
+    background: #333333;
     z-index: 20;
 }
 
@@ -58,7 +58,7 @@ button:hover {
     height: 100%;
     background: #00ffcc;
     width: 0;
-    transition: width 0.3s ease; /* Smooth fill animation */
+    transition: width 0.3s ease;
 }
 
 /* Language switch fixed top right */
@@ -90,7 +90,7 @@ button:hover {
     width: 250px;
     height: 100vh;
     background: #000000;
-    border-right: 1px solid #333333; /* Gray border */
+    border-right: 1px solid #333333;
     padding: 40px 20px;
     z-index: 10;
     display: flex;
@@ -120,7 +120,7 @@ button:hover {
 
 /* Main content using CSS Grid for layout, adaptive */
 #content {
-    margin-left: 290px; /* 250px menu + 40px gap */
+    margin-left: 290px;
     padding: 40px;
     display: grid;
     grid-template-columns: 1fr;
@@ -129,24 +129,28 @@ button:hover {
 
 /* Each step section with fade-in animation on visibility */
 .step {
+    display: none; /* Hidden by default */
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth fade-in and slide up */
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .step.visible {
+    display: block;
     opacity: 1;
     transform: translateY(0);
 }
 
 /* Subsection (archive, camera) with slide-in-from-bottom animation */
 .step-subsection {
+    display: none;
     opacity: 0;
-    transform: translateY(100vh); /* Start off-screen at bottom */
-    transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth slide-in */
+    transform: translateY(100vh);
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .step-subsection.visible {
+    display: block;
     opacity: 1;
     transform: translateY(0);
 }
@@ -162,7 +166,7 @@ button:hover {
 /* Text block with staggered fade-in for child elements */
 .text-block div, .text-block p, .text-block h2 {
     opacity: 0;
-    animation: fadeIn 0.5s ease forwards; /* Fade-in animation */
+    animation: fadeIn 0.5s ease forwards;
 }
 
 .text-block :nth-child(1) { animation-delay: 0.1s; }
@@ -210,7 +214,7 @@ button:hover {
     width: 100%;
     max-width: 800px;
     height: 800px;
-    background: #111111; /* Dark gray for canvas bg */
+    background: #111111;
     border: 1px solid #555555;
 }
 
