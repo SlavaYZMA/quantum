@@ -66,7 +66,7 @@ function showImageArchiveModal() {
 
 // Select archive image
 function selectArchiveImage(src) {
-    window.quantumSketch.loadImage(src, img => {
+    loadImage(src, img => {
         window.img = img;
         window.initializeParticles(img);
         document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = src);
@@ -99,7 +99,7 @@ function capturePhoto() {
     const ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, 400, 400); // Simplified crop for square
     const url = canvas.toDataURL('image/png');
-    window.quantumSketch.loadImage(url, img => {
+    loadImage(url, img => {
         window.img = img;
         window.initializeParticles(img);
         document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = url);
@@ -165,12 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             // Handle canvas for steps 4 and 5
             if (currentId === 'step-4' || currentId === 'step-5') {
-                window.quantumSketch.switchCanvasParent(window.currentStep);
-                window.quantumSketch.startAnimation();
+                switchCanvasParent(window.currentStep);
+                startAnimation();
                 window.terminalMessages = [`[INIT] Started for ${currentId}`];
                 window.updateTerminalLog();
             } else {
-                window.quantumSketch.noLoop();
+                noLoop();
             }
         }
     }, { threshold: 0.5 }); // Comment: 50% visibility threshold for "current" step
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         input.accept = 'image/*';
         input.onchange = e => {
             const file = e.target.files[0];
-            window.quantumSketch.loadImage(URL.createObjectURL(file), img => {
+            loadImage(URL.createObjectURL(file), img => {
                 window.img = img;
                 window.initializeParticles(img);
                 document.querySelectorAll('.thumbnail-portrait').forEach(thumb => thumb.src = URL.createObjectURL(file));
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('capture-photo').addEventListener('click', capturePhoto);
     document.getElementById('saveImage').addEventListener('click', () => {
         const name = document.getElementById('portraitName').value || 'quantum_portrait';
-        window.quantumSketch.saveCanvas(name, 'png');
+        saveCanvas(name, 'png');
         window.terminalMessages.push(`[SAVE] Saved as ${name}.png`);
         window.updateTerminalLog();
     });
