@@ -73,7 +73,7 @@ function typewriter(element, callback) {
             if (charIndex < text.length) {
                 span.textContent += text[charIndex];
                 charIndex++;
-                const delay = 5 + Math.random() * 90;
+                const delay = 30 + Math.random() * 50; // Faster, random for uncertainty
                 setTimeout(typeChar, delay);
             } else {
                 currentDivIndex++;
@@ -331,6 +331,14 @@ function initializeSteps() {
     } else {
         console.warn('Canvas not found during initialization, waiting for p5.js setup');
     }
+
+    // Subtle resize for responsive canvas
+    window.addEventListener('resize', () => {
+        if (window.quantumSketch) {
+            const size = Math.min(window.innerWidth * 0.8, 800);
+            window.quantumSketch.resizeCanvas(size, size);
+        }
+    });
 }
 
 function showStep(stepIndex) {
