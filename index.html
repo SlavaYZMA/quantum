@@ -1,182 +1,147 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quantum Portrait</title>
-    <link rel="icon" href="data:;base64,=">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-    <script src="./js/globals.js"></script>
-    <script src="./js/particles.js"></script>
-    <script src="./js/observer.js"></script>
-    <script src="./js/audio.js"></script>
-    <script src="./js/textSteps.js"></script>
-    <script src="./js/utils.js"></script>
-    <script src="js/text-flicker.js"></script>
-    <script src="./js/main.js"></script>
+    <script src="particles.js"></script>
+    <script src="audio.js"></script>
+    <script src="globals.js"></script>
+    <script src="utils.js"></script>
+    <script src="main.js"></script>
 </head>
 <body>
-    <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
-    </div>
-    <div id="language-switch">
-        <button onclick="window.setLanguageAndStay('ru')">RU</button>
-        <button onclick="window.setLanguageAndStay('en')">ENG</button>
-    </div>
+    <div id="hamburger">☰</div>
     <nav id="menu">
-        <ul>
-            <li><a href="#step-0" data-step="0">Language Selection</a></li>
-            <li><a href="#step-1" data-step="1">Introduction</a></li>
-            <li><a href="#step-2" data-step="2">Image Source</a></li>
-            <li><a href="#step-2.1" data-step="2.1">Image Instructions</a></li>
-            <li><a href="#step-3" data-step="3">Quantum Explanation</a></li>
-            <li><a href="#step-4" data-step="4">Portrait Generation</a></li>
-            <li><a href="#step-5" data-step="5">Observation Recording</a></li>
-            <li><a href="#step-6" data-step="6">Sharing</a></li>
-            <li><a href="#step-7" data-step="7">Conclusion</a></li>
-        </ul>
+        <a href="#step-0">Язык</a>
+        <a href="#step-1">Шаг 1</a>
+        <a href="#step-2">Шаг 2</a>
+        <a href="#step-2.1">Шаг 2.1</a>
+        <a href="#step-3">Шаг 3</a>
+        <a href="#step-4">Шаг 4</a>
+        <a href="#step-5">Шаг 5</a>
+        <a href="#step-6">Шаг 6</a>
+        <a href="#step-7">Шаг 7</a>
     </nav>
-    <button id="hamburger">&#9776;</button>
-    <main id="content">
-        <section id="step-0" class="step">
-            <div class="text-block" data-i18n="step0_text">Please select language RU / ENG</div>
-        </section>
-        <section id="step-1" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step1_title"></h2>
-                <p data-i18n="step1_text1"></p>
-                <p data-i18n="step1_text2"></p>
-                <p data-i18n="step1_text3"></p>
-            </div>
-            <div class="button-block">
-                <button class="continue" data-i18n="continue">Continue</button>
-                <button class="back" data-i18n="back">Back</button>
-            </div>
-        </section>
-        <section id="step-2" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step2_title"></h2>
-                <p data-i18n="step2_text1"></p>
-            </div>
-            <div class="button-block">
-                <button id="uploadImage" data-i18n="upload_image">Upload Image</button>
-                <button id="useCamera" data-i18n="use_camera">Use Camera</button>
-                <button id="useArchive" data-i18n="use_archive">Use Archive</button>
-                <button class="back" data-i18n="back">Back</button>
-            </div>
-        </section>
-        <section id="image-archive-section" class="step step-subsection" style="display: none;">
-            <div class="section-content">
-                <span id="close-archive-section" class="close" aria-label="Close archive">×</span>
-                <div class="image-grid" id="image-grid"></div>
-            </div>
-        </section>
-        <section id="camera-section" class="step step-subsection" style="display: none;">
-            <div class="section-content">
-                <span id="close-camera-section" class="close" aria-label="Close camera">×</span>
-                <video id="camera-video" autoplay style="width: 100%; max-width: 640px; height: auto;"></video>
-                <canvas id="camera-canvas" style="display: none;"></canvas>
-                <div class="button-block">
-                    <button id="capture-photo" data-i18n="capture_photo">Capture Photo</button>
-                </div>
-            </div>
-        </section>
-        <section id="step-2.1" class="step" style="display: none;">
-            <div class="text-block">
-                <p data-i18n="step2_text2"></p>
-                <p data-i18n="step2_text3"></p>
-                <p data-i18n="step2_text4"></p>
-            </div>
-            <div class="button-block">
-                <button class="continue" data-i18n="continue">Continue</button>
-                <button class="back" data-i18n="back">Back</button>
-            </div>
-        </section>
-        <section id="step-3" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step3_title"></h2>
-                <p data-i18n="step3_text1"></p>
-                <p data-i18n="step3_text2"></p>
-                <p data-i18n="step3_text3"></p>
-                <p data-i18n="step3_text4"></p>
-                <p data-i18n="step3_text5"></p>
-                <p data-i18n="step3_text6"></p>
-                <p data-i18n="step3_text7"></p>
-                <p data-i18n="step3_text8"></p>
-            </div>
-            <div class="button-block">
-                <button class="continue" data-i18n="continue">Continue</button>
-                <button class="back" data-i18n="back">Back</button>
-            </div>
-        </section>
-        <section id="step-4" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step4_title"></h2>
-                <p data-i18n="step4_text1"></p>
-                <p data-i18n="step4_text2"></p>
-                <p data-i18n="step4_text3"></p>
-            </div>
-            <div class="portrait-wrapper">
-                <img class="thumbnail-portrait" alt="Thumbnail of quantum portrait" />
-                <div class="portrait-terminal-wrapper">
-                    <div id="portrait-animation-container-step-4"></div>
-                    <div class="terminal-log" id="terminal-log-step-4"></div>
-                </div>
-            </div>
-            <div class="button-block">
-                <button class="continue" data-i18n="continue">Continue</button>
-                <button class="back" data-i18n="back">Back</button>
-            </div>
-        </section>
-        <section id="step-5" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step5_title"></h2>
-                <p data-i18n="step5_text1"></p>
-                <p data-i18n="step5_text2"></p>
-                <p data-i18n="step5_text3"></p>
-            </div>
-            <div class="portrait-wrapper">
-                <img class="thumbnail-portrait" alt="Thumbnail of quantum portrait" />
-                <div class="portrait-terminal-wrapper">
-                    <div id="portrait-animation-container-step-5"></div>
-                    <div class="terminal-log" id="terminal-log-step-5"></div>
-                </div>
-            </div>
-            <div class="button-block">
-                <input id="portraitName" type="text" data-i18n-placeholder="portrait_name_placeholder">
-                <button id="saveImage" data-i18n="save_observation">[RECORD OBSERVATION]</button>
-                <button class="continue" data-i18n="continue">Continue</button>
-                <button class="back" data-i18n="back">Back</button>
-            </div>
-        </section>
-        <section id="step-6" class="step" style="display: none;">
-            <div class="text-block">
-                <h2 data-i18n="step6_title"></h2>
-                <p data-i18n="step6_text1"></p>
-                <p data-i18n="step6_text2"></p>
-                <p data-i18n="step6_text3"></p>
-            </div>
-            <div class="button-block">
-                <button id="shareObservation" data-i18n="share_observation">[SHARE OBSERVATION]</button>
-                <button class="continue" data-i18n="continue">Continue</button>
-                <button class="back" data-i18n="back">Back</button>
-            </div>
-        </section>
-        <section id="step-7" class="step" style="display: none;">
-            <div class="text-block">
-                <p data-i18n="step7_text1"></p>
-                <p data-i18n="step7_text2"></p>
-                <p data-i18n="step7_text3"></p>
-            </div>
-            <div class="button-block">
-                <button id="restart" data-i18n="restart">[↻ RESTART]</button>
-                <button id="archive" data-i18n="archive">[⧉ GO TO ARCHIVE]</button>
-                <button id="aboutAuthors" data-i18n="about_authors">[ABOUT AUTHORS]</button>
-                <button class="back" data-i18n="back">Back</button>
-            </div>
-        </section>
-    </main>
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+
+    <section id="step-0" class="step">
+        <div class="text-block">
+            <p id="step0_text">Пожалуйста, выберите язык RU / ENG</p>
+            <button onclick="setLanguageAndStay('ru')">RU</button>
+            <button onclick="setLanguageAndStay('en')">ENG</button>
+        </div>
+    </section>
+
+    <section id="step-1" class="step">
+        <div class="text-block">
+            <h2 id="step1_title">СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН</h2>
+            <p id="step1_text1">> Чему Шредингер может научить нас в области цифровой идентификации?</p>
+            <p id="step1_text2">> Добро пожаловать в экспериментальную зону.</p>
+            <p id="step1_text3">> Здесь наблюдение = вмешательство</p>
+            <button class="continue" id="continue">Продолжить</button>
+        </div>
+    </section>
+
+    <section id="step-2" class="step">
+        <div class="text-block">
+            <h2 id="step2_title">Шаг 1: Сканируйте лицо суперпозиции.</h2>
+            <p id="step2_text1">Вы можете загрузить изображение или выбрать вариант из архива.</p>
+            <button id="uploadImage">Загрузить изображение</button>
+            <button id="useCamera">Включить камеру</button>
+            <button id="useArchive">Выбрать из архива</button>
+            <button class="back" id="back">Назад</button>
+        </div>
+    </section>
+
+    <section id="image-archive-section">
+        <button id="close-archive-section">Закрыть</button>
+        <div id="image-grid"></div>
+    </section>
+
+    <section id="camera-section">
+        <button id="close-camera-section">Закрыть</button>
+        <video id="camera-video" autoplay></video>
+        <button id="capture-photo">Сделать фото</button>
+        <canvas id="camera-canvas" style="display:none;"></canvas>
+    </section>
+
+    <section id="step-2.1" class="step">
+        <div class="text-block">
+            <p id="step2_text2">> Изображение принято.</p>
+            <p id="step2_text3">> Запускается волновая функция.</p>
+            <p id="step2_text4">> Система готова к инициализации.</p>
+            <button class="continue" id="continue">Продолжить</button>
+            <button class="back" id="back">Назад</button>
+        </div>
+    </section>
+
+    <section id="step-3" class="step">
+        <div class="text-block">
+            <h2 id="step3_title">Шаг 2: Инициализация</h2>
+            <p id="step3_text1">> Изображение преобразовано в пиксельную сетку.</p>
+            <p id="step3_text2">> Каждому пикселю назначены параметры (x, y, brightness, color)</p>
+            <p id="step3_text3">> На их основе построена волновая функция: ψ(x, y, t)</p>
+            <p id="step3_text4">Уравнение эволюции:</p>
+            <p id="step3_text5">iℏ ∂ψ/∂t = Ĥψ, где Ĥ = -½∇² + V(x, y)</p>
+            <p id="step3_text6">> Потенциал V(x, y) формируется из визуальных характеристик изображения.</p>
+            <p id="step3_text7">> Система переходит в режим временной симуляции.</p>
+            <p id="step3_text8">> Портрет существует как совокупность возможных состояний.</p>
+            <button class="continue" id="continue">Продолжить</button>
+            <button class="back" id="back">Назад</button>
+        </div>
+    </section>
+
+    <section id="step-4" class="step">
+        <div class="text-block">
+            <h2 id="step4_title">Шаг 3: НАЧНИТЕ НАБЛЮДЕНИЕ</h2>
+            <p id="step4_text1">> Двигайте курсором по изображению.</p>
+            <p id="step4_text2">> Каждый ваш жест запускает коллапс.</p>
+            <p id="step4_text3">> Система реагирует. Наблюдаемый образ формируется здесь и сейчас.</p>
+            <button class="continue" id="continue">Продолжить</button>
+            <button class="back" id="back">Назад</button>
+        </div>
+    </section>
+
+    <section id="step-5" class="step">
+        <div class="text-block">
+            <h2 id="step5_title">Шаг 4: ФИКСАЦИЯ</h2>
+            <p id="step5_text1">> Портрет — это процесс.</p>
+            <p id="step5_text2">> Но ты можешь зафиксировать один миг.</p>
+            <p id="step5_text3">> Это будет один из возможных тебя.</p>
+            <input id="portraitName" type="text" placeholder="Имя портрета">
+            <button id="saveImage">[ЗАПИСАТЬ НАБЛЮДЕНИЕ]</button>
+            <button class="continue" id="continue">Продолжить</button>
+            <button class="back" id="back">Назад</button>
+        </div>
+    </section>
+
+    <section id="step-6" class="step">
+        <div class="text-block">
+            <h2 id="step6_title">Шаг 5: РЕАКЦИЯ СИСТЕМЫ</h2>
+            <p id="step6_text1">> Это не портрет.</p>
+            <p id="step6_text2">> Это — реакция системы на тебя.</p>
+            <p id="step6_text3">> Ты повлиял на исход.</p>
+            <button id="shareObservation">[ПОДЕЛИТЬСЯ НАБЛЮДЕНИЕМ]</button>
+            <button class="continue" id="continue">Продолжить</button>
+            <button class="back" id="back">Назад</button>
+        </div>
+    </section>
+
+    <section id="step-7" class="step">
+        <div class="text-block">
+            <p id="step7_text1">Ты — не единственный наблюдатель.</p>
+            <p id="step7_text2">Каждое наблюдение — это акт, формирующий образ.</p>
+            <p id="step7_text3">Здесь ты — одновременно субъект и объект.</p>
+            <button id="restart">[↻ НАЧАТЬ СНАЧАЛА]</button>
+            <button id="archive">[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]</button>
+            <button id="aboutAuthors">[ОБ АВТОРАХ]</button>
+            <button class="back" id="back">Назад</button>
+        </div>
+    </section>
+
+    <div class="terminal-log"></div>
 </body>
 </html>
