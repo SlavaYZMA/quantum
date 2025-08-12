@@ -20,151 +20,291 @@ window.webGrowthThreshold = 4;
 window.baseWebColor = { r: 63, g: 22, b: 127 };
 window.mouseInfluenceRadius = 80;
 
+// particles.js (фрагмент с объектом messages и функцией getRandomMessage)
 const messages = {
-    initialize: [
-        "Инициализация биоквантовой экосистемы портрета.",
-        "Формирование квантовой биосетки. Пиксели оживают.",
-        "Запуск квантовой биодекомпозиции."
-    ],
-    initializeSuccess: [
-        "Экосистема активна: ${validParticles} квантовых состояний.",
-        "Успешно оживлено: ${validParticles} биоквантов.",
-        "Портрет трансформирован в ${validParticles} состояний."
-    ],
-    initializeError: [
-        "Ошибка: биоквантовая сетка не сформирована.",
-        "Не удалось оживить систему. Требуется изображение.",
-        "Аномалия: данные изображения не пригодны."
-    ],
-    update: [
-        "Биоквантовая экосистема пульсирует в фазе ${phase}.",
-        "Кванты текут в живом квантовом поле.",
-        "Эволюция: кванты создают биоквантовый танец."
-    ],
-    decomposition: [
-        "Декомпозиция портрета: прозрачность ${imgAlpha}/255.",
-        "Изображение растворяется в биоквантовом потоке.",
-        "Переход в квантовую биосреду: ${imgAlpha}/255."
-    ],
-    blockFormation: [
-        "Пиксели сливаются в биокластеры формы ${shape}.",
-        "Формирование живых блоков: текстура оживает.",
-        "Квантовая биология: пиксели образуют ${shape}."
-    ],
-    stabilized: [
-        "Биоквантовая экосистема стабилизирована.",
-        "Органические квантовые состояния синхронизированы.",
-        "Кванты живут в бесконечном квантовом танце."
-    ],
-    scatter: [
-        "Кванты текут, как микроорганизмы в биосреде.",
-        "Биоквантовая система: спины формируют узоры.",
-        "Органическое рассеяние квантов."
-    ],
-    superposition: [
-        "Квант в суперпозиции: форма ${shape}, спин ${spin}.",
-        "Биоквантовая суперпозиция: живая форма ${shape}.",
-        "Квант живёт в суперпозиции: спин ${spin}."
-    ],
-    mouseInfluence: [
-        "Наблюдение сильно возмущает биокванты, изменяя спины.",
-        "Волновой пакет наблюдателя усиливает квантовый танец.",
-        "Квантовое воздействие создаёт мощные биопотоки."
-    ],
-    featureAttraction: [
-        "Кванты текут к ключевым точкам, как клетки.",
-        "Биоквантовая структура формируется у лица.",
-        "Кванты пульсируют у ключевых координат."
-    ],
-    interference: [
-        "Квантовая интерференция создаёт живые узоры.",
-        "Волновые функции текут, как мембраны.",
-        "Интерференция формирует биоквантовые связи."
-    ],
-    tunneling: [
-        "Квант со спином ${spin} мигрировал через барьер.",
-        "Биоквантовая миграция: квант ожил в новом состоянии.",
-        "Квант туннелировал, как живая клетка."
-    ],
-    entanglement: [
-        "Запутанные кванты пульсируют синхронно.",
-        "Квантовая нелокальность: спины связаны.",
-        "Запутанность создаёт живую корреляцию."
-    ],
-    globalEntanglement: [
-        "Глобальная запутанность: кванты синхронизированы.",
-        "Экосистема вошла в состояние глобальной корреляции.",
-        "Нелокальная гармония квантов активирована."
-    ],
-    wavefront: [
-        "Глобальный волновой фронт оживляет экосистему.",
-        "Кванты текут, как волна в биосреде.",
-        "Волновой всплеск синхронизирует кванты."
-    ],
-    phaseTransition: [
-        "Квантовый фазовый переход: система в фазе ${phase}.",
-        "Биоквантовая эволюция: переход к ${phase}.",
-        "Экосистема трансформируется в фазу ${phase}."
-    ],
-    precession: [
-        "Спиновая прецессия кванта ${index}: ритм изменён.",
-        "Квант ${index} прецессирует, как живая структура.",
-        "Биоквант ${index} меняет спиновый ритм."
-    ],
-    diffusion: [
-        "Квант ${index} диффундирует в биосреде.",
-        "Биоквантовая диффузия: квант ${index} расплывается.",
-        "Квант ${index} расширяет волновую функцию."
-    ],
-    decoherence: [
-        "Квант ${index} потерял когерентность.",
-        "Биоквант ${index} стабилизировался из-за декогеренции.",
-        "Декогеренция: квант ${index} утратил квантовые свойства."
-    ],
-    decoherenceRestore: [
-        "Квант ${index} восстановил квантовую когерентность.",
-        "Биоквант ${index} ожил в суперпозиции.",
-        "Квант ${index} вернулся к квантовой жизни."
-    ],
-    spiralMigration: [
-        "Кванты закручиваются в биоквантовые вихри.",
-        "Спиральная миграция: кванты текут, как живые потоки.",
-        "Биокванты формируют вихревые биоструктуры."
-    ],
-    vortexSingularity: [
-        "Вихревая сингулярность: кванты схлопываются в центр.",
-        "Квантовая сингулярность активировала биопотоки.",
-        "Глобальный вихрь оживляет квантовую экосистему."
-    ],
-    branching: [
-        "Кванты ветвятся, как нейронные сети.",
-        "Биоквантовая структура разрастается.",
-        "Ветвление активирует живой рост."
-    ],
-    webFormation: [
-        "Квантовая паутина начинает расти с нуля.",
-        "Паутина запутанности медленно формируется.",
-        "Биокванты создают первые связи паутины."
-    ],
-    error: [
-        "Ошибка в биоквантовой системе: квант ${index} не обновлён.",
-        "Аномалия: спин кванта ${index} не изменился.",
-        "Биоквантовая ошибка: квант ${index} не ожил."
-    ],
-    collapse: [
-        "Квант ${index} коллапсировал в форму ${shape}, спин ${spin}.",
-        "Биоквант ${index} зафиксирован: форма ${shape}.",
-        "Наблюдение вызвало коллапс кванта ${index}."
-    ]
+    ru: {
+        initialize: [
+            "Инициализация биоквантовой экосистемы портрета.",
+            "Формирование квантовой биосетки. Пиксели оживают.",
+            "Запуск квантовой биодекомпозиции."
+        ],
+        initializeSuccess: [
+            "Экосистема активна: ${validParticles} квантовых состояний.",
+            "Успешно оживлено: ${validParticles} биоквантов.",
+            "Портрет трансформирован в ${validParticles} состояний."
+        ],
+        initializeError: [
+            "Ошибка: биоквантовая сетка не сформирована.",
+            "Не удалось оживить систему. Требуется изображение.",
+            "Аномалия: данные изображения не пригодны."
+        ],
+        update: [
+            "Биоквантовая экосистема пульсирует в фазе ${phase}.",
+            "Кванты текут в живом квантовом поле.",
+            "Эволюция: кванты создают биоквантовый танец."
+        ],
+        decomposition: [
+            "Декомпозиция портрета: прозрачность ${imgAlpha}/255.",
+            "Изображение растворяется в биоквантовом потоке.",
+            "Переход в квантовую биосреду: ${imgAlpha}/255."
+        ],
+        blockFormation: [
+            "Пиксели сливаются в биокластеры формы ${shape}.",
+            "Формирование живых блоков: текстура оживает.",
+            "Квантовая биология: пиксели образуют ${shape}."
+        ],
+        stabilized: [
+            "Биоквантовая экосистема стабилизирована.",
+            "Органические квантовые состояния синхронизированы.",
+            "Кванты живут в бесконечном квантовом танце."
+        ],
+        scatter: [
+            "Кванты текут, как микроорганизмы в биосреде.",
+            "Биоквантовая система: спины формируют узоры.",
+            "Органическое рассеяние квантов."
+        ],
+        superposition: [
+            "Квант в суперпозиции: форма ${shape}, спин ${spin}.",
+            "Биоквантовая суперпозиция: живая форма ${shape}.",
+            "Квант живёт в суперпозиции: спин ${spin}."
+        ],
+        mouseInfluence: [
+            "Наблюдение сильно возмущает биокванты, изменяя спины.",
+            "Волновой пакет наблюдателя усиливает квантовый танец.",
+            "Квантовое воздействие создаёт мощные биопотоки."
+        ],
+        featureAttraction: [
+            "Кванты текут к ключевым точкам, как клетки.",
+            "Биоквантовая структура формируется у лица.",
+            "Кванты пульсируют у ключевых координат."
+        ],
+        interference: [
+            "Квантовая интерференция создаёт живые узоры.",
+            "Волновые функции текут, как мембраны.",
+            "Интерференция формирует биоквантовые связи."
+        ],
+        tunneling: [
+            "Квант со спином ${spin} мигрировал через барьер.",
+            "Биоквантовая миграция: квант ожил в новом состоянии.",
+            "Квант туннелировал, как живая клетка."
+        ],
+        entanglement: [
+            "Запутанные кванты пульсируют синхронно.",
+            "Квантовая нелокальность: спины связаны.",
+            "Запутанность создаёт живую корреляцию."
+        ],
+        globalEntanglement: [
+            "Глобальная запутанность: кванты синхронизированы.",
+            "Экосистема вошла в состояние глобальной корреляции.",
+            "Нелокальная гармония квантов активирована."
+        ],
+        wavefront: [
+            "Глобальный волновой фронт оживляет экосистему.",
+            "Кванты текут, как волна в биосреде.",
+            "Волновой всплеск синхронизирует кванты."
+        ],
+        phaseTransition: [
+            "Квантовый фазовый переход: система в фазе ${phase}.",
+            "Биоквантовая эволюция: переход к ${phase}.",
+            "Экосистема трансформируется в фазу ${phase}."
+        ],
+        precession: [
+            "Спиновая прецессия кванта ${index}: ритм изменён.",
+            "Квант ${index} прецессирует, как живая структура.",
+            "Биоквант ${index} меняет спиновый ритм."
+        ],
+        diffusion: [
+            "Квант ${index} диффундирует в биосреде.",
+            "Биоквантовая диффузия: квант ${index} расплывается.",
+            "Квант ${index} расширяет волновую функцию."
+        ],
+        decoherence: [
+            "Квант ${index} потерял когерентность.",
+            "Биоквант ${index} стабилизировался из-за декогеренции.",
+            "Декогеренция: квант ${index} утратил квантовые свойства."
+        ],
+        decoherenceRestore: [
+            "Квант ${index} восстановил квантовую когерентность.",
+            "Биоквант ${index} ожил в суперпозиции.",
+            "Квант ${index} вернулся к квантовой жизни."
+        ],
+        spiralMigration: [
+            "Кванты закручиваются в биоквантовые вихри.",
+            "Спиральная миграция: кванты текут, как живые потоки.",
+            "Биокванты формируют вихревые биоструктуры."
+        ],
+        vortexSingularity: [
+            "Вихревая сингулярность: кванты схлопываются в центр.",
+            "Квантовая сингулярность активировала биопотоки.",
+            "Глобальный вихрь оживляет квантовую экосистему."
+        ],
+        branching: [
+            "Кванты ветвятся, как нейронные сети.",
+            "Биоквантовая структура разрастается.",
+            "Ветвление активирует живой рост."
+        ],
+        webFormation: [
+            "Квантовая паутина начинает расти с нуля.",
+            "Паутина запутанности медленно формируется.",
+            "Биокванты создают первые связи паутины."
+        ],
+        error: [
+            "Ошибка в биоквантовой системе: квант ${index} не обновлён.",
+            "Аномалия: спин кванта ${index} не изменился.",
+            "Биоквантовая ошибка: квант ${index} не ожил."
+        ],
+        collapse: [
+            "Квант ${index} коллапсировал в форму ${shape}, спин ${spin}.",
+            "Биоквант ${index} зафиксирован: форма ${shape}.",
+            "Наблюдение вызвало коллапс кванта ${index}."
+        ]
+    },
+    eng: {
+        initialize: [
+            "Initializing bioquantum portrait ecosystem.",
+            "Forming quantum bio-grid. Pixels come alive.",
+            "Launching quantum bio-decomposition."
+        ],
+        initializeSuccess: [
+            "Ecosystem active: ${validParticles} quantum states.",
+            "Successfully animated: ${validParticles} bioquants.",
+            "Portrait transformed into ${validParticles} states."
+        ],
+        initializeError: [
+            "Error: Bioquantum grid not formed.",
+            "Failed to animate system. Image required.",
+            "Anomaly: Image data unsuitable."
+        ],
+        update: [
+            "Bioquantum ecosystem pulsing in ${phase} phase.",
+            "Quants flow in a living quantum field.",
+            "Evolution: Quants create a bioquantum dance."
+        ],
+        decomposition: [
+            "Portrait decomposition: transparency ${imgAlpha}/255.",
+            "Image dissolves into bioquantum stream.",
+            "Transition to quantum bio-environment: ${imgAlpha}/255."
+        ],
+        blockFormation: [
+            "Pixels merge into bio-clusters of ${shape} shape.",
+            "Forming living blocks: Texture comes alive.",
+            "Quantum biology: Pixels form ${shape}."
+        ],
+        stabilized: [
+            "Bioquantum ecosystem stabilized.",
+            "Organic quantum states synchronized.",
+            "Quants live in an infinite quantum dance."
+        ],
+        scatter: [
+            "Quants flow like microorganisms in a bio-environment.",
+            "Bioquantum system: Spins form patterns.",
+            "Organic scattering of quants."
+        ],
+        superposition: [
+            "Quant in superposition: shape ${shape}, spin ${spin}.",
+            "Bioquantum superposition: Living shape ${shape}.",
+            "Quant lives in superposition: spin ${spin}."
+        ],
+        mouseInfluence: [
+            "Observation strongly disturbs bioquants, altering spins.",
+            "Observer's wave packet amplifies quantum dance.",
+            "Quantum impact creates powerful bio-streams."
+        ],
+        featureAttraction: [
+            "Quants flow to key points like cells.",
+            "Bioquantum structure forms around the face.",
+            "Quants pulse at key coordinates."
+        ],
+        interference: [
+            "Quantum interference creates living patterns.",
+            "Wave functions flow like membranes.",
+            "Interference forms bioquantum connections."
+        ],
+        tunneling: [
+            "Quant with spin ${spin} migrated through barrier.",
+            "Bioquantum migration: Quant revived in new state.",
+            "Quant tunneled like a living cell."
+        ],
+        entanglement: [
+            "Entangled quants pulse synchronously.",
+            "Quantum nonlocality: Spins are linked.",
+            "Entanglement creates living correlation."
+        ],
+        globalEntanglement: [
+            "Global entanglement: Quants synchronized.",
+            "Ecosystem entered global correlation state.",
+            "Nonlocal quant harmony activated."
+        ],
+        wavefront: [
+            "Global wavefront animates the ecosystem.",
+            "Quants flow like a wave in a bio-environment.",
+            "Wave surge synchronizes quants."
+        ],
+        phaseTransition: [
+            "Quantum phase transition: System in ${phase} phase.",
+            "Bioquantum evolution: Transition to ${phase}.",
+            "Ecosystem transforms into ${phase} phase."
+        ],
+        precession: [
+            "Spin precession of quant ${index}: Rhythm altered.",
+            "Quant ${index} precesses like a living structure.",
+            "Bioquant ${index} changes spin rhythm."
+        ],
+        diffusion: [
+            "Quant ${index} diffuses in bio-environment.",
+            "Bioquantum diffusion: Quant ${index} spreads.",
+            "Quant ${index} expands its wave function."
+        ],
+        decoherence: [
+            "Quant ${index} lost coherence.",
+            "Bioquant ${index} stabilized due to decoherence.",
+            "Decoherence: Quant ${index} lost quantum properties."
+        ],
+        decoherenceRestore: [
+            "Quant ${index} restored quantum coherence.",
+            "Bioquant ${index} revived in superposition.",
+            "Quant ${index} returned to quantum life."
+        ],
+        spiralMigration: [
+            "Quants spiral into bioquantum vortices.",
+            "Spiral migration: Quants flow like living streams.",
+            "Bioquants form vortical bio-structures."
+        ],
+        vortexSingularity: [
+            "Vortex singularity: Quants collapse to center.",
+            "Quantum singularity activated bio-streams.",
+            "Global vortex animates quantum ecosystem."
+        ],
+        branching: [
+            "Quants branch like neural networks.",
+            "Bioquantum structure expands.",
+            "Branching activates living growth."
+        ],
+        webFormation: [
+            "Quantum web begins to grow from scratch.",
+            "Entanglement web slowly forms.",
+            "Bioquants create initial web connections."
+        ],
+        error: [
+            "Error in bioquantum system: Quant ${index} not updated.",
+            "Anomaly: Spin of quant ${index} unchanged.",
+            "Bioquantum error: Quant ${index} not revived."
+        ],
+        collapse: [
+            "Quant ${index} collapsed into shape ${shape}, spin ${spin}.",
+            "Bioquant ${index} fixed: Shape ${shape}.",
+            "Observation caused collapse of quant ${index}."
+        ]
+    }
 };
 
 function getRandomMessage(type, params = {}) {
-    let msgArray = messages[type];
+    let msgArray = messages[window.currentLanguage][type] || messages['ru'][type]; // Fallback на русский
     let msg = msgArray[Math.floor(Math.random() * msgArray.length)];
     for (let key in params) {
         msg = msg.replace(`\${${key}}`, params[key]);
     }
-    return `[${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' })}] ${msg}`;
+    return `[${new Date().toLocaleTimeString(window.currentLanguage === 'eng' ? 'en-US' : 'ru-RU', { hour12: window.currentLanguage === 'eng', hour: '2-digit', minute: '2-digit', second: '2-digit' })}] ${msg}`;
 }
 
 window.updateTerminalLog = function() {
