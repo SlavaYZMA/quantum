@@ -171,14 +171,15 @@ function selectArchiveImage(src) {
     }, 500);
     // Load and process image
     window.loadImage(src, img => {
-        window.img = img;
-        try {
-            window.initializeParticles(img);
-            console.log('initializeParticles completed');
-        } catch (err) {
-            console.error('Error in initializeParticles:', err);
-        }
-    });
+    window.img = img;
+    console.log('Image loaded for initializeParticles:', img, 'pixels:', img.pixels);
+    try {
+        window.initializeParticles(img);
+        console.log('initializeParticles completed');
+    } catch (err) {
+        console.error('Error in initializeParticles:', err);
+    }
+});
 }
 
 window.moveToNextStep = function(stepIndex) {
