@@ -1,6 +1,6 @@
 window.loadImage = (src, callback) => {
-    if (typeof loadImage === 'function') {
-        loadImage(src, callback); // Use p5.js global loadImage
+    if (typeof p5 !== 'undefined' && typeof p5.prototype.loadImage === 'function') {
+        p5.prototype.loadImage(src, callback); // Use p5.js loadImage directly
     } else {
         console.error('p5.js loadImage function not available');
     }
