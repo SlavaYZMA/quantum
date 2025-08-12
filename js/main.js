@@ -19,34 +19,35 @@ let cameraStream = null;
 // Hide all steps except the current one
 function updateStepVisibility() {
     console.log('updateStepVisibility called, currentStep:', window.currentStep);
-    document.querySelectorAll('.step').forEach((section, index) => {
-    console.log(`Section ${section.id}, index: ${index}, should be visible: ${index === window.currentStep}, tag: ${section.tagName}, classes: ${section.className}`);
-    if (index === window.currentStep) {
-        section.style.display = 'block';
-        setTimeout(() => {
-            section.classList.add('visible');
-            console.log(`Made ${section.id} visible`);
-        }, 10);
-    } else {
-        section.style.display = 'none';
-        section.classList.remove('visible');
-        console.log(`Hid ${section.id}`);
-    }
-});
-    // Hide subsections
+    const currentStepId = stepIds[window.currentStep];
+    document.querySelectorAll('.step').forEach((section) => {
+        console.log(`Section ${section.id}, should be visible: ${section.id === currentStepId}, classes: ${section.className}`);
+        if (section.id === currentStepId) {
+            section.style.display = 'block';
+            setTimeout(() => {
+                section.classList.add('visible');
+                console.log(`Made ${section.id} visible`);
+            }, 10);
+        } else {
+            section.style.display = 'none';
+            section.classList.remove('visible');
+            console.log(`Hid ${section.id}`);
+        }
+    });
+    // Explicitly hide subsections to prevent overlap
     const archiveSection = document.getElementById('image-archive-section');
-    if (archiveSection) {
+    if (archiveSection && window.currentStep !== stepIds.indexOf('step-2')) {
         archiveSection.style.display = 'none';
         archiveSection.classList.remove('visible');
         console.log('Hid image-archive-section');
     }
     const cameraSection = document.getElementById('camera-section');
-    if (cameraSection) {
+    if (cameraSection && window.currentStep !== stepIds.indexOf('step-2')) {
         cameraSection.style.display = 'none';
         cameraSection.classList.remove('visible');
         console.log('Hid camera-section');
     }
-    // Hide any stray canvas elements
+    // Manage canvas visibility
     const canvases = document.getElementsByTagName('canvas');
     for (let canvas of canvases) {
         if (canvas.id !== 'camera-canvas') {
