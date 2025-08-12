@@ -17,13 +17,14 @@ body {
     overflow: hidden;
     position: relative;
     perspective: 1500px;
-    -webkit-font-smoothing: antialiased; /* Антиалиасинг для чёткости текста */
+    animation: quantum-shift 30s linear infinite;
+    -webkit-font-smoothing: antialiased; /* Чёткий текст */
     -moz-osx-font-smoothing: grayscale;
 }
 
 @keyframes quantum-shift {
     0%, 100% { filter: brightness(1); transform: perspective(1500px) rotateX(0deg) rotateY(0deg); }
-    50% { filter: brightness(1.2); transform: perspective(1500px) rotateX(3deg) rotateY(3deg); } /* Убрано blur */
+    50% { filter: brightness(1.3); transform: perspective(1500px) rotateX(3deg) rotateY(3deg); } /* Убрал blur для резкости */
 }
 
 .particles {
@@ -37,7 +38,7 @@ body {
     background-size: 20px 20px;
     animation: particle-drift 15s linear infinite alternate-reverse;
     mix-blend-mode: screen;
-    image-rendering: crisp-edges; /* Чёткость фона */
+    image-rendering: crisp-edges; /* Чёткий фон */
 }
 
 @keyframes particle-drift {
@@ -60,14 +61,16 @@ body {
     max-width: 900px;
     padding: 40px;
     min-height: 600px;
-    background: rgba(20, 20, 40, 0.8); /* Увеличен контраст */
+    background: rgba(20, 20, 40, 0.6);
     border: 3px solid var(--neon-green);
     border-radius: 25px;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.8); /* Снижен размытый эффект */
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); /* Уменьшил размытие для резкости */
     transform: translate(-50%, -50%) translateZ(-800px) rotateY(20deg);
     opacity: 0;
     transition: transform 0.8s ease, opacity 0.8s ease;
-    transform-style: preserve-3d; /* Чёткость 3D-преобразований */
+    animation: flicker 6s infinite alternate;
+    mix-blend-mode: screen;
+    -webkit-font-smoothing: antialiased; /* Чёткий текст в шагах */
 }
 
 .step.active {
@@ -77,20 +80,22 @@ body {
 
 .step.past {
     transform: translate(-50%, -50%) translateZ(-400px) rotateY(25deg);
-    opacity: 0.6;
+    opacity: 0.5;
+    filter: blur(3px);
 }
 
 .step.future {
     transform: translate(-50%, -50%) translateZ(-1200px) rotateY(-25deg);
-    opacity: 0.5;
+    opacity: 0.4;
+    filter: blur(4px);
 }
 
 @keyframes flicker {
-    0%, 100% { opacity: 0.9; }
-    20% { opacity: 0.7; }
-    40% { opacity: 1; }
-    60% { opacity: 0.6; }
-    80% { opacity: 0.8; }
+    0%, 100% { opacity: 0.8; }
+    20% { opacity: 0.6; }
+    40% { opacity: 0.95; }
+    60% { opacity: 0.5; }
+    80% { opacity: 0.75; }
 }
 
 .step-centered {
@@ -101,28 +106,29 @@ body {
 }
 
 .text-block {
-    background: rgba(10, 10, 30, 0.7);
+    background: rgba(10, 10, 30, 0.5);
     padding: 30px;
     margin-bottom: 30px;
     max-width: 95%;
     white-space: pre-wrap;
     text-align: center;
     border-radius: 20px;
-    box-shadow: 0 0 15px rgba(0, 191, 255, 0.7); /* Уменьшен размытый эффект */
-    backdrop-filter: blur(3px); /* Снижен размытие фона */
-    text-shadow: 0 0 2px var(--neon-cyan), 0 0 1px var(--neon-green); /* Чёткий текст */
+    box-shadow: 0 0 10px rgba(0, 191, 255, 0.8); /* Уменьшил размытие */
+    backdrop-filter: blur(2px); /* Уменьшил размытие для резкости */
+    animation: text-glitch 10s infinite;
 }
 
 .text-block div {
     margin-bottom: 15px;
     color: var(--neon-cyan);
     font-size: 24px;
-    text-shadow: 0 0 2px var(--neon-cyan), 0 0 1px var(--neon-green); /* Уменьшен размытый эффект */
+    text-shadow: 0 0 2px var(--neon-cyan); /* Уменьшил размытие для чёткости */
     overflow: hidden;
     white-space: nowrap;
     border-right: 4px solid var(--neon-green);
     animation: typewriter 5s steps(60, end) forwards, blink-caret 1.2s step-end infinite;
     animation-delay: calc(var(--random-delay) * 1s);
+    -webkit-font-smoothing: antialiased; /* Чёткий текст */
 }
 
 @keyframes typewriter {
@@ -137,9 +143,9 @@ body {
 
 @keyframes text-glitch {
     0%, 100% { transform: translate(0, 0); opacity: 1; }
-    10% { transform: translate(1px, -1px); opacity: 0.9; }
-    20% { transform: translate(-1px, 1px); opacity: 0.95; }
-    30% { transform: translate(0, 0); opacity: 1; } /* Снижены смещения */
+    10% { transform: translate(3px, -3px); opacity: 0.7; }
+    20% { transform: translate(-4px, 4px); opacity: 0.9; }
+    30% { transform: translate(2px, -2px); opacity: 0.6; }
 }
 
 .button-block {
@@ -167,77 +173,62 @@ button {
     color: var(--neon-cyan);
     transition: transform 0.5s ease, background 0.7s ease;
     mix-blend-mode: screen;
-    text-shadow: 0 0 1px var(--neon-cyan); /* Чёткость текста */
+    animation: button-pulse 5s infinite alternate;
+    -webkit-font-smoothing: antialiased; /* Чёткий текст в кнопках */
 }
 
 button:hover {
     transform: scale(1.2) rotate(5deg) translateZ(30px);
     background: linear-gradient(45deg, #00ffff, #ff4500);
-    box-shadow: 0 0 15px var(--neon-cyan); /* Уменьшен размытый эффект */
+    box-shadow: 0 0 15px var(--neon-cyan); /* Уменьшил размытие */
 }
 
 @keyframes button-pulse {
-    0% { transform: scale(1) rotate(0deg); opacity: 0.9; }
+    0% { transform: scale(1) rotate(0deg); opacity: 0.8; }
     50% { transform: scale(1.1) rotate(3deg); opacity: 1; }
-    100% { transform: scale(1) rotate(0deg); opacity: 0.9; }
+    100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
 }
 
 #portrait-animation-container-step-4,
 #portrait-animation-container-step-5 {
     width: 800px;
     height: 800px;
-    background: rgba(10, 10, 26, 0.5);
-    border: 4px solid var(--neon-green);
+    background: rgba(10, 10, 26, 0.4);
+    border: 4px dashed var(--neon-green);
     border-radius: 30px;
     position: relative;
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.9); /* Чёткие тени */
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.9); /* Уменьшил размытие для резкости рамки */
     animation: quantum-glow 4s infinite alternate;
     transform: translateZ(100px);
     mix-blend-mode: screen;
-    image-rendering: crisp-edges; /* Чёткость канвы */
 }
 
 @keyframes quantum-glow {
-    0% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.7); }
-    50% { box-shadow: 0 0 30px rgba(0, 255, 255, 1); }
-    100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.7); }
-}
-
-#portrait-animation-container-step-4 canvas,
-#portrait-animation-container-step-5 canvas,
-#portrait-animation-container-step-4 img,
-#portrait-animation-container-step-5 img {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain; /* Изменено с cover для сохранения пропорций */
-    border-radius: 25px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    image-rendering: pixelated; /* Чёткость пикселей */
+    0% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(0, 255, 255, 1); }
+    100% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); } /* Уменьшил размытие */
 }
 
 #thumbnail-portrait {
     max-width: 180px;
     max-height: 180px;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 18px;
     border: 4px solid var(--neon-cyan);
-    image-rendering: pixelated; /* Чёткость миниатюры */
+    animation: image-flicker 7s infinite;
+    image-rendering: auto; /* Автоматическая резкость для изображений */
 }
 
 @keyframes image-flicker {
     0%, 100% { opacity: 1; transform: scale(1); }
-    30% { opacity: 0.9; transform: scale(0.95); }
-    60% { opacity: 0.95; transform: scale(1.05); }
+    30% { opacity: 0.7; transform: scale(0.9); }
+    60% { opacity: 0.85; transform: scale(1.1); }
 }
 
 .terminal-log {
     width: 500px;
     height: 700px;
-    background: rgba(10, 10, 30, 0.9);
+    background: rgba(10, 10, 30, 0.8);
     color: var(--neon-cyan);
     font-family: 'IBM Plex Mono', monospace;
     font-size: 16px;
@@ -248,9 +239,10 @@ button:hover {
     line-height: 1.7;
     display: none;
     border-radius: 20px;
-    box-shadow: 0 0 15px rgba(0, 191, 255, 0.8); /* Чёткие тени */
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.8); /* Уменьшил размытие */
     scroll-behavior: smooth;
-    backdrop-filter: blur(3px); /* Снижен размытие */
+    backdrop-filter: blur(2px); /* Уменьшил размытие */
+    -webkit-font-smoothing: antialiased; /* Чёткий текст в терминале */
 }
 
 #terminal-log-step-4,
@@ -265,32 +257,34 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.2);
     z-index: 1000;
     justify-content: center;
     align-items: center;
+    animation: modal-shift 20s infinite;
 }
 
 @keyframes modal-shift {
     0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(5px, -5px); } /* Снижены смещения */
+    50% { transform: translate(15px, -15px); }
 }
 
 .modal-content {
-    background: rgba(10, 10, 30, 0.9);
+    background: rgba(10, 10, 30, 0.7);
     padding: 40px;
     max-width: 95vw;
     max-height: 95vh;
     overflow: auto;
     border-radius: 25px;
     border: 4px solid var(--neon-green);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.9); /* Чёткие тени */
-    backdrop-filter: blur(4px); /* Снижен размытие */
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.9); /* Уменьшил размытие */
+    animation: modal-appear 0.8s ease forwards;
+    backdrop-filter: blur(3px); /* Уменьшил размытие */
 }
 
 @keyframes modal-appear {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: scale(0.8) rotate(5deg); }
+    to { opacity: 1; transform: scale(1) rotate(0deg); }
 }
 
 .close {
@@ -300,6 +294,7 @@ button:hover {
     top: 20px;
     right: 30px;
     cursor: pointer;
+    transition: color 0.5s, transform 0.5s;
     text-shadow: 0 0 1px var(--neon-cyan); /* Чёткость текста */
 }
 
@@ -317,17 +312,23 @@ button:hover {
 .archive-image {
     width: 100%;
     height: 200px;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 20px;
     border: 4px solid var(--neon-cyan);
-    image-rendering: pixelated; /* Чёткость изображений */
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    image-rendering: auto; /* Чёткость изображений */
+}
+
+.archive-image:hover {
+    transform: scale(1.2) translateZ(30px);
+    opacity: 0.85;
 }
 
 #camera-video {
     max-width: 100%;
     border-radius: 20px;
     border: 4px solid var(--neon-green);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.9); /* Чёткие тени */
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.9); /* Уменьшил размытие */
 }
 
 #capture-photo {
@@ -336,23 +337,27 @@ button:hover {
     padding: 18px 30px;
     border: 4px solid var(--neon-green);
     border-radius: 20px;
+    transition: transform 0.5s ease, background 0.7s ease;
+    text-shadow: 0 0 1px var(--neon-cyan); /* Чёткость текста */
 }
 
 #capture-photo:hover {
     background: linear-gradient(45deg, #00ffff, #ff4500);
     transform: scale(1.2) rotate(5deg);
-    box-shadow: 0 0 15px var(--neon-cyan); /* Чёткие тени */
+    box-shadow: 0 0 15px var(--neon-cyan); /* Уменьшил размытие */
 }
 
 input[type="text"] {
-    background: rgba(10, 10, 30, 0.7);
+    background: rgba(10, 10, 30, 0.6);
     border: 4px solid var(--neon-cyan);
     color: var(--neon-cyan);
     font-family: 'IBM Plex Mono', monospace;
     padding: 15px;
     font-size: 18px;
     border-radius: 15px;
-    text-shadow: 0 0 1px var(--neon-cyan); /* Чёткость текста */
+    transition: border-color 0.5s, transform 0.5s;
+    mix-blend-mode: screen;
+    -webkit-font-smoothing: antialiased; /* Чёткий текст */
 }
 
 input[type="text"]:focus {
@@ -363,7 +368,7 @@ input[type="text"]:focus {
 
 input[type="text"]::placeholder {
     color: #a0a0d0;
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 @media (max-width: 600px) {
