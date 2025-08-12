@@ -1,332 +1,149 @@
-/* Global styles for minimalist art-house design with black background and high contrast */
 body {
     margin: 0;
-    padding: 0;
-    background: #000000;
-    color: #dddddd;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 16px;
-    line-height: 1.5;
-    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #000;
+    color: #fff;
     overflow-x: hidden;
 }
 
-/* Ensure contrast ratio >=7:1 for text on black */
-h2 {
-    font-size: 32px;
-    font-weight: bold;
-}
-
-p {
-    font-size: 16px;
-}
-
-/* Accents used sparingly (buttons, links, active menu) */
-a, button {
-    color: #00ffcc;
-    text-decoration: none;
-}
-
-button {
-    background: transparent;
-    border: 1px solid #555555;
-    padding: 10px 20px;
+#hamburger {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 30px;
     cursor: pointer;
-    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 16px;
+    z-index: 1000;
 }
 
-button:hover {
-    background: #00ffcc;
-    color: #000000;
-    transform: scale(1.05);
+#menu {
+    position: fixed;
+    top: 60px;
+    left: -200px;
+    width: 200px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    transition: left 0.3s;
+    z-index: 999;
 }
 
-/* Progress bar at top, smooth filling animation via JS transition */
-.progress-bar {
+#menu.visible {
+    left: 0;
+}
+
+#menu a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    margin: 10px 0;
+}
+
+#menu a.active {
+    color: #0f0;
+}
+
+#progress-bar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 4px;
-    background: #333333;
-    z-index: 20;
+    height: 5px;
+    background: #333;
 }
 
-.progress-fill {
-    height: 100%;
-    background: #00ffcc;
+#progress-fill {
     width: 0;
-    transition: width 0.3s ease;
+    height: 100%;
+    background: #0f0;
+    transition: width 0.3s;
 }
 
-/* Language switch fixed top right */
-#language-switch {
+.step {
+    display: none;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.step.visible {
+    opacity: 1;
+}
+
+#step-2.1 {
+    display: none; /* Ensure initial state */
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+#step-2.1.visible {
+    opacity: 1;
+}
+
+.text-block {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#image-archive-section, #camera-section {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 20;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    box-sizing: border-box;
+    transition: bottom 0.5s;
+}
+
+#image-archive-section.visible, #camera-section.visible {
+    bottom: 0;
+}
+
+#image-grid {
     display: flex;
     gap: 10px;
 }
 
-#language-switch button {
-    border: none;
-    background: transparent;
-    font-weight: normal;
+.archive-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    cursor: pointer;
 }
 
-#language-switch button.active {
-    font-weight: bold;
-    color: #00ffcc;
-}
-
-/* Fixed left menu using flex for vertical list */
-#menu {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 250px;
-    height: 100vh;
-    background: #000000;
-    border-right: 1px solid #333333;
-    padding: 40px 20px;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-}
-
-#menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#menu li {
-    margin-bottom: 20px;
-}
-
-#menu a {
-    color: #dddddd;
-    transition: color 0.3s ease;
-    font-size: 16px;
-}
-
-#menu a.active {
-    color: #00ffcc;
-    font-weight: bold;
-}
-
-/* Main content using CSS Grid for layout, adaptive */
-#content {
-    margin-left: 290px;
-    padding: 40px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 80px;
-}
-
-/* Each step section with fade-in animation on visibility */
-.step {
-    display: none; /* Hidden by default */
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.step.visible {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Subsection (archive, camera) with slide-in-from-bottom animation */
-.step-subsection {
-    display: none;
-    opacity: 0;
-    transform: translateY(100vh);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.step-subsection.visible {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.section-content {
-    background: #000000;
-    padding: 40px;
-    border: 1px solid #555555;
-    max-width: 80%;
-    margin: 0 auto;
-}
-
-/* Text block with staggered fade-in for child elements */
-.text-block div, .text-block p, .text-block h2 {
-    opacity: 0;
-    animation: fadeIn 0.5s ease forwards;
-}
-
-.text-block :nth-child(1) { animation-delay: 0.1s; }
-.text-block :nth-child(2) { animation-delay: 0.2s; }
-.text-block :nth-child(3) { animation-delay: 0.3s; }
-.text-block :nth-child(4) { animation-delay: 0.4s; }
-.text-block :nth-child(5) { animation-delay: 0.5s; }
-.text-block :nth-child(6) { animation-delay: 0.6s; }
-.text-block :nth-child(7) { animation-delay: 0.7s; }
-.text-block :nth-child(8) { animation-delay: 0.8s; }
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Button block using flex for alignment */
-.button-block {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-/* Portrait wrapper using grid for side-by-side layout */
-.portrait-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-}
-
-.thumbnail-portrait {
-    max-width: 200px;
-    height: auto;
-    border: 1px solid #555555;
-}
-
-.portrait-terminal-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-#portrait-animation-container-step-4,
-#portrait-animation-container-step-5 {
+#camera-video {
     width: 100%;
-    max-width: 800px;
-    height: 800px;
-    background: #111111;
-    border: 1px solid #555555;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
 }
 
 .terminal-log {
-    background: #111111;
-    padding: 20px;
-    border: 1px solid #555555;
-    color: #dddddd;
-    font-size: 14px;
-    overflow-y: auto;
-    max-height: 300px;
-}
-
-/* Close button for subsections */
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-    color: #dddddd;
-    font-size: 24px;
-}
-
-.image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.archive-image {
-    width: 100%;
-    height: auto;
-    border: 1px solid #555555;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.archive-image:hover {
-    transform: scale(1.05);
-}
-
-/* Input styles */
-input[type="text"] {
-    background: transparent;
-    border: 1px solid #555555;
-    color: #dddddd;
-    padding: 10px;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 16px;
-}
-
-input[type="text"]::placeholder {
-    color: #888888;
-}
-
-/* Hamburger for mobile */
-#hamburger {
-    display: none;
     position: fixed;
-    top: 20px;
-    left: 20px;
-    background: transparent;
-    border: none;
-    color: #dddddd;
-    font-size: 24px;
-    cursor: pointer;
-    z-index: 20;
+    bottom: 10px;
+    right: 10px;
+    width: 300px;
+    height: 100px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #0f0;
+    padding: 10px;
+    overflow-y: auto;
+    font-family: monospace;
 }
 
-/* Mobile adaptations: Menu becomes full-screen overlay */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
+    .step, #step-2.1 {
+        padding: 10px;
+    }
     #menu {
-        display: none;
-        width: 100vw;
-        height: 100vh;
-        padding: 60px 20px;
-        border-right: none;
+        width: 150px;
+        left: -150px;
     }
-
-    #menu.visible {
-        display: flex;
-    }
-
-    #content {
-        margin-left: 0;
-        padding: 20px;
-    }
-
-    #hamburger {
-        display: block;
-    }
-
-    .portrait-wrapper {
-        grid-template-columns: 1fr;
-    }
-
-    #portrait-animation-container-step-4,
-    #portrait-animation-container-step-5 {
-        height: 400px;
-    }
-
-    .section-content {
+    .text-block {
         max-width: 100%;
-        padding: 20px;
-    }
-}
-
-/* Ensure no overlaps and adaptive from 320px to 1920px */
-@media (min-width: 1920px) {
-    #content {
-        max-width: 1600px;
-        margin-left: auto;
-        margin-right: auto;
     }
 }
