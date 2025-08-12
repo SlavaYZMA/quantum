@@ -1,3 +1,6 @@
+// globals.js
+window.currentLanguage = 'ru'; // По умолчанию русский
+
 const translations = {
     ru: {
         step0_text: "Пожалуйста, выберите язык RU / ENG",
@@ -45,8 +48,18 @@ const translations = {
         archive: "[⧉ ПЕРЕЙТИ В АРХИВ НАБЛЮДЕНИЙ]",
         about_authors: "[ОБ АВТОРАХ]",
         back: "Назад",
-        portrait_name_placeholder: "Название портрета", // Добавлено для placeholder
-        capture_photo: "Сделать фото" // Добавлено
+        portrait_name_placeholder: "Название портрета",
+        capture_photo: "Сделать фото",
+        // Переводы для меню
+        menu_language_selection: "Выбор языка",
+        menu_introduction: "Введение",
+        menu_image_source: "Источник изображения",
+        menu_image_instructions: "Инструкции по изображению",
+        menu_quantum_explanation: "Квантовое объяснение",
+        menu_portrait_generation: "Генерация портрета",
+        menu_observation_recording: "Запись наблюдения",
+        menu_sharing: "Поделиться",
+        menu_conclusion: "Заключение"
     },
     eng: {
         step0_text: "Please select language RU / ENG",
@@ -94,13 +107,24 @@ const translations = {
         archive: "[⧉ GO TO OBSERVATION ARCHIVE]",
         about_authors: "[ABOUT AUTHORS]",
         back: "Back",
-        portrait_name_placeholder: "Portrait name", // Добавлено
-        capture_photo: "Capture Photo" // Добавлено
+        portrait_name_placeholder: "Portrait name",
+        capture_photo: "Capture Photo",
+        // Переводы для меню
+        menu_language_selection: "Language Selection",
+        menu_introduction: "Introduction",
+        menu_image_source: "Image Source",
+        menu_image_instructions: "Image Instructions",
+        menu_quantum_explanation: "Quantum Explanation",
+        menu_portrait_generation: "Portrait Generation",
+        menu_observation_recording: "Observation Recording",
+        menu_sharing: "Sharing",
+        menu_conclusion: "Conclusion"
     }
 };
 
 window.setLanguage = (lang) => {
     console.log(`setLanguage called with: ${lang}`);
+    window.currentLanguage = lang; // Сохраняем текущий язык
     const elements = document.querySelectorAll('[data-i18n]');
     console.log(`Language elements found: ${elements.length}`);
     elements.forEach((element, index) => {
@@ -116,7 +140,32 @@ window.setLanguage = (lang) => {
     const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
     placeholders.forEach((el) => {
         const key = el.getAttribute('data-i18n-placeholder');
-        if (translations[lang][key]) el.placeholder = translations[lang][key];
+        if (translations[lang][key]) {
+            el.placeholder = translations[lang][key];
+            console.log(`Updated placeholder (${key}): ${translations[lang][key]}`);
+        }
+    });
+    // Обновление меню
+    const menuItems = document.querySelectorAll('#menu a');
+    const menuKeys = [
+        'menu_language_selection',
+        'menu_introduction',
+        'menu_image_source',
+        'menu_image_instructions',
+        'menu_quantum_explanation',
+        'menu_portrait_generation',
+        'menu_observation_recording',
+        'menu_sharing',
+        'menu_conclusion'
+    ];
+    menuItems.forEach((item, index) => {
+        const key = menuKeys[index];
+        if (translations[lang][key]) {
+            item.textContent = translations[lang][key];
+            console.log(`Updated menu item ${index} (${key}): ${translations[lang][key]}`);
+        } else {
+            console.warn(`Menu translation missing for key: ${key} in language: ${lang}`);
+        }
     });
 };
 
@@ -124,6 +173,12 @@ window.setLanguageAndNext = (lang) => {
     console.log(`setLanguageAndNext called with: ${lang}`);
     window.setLanguage(lang);
     window.moveToNextStep(1);
+};
+
+window.setLanguageAndStay = (lang) => {
+    console.log(`setLanguageAndStay called with: ${lang}`);
+    window.setLanguage(lang);
+    window.moveToNextStep('1');
 };
 
 window.noiseScale = 0.01;
