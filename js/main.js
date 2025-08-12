@@ -330,8 +330,10 @@ window.setLanguageAndStay = function(lang) {
 };
 
 // Инициализация обработчиков событий
+// main.js (фрагмент с инициализацией)
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded');
+    window.setLanguage(window.currentLanguage); // Устанавливаем начальный язык
     updateStepVisibility();
 
     document.querySelectorAll('#menu a').forEach(a => {
