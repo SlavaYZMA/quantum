@@ -139,6 +139,26 @@ button:hover {
     transform: translateY(0);
 }
 
+/* Subsection (archive, camera) with slide-in-from-bottom animation */
+.step-subsection {
+    opacity: 0;
+    transform: translateY(100vh); /* Start off-screen at bottom */
+    transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth slide-in */
+}
+
+.step-subsection.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-content {
+    background: #000000;
+    padding: 40px;
+    border: 1px solid #555555;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
 /* Text block with staggered fade-in for child elements */
 .text-block div, .text-block p, .text-block h2 {
     opacity: 0;
@@ -204,35 +224,7 @@ button:hover {
     max-height: 300px;
 }
 
-/* Modals with simple overlay, fade-in animation */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 30;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.modal.visible {
-    opacity: 1;
-}
-
-.modal-content {
-    background: #000000;
-    padding: 40px;
-    border: 1px solid #555555;
-    max-width: 80%;
-    max-height: 80%;
-    overflow: auto;
-}
-
+/* Close button for subsections */
 .close {
     position: absolute;
     top: 10px;
@@ -318,6 +310,11 @@ input[type="text"]::placeholder {
     #portrait-animation-container-step-4,
     #portrait-animation-container-step-5 {
         height: 400px;
+    }
+
+    .section-content {
+        max-width: 100%;
+        padding: 20px;
     }
 }
 
