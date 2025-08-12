@@ -1,4 +1,4 @@
-window.currentLanguage = 'ru'; // По умолчанию русский
+window.currentLanguage = localStorage.getItem('language') || 'ru'; // Сохраняем выбор языка
 
 const translations = {
     ru: {
@@ -126,6 +126,7 @@ window.setLanguage = (lang) => {
         lang = 'ru';
     }
     window.currentLanguage = lang;
+    localStorage.setItem('language', lang); // Сохраняем выбор языка
     const elements = document.querySelectorAll('[data-i18n]');
     console.log(`Language elements found: ${elements.length}`);
     elements.forEach((element, index) => {
