@@ -26,12 +26,8 @@ function updateStepVisibility() {
         console.log(`Section ${section.id}, should be visible: ${shouldBeVisible}, classes: ${section.className}`);
         if (shouldBeVisible) {
             section.style.display = 'block';
-            setTimeout(() => {
-                section.classList.add('visible');
-                console.log(`Made ${section.id} visible`);
-                // Принудительное обновление текста после отображения секции
-                window.setLanguage(window.currentLanguage);
-            }, 10);
+            section.classList.add('visible');
+            console.log(`Made ${section.id} visible`);
         } else {
             section.style.display = 'none';
             section.classList.remove('visible');
@@ -97,17 +93,20 @@ function updateStepVisibility() {
             console.log('portrait-animation-container-step-5 display set to: none');
         }
     }
+
+    // Обновление текста после смены шага
+    window.setLanguage(window.currentLanguage);
 }
 
-// Эффект печати текста
+// Эффект печати текста только для .text-block
 function typewriter(element) {
-    const elements = element.querySelectorAll('div, p, h2');
+    const elements = element.querySelectorAll('.text-block div, .text-block p, .text-block h2');
     let index = 0;
     function typeNext() {
         if (index >= elements.length) return;
         const el = elements[index];
         const key = el.getAttribute('data-i18n');
-        const text = key && translations[window.currentLanguage][key] ? translations[window.currentLanguage][key] : el.textContent.trim();
+        const text = key && translations[window.currentLanguage][key] ? translations[window.currentLanguage][key] : '';
         el.textContent = '';
         let charIndex = 0;
         function typeChar() {
@@ -202,10 +201,8 @@ function stopCamera() {
     const section = document.getElementById('camera-section');
     if (section) {
         section.classList.remove('visible');
-        setTimeout(() => {
-            section.style.display = 'none';
-            console.log('camera-section hidden');
-        }, 500);
+        section.style.display = 'none';
+        console.log('camera-section hidden');
     }
     if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
@@ -251,10 +248,8 @@ function selectArchiveImage(src) {
     });
     if (archiveSection) {
         archiveSection.classList.remove('visible');
-        setTimeout(() => {
-            archiveSection.style.display = 'none';
-            console.log('image-archive-section hidden');
-        }, 500);
+        archiveSection.style.display = 'none';
+        console.log('image-archive-section hidden');
     }
     window.loadImage(src, img => {
         window.img = img;
@@ -329,10 +324,7 @@ window.updateTerminalLog = function() {
 window.setLanguageAndStay = function(lang) {
     console.log('setLanguageAndStay called with:', lang);
     window.setLanguage(lang);
-    setTimeout(() => {
-        window.moveToNextStep('1');
-        window.setLanguage(lang); // Повторное обновление языка после перехода
-    }, 100); // Небольшая задержка для завершения анимаций
+    window.moveToNextStep('1');
 };
 
 // Инициализация обработчиков событий
@@ -410,10 +402,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const section = document.getElementById('image-archive-section');
         if (section) {
             section.classList.remove('visible');
-            setTimeout(() => {
-                section.style.display = 'none';
-                console.log('close-archive-section clicked');
-            }, 500);
+            section.style.display = 'none';
+            console.log('close-archive-section clicked');
             window.currentStep = stepIds.indexOf('step-2');
             window.currentStepId = 'step-2';
             updateStepVisibility();
