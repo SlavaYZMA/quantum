@@ -95,12 +95,18 @@ function updateStepVisibility() {
 }
 
 function typewriter(element) {
-    const elements = element.querySelectorAll('div, p, h2');
+    const elements = element.querySelectorAll('div, p, h2, button');
     let index = 0;
     function typeNext() {
         if (index >= elements.length) return;
         const el = elements[index];
-        const text = translations[window.currentLanguage][el.getAttribute('data-i18n')] || el.textContent.trim();
+        const key = el.getAttribute('data-i18n');
+        const text = key ? translations[window.currentLanguage][key] || el.textContent.trim() : el.textContent.trim();
+        if (!text || el.classList.contains('typewriter-done')) {
+            index++;
+            typeNext();
+            return;
+        }
         el.textContent = '';
         let charIndex = 0;
         function typeChar() {
@@ -109,6 +115,7 @@ function typewriter(element) {
                 charIndex++;
                 setTimeout(typeChar, 20 + Math.random() * 50);
             } else {
+                el.classList.add('typewriter-done');
                 index++;
                 typeNext();
             }
