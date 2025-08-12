@@ -124,8 +124,10 @@ function capturePhoto() {
 }
 
 function initializeSteps() {
-    document.querySelectorAll('.step').forEach((step, index) => {
+    const steps = document.querySelectorAll('.step');
+    steps.forEach((step, index) => {
         step.style.display = index === 0 ? 'grid' : 'none';
+        step.classList.toggle('active', index === 0); // Добавлено: активация класса для первого шага
     });
     window.currentStep = 0;
 
@@ -160,8 +162,10 @@ function initializeSteps() {
 function showStep(stepIndex) {
     document.querySelectorAll('.step').forEach(step => {
         const id = step.id.replace('step-', '');
-        step.style.display = (id == stepIndex) ? 'grid' : 'none'; // Используем == для 2.1
-        if (id == stepIndex) {
+        const isActive = (id == stepIndex); // Используем == для поддержки 2.1
+        step.style.display = isActive ? 'grid' : 'none';
+        step.classList.toggle('active', isActive); // Добавлено: переключение класса active
+        if (isActive) {
             const textBlock = step.querySelector('.text-block');
             if (textBlock) typewriter(textBlock);
         }
