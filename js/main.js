@@ -20,19 +20,19 @@ let cameraStream = null;
 function updateStepVisibility() {
     console.log('updateStepVisibility called, currentStep:', window.currentStep);
     document.querySelectorAll('.step').forEach((section, index) => {
-        console.log(`Section ${section.id}, index: ${index}, should be visible: ${index === window.currentStep}`);
-        if (index === window.currentStep) {
-            section.style.display = 'block';
-            setTimeout(() => {
-                section.classList.add('visible');
-                console.log(`Made ${section.id} visible`);
-            }, 10);
-        } else {
-            section.style.display = 'none';
-            section.classList.remove('visible');
-            console.log(`Hid ${section.id}`);
-        }
-    });
+    console.log(`Section ${section.id}, index: ${index}, should be visible: ${index === window.currentStep}, tag: ${section.tagName}, classes: ${section.className}`);
+    if (index === window.currentStep) {
+        section.style.display = 'block';
+        setTimeout(() => {
+            section.classList.add('visible');
+            console.log(`Made ${section.id} visible`);
+        }, 10);
+    } else {
+        section.style.display = 'none';
+        section.classList.remove('visible');
+        console.log(`Hid ${section.id}`);
+    }
+});
     // Hide subsections
     const archiveSection = document.getElementById('image-archive-section');
     if (archiveSection) {
