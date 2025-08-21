@@ -1237,20 +1237,20 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
             var pulse = 1 + 0.3 * Math.sin(p.pulsePhase + p.spin);
 
             if (distance < window.mouseInfluenceRadius && distance > 0 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                if (!p.collapsed) {
-                    p.collapsed = true;
-                    state.a = 180;
-                    p.size = 2.5 * pulse;
-                    p.uncertaintyRadius = 2;
-                    state.wavePacketAlpha = 0;
-                    p.shape = ['ellipse', 'soft-ribbon', 'bio-cluster'][Math.floor(Math.random() * 3)];
-                    p.spin = Math.random() < 0.5 ? 0.5 : -0.5;
-                    sketch.fill(204, 51, 51, 80);
-                    sketch.ellipse(p.x, p.y, 8 * pulse, 8 * pulse);
-                    sketch.noFill();
-                    sketch.stroke(204, 51, 51, 40);
-                    sketch.strokeWeight(0.5);
-                    sketch.ellipse(p.x, p.y, 20, 20);
+    if (!p.collapsed) {
+        p.collapsed = true;
+        state.a = 180;
+        p.size = 2.5 * pulse;
+        p.uncertaintyRadius = 2;
+        state.wavePacketAlpha = 0;
+        p.shape = ['ellipse', 'soft-ribbon', 'bio-cluster'][Math.floor(Math.random() * 3)];
+        p.spin = Math.random() < 0.5 ? 0.5 : -0.5;
+        sketch.fill(255, 0, 0, 150); // Яркий красный цвет
+        sketch.ellipse(p.x, p.y, 20 * pulse, 20 * pulse); // Увеличенный размер эффекта
+        sketch.noFill();
+        sketch.stroke(255, 0, 0, 100); // Более заметный контур
+        sketch.strokeWeight(1);
+        sketch.ellipse(p.x, p.y, 25, 25); // Более крупный контур
                     console.log('Particle ' + i + ' collapsed, shape: ' + p.shape + ', spin: ' + p.spin.toFixed(1) + ', alpha: ' + state.a);
                     window.terminalMessages.push(getRandomMessage('collapse', { shape: p.shape, spin: p.spin.toFixed(1) }));
                     window.updateTerminalLog();
