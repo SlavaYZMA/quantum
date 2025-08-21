@@ -6,7 +6,7 @@ window.noiseScale = 0.01;
 window.chaosFactor = 1.0;
 window.mouseInfluenceRadius = 50;
 
-const stepIds = ['step-0', 'step-1', 'step-2', 'image-archive-section', 'camera-section', 'step-2.1', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7'];
+const stepIds = ['step-0', 'step-1', 'step-2', 'image-archive-section', 'camera-section', 'step-2.1', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'about-authors'];
 const totalSteps = stepIds.length;
 
 const archiveImages = [
@@ -95,7 +95,7 @@ function updateStepVisibility() {
 }
 
 function typewriter(element) {
-    const elements = element.querySelectorAll('div, p, h2');
+    const elements = element.querySelectorAll('div, p, h2, h3');
     let index = 0;
     function typeNext() {
         if (index >= elements.length) return;
@@ -179,7 +179,10 @@ function startCamera() {
             window.currentStepId = 'camera-section';
             updateStepVisibility();
             console.log('camera-section made visible');
-        }).catch(err => console.error('Camera error:', err));
+        }).catch(err => {
+            console.error('Camera error:', err);
+            alert('Не удалось получить доступ к камере. Пожалуйста, проверьте разрешения.');
+        });
     } else {
         console.warn('camera-video not found');
     }
@@ -257,7 +260,7 @@ function selectArchiveImage(src) {
 
 window.moveToNextStep = function(stepIndex) {
     console.log('moveToNextStep called with:', stepIndex);
-    const stepId = `step-${stepIndex}`.replace('.', '.');
+    const stepId = typeof stepIndex === 'string' && stepIndex.startsWith('step-') ? stepIndex : `step-${stepIndex}`;
     const stepIdx = stepIds.indexOf(stepId);
     if (stepIdx >= 0 && stepIdx < totalSteps) {
         window.currentStep = stepIdx;
@@ -325,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const stepId = a.getAttribute('href').substring(1);
             const stepIndex = stepIds.indexOf(stepId);
-            if (stepIndex <= window.currentStep) {
+            if (stepIndex <= window.currentStep || stepId === 'about-authors') {
                 window.currentStep = stepIndex;
                 window.currentStepId = stepId;
                 updateStepVisibility();
@@ -383,7 +386,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('shareObservation')?.addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
     document.getElementById('restart')?.addEventListener('click', () => window.location.reload());
     document.getElementById('archive')?.addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
-    document.getElementById('aboutAuthors')?.addEventListener('click', () => window.location.href = './about.html');
+    document.getElementById('aboutAuthors')?.addEventListener('click', () => {
+        window.moveToNextStep('about-authors');
+    });
 
     document.getElementById('close-archive-section')?.addEventListener('click', () => {
         const section = document.getElementById('image-archive-section');
