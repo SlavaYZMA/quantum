@@ -1020,7 +1020,7 @@ window.updateParticles = function(sketch) {
                 sketch.ellipse(p.x, p.y, p.size + 3 * pulse, p.size + 3 * pulse);
                 drawShape(sketch, p.x, p.y, p.size, p.shape, p.phase, p.spin, p.spinPhase, state.r, state.g, state.b, state.a, p.featureWeight, pulse);
                 if (state.tunnelFlash > 0) {
-                    sketch.fill(255, 0, 0, state.tunnelFlash * 2.5);
+                    sketch.fill(204, 51, 51, state.tunnelFlash * 2.5);
                     sketch.ellipse(p.x, p.y, p.size + 2 * pulse, p.size + 2 * pulse);
                     state.tunnelFlash--;
                 }
@@ -1160,7 +1160,7 @@ class BranchParticle {
 
         if (window.mouseClicked && Math.sqrt((this.x - window.mouseWave.x) ** 2 + (this.y - window.mouseWave.y) ** 2) < 20 && this.collapseProgress === 0) {
             this.collapseProgress = 0.1;
-            sketch.fill(255, 0, 0, 150 * (1 - this.collapseProgress));
+            sketch.fill(204, 51, 51, 80 * (1 - this.collapseProgress));
             sketch.ellipse(this.x, this.y, 20 * (1 - this.collapseProgress), 20 * (1 - this.collapseProgress));
             if (typeof window.playArpeggio === 'function') {
                 console.log('Playing branch collapse sound');
@@ -1245,8 +1245,8 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
                     state.wavePacketAlpha = 0;
                     p.shape = ['ellipse', 'soft-ribbon', 'bio-cluster'][Math.floor(Math.random() * 3)];
                     p.spin = Math.random() < 0.5 ? 0.5 : -0.5;
-                    sketch.fill(255, 0, 0, 150);
-                    sketch.ellipse(p.x, p.y, 20 * pulse, 20 * pulse);
+                    sketch.fill(204, 51, 51, 80);
+                    sketch.ellipse(p.x, p.y, 8 * pulse, 8 * pulse);
                     sketch.noFill();
                     sketch.stroke(204, 51, 51, 40);
                     sketch.strokeWeight(0.5);
