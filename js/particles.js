@@ -996,8 +996,8 @@ window.updateParticles = function(sketch) {
         }
     }
     if (state.entanglementFlash > 0) {
-        sketch.stroke(127, 0, 255, state.entanglementFlash * 5); // Яркий фиолетовый
-        sketch.strokeWeight(1); // Увеличен вес линии
+        sketch.stroke(63, 22, 127, state.entanglementFlash * 5); // Яркий фиолетовый
+        sketch.strokeWeight(0.6); // Увеличен вес линии
         sketch.line(p.x, p.y, partner.x, partner.y);
         if (frame % 2 === 0) { // Замедлено уменьшение
             state.entanglementFlash--;
