@@ -1248,12 +1248,22 @@ window.clickParticles = function(sketch, mouseX, mouseY) {
         state.wavePacketAlpha = 0;
         p.shape = ['ellipse', 'soft-ribbon', 'bio-cluster'][Math.floor(Math.random() * 3)];
         p.spin = Math.random() < 0.5 ? 0.5 : -0.5;
-        sketch.fill(255, 0, 0, 150); // Яркий красный цвет
-        sketch.ellipse(p.x, p.y, 20 * pulse, 20 * pulse); // Увеличенный размер эффекта
+        // Яркий всплеск с анимацией
+        sketch.fill(255, 0, 0, 200); // Максимальная яркость
+        sketch.ellipse(p.x, p.y, 30 * pulse, 30 * pulse); // Увеличенный размер
+        for (let i = 0; i < 3; i++) {
+            sketch.noFill();
+            sketch.stroke(255, 0, 0, 150 - i * 50); // Затухающие кольца
+            sketch.strokeWeight(2 - i * 0.5);
+            sketch.ellipse(p.x, p.y, 40 + i * 10, 40 + i * 10);
+        }
+        // Фиксация формы с акцентом
+        sketch.fill(255, 100, 100, 180); // Мягкий розовый для формы
+        drawShape(sketch, p.x, p.y, p.size, p.shape, p.phase, p.spin, p.spinPhase, 255, 100, 100, 180, p.featureWeight, pulse);
         sketch.noFill();
-        sketch.stroke(255, 0, 0, 100); // Более заметный контур
-        sketch.strokeWeight(1);
-        sketch.ellipse(p.x, p.y, 25, 25); // Более крупный контур
+        sketch.stroke(255, 0, 0, 120);
+        sketch.strokeWeight(1.5);
+        sketch.ellipse(p.x, p.y, 35, 35);
                     console.log('Particle ' + i + ' collapsed, shape: ' + p.shape + ', spin: ' + p.spin.toFixed(1) + ', alpha: ' + state.a);
                     window.terminalMessages.push(getRandomMessage('collapse', { shape: p.shape, spin: p.spin.toFixed(1) }));
                     window.updateTerminalLog();
