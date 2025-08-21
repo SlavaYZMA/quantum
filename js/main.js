@@ -260,7 +260,8 @@ function selectArchiveImage(src) {
 
 window.moveToNextStep = function(stepIndex) {
     console.log('moveToNextStep called with:', stepIndex);
-    const stepId = typeof stepIndex === 'string' && stepIndex.startsWith('step-') ? stepIndex : `step-${stepIndex}`;
+    // Если stepIndex уже содержит корректный ID (например, 'about-authors' или 'step-X'), используем его напрямую
+    const stepId = stepIds.includes(stepIndex) ? stepIndex : `step-${stepIndex}`;
     const stepIdx = stepIds.indexOf(stepId);
     if (stepIdx >= 0 && stepIdx < totalSteps) {
         window.currentStep = stepIdx;
