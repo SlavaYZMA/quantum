@@ -977,31 +977,34 @@ window.updateParticles = function(sketch) {
             }
 
             if (p.entangledPartner !== null && window.particles[p.entangledPartner] && ((window.currentStep === 7 || window.currentStep === 8) && window.decompositionTimer >= 8)) {
-                var partner = window.particles[p.entangledPartner];
-                var partnerState = window.quantumStates[p.entangledPartner];
-                state.r = partnerState.r = (state.r + partnerState.r) / 2 + (p.originalColor.r - state.r) * 0.2;
-                state.g = partnerState.g = (state.g + partnerState.g) / 2 + (p.originalColor.g - state.g) * 0.2;
-                state.b = partnerState.b = (state.b + partnerState.b) / 2 + (p.originalColor.b - state.b) * 0.2;
-                if (!p.collapsed && !partner.collapsed && Math.random() < 0.2 && window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
-                    state.entanglementFlash = 15;
-                    partnerState.entanglementFlash = 15;
-                    potentialMessages.push({ type: 'entanglement', params: { spin: p.spin.toFixed(1) } });
-                    window.webIntensity = Math.min(1, window.webIntensity + 0.15);
-                    if (typeof window.playNote === 'function') {
-                        const freq = noteFrequencies['E4'] || 329.63;
-                        console.log('Playing entanglement sound:', freq);
-                        window.playNote(freq, 'sine', 0.2, 0.15);
-                    }
-                }
-                if (state.entanglementFlash > 0) {
-                    sketch.stroke(63, 22, 127, state.entanglementFlash * 4);
-                    sketch.strokeWeight(0.5);
-                    sketch.line(p.x, p.y, partner.x, partner.y);
-                    state.entanglementFlash--;
-                    partnerState.entanglementFlash--;
-                }
+    var partner = window.particles[p.entangledPartner];
+    var partnerState = window.quantumStates[p.entangledPartner];
+    state.r = partnerState.r = (state.r + partnerState.r) / 2 + (p.originalColor.r - state.r) * 0.2;
+    state.g = partnerState.g = (state.g + partnerState.g) / 2 + (p.originalColor.g - state.g) * 0.2;
+    state.b = partnerState.b = (state.b + partnerState.b) / 2 + (p.originalColor.b - state.b) * 0.2;
+    if (!p.collapsed && !partner.collapsed && Math.random() < 0.3) { // Увеличена вероятность
+        state.entanglementFlash = 30; // Удвоено время свечения
+        partnerState.entanglementFlash = 30;
+        if (window.globalMessageCooldown <= 0 && !messageAddedThisFrame) {
+            potentialMessages.push({ type: 'entanglement', params: { spin: p.spin.toFixed(1) } });
+            window.webIntensity = Math.min(1, window.webIntensity + 0.15);
+            if (typeof window.playNote === 'function') {
+                const freq = noteFrequencies['E4'] || 329.63;
+                console.log('Playing entanglement sound:', freq);
+                window.playNote(freq, 'sine', 0.2, 0.15);
             }
-
+        }
+    }
+    if (state.entanglementFlash > 0) {
+        sketch.stroke(127, 0, 255, state.entanglementFlash * 5); // Яркий фиолетовый
+        sketch.strokeWeight(1); // Увеличен вес линии
+        sketch.line(p.x, p.y, partner.x, partner.y);
+        if (frame % 2 === 0) { // Замедлено уменьшение
+            state.entanglementFlash--;
+            partnerState.entanglementFlash--;
+        }
+    }
+}
             const margin = 20;
             if (p.x < margin) p.velocityX += (margin - p.x) * 0.05 * pulse;
             if (p.x > 800 - margin) p.velocityX -= (p.x - (800 - margin)) * 0.05 * pulse;
