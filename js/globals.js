@@ -57,7 +57,15 @@ const translations = {
         menu_portrait_generation: "Генерация портрета",
         menu_observation_recording: "Запись наблюдения",
         menu_sharing: "Поделиться",
-        menu_conclusion: "Заключение"
+        menu_conclusion: "Заключение",
+        menu_about_authors: "Об авторах",
+        about_authors_title: "Об авторах",
+        author_sasha_name: "Александра Далибах",
+        author_sasha_bio: "Александра Далибах — художница, которая соединяет в своих работах интуицию и эксперимент. Её творчество балансирует между живописью и объектным искусством, где каждый штрих становится исследованием внутреннего мира. Александра ищет новые формы выразительности, играя с цветом и текстурой, превращая привычные вещи в символы. Её работы говорят языком метафор, но при этом остаются открытыми для личной интерпретации зрителя.",
+        author_slava_name: "Владислава Иванова",
+        author_slava_bio: "Владислава Иванова — авторка, исследующая пространство пересечения экологии, памяти и социальной справедливости. В её текстах звучит голос тех, кто обычно остаётся в тени: людей, потерявших дом, природы, лишённой защиты, городов, которые изменяются быстрее, чем мы успеваем к ним привыкнуть. Владислава работает с документальностью и художественным образом одновременно, создавая тексты, в которых факты и эмоции образуют цельное полотно. Её стиль — прямой, искренний и всегда обращённый к читателю.",
+        author_ph_name: "Эрвин Шрёдингер",
+        author_ph_bio: "Эрвин Шрёдингер — австрийский физик-теоретик, один из основателей квантовой механики. Его имя известно благодаря знаменитому мысленному эксперименту с «кошкой Шрёдингера», который наглядно показал парадоксы квантового мира. Но его вклад значительно шире: уравнение Шрёдингера стало фундаментом для всей современной физики. Помимо науки, он писал философские тексты, где размышлял о жизни, сознании и природе реальности. Шрёдингер умел соединять строгую математику с глубоким поиском смысла, оставаясь человеком, для которого наука и философия были единым целым."
     },
     eng: {
         step0_text: "Please select language RU / ENG",
@@ -115,7 +123,15 @@ const translations = {
         menu_portrait_generation: "Portrait Generation",
         menu_observation_recording: "Observation Recording",
         menu_sharing: "Sharing",
-        menu_conclusion: "Conclusion"
+        menu_conclusion: "Conclusion",
+        menu_about_authors: "About Authors",
+        about_authors_title: "About Authors",
+        author_sasha_name: "Aleksandra Dalibah",
+        author_sasha_bio: "Aleksandra Dalibah is an artist who blends intuition and experimentation in her work. Her creations balance between painting and object art, where each stroke becomes an exploration of the inner world. Aleksandra seeks new forms of expressiveness, playing with color and texture, transforming everyday objects into symbols. Her works speak the language of metaphors while remaining open to the viewer’s personal interpretation.",
+        author_slava_name: "Vladislava Ivanova",
+        author_slava_bio: "Vladislava Ivanova is a writer exploring the intersection of ecology, memory, and social justice. Her texts give voice to those often left in the shadows: people who have lost their homes, nature deprived of protection, and cities changing faster than we can adapt. Vladislava combines documentary and artistic imagery, creating texts where facts and emotions form a cohesive canvas. Her style is direct, sincere, and always directed toward the reader.",
+        author_ph_name: "Erwin Schrödinger",
+        author_ph_bio: "Erwin Schrödinger was an Austrian theoretical physicist and one of the founders of quantum mechanics. He is best known for his famous thought experiment, 'Schrödinger’s Cat,' which vividly illustrated the paradoxes of the quantum world. However, his contributions extend far beyond: the Schrödinger equation became the foundation of modern physics. Beyond science, he wrote philosophical texts reflecting on life, consciousness, and the nature of reality. Schrödinger masterfully combined rigorous mathematics with a deep search for meaning, remaining a thinker for whom science and philosophy were one."
     }
 };
 
@@ -153,7 +169,8 @@ window.setLanguage = (lang) => {
         'menu_portrait_generation',
         'menu_observation_recording',
         'menu_sharing',
-        'menu_conclusion'
+        'menu_conclusion',
+        'menu_about_authors'
     ];
     menuItems.forEach((item, index) => {
         const key = menuKeys[index];
