@@ -384,9 +384,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn('saveCanvas not defined, cannot save image');
         }
     });
-    document.getElementById('shareObservation')?.addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
+    document.getElementById('shareObservation')?.addEventListener('click', () => window.open('https://t.me/quantumportret', '_blank'));
     document.getElementById('restart')?.addEventListener('click', () => window.location.reload());
-    document.getElementById('archive')?.addEventListener('click', () => window.open('https://t.me/quantum_portrait_channel', '_blank'));
+    document.getElementById('archive')?.addEventListener('click', () => window.open('https://t.me/quantumportret', '_blank'));
     document.getElementById('aboutAuthors')?.addEventListener('click', () => {
         window.moveToNextStep('about-authors');
     });
