@@ -405,3 +405,20 @@ input[type="text"]::placeholder {
         margin-right: auto;
     }
 }
+
+.author-block h4 {
+    font-size: 20px;
+    margin-top: 20px;
+    color: #00ffcc;
+    font-weight: bold;
+}
+
+.author-block p[data-i18n] {
+    margin-bottom: 15px;
+}
+
+/* Ensure selected works list looks clean */
+.author-block p[data-i18n*="selected_works"] {
+    white-space: pre-wrap; /* Preserve newlines from \n in translations */
+    line-height: 1.6;
+}
