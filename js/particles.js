@@ -465,7 +465,7 @@ window.initializeParticles = function(img) {
                         frequency: 0.007,
                         spin: Math.random() < 0.5 ? 0.5 : -0.5,
                         spinPhase: Math.random() * 2 * Math.PI,
-                        entangledPartner: Math.random() < 0.1 ? Math.floor(Math.random() * numParticles) : null,
+                        entangledPartner: Math.random() < 0.3 ? Math.floor(Math.random() * numParticles) : null,
                         collapsed: false,
                         decompositionProgress: 0,
                         shape: 'pixel',
