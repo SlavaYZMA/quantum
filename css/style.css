@@ -355,6 +355,11 @@ input[type="text"]::placeholder {
         height: 100vh;
         padding: 60px 20px;
         border-right: none;
+        background: rgba(0, 0, 0, 0.95); /* Полупрозрачный фон для читаемости */
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 30; /* Выше всего */
     }
 
     #menu.visible {
@@ -364,10 +369,15 @@ input[type="text"]::placeholder {
     #content {
         margin-left: 0;
         padding: 20px;
+        padding-top: 80px; /* Отступ сверху, чтобы меню не наезжало */
     }
 
     #hamburger {
         display: block;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 31; /* Над меню */
     }
 
     .portrait-wrapper {
@@ -377,14 +387,19 @@ input[type="text"]::placeholder {
     #portrait-animation-container-step-4,
     #portrait-animation-container-step-5,
     #canvas-container {
-        height: 400px;
+        height: auto; /* Динамическая высота */
         max-width: 100%;
-        aspect-ratio: 1/1;
+        max-height: 80vh; /* Ограничиваем высоту экрана */
+        aspect-ratio: 1/1; /* Сохраняем пропорции */
+        background: #111111;
+        border: 1px solid #555555;
+        z-index: 10;
     }
 
     canvas:not(#camera-canvas) {
         max-width: 100%;
         height: auto;
+        aspect-ratio: 1/1; /* Сохраняем пропорции */
     }
 
     .section-content {
@@ -394,6 +409,25 @@ input[type="text"]::placeholder {
 
     .author-grid {
         grid-template-columns: 1fr;
+    }
+
+    .button-block {
+        position: relative;
+        z-index: 20; /* Над канвой */
+        background: rgba(0, 0, 0, 0.7); /* Лёгкий фон для видимости */
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    button {
+        z-index: 21; /* Над блоком */
+    }
+
+    button:hover {
+        background: #00ffcc;
+        color: #ffffff;
+        transform: scale(1.05);
+        background: rgba(0, 255, 204, 0.9); /* Прозрачность для читаемости */
     }
 }
 
