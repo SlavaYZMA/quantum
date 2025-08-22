@@ -215,6 +215,7 @@ function capturePhoto() {
         ctx.drawImage(video, 0, 0, 400, 400);
         const url = canvas.toDataURL('image/png');
         window.loadImage(url, img => {
+            img = window.resizeToSquare(img, 255);
             window.img = img;
             try {
                 window.initializeParticles(img);
@@ -246,6 +247,7 @@ function selectArchiveImage(src) {
         }, 500);
     }
     window.loadImage(src, img => {
+        img = window.resizeToSquare(img, 255);
         window.img = img;
         console.log('Image loaded for initializeParticles:', img);
         try {
@@ -356,6 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const file = e.target.files[0];
             if (file) {
                 window.loadImage(URL.createObjectURL(file), img => {
+                    img = window.resizeToSquare(img, 255);
                     window.img = img;
                     try {
                         window.initializeParticles(img);
