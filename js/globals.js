@@ -2,7 +2,8 @@ window.currentLanguage = 'ru';
 
 const translations = {
     ru: {
-        step0_text: "Пожалуйста, выберите язык RU / ENG",
+        step0_text1: "Пожалуйста, выберите язык RU / ENG",
+        step0_text2: "Для лучшего опыта используйте компьютер или переключитесь на режим для ПК в браузере телефона.",
         step1_title: "СТАТУС: НАБЛЮДАТЕЛЬ ПОДКЛЮЧЁН",
         step1_text1: "> Чему Шредингер может научить нас в области цифровой идентификации?",
         step1_text2: "> Добро пожаловать в экспериментальную зону.",
@@ -74,7 +75,8 @@ const translations = {
         author_ph_selected_works: "— Серия статей Quantisierung als Eigenwertproblem (1926) — формулировка волновой механики; уравнение Шредингера.\n— «Кот Шредингера» (1935) — мысленный эксперимент о суперпозиции и измерении.\n— What Is Life? (1944) — лекции/книга о физике живого, повлиявшая на становление молекулярной биологии.\n— Нобелевская премия по физике (1933) — за вклад в развитие атомной теории (совместно с П. Дираком)."
     },
     eng: {
-        step0_text: "Please select language RU / ENG",
+        step0_text1: "Please select language RU / ENG",
+        step0_text2: "For the best experience, use a computer or switch to desktop mode in your mobile browser.",
         step1_title: "STATUS: OBSERVER CONNECTED",
         step1_text1: "> What can Schrödinger teach us about digital identity?",
         step1_text2: "> Welcome to the experimental zone.",
